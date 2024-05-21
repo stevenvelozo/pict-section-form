@@ -1,0 +1,13 @@
+{
+    "name": "bookstore_example",
+    "version": "1.0.0",
+    "description": "Bookstore example pict web app.",
+    "main": "Pict-Application-Bookstore.js",
+    "scripts": {
+        "start": "node Pict-Application-Bookstore.js",
+        "build": "npx quack build"
+    },
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {}
+}

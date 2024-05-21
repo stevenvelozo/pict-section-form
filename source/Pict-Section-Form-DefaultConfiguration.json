@@ -1,0 +1,23 @@
+{
+	"RenderOnLoad": true,
+
+	"DefaultRenderable": "Form-Wrap",
+	"DefaultDestinationAddress": "#Form-Container-Div",
+
+	"Templates": [
+		{
+			"Hash": "Form-Container",
+			"Template": "<!-- Form-Container Rendering Soon -->"
+		}
+	],
+
+	"Renderables": [
+		{
+			"RenderableHash": "Form-Wrap",
+			"TemplateHash": "Form-Container",
+			"DestinationAddress": "#Form-Container-Div"
+		}
+	],
+
+	"TargetElementAddress": "#Form-Container-Div"
+}
