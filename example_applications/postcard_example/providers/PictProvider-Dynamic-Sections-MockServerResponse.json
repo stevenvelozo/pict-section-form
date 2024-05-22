@@ -10,6 +10,7 @@
 			{
 				"Name": "Postcard Information",
 				"Hash": "Postcard",
+
 				"Description": "The content and destination for the postcard you would like to send.",
 				"Groups": [
 					{
@@ -31,9 +32,6 @@
 				"Groups": []
 			}
 		],
-
-	"Templates": [],
-	"CSS": ".VeryImportantData { background-color: #FF0000; }",
 
 	"Descriptors":
 		{

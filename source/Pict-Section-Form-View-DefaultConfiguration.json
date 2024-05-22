@@ -1,0 +1,12 @@
+{
+	"RenderOnLoad": false,
+
+	"DefaultRenderable": "Form-Main",
+	"DefaultDestinationAddress": "#Pict-Form-Container",
+
+	"Renderables": [],
+
+	"Templates": [],
+
+	"TargetElementAddress": "#Form-Container-Div"
+}
