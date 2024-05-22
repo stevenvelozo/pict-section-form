@@ -33,7 +33,67 @@ class PictSectionForm extends libPictViewClass
 
 		super(pFable, tmpOptions, pServiceHash);
 
-		this.initialRenderComplete = false;
+		if (!this.options.hasOwnProperty('SectionDefinition'))
+		{
+			this.log.error('PictSectionForm instantiated without a SectionDefinition in options -- cannot instantiate.');
+			return;
+		}
+
+		if (!this.options.Manifests.hasOwnProperty('Section'))
+		{
+			this.log.error('PictSectionForm instantiated without a Section manifest in options.Manifest -- cannot instantiate.');
+			return;
+		}
+
+		// Pull in the section definition
+		this.sectionDefinition = this.options.SectionDefinition;
+		// Initialize the section manifest -- instantiated to live only the lifecycle of this view
+		this.sectionManifest = this.fable.instantiateServiceProviderWithoutRegistration('Manifest', this.options.Manifests.Section);
+
+		this.initializeFormGroups();
+	}
+
+	initializeFormGroups()
+	{
+		// Enumerate the manifest and make sure a group exists for each group in the section definition
+		let tmpDescriptorKeys = Object.keys(this.options.Manifests.Section.Descriptors);
+		for (let i = 0; i < tmpDescriptorKeys.length; i++)
+		{
+			let tmpDescriptor = this.options.Manifests.Section.Descriptors[tmpDescriptorKeys[i]];
+
+			if (
+					// If there is an obect in the descriptor
+					typeof(tmpDescriptor) == 'object' &&
+					// AND it has a PictForm property
+					tmpDescriptor.hasOwnProperty('PictForm') &&
+					// AND the PictForm property is an object
+					typeof(tmpDescriptor.PictForm) == 'object' &&
+					// AND the PictForm object has a Section property
+					tmpDescriptor.PictForm.hasOwnProperty('Section') &&
+					// AND the Section property matches our section hash
+					tmpDescriptor.PictForm.Section == this.sectionDefinition.Hash
+				)
+			{
+				let tmpGroupHash = (typeof(tmpDescriptor.PictForm.Group) == 'string') ? tmpDescriptor.PictForm.Group : 'Default';
+				
+				let tmpGroup = this.sectionDefinition.Groups.find((pGroup) => { return pGroup.Hash == tmpGroupHash; });
+
+				if (!tmpGroup)
+				{
+					tmpGroup = { Hash: tmpGroupHash, Name: tmpGroupHash, Description: false, Inputs: [tmpDescriptor] };
+					this.sectionDefinition.Groups.push(tmpGroup);
+				}
+				else
+				{
+					if (!Array.isArray(tmpGroup.Inputs))
+					{
+						tmpGroup.Inputs = [];
+					}
+
+					tmpGroup.Inputs.push(tmpDescriptor);
+				}
+			}
+		}
 	}
 }
 
