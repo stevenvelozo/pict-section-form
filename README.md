@@ -14,7 +14,7 @@ mathematical solving.
 1. Section:  
 An instance of the view.  Has group(s).
 2. Group:  
-A cluster of inputs hidden by rows and widths.
+A cluster of inputs layed out by rows and widths.
 3. Input:  
 An entry element on the form.
 4. Row:  

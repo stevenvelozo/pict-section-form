@@ -1,5 +1,40 @@
 {
 	"Scope": "Form-Section-Postcard",
+
+	"Form-Section-Configuration":
+		{
+			"DefaultTemplatePrefix": "PictBasicForm-"
+		},
+
+	"Sections": [
+			{
+				"Name": "Postcard Information",
+				"Hash": "Postcard",
+				"Description": "The content and destination for the postcard you would like to send.",
+				"Groups": [
+					{
+						"Name": "Content",
+						"Hash": "Content",
+						"Description": "The message and recipient of your postcard."
+					},
+					{
+						"Name": "Delivery Destination",
+						"Hash": "Destination",
+						"Description": "The message and recipient of your postcard."
+					}
+				]
+			},
+			{
+				"Name": "Delivery Confirmation Contact Info",
+				"Hash": "Confirmation",
+				"Description": "The email address and phone number of the sender.",
+				"Groups": []
+			}
+		],
+
+	"Templates": [],
+	"CSS": ".VeryImportantData { background-color: #FF0000; }",
+
 	"Descriptors":
 		{
 			"PostcardContent.RecipientName": 
@@ -96,7 +131,7 @@
 					"Hash":"SenderPhoneNumber",
 					"Description":"The phone number where the sender can be texted, for notification when the postcard is shipped.",
 					"DataType":"String"
-					,"PictForm": { "Section":"Confirmation", "Row":2, "Width":10 }
+					,"PictForm": { "Section":"Confirmation", "Row":2, "Width":10, "CSSClasses": ["VeryImportantData"] }
 				},
 			"SenderData.ExplicitConsentToMailers": 
 				{
