@@ -1,4 +1,5 @@
 const libPictProvider = require('pict-provider');
+const libPictFormSection = require('../../../source/Pict-Section-Form.js');
 
 const _DEFAULT_PROVIDER_CONFIGURATION = 
 {
@@ -28,7 +29,9 @@ class PostcardDynamicSectionProvider extends libPictProvider
 		this.log.info('PostcardDynamicSectionProvider.onInitializeAsync() called --- loading dynamic section views from "server".');
 
 		// Load the dynamnic section views from the server
-		let tmpDynamicSections = require('./PictProvider-Dynamic-Sections-MockServerResponse.json');
+		let tmpDynamicFormManifest = require('./PictProvider-Dynamic-Sections-MockServerResponse.json');
+
+		libPictFormSection.bootstrapFormViewsFromManifest(this.pict, tmpDynamicFormManifest);
 
 		return fCallback();
 	}

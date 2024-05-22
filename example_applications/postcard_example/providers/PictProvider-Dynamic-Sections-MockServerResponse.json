@@ -37,7 +37,7 @@
 
 	"Descriptors":
 		{
-			"PostcardContent.RecipientName": 
+			"PostcardContent.RecipientName":
 				{
 					"Name":"Recipient Name",
 					"Hash":"RecipientName",
@@ -45,7 +45,7 @@
 					"DataType":"String"
 					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":1, "Width":8 }
 				},
-			"PostcardContent.SendDate": 
+			"PostcardContent.SendDate":
 				{
 					"Name":"Send Date",
 					"Hash":"SendDate",
@@ -53,7 +53,7 @@
 					"DataType":"DateTime"
 					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":1, "Width":4 }
 				},
-			"PostcardContent.MessageTitle": 
+			"PostcardContent.MessageTitle":
 				{
 					"Name":"Message Title",
 					"Hash":"MessageTitle",
@@ -61,7 +61,7 @@
 					"DataType":"String"
 					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":2, "Width":12 }
 				},
-			"PostcardContent.MessageBody": 
+			"PostcardContent.MessageBody":
 				{
 					"Name":"Heartfelt Message",
 					"Hash":"MessageBody",

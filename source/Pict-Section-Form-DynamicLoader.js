@@ -1,48 +1,6 @@
-const libPictViewClass = require('pict-view');
-
-const _DefaultConfiguration =
-{
-	"RenderOnLoad": true,
-
-	"DefaultRenderable": "Form-Wrap",
-	"DefaultDestinationAddress": "#Form-Container-Div",
-
-	"Templates": [
-		{
-			"Hash": "Form-Container",
-			"Template": ""
-		}
-	],
-
-	"Renderables": [
-		{
-			"RenderableHash": "Form-Wrap",
-			"TemplateHash": "Form-Container",
-			"DestinationAddress": "#Form-Container-Div"
-		}
-	],
-
-	"TargetElementAddress": "#Form-Container-Div"
-};
-
-class PictSectionForm extends libPictViewClass
-{
-	constructor(pFable, pOptions, pServiceHash)
-	{
-		let tmpOptions = Object.assign({}, _DefaultConfiguration, pOptions);
-
-		super(pFable, tmpOptions, pServiceHash);
-
-		this.initialRenderComplete = false;
-	}
-}
-
-module.exports = PictSectionForm;
-
-module.exports.default_configuration = _DefaultConfiguration;
-
 // "What dependency injection in javascript?"
 //  -- Ned
+
 /**
  * Instantiates sections from a decorated Manyfest manifest.
  *
@@ -50,7 +8,7 @@ module.exports.default_configuration = _DefaultConfiguration;
  * @param {Object} pManifest - The manifest object.
  * @returns {Array} - An array of section definitions.
  */
-module.exports.bootstrapFormViewsFromManifest = function(pPict, pManifest)
+const instantiateSectionsFromManifest = function(pPict, pManifest)
 {
 	let getSectionDefinition = (pSectionObject) =>
 	{
@@ -167,8 +125,10 @@ module.exports.bootstrapFormViewsFromManifest = function(pPict, pManifest)
 			this.log.info(`getSectionList() found an existing view for section [${tmpSectionList[i].Hash}] so will be skipped.`);
 			continue;
 		}
-		pPict.addView(tmpViewHash, { SectionDefinition: tmpSectionList[i], Manifests: { Section: pManifest } }, PictSectionForm);
+		pPict.addView(tmpViewHash, { SectionDefinition: tmpSectionList[i], Manifests: { Section: tmpDynamicFormManifest } }, libPictFormSection);
 	}
 
 	return tmpSectionList;
 }
+
+module.exports = instantiateSectionsFromManifest;
