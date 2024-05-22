@@ -1,0 +1,110 @@
+{
+	"Scope": "Form-Section-Postcard",
+	"Descriptors":
+		{
+			"PostcardContent.RecipientName": 
+				{
+					"Name":"Recipient Name",
+					"Hash":"RecipientName",
+					"Description":"The name of the recipient who you want to send your postcard to.",
+					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":1, "Width":8 }
+				},
+			"PostcardContent.SendDate": 
+				{
+					"Name":"Send Date",
+					"Hash":"SendDate",
+					"Description":"The date you would like the postcard sent.",
+					"DataType":"DateTime"
+					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":1, "Width":4 }
+				},
+			"PostcardContent.MessageTitle": 
+				{
+					"Name":"Message Title",
+					"Hash":"MessageTitle",
+					"Description":"A bold and beautiful title for your message.",
+					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":2, "Width":12 }
+				},
+			"PostcardContent.MessageBody": 
+				{
+					"Name":"Heartfelt Message",
+					"Hash":"MessageBody",
+					"Description":"The message you want your sender to receive.",
+					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":3, "Width":12, "InputType":"TextArea" }
+				},
+			"PostcardContent.SignatureLine": 
+				{
+					"Name":"Signature Line",
+					"Hash":"SignatureLine",
+					"Description":"How you would like your card signed.",
+					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":4, "Width":12 }
+				},
+			"DeliveryDestination.StreetAddress1": 
+				{
+					"Name":"Street Address Line 1",
+					"Hash":"StreetAddress1",
+					"Description":"The street address for the recipient.",
+					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":1, "Width":12 }
+				},
+			"DeliveryDestination.StreetAddress2": 
+				{
+					"Name":"Street Address Line 2",
+					"Hash":"StreetAddress2",
+					"Description":"An additional line for the recipient's street address if necessary.",
+					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":2, "Width":12 }
+				},
+			"DeliveryDestination.City": 
+				{
+					"Name":"City",
+					"Hash":"City",
+					"Description":"The city where the recipient lives.",
+					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":3, "Width":6 }
+				},
+			"DeliveryDestination.State": 
+				{
+					"Name":"State",
+					"Hash":"State",
+					"Description":"The state where the recipient lives.",
+					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":1, "Width":2 }
+				},
+			"DeliveryDestination.Zip": 
+				{
+					"Name":"Zip Code",
+					"Hash":"Zip",
+					"Description":"The zip code (sans extra four digits) where the recipient resides.",
+					"DataType":"Number"
+					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":1, "Width":4 }
+				},
+			"SenderData.EmailAddress": 
+				{
+					"Name":"Email Address",
+					"Hash":"SenderEmailAddress",
+					"Description":"The email address of the sender, for notification when the postcard is shipped.",
+					"DataType":"String"
+					,"PictForm": { "Section":"Confirmation", "Row":1, "Width":12 }
+				},
+			"SenderData.PhoneNumber": 
+				{
+					"Name":"Phone Number",
+					"Hash":"SenderPhoneNumber",
+					"Description":"The phone number where the sender can be texted, for notification when the postcard is shipped.",
+					"DataType":"String"
+					,"PictForm": { "Section":"Confirmation", "Row":2, "Width":10 }
+				},
+			"SenderData.ExplicitConsentToMailers": 
+				{
+					"Name":"Marketing Consent",
+					"Hash":"SenderExplicitMarketingConsent",
+					"Description":"I agree to receiving marketing material at this phone number and email address.",
+					"DataType":"Boolean"
+					,"PictForm": { "Section":"Confirmation", "Row":1, "Width":2 }
+				}
+		}
+}

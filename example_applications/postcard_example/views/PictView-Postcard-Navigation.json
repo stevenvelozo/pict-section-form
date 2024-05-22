@@ -1,0 +1,22 @@
+{
+    "ViewIdentifier": "Postcard-Navigation-View",
+
+    "DefaultRenderable": "Postcard-Navigation",
+    "DefaultDestinationAddress": "#Postcard-Navigation-Container",
+
+    "RenderOnLoad": true,
+
+    "Templates": [
+        {
+            "Hash": "Postcard-Top-Navigation",
+            "Template": "<div id=\"Navigation\"><a href=\"#\">Postcard</a> | <a href=\"#About\">About</a> | <a href=\"#Legal\">Legal</a></div>"
+        }
+    ],
+    "Renderables": [
+        {
+            "RenderableHash": "Postcard-Navigation",
+            "TemplateHash": "Postcard-Top-Navigation",
+            "DestinationAddress": "#Postcard-Navigation-Container"
+        }
+    ]
+}

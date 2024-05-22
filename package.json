@@ -25,10 +25,11 @@
     "license": "MIT",
     "devDependencies": {
         "browser-env": "^3.3.0",
+        "pict-application": "^1.0.15",
+        "pict-provider": "^1.0.2",
         "quackage": "^1.0.29"
     },
     "dependencies": {
-        "pict-provider": "^1.0.2",
         "pict-view": "^1.0.40"
     },
     "mocha": {

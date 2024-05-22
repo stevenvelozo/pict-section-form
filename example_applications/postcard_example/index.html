@@ -29,15 +29,14 @@
 			else document.attachEvent('onreadystatechange', function() { if (document.readyState=='complete') callback(); });
 		}
 
-		onDocumentReady(function ()
+		onDocumentReady(() =>
 			{
-				// TODO: Hate this pattern... need to figure out a forms and web pattern
-				_Pict = new Pict(window.BookstoreExample.pict_configuration);
+				_Pict = new Pict(window.PostcardApplication.pict_configuration);
 				// Set it on the window object
 				window._Pict = _Pict;
 				_Pict.LogNoisiness = 2;
 				_Pict.log.info('Loading the Application and associated views.');
-				_Pict.addApplication('BookstoreExample', window.BookstoreExample.default_configuration, window.BookstoreExample);
+				_Pict.addApplication('PostcardApplication', window.PostcardApplication.default_configuration, window.PostcardApplication);
 				_Pict.PictApplication.initializeAsync(
 					function (pError)
 					{
@@ -51,9 +50,9 @@
 		</script>
 	</head>
 	<body>
-		<div id="BookstoreContainer-Navigation"></div>
-		<div id="BookstoreContainer-Book-List"></div>
+		<div id="Postcard-Navigation-Container"></div>
+		<div id="Postcard-Application-Container"></div>
 
-		<script src="dist/bookstore_example.js" type="text/javascript"></script>
+		<script src="dist/postcard_application.min.js" type="text/javascript"></script>
 	</body>
 </html>

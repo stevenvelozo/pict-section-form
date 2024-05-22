@@ -1,0 +1,13 @@
+{
+    "name": "postcard_application",
+    "version": "1.0.0",
+    "description": "The most amazing postcard application ever!",
+    "main": "Pict-Application-Postcard.js",
+    "scripts": {
+        "start": "node Pict-Application-Postcard.js",
+        "build": "npx quack build"
+    },
+    "author": "steven",
+    "license": "MIT",
+    "devDependencies": {}
+}
