@@ -19,7 +19,6 @@ class PictSectionForm extends libPictViewClass
 			return;
 		}
 
-
 		// Set the default destination address to be based on the section hash if it hasn't been overridden by the manifest section definition
 		if (tmpOptions.DefaultDestinationAddress == '#Pict-Form-Container')
 		{
@@ -59,6 +58,26 @@ class PictSectionForm extends libPictViewClass
 		{
 			let tmpDefaultTemplateProvider = this.pict.addProvider('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
 			tmpDefaultTemplateProvider.initialize();
+		}
+
+		// Load any form-specific templates
+		this.formsTemplateSetPrefix = `PFT-${this.Hash}-${this.UUID}`;
+		if (this.options.hasOwnProperty('MetaTemplates') && Array.isArray(this.options.MetaTemplates))
+		{
+			for (let i = 0; i < this.options.MetaTemplates.length; i++)
+			{
+				let tmpMetaTemplate = this.options.MetaTemplates[i];
+
+				if (tmpMetaTemplate.hasOwnProperty('HashPostfix') && tmpMetaTemplate.hasOwnProperty('Template'))
+				{
+					let tmpTemplateHash = `${this.formsTemplateSetPrefix}${tmpMetaTemplate.HashPostfix}`;
+					this.pict.TemplateProvider.addTemplate(tmpTemplateHash, tmpMetaTemplate.Template);
+				}
+				else
+				{
+					this.log.warn(`MetaTemplate entry ${i} in PictSectionForm [${this.UUID}]::[${this.Hash}] does not have a Hash and Template property; custom template skipped.`);
+				}
+			}
 		}
 		this.initializeFormGroups();
 	}
@@ -155,16 +174,35 @@ class PictSectionForm extends libPictViewClass
 				{
 					let tmpTemplateInputScope = '-Template-Input';
 
-					// Try to fid a template in the prefix group for the data type
-					if (this.pict.TemplateProvider.getTemplate(`${tmpFormTemplatePrefix}${tmpTemplateInputScope}-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`))
+					// Check for view-specific control/datatype templates
+					if (this.pict.TemplateProvider.getTemplate(`${this.formsTemplateSetPrefix}${tmpTemplateInputScope}-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`))
 					{
 						tmpTemplateInputScope += `-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`;
+						tmpTemplate += `\n{~T:${this.formsTemplateSetPrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
+					}
+					else if (this.pict.TemplateProvider.getTemplate(`${this.formsTemplateSetPrefix}${tmpTemplateInputScope}-DataType-${tmpGroup.Rows[j].Inputs[k].DataType}`))
+					{
+						tmpTemplateInputScope += `-DataType-${tmpGroup.Rows[j].Inputs[k].DataType}`;
+						tmpTemplate += `\n{~T:${this.formsTemplateSetPrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
+					}
+
+					// Check for theme-specific control/datatype templates
+					else if (this.pict.TemplateProvider.getTemplate(`${tmpFormTemplatePrefix}${tmpTemplateInputScope}-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`))
+					{
+						tmpTemplateInputScope += `-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`;
+						tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
 					}
 					else if (this.pict.TemplateProvider.getTemplate(`${tmpFormTemplatePrefix}${tmpTemplateInputScope}-DataType-${tmpGroup.Rows[j].Inputs[k].DataType}`))
 					{
 						tmpTemplateInputScope += `-DataType-${tmpGroup.Rows[j].Inputs[k].DataType}`;
+						tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
 					}
-					tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
+
+					// Fall back on the default control/datatype template
+					else
+					{
+						tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
+					}
 				}
 				tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Row-Postfix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
 			}

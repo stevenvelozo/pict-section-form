@@ -65,6 +65,8 @@ class PictFormMetacontroller extends libPictViewClass
 				this.fable.views[tmpViewList[i]].rebuildCustomTemplate();
 			}
 		}
+		// Make sure any form-specific CSS is injected properly.
+		this.pict.CSSMap.injectCSS();
 	}
 
 	generateMetatemplate()
