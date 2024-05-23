@@ -8,11 +8,17 @@ class PictSectionForm extends libPictViewClass
 	{
 		let tmpOptions = Object.assign({}, require('./Pict-Section-Form-View-DefaultConfiguration.json'), pOptions);
 
-		if (!tmpOptions.Manifests.hasOwnProperty('Section'))
+		if (!tmpOptions.Manifests)
 		{
-			throw new Error('PictSectionForm instantiation attempt without a Section manifest in pOptions.Manifest -- cannot instantiate.');
+			throw new Error('PictSectionForm instantiation attempt without a Manifests in pOptions.Manifest -- cannot instantiate.');
 			return;
 		}
+		if (!tmpOptions.Manifests.hasOwnProperty('Section'))
+		{
+			throw new Error('PictSectionForm instantiation attempt without a Section manifest in pOptions.Manifests -- cannot instantiate.');
+			return;
+		}
+
 
 		// Set the default destination address to be based on the section hash if it hasn't been overridden by the manifest section definition
 		if (tmpOptions.DefaultDestinationAddress == '#Pict-Form-Container')
@@ -45,6 +51,7 @@ class PictSectionForm extends libPictViewClass
 
 		// Pull in the section definition
 		this.sectionDefinition = this.options;
+	
 		// Initialize the section manifest -- instantiated to live only the lifecycle of this view
 		this.sectionManifest = this.fable.instantiateServiceProviderWithoutRegistration('Manifest', this.options.Manifests.Section);
 
@@ -53,7 +60,6 @@ class PictSectionForm extends libPictViewClass
 			let tmpDefaultTemplateProvider = this.pict.addProvider('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
 			tmpDefaultTemplateProvider.initialize();
 		}
-
 		this.initializeFormGroups();
 	}
 
@@ -112,54 +118,61 @@ class PictSectionForm extends libPictViewClass
 				}
 			}
 		}
-
-		this.rebuildCustomTemplate();
 	}
 
 	rebuildCustomTemplate()
 	{
 		let tmpTemplate = ``;
+		let tmpFormTemplatePrefix = 'Pict-Forms-Basic';
 
-		if (!this.formTemplatePrefix)
+		if (this.pict.views.PictFormMetacontroller)
 		{
-			this.formTemplatePrefix = 'Pict-Forms-Basic';
+			if (this.pict.views.PictFormMetacontroller.hasOwnProperty('formTemplatePrefix'))
+			{
+				tmpFormTemplatePrefix = this.pict.views.PictFormMetacontroller.formTemplatePrefix;
+			}
 		}
 
 		// Add the Form Prefix stuff
-		tmpTemplate += `{~T:${this.formTemplatePrefix}-Template-Wrap-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
-		tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Section-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+		tmpTemplate += `{~T:${tmpFormTemplatePrefix}-Template-Wrap-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+		tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Section-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
 
 		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
 		{
 			let tmpGroup = this.sectionDefinition.Groups[i];
 
-			tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Group-Prefix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
+			tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Group-Prefix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
+
+			if (!Array.isArray(tmpGroup.Rows))
+			{
+				continue;
+			}
 
 			for (let j = 0; j < tmpGroup.Rows.length; j++)
 			{
-				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Row-Prefix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
+				tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Row-Prefix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
 				for (let k = 0; k < tmpGroup.Rows[j].Inputs.length; k++)
 				{
 					let tmpTemplateInputScope = '-Template-Input';
 
 					// Try to fid a template in the prefix group for the data type
-					if (this.pict.TemplateProvider.getTemplate(`${this.formTemplatePrefix}${tmpTemplateInputScope}-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`))
+					if (this.pict.TemplateProvider.getTemplate(`${tmpFormTemplatePrefix}${tmpTemplateInputScope}-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`))
 					{
 						tmpTemplateInputScope += `-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`;
 					}
-					else if (this.pict.TemplateProvider.getTemplate(`${this.formTemplatePrefix}${tmpTemplateInputScope}-DataType-${tmpGroup.Rows[j].Inputs[k].DataType}`))
+					else if (this.pict.TemplateProvider.getTemplate(`${tmpFormTemplatePrefix}${tmpTemplateInputScope}-DataType-${tmpGroup.Rows[j].Inputs[k].DataType}`))
 					{
 						tmpTemplateInputScope += `-DataType-${tmpGroup.Rows[j].Inputs[k].DataType}`;
 					}
-					tmpTemplate += `\n{~T:${this.formTemplatePrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
+					tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
 				}
-				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Row-Postfix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
+				tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Row-Postfix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
 			}
-			tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Group-Postfix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
+			tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Group-Postfix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
 		}
 
-		tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Section-Postfix:Pict.views["${this.Hash}"].sectionDefinition~}`;
-		tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Wrap-Postfix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+		tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Section-Postfix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+		tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Wrap-Postfix:Pict.views["${this.Hash}"].sectionDefinition~}`;
 
 		this.pict.TemplateProvider.addTemplate(this.options.SectionTemplateHash, tmpTemplate);
 	}

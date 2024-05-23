@@ -1,5 +1,7 @@
 const libPictApplication = require('pict-application');
 
+const libPictSectionForm = require('../../source/Pict-Section-Form.js');
+
 const libProviderDynamicSection = require('./providers/PictProvider-Dynamic-Sections.js');
 
 class PostcardApplication extends libPictApplication
@@ -11,32 +13,15 @@ class PostcardApplication extends libPictApplication
 		this.pict.addProvider('Postcard-DynamicSection-Provider', libProviderDynamicSection.default_configuration, libProviderDynamicSection);
 
 		this.pict.addView('Postcard-Navigation', require('./views/PictView-Postcard-Navigation.json'));
-	}
 
-	onAfterInitializeAsync(fCallBack)
-	{
-		this.log.info('PostcardApplication.onAfterInitializeAsync()');
+		// Add the pict form service
+		this.pict.addServiceType('PictSectionForm', libPictSectionForm);
 
-		// The navigation is initialized, now render the dynamic views.
-		// OH THE HORRAH!
-		let tmpPictViewHashes = Object.keys(this.pict.views);
-		for (let i = 0; i < tmpPictViewHashes.length; i++)
-		{
-			if (this.pict.views[tmpPictViewHashes[i]].isPictSectionForm)
-			{
-				this.pict.views[tmpPictViewHashes[i]].render();
-			}
-		}
-		fCallBack();
+		// Add the pict form metacontroller service, which provides programmaatic view construction from manifests and render/marshal methods.
+		this.pict.addView('PictFormMetacontroller', {}, libPictSectionForm.PictFormMetacontroller);
 	}
 };
 
 module.exports = PostcardApplication
 
-module.exports.default_configuration = (
-	{
-		"Name": "A Simple Postcard Application",
-		"MainViewportViewIdentifier": 'Postcard-Navigation'
-	});
-
-module.exports.pict_configuration = { Application: 'Postcard-Pict-Application' };
+module.exports.default_configuration = require('./Pict-Application-Postcard-Configuration.json');

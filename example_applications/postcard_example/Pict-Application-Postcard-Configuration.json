@@ -1,0 +1,11 @@
+{
+	"Name": "A Simple Postcard Application",
+	"Hash": "Postcard",
+
+	"MainViewportViewIdentifier": "Postcard-Navigation",
+
+	"pict_configuration":
+		{
+			"Product": "Postkard-Pict-Application"
+		}
+}

@@ -117,35 +117,72 @@ Each section is represented within a manyfest.  You could have one manyfest for 
 ```json
 {
 	"Scope": "Form-Section-Postcard",
+
+	"Form-Section-Configuration":
+		{
+			"DefaultTemplatePrefix": "PictBasicForm-"
+		},
+
+	"Sections": [
+			{
+				"Name": "Postcard Information",
+				"Hash": "Postcard",
+
+				"Description": "The content and destination for the postcard you would like to send.",
+				"Groups": [
+					{
+						"Name": "Content",
+						"Hash": "Content",
+						"Description": "The message and recipient of your postcard."
+					},
+					{
+						"Name": "Delivery Destination",
+						"Hash": "Destination",
+						"Description": "The message and recipient of your postcard."
+					}
+				]
+			},
+			{
+				"Name": "Delivery Confirmation Contact Info",
+				"Hash": "Confirmation",
+				"Description": "The email address and phone number of the sender.",
+				"Groups": []
+			}
+		],
+
 	"Descriptors":
 		{
-			"PostcardContent.RecipientName": 
+			"PostcardContent.RecipientName":
 				{
 					"Name":"Recipient Name",
 					"Hash":"RecipientName",
 					"Description":"The name of the recipient who you want to send your postcard to.",
 					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":1, "Width":8 }
 				},
-			"PostcardContent.SendDate": 
+			"PostcardContent.SendDate":
 				{
 					"Name":"Send Date",
 					"Hash":"SendDate",
 					"Description":"The date you would like the postcard sent.",
 					"DataType":"DateTime"
+					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":1, "Width":4 }
 				},
-			"PostcardContent.MessageTitle": 
+			"PostcardContent.MessageTitle":
 				{
 					"Name":"Message Title",
 					"Hash":"MessageTitle",
 					"Description":"A bold and beautiful title for your message.",
 					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":2, "Width":12 }
 				},
-			"PostcardContent.MessageBody": 
+			"PostcardContent.MessageBody":
 				{
 					"Name":"Heartfelt Message",
 					"Hash":"MessageBody",
 					"Description":"The message you want your sender to receive.",
 					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":3, "Width":12, "InputType":"TextArea" }
 				},
 			"PostcardContent.SignatureLine": 
 				{
@@ -153,6 +190,7 @@ Each section is represented within a manyfest.  You could have one manyfest for 
 					"Hash":"SignatureLine",
 					"Description":"How you would like your card signed.",
 					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":4, "Width":12 }
 				},
 			"DeliveryDestination.StreetAddress1": 
 				{
@@ -160,6 +198,7 @@ Each section is represented within a manyfest.  You could have one manyfest for 
 					"Hash":"StreetAddress1",
 					"Description":"The street address for the recipient.",
 					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":1, "Width":12 }
 				},
 			"DeliveryDestination.StreetAddress2": 
 				{
@@ -167,6 +206,7 @@ Each section is represented within a manyfest.  You could have one manyfest for 
 					"Hash":"StreetAddress2",
 					"Description":"An additional line for the recipient's street address if necessary.",
 					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":2, "Width":12 }
 				},
 			"DeliveryDestination.City": 
 				{
@@ -174,6 +214,7 @@ Each section is represented within a manyfest.  You could have one manyfest for 
 					"Hash":"City",
 					"Description":"The city where the recipient lives.",
 					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":3, "Width":6 }
 				},
 			"DeliveryDestination.State": 
 				{
@@ -181,6 +222,7 @@ Each section is represented within a manyfest.  You could have one manyfest for 
 					"Hash":"State",
 					"Description":"The state where the recipient lives.",
 					"DataType":"String"
+					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":1, "Width":2 }
 				},
 			"DeliveryDestination.Zip": 
 				{
@@ -188,6 +230,7 @@ Each section is represented within a manyfest.  You could have one manyfest for 
 					"Hash":"Zip",
 					"Description":"The zip code (sans extra four digits) where the recipient resides.",
 					"DataType":"Number"
+					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":1, "Width":4 }
 				},
 			"SenderData.EmailAddress": 
 				{
@@ -195,6 +238,7 @@ Each section is represented within a manyfest.  You could have one manyfest for 
 					"Hash":"SenderEmailAddress",
 					"Description":"The email address of the sender, for notification when the postcard is shipped.",
 					"DataType":"String"
+					,"PictForm": { "Section":"Confirmation", "Row":1, "Width":12 }
 				},
 			"SenderData.PhoneNumber": 
 				{
@@ -202,6 +246,7 @@ Each section is represented within a manyfest.  You could have one manyfest for 
 					"Hash":"SenderPhoneNumber",
 					"Description":"The phone number where the sender can be texted, for notification when the postcard is shipped.",
 					"DataType":"String"
+					,"PictForm": { "Section":"Confirmation", "Row":2, "Width":10, "CSSClasses": ["VeryImportantData"] }
 				},
 			"SenderData.ExplicitConsentToMailers": 
 				{
@@ -209,7 +254,15 @@ Each section is represented within a manyfest.  You could have one manyfest for 
 					"Hash":"SenderExplicitMarketingConsent",
 					"Description":"I agree to receiving marketing material at this phone number and email address.",
 					"DataType":"Boolean"
-				},
+					,"PictForm": { "Section":"Confirmation", "Row":1, "Width":2 }
+				}
 		}
 }
 ```
+
+This [manyfest](https://github.com/stevenvelozo/manyfest) file describes a list
+of application state elements. And intersects these data elements with how
+they should be presented to the user in a form.  This can work for any layout
+of data in your application.
+
+
