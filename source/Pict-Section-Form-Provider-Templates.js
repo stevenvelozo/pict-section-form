@@ -1,46 +1,91 @@
 const libPictProvider = require('pict-provider');
 
 const defaultFormTemplates = [
-	// 1. -Form-Template-Wrap
+	// -Form-Template-Wrap-Prefix
 	{
-		"HashPostfix": "-Template-Wrap",
+		"HashPostfix": "-Template-Wrap-Prefix",
 		"Template": /*HTML*/`
-<div class="pict-form-wrap">
-</div>
+<!-- Form Wrap Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] -->
 `
 	},
-	// 2. -Form-Template-Section
+	// -Form-Template-Wrap-Postfix
 	{
-		"HashPostfix": "-Template-Section",
+		"HashPostfix": "-Template-Wrap-Postfix",
 		"Template": /*HTML*/`
+<!-- Form Wrap Postfix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] -->
+`
+	},
+	// -Form-Template-Section-Prefix
+	{
+		"HashPostfix": "-Template-Section-Prefix",
+		"Template": /*HTML*/`
+<!-- Form Section Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 <div class="pict-form-section">
-<h2>~
-{~TS:Pict-Form-Template-Group:Record.Groups~}
-</div>
+<h2>{~D:Record.Name~}</h2>
 `
 	},
-	// 3. -Form-Template-Group
+	// -Form-Template-Section-Postfix
 	{
-		"HashPostfix": "-Template-Group",
+		"HashPostfix": "-Template-Section-Postfix",
 		"Template": /*HTML*/`
-<div class="pict-form-group">
 </div>
+<!-- Form Section Postfix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 `
 	},
-	// 4. -Form-Template-Input
+
+	// -Form-Template-Group-Prefix
+	{
+		"HashPostfix": "-Template-Group-Prefix",
+		"Template": /*HTML*/`
+<!-- Form Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+<h3>Group: {~D:Record.Name~}</h3>
+`
+	},
+	// -Form-Template-Group-Postfix
+	{
+		"HashPostfix": "-Template-Group-Postfix",
+		"Template": /*HTML*/`
+</div>
+<!-- Form Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+`
+	},
+
+	// -Form-Template-Row-Prefix
+	{
+		"HashPostfix": "-Template-Row-Prefix",
+		"Template": /*HTML*/`
+<!-- Form Template Row Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+<div>
+`
+	},
+	// -Form-Template-Group-Postfix
+	{
+		"HashPostfix": "-Template-Row-Postfix",
+		"Template": /*HTML*/`
+</div>
+<!-- Form Template Row Postfix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+`
+	},
+
+	// -Form-Template-Input
 	{
 		"HashPostfix": "-Template-Input",
-		"Template": /*HTML*/`<input type="hidden" id="" name="" value="">`
+		"Template": /*HTML*/`<!-- Input {~D:Record.Hash~} {~D:Record.DataType~} --><span>{~D:Record.Name~}:</span> <input type="hidden" id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}" value="">`
 	},
-	// 6. -Form-Template-Input-DataType-String
+	// -Form-Template-Input-DataType-String
 	{
 		"HashPostfix": "-Template-Input-DataType-String",
-		"Template": /*HTML*/`<input type="text" id="" name="" value="">`
+		"Template": /*HTML*/`<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} --><span>{~D:Record.Name~}:</span> <input type="text" id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}" value="">`
 	},
-	// 6. -Form-Template-Input-DataType-Number
+	// -Form-Template-Input-DataType-Number
 	{
 		"HashPostfix": "-Template-Input-DataType-Number",
-		"Template": /*HTML*/``
+		"Template": /*HTML*/`<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} --><span>{~D:Record.Name~}:</span> <input type="Number" id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}" value="">`
+	},
+	// -Form-Template-Input-InputType-TextArea
+	{
+		"HashPostfix": "-Template-Input-InputType-TextArea",
+		"Template": /*HTML*/`<!-- InputType TextArea {~D:Record.Hash~} {~D:Record.DataType~} --><span>{~D:Record.Name~}:</span> <textarea id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}"></textarea>`
 	}
 ];
 
@@ -105,7 +150,7 @@ class PictSectionFormTemplateProvider extends libPictProvider
 			}
 		}
 
-		return false;
+		return true;
 	}
 }
 

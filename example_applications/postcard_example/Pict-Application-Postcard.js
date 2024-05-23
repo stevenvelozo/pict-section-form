@@ -17,9 +17,17 @@ class PostcardApplication extends libPictApplication
 	{
 		this.log.info('PostcardApplication.onAfterInitializeAsync()');
 
-		// The navigation is initialized, now initialize the dynamic views.
-
-		return fCallBack();
+		// The navigation is initialized, now render the dynamic views.
+		// OH THE HORRAH!
+		let tmpPictViewHashes = Object.keys(this.pict.views);
+		for (let i = 0; i < tmpPictViewHashes.length; i++)
+		{
+			if (this.pict.views[tmpPictViewHashes[i]].isPictSectionForm)
+			{
+				this.pict.views[tmpPictViewHashes[i]].render();
+			}
+		}
+		fCallBack();
 	}
 };
 
