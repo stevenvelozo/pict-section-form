@@ -9,7 +9,7 @@
     "Templates": [
         {
             "Hash": "Postcard-Top-Navigation",
-            "Template": "<div id=\"Navigation\"><a href=\"#\">Postcard</a> | <a href=\"#About\">About</a> | <a href=\"#Legal\">Legal</a></div>"
+            "Template": "<div id=\"Navigation\"><a href=\"#\">Postcard</a> | <a href=\"#About\">About</a> | <a href=\"#Legal\">Legal </a> || <a href=\"#\" onclick=\"_Pict.PictApplication.changeToPostcardTheme()\">[ Postkard Theme ]</a> | <a href=\"#\" onclick=\"_Pict.PictApplication.changeToDefaultTheme()\">[ Default Theme ]</a></div>"
         }
     ],
     "Renderables": [

@@ -1,5 +1,4 @@
 const libPictProvider = require('pict-provider');
-const libPictFormSection = require('../../../source/Pict-Section-Form.js');
 
 const _DEFAULT_PROVIDER_CONFIGURATION = 
 {
