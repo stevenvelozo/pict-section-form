@@ -2,7 +2,7 @@
 	"Name": "A Simple Postcard Application",
 	"Hash": "Postcard",
 
-	"MainViewportViewIdentifier": "Postcard-Navigation",
+	"MainViewportViewIdentifier": "PostcardNavigation",
 
 	"pict_configuration":
 		{

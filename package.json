@@ -30,6 +30,7 @@
         "quackage": "^1.0.29"
     },
     "dependencies": {
+        "informary": "^2.0.21",
         "pict-provider": "^1.0.2",
         "pict-view": "^1.0.43"
     },

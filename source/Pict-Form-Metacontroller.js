@@ -22,6 +22,32 @@ class PictFormMetacontroller extends libPictViewClass
 		this.formTemplatePrefix = 'Pict-Forms-Basic';
 	}
 
+	onMarshalFromView()
+	{
+		let tmpViewList = Object.keys(this.fable.views);
+
+		for (let i = 0; i < tmpViewList.length; i++)
+		{
+			if (this.fable.views[tmpViewList[i]].isPictSectionForm)
+			{
+				this.fable.views[tmpViewList[i]].marshalFromView();
+			}
+		}
+	}
+
+	onMarshalToView()
+	{
+		let tmpViewList = Object.keys(this.fable.views);
+
+		for (let i = 0; i < tmpViewList.length; i++)
+		{
+			if (this.fable.views[tmpViewList[i]].isPictSectionForm)
+			{
+				this.fable.views[tmpViewList[i]].marshalToView();
+			}
+		}
+	}
+
 	onAfterInitializeAsync(fCallback)
 	{
 		// This is safe -- if there is no settings.DefaultFormManifest configuration, it just doesn't do anything

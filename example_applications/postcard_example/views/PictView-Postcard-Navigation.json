@@ -6,10 +6,12 @@
 
     "RenderOnLoad": true,
 
+    "CSS": ".PostcardNavigation { background-color: #fff5f5; }",
+
     "Templates": [
         {
             "Hash": "Postcard-Top-Navigation",
-            "Template": "<div id=\"Navigation\"><a href=\"#\">Postcard</a> | <a href=\"#About\">About</a> | <a href=\"#Legal\">Legal </a> || <a href=\"#\" onclick=\"_Pict.PictApplication.changeToPostcardTheme()\">[ Postkard Theme ]</a> | <a href=\"#\" onclick=\"_Pict.PictApplication.changeToDefaultTheme()\">[ Default Theme ]</a></div>"
+            "Template": "<div class=\"PostcardNavigation\"><a href=\"#\" onclick=\"_Pict.views.PostcardMainApplication.render()\">Postcard</a> | <a href=\"#About\" onclick=\"_Pict.views.PostcardAbout.render()\">About</a> | <a href=\"#Legal\" onclick=\"_Pict.views.PostcardLegal.render()\">Legal </a></div>"
         }
     ],
     "Renderables": [

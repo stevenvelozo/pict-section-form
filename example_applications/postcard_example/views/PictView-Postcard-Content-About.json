@@ -1,0 +1,21 @@
+{
+    "ViewIdentifier": "Postcard-About-View",
+
+    "DefaultRenderable": "Postcard-About",
+    "DefaultDestinationAddress": "#Postcard-Content-Container",
+
+    "RenderOnLoad": false,
+
+    "Templates": [
+        {
+            "Hash": "Postcard-About-Content",
+            "Template": "<h1>Welcome to PostKard, where every moment becomes a cherished memory to share.</h1> <p>In a world filled with digital communication, we believe in the enduring power of a tangible connection. PostKard is not just an app; it's a portal to capture the essence of life's most beautiful moments and send them off into the world with a personal touch.</p> <p>Our journey began with a simple idea: to bridge the gap between the digital and physical worlds, allowing people to share their experiences in a way that transcends screens and keyboards. With PostKard, you can turn your photos into stunning postcards, complete with personalized messages, and send them to your loved ones near and far.</p> <p>What sets us apart is our commitment to quality and convenience. Our intuitive app makes it easy to create custom postcards in minutes, whether you're commemorating a special occasion or simply sharing a slice of your everyday life. From birthdays to holidays, travels to everyday moments, PostKard helps you celebrate life's moments, big and small.</p> <p>But PostKard is more than just a platform; it's a community of storytellers, adventurers, and dreamers. We believe in the power of connection, and we're proud to facilitate meaningful interactions that transcend borders and bring people closer together.</p> <p>Join us on our mission to spread joy, one postcard at a time. Whether you're sending a smile across the miles or sharing a piece of your world with someone special, PostKard is here to help you make every moment count.</p>"
+        }
+    ],
+    "Renderables": [
+        {
+            "RenderableHash": "Postcard-About",
+            "TemplateHash": "Postcard-About-Content"
+        }
+    ]
+}

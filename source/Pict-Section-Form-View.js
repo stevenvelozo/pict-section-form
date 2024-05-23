@@ -1,5 +1,7 @@
 const libPictViewClass = require('pict-view');
 
+const libInformary = require('informary');
+
 const libFormsTemplateProvider = require('./Pict-Section-Form-Provider-Templates.js');
 
 class PictSectionForm extends libPictViewClass
@@ -79,7 +81,50 @@ class PictSectionForm extends libPictViewClass
 				}
 			}
 		}
+
+		this.formID = `Pict-Form-${this.Hash}-${this.UUID}`;
+
+		this.informary = new libInformary({ Form:this.formID })
+
 		this.initializeFormGroups();
+	}
+
+	onMarshalToView()
+	{
+		try
+		{
+			this.informary.marshalDataToForm(this.AppData,
+				function(pError)
+				{
+					if (pError)
+					{
+						this.log.error(`Error marshaling data from view: ${pError}`);
+					}
+				});
+		}
+		catch (pError)
+		{
+			this.log.error(`Gross error marshaling data from view: ${pError}`);
+		}
+	}
+
+	onMarshalFromView()
+	{
+		try
+		{
+			this.informary.marshalFormToData(this.AppData,
+				function(pError)
+				{
+					if (pError)
+					{
+						this.log.error(`Error marshaling data to view: ${pError}`);
+					}
+				});
+		}
+		catch (pError)
+		{
+			this.log.error(`Gross error marshaling data to view: ${pError}`);
+		}
 	}
 
 	initializeFormGroups()
@@ -103,6 +148,8 @@ class PictSectionForm extends libPictViewClass
 					tmpDescriptor.PictForm.Section == this.sectionDefinition.Hash
 				)
 			{
+				tmpDescriptor.PictForm.InformaryDataAddress = tmpDescriptorKeys[i];
+
 				let tmpGroupHash = (typeof(tmpDescriptor.PictForm.Group) == 'string') ? tmpDescriptor.PictForm.Group : 'Default';
 				
 				let tmpGroup = this.sectionDefinition.Groups.find((pGroup) => { return pGroup.Hash == tmpGroupHash; });
