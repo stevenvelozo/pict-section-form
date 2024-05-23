@@ -10,7 +10,7 @@ const _Theme = (
 				"HashPostfix": "-Template-Input-DataType-String",
 				"Template": /*HTML*/`
 						<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
-						<span style="font-weight: bold; background-color: #efffef;">{~D:Record.Name~}:</span> <input type="text" id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}" value="">
+						<span style="font-weight: bold; background-color: #efffef;">{~D:Record.Name~}:</span> <input type="text" id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}" data-i-form="{~D:Context[0].formID~}" data-i-datum="{~D:Record.PictForm.InformaryDataAddress~}" value="">
 						<!-- <p>{~D:Record.Description~}</p> -->
 	`
 			},
@@ -19,7 +19,7 @@ const _Theme = (
 				"HashPostfix": "-Template-Input-DataType-Number",
 				"Template": /*HTML*/`
 						<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
-						<span style="background-color: #efefef;">{~D:Record.Name~}:</span> <input type="Number" id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}" value="">
+						<span style="background-color: #efefef;">{~D:Record.Name~}:</span> <input type="Number" id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}" data-i-form="{~D:Context[0].formID~}" data-i-datum="{~D:Record.PictForm.InformaryDataAddress~}" value="">
 						<!-- <p>{~D:Record.Description~}</p> -->
 	`
 			}

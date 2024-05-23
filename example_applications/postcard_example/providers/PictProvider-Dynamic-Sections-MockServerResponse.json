@@ -17,7 +17,7 @@
 					[
 						{
 							"HashPostfix": "-Template-Input-InputType-ParaGraphaString",
-							"Template": "<p><span class=\"VeryImportantData\">{~D:Record.Name~}:</span>{~D:Record.Description~}<input type=\"text\" name=\"{~D:Record.Hash~}\" />\n"
+							"Template": "<p><span class=\"VeryImportantData\">{~D:Record.Name~}:</span>{~D:Record.Description~}<input type=\"text\" name=\"{~D:Record.Hash~}\" data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\" />\n"
 						}
 					],
 
