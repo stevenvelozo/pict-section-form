@@ -9,3 +9,5 @@ module.exports.PictFormTemplateProvider = require('./Pict-Section-Form-Provider-
 
 // The metacontroller view
 module.exports.PictFormMetacontroller = require('./Pict-Form-Metacontroller.js');
+
+module.exports.PictFormApplication = require('./Pict-Section-Form-Application.js');

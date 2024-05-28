@@ -4,6 +4,8 @@
 	"DefaultRenderable": "Pict-Forms-Metacontainer",
 	"DefaultDestinationAddress": "#Pict-Form-Container",
 
+    "AutoMarshalDataOnSolve": true,
+
     "MetaTemplateHash": "Pict-Forms-Metatemplate",
 
     "Templates": [

@@ -27,7 +27,6 @@ class PictFormMetacontroller extends libPictViewClass
 	onMarshalFromView()
 	{
 		let tmpViewList = Object.keys(this.fable.views);
-
 		for (let i = 0; i < tmpViewList.length; i++)
 		{
 			if (this.fable.views[tmpViewList[i]].isPictSectionForm)
@@ -35,12 +34,12 @@ class PictFormMetacontroller extends libPictViewClass
 				this.fable.views[tmpViewList[i]].marshalFromView();
 			}
 		}
+		return super.onMarshalFromView();
 	}
 
 	onMarshalToView()
 	{
 		let tmpViewList = Object.keys(this.fable.views);
-
 		for (let i = 0; i < tmpViewList.length; i++)
 		{
 			if (this.fable.views[tmpViewList[i]].isPictSectionForm)
@@ -48,6 +47,7 @@ class PictFormMetacontroller extends libPictViewClass
 				this.fable.views[tmpViewList[i]].marshalToView();
 			}
 		}
+		return super.onMarshalToView();
 	}
 
 	onAfterInitializeAsync(fCallback)
@@ -62,11 +62,28 @@ class PictFormMetacontroller extends libPictViewClass
 		// We don't want heavy loading/lifting in the forms controls; if a use case comes up this can change
 		this.render();
 
-		this.regenerateAllFormSectionTemplates();
+		return super.onAfterInitialize(fCallback);
+	}
 
+	onAfterRender()
+	{
+		this.regenerateAllFormSectionTemplates();
 		this.renderAllFormSections();
 
-		return fCallback();
+		return super.onAfterRender();
+	}
+
+	onSolve()
+	{
+		let tmpViewList = Object.keys(this.fable.views);
+		for (let i = 0; i < tmpViewList.length; i++)
+		{
+			if (this.fable.views[tmpViewList[i]].isPictSectionForm)
+			{
+				this.fable.views[tmpViewList[i]].marshalFromView();
+			}
+		}
+		return super.onSolve();
 	}
 
 	renderAllFormSections()
@@ -260,6 +277,7 @@ class PictFormMetacontroller extends libPictViewClass
 				tmpViewConfiguration.Manifests = {};
 			}
 			tmpViewConfiguration.Manifests.Section = tmpManifest;
+			tmpViewConfiguration.AutoMarshalDataOnSolve = this.options.AutoMarshalDataOnSolve;
 			this.fable.addView(tmpViewHash, tmpViewConfiguration, require('./Pict-Section-Form-View.js'));
 		}
 

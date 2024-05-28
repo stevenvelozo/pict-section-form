@@ -88,75 +88,50 @@ class PictSectionForm extends libPictViewClass
 
 		this.viewMarshalDestination = false;
 
+		// Initialize the solver service if it isn't up
+		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
+
 		this.initializeFormGroups();
+	}
+
+	getMarshalDestinationObject()
+	{
+		let tmpMarshalDestinationObject = false;
+		if (this.viewMarshalDestination)
+		{
+			tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.viewMarshalDestination);
+		}
+		else if (this.pict.views.PictFormMetacontroller && this.pict.views.PictFormMetacontroller.viewMarshalDestination)
+		{
+			tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
+
+			if (!tmpMarshalDestinationObject)
+			{
+				// Try to create an empty object.
+				if (this.sectionManifest.setValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination, {}))
+				{
+					// And try to load it once more!
+					tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
+				}
+			}
+		}
+
+		if (typeof(tmpMarshalDestinationObject) != 'object')
+		{
+			this.log.error(`Marshal destination object is not an object; if you initialize the view yourself you must set the viewMarshalDestination property to a valid address within the view.  Falling back to AppData.`);
+			tmpMarshalDestinationObject = this.pict.AppData;
+		}
+
+		return tmpMarshalDestinationObject;
 	}
 
 	onMarshalToView()
 	{
 		try
 		{
-			let tmpMarshalDestinationObject = false;
-			if (this.viewMarshalDestination)
-			{
-				tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.viewMarshalDestination);
-			}
-			else if (this.pict.views.PictFormMetacontroller && this.pict.views.PictFormMetacontroller.viewMarshalDestination)
-			{
-				tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
-			}
-
-			if (typeof(tmpMarshalDestinationObject) != 'object')
-			{
-				this.log.error(`Marshal destination object is not an object; if you initialize the view yourself you must set the viewMarshalDestination property to a valid address within the view.`);
-				return;
-			}
+			let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
 
 			this.informary.marshalDataToForm(tmpMarshalDestinationObject,
-				function(pError)
-				{
-					if (pError)
-					{
-						this.log.error(`Error marshaling data from view: ${pError}`);
-					}
-				});
-		}
-		catch (pError)
-		{
-			this.log.error(`Gross error marshaling data from view: ${pError}`);
-		}
-	}
-
-	onMarshalFromView()
-	{
-		try
-		{
-			let tmpMarshalDestinationObject = false;
-			if (this.viewMarshalDestination)
-			{
-				tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.viewMarshalDestination);
-			}
-			else if (this.pict.views.PictFormMetacontroller && this.pict.views.PictFormMetacontroller.viewMarshalDestination)
-			{
-				tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
-
-				if (!tmpMarshalDestinationObject)
-				{
-					// Try to create an empty object.
-					if (this.sectionManifest.setValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination, {}))
-					{
-						// And try to load it once more!
-						tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
-					}
-				}
-			}
-
-			if (typeof(tmpMarshalDestinationObject) != 'object')
-			{
-				this.log.error(`Marshal destination object is not an object; if you initialize the view yourself you must set the viewMarshalDestination property to a valid address within the view.`);
-				return;
-			}
-
-			this.informary.marshalFormToData(tmpMarshalDestinationObject,
 				function(pError)
 				{
 					if (pError)
@@ -169,6 +144,65 @@ class PictSectionForm extends libPictViewClass
 		{
 			this.log.error(`Gross error marshaling data to view: ${pError}`);
 		}
+
+		return super.onMarshalToView();
+	}
+
+	onMarshalFromView()
+	{
+		try
+		{
+			let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
+
+			if (typeof(tmpMarshalDestinationObject) != 'object')
+			{
+				this.log.error(`Marshal destination object is not an object; if you initialize the view yourself you must set the viewMarshalDestination property to a valid address within the view.  Falling back to AppData.`);
+				tmpMarshalDestinationObject = this.pict.AppData;
+			}
+
+			this.informary.marshalFormToData(tmpMarshalDestinationObject,
+				function(pError)
+				{
+					if (pError)
+					{
+						this.log.error(`Error marshaling data from view: ${pError}`);
+					}
+				});
+		}
+		catch (pError)
+		{
+			this.log.error(`Gross error marshaling data from view: ${pError}`);
+		}
+		return super.onMarshalFromView();
+	}
+
+	onSolve()
+	{
+		if (this.options.AutoMarshalDataOnSolve)
+		{
+			this.marshalFromView();
+		}
+
+		if (Array.isArray(this.options.Solvers))
+		{
+			for (let i = 0; i < this.options.Solvers.length; i++)
+			{
+				// TODO: Precompile the solvers (it's super easy)
+				this.log.trace(`Dynamic View [${this.UUID}]::[${this.Hash}] solving equation ${i} [${this.options.Solvers[i]}]`);
+
+				let tmpResultsObject = {};
+
+				let tmpSolutionValue = this.fable.ExpressionParser.solve(this.options.Solvers[i], this.getMarshalDestinationObject(), tmpResultsObject, this.sectionManifest, this.getMarshalDestinationObject());
+
+				this.log.trace(`[${this.options.Solvers[i]}] result was ${tmpSolutionValue}`);
+			}
+		}
+
+		if (this.options.AutoMarshalDataOnSolve)
+		{
+			this.marshalToView();
+		}
+		return super.onSolve();
 	}
 
 	initializeFormGroups()
@@ -244,7 +278,14 @@ class PictSectionForm extends libPictViewClass
 		}
 
 		// Add the Form Prefix stuff
-		tmpTemplate += `{~T:${tmpFormTemplatePrefix}-Template-Wrap-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+		if (this.pict.TemplateProvider.getTemplate(`${this.formsTemplateSetPrefix}-Template-Wrap-Prefix`))
+		{
+			tmpTemplate += `{~T:${this.formsTemplateSetPrefix}-Template-Wrap-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+		}
+		else
+		{
+			tmpTemplate += `{~T:${tmpFormTemplatePrefix}-Template-Wrap-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+		}
 		tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Section-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
 
 		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
