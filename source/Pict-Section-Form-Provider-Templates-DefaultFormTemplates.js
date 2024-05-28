@@ -120,7 +120,7 @@ Glug glug glug
 			"HashPostfix": "-Template-Input",
 			"Template": /*HTML*/`
 					<!-- Input {~"D:Record.Hash~} {~D:Record.DataType~} -->
-					<span style="background-color:#fffdfd;">{~D:Record.Name~}:</span> <input type="text" id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}" data-i-form="{~D:Context[0].formID~}" data-i-datum="{~D:Record.PictForm.InformaryDataAddress~}" value="">
+					<span style="background-color:#fffdfd;">{~D:Record.Name~}:</span> <input type="text" {~D:Record.PictForm.HTMLInputFullProperties~} value="">
 `
 		},
 		// -Form-Template-Input-DataType-String
@@ -128,7 +128,7 @@ Glug glug glug
 			"HashPostfix": "-Template-Input-DataType-String",
 			"Template": /*HTML*/`
 					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <input type="text" id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}" data-i-form="{~D:Context[0].formID~}" data-i-datum="{~D:Record.PictForm.InformaryDataAddress~}" value="">
+					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.PictForm.HTMLInputFullProperties~} value="">
 `
 		},
 		// -Form-Template-Input-DataType-Number
@@ -136,7 +136,7 @@ Glug glug glug
 			"HashPostfix": "-Template-Input-DataType-Number",
 			"Template": /*HTML*/`
 					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <input type="Number" id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}" data-i-form="{~D:Context[0].formID~}" data-i-datum="{~D:Record.PictForm.InformaryDataAddress~}" value="">
+					<span>{~D:Record.Name~}:</span> <input type="Number" {~D:Record.PictForm.HTMLInputFullProperties~} value="">
 `
 		},
 		// -Form-Template-Input-InputType-TextArea
@@ -144,7 +144,7 @@ Glug glug glug
 			"HashPostfix": "-Template-Input-InputType-TextArea",
 			"Template": /*HTML*/`
 					<!-- InputType TextArea {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <textarea id="{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}" name="{~D:Record.Name~}" data-i-form="{~D:Context[0].formID~}" data-i-datum="{~D:Record.PictForm.InformaryDataAddress~}"></textarea>
+					<span>{~D:Record.Name~}:</span> <textarea {~D:Record.PictForm.HTMLInputFullProperties~}></textarea>
 `
 		}
 	]

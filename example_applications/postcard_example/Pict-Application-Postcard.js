@@ -46,6 +46,10 @@ class PostcardApplication extends libPictApplication
 
 	onAfterInitialize()
 	{
+		// Set a custom address for all the views to marshal to.
+		// This can also be set on specific views (same property)
+		this.pict.views.PictFormMetacontroller.viewMarshalDestination = 'AppData.PostKard';
+
 		this.pict.views.PostcardMainApplication.render();
 	}
 

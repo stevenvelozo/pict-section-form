@@ -19,6 +19,8 @@ class PictFormMetacontroller extends libPictViewClass
 			tmpDefaultTemplateProvider.initialize();
 		}
 
+		this.viewMarshalDestination = 'AppData';
+
 		this.formTemplatePrefix = 'Pict-Forms-Basic';
 	}
 

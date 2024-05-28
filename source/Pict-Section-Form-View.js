@@ -86,6 +86,8 @@ class PictSectionForm extends libPictViewClass
 
 		this.informary = new libInformary({ Form:this.formID })
 
+		this.viewMarshalDestination = false;
+
 		this.initializeFormGroups();
 	}
 
@@ -93,7 +95,23 @@ class PictSectionForm extends libPictViewClass
 	{
 		try
 		{
-			this.informary.marshalDataToForm(this.AppData,
+			let tmpMarshalDestinationObject = false;
+			if (this.viewMarshalDestination)
+			{
+				tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.viewMarshalDestination);
+			}
+			else if (this.pict.views.PictFormMetacontroller && this.pict.views.PictFormMetacontroller.viewMarshalDestination)
+			{
+				tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
+			}
+
+			if (typeof(tmpMarshalDestinationObject) != 'object')
+			{
+				this.log.error(`Marshal destination object is not an object; if you initialize the view yourself you must set the viewMarshalDestination property to a valid address within the view.`);
+				return;
+			}
+
+			this.informary.marshalDataToForm(tmpMarshalDestinationObject,
 				function(pError)
 				{
 					if (pError)
@@ -112,7 +130,33 @@ class PictSectionForm extends libPictViewClass
 	{
 		try
 		{
-			this.informary.marshalFormToData(this.AppData,
+			let tmpMarshalDestinationObject = false;
+			if (this.viewMarshalDestination)
+			{
+				tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.viewMarshalDestination);
+			}
+			else if (this.pict.views.PictFormMetacontroller && this.pict.views.PictFormMetacontroller.viewMarshalDestination)
+			{
+				tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
+
+				if (!tmpMarshalDestinationObject)
+				{
+					// Try to create an empty object.
+					if (this.sectionManifest.setValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination, {}))
+					{
+						// And try to load it once more!
+						tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
+					}
+				}
+			}
+
+			if (typeof(tmpMarshalDestinationObject) != 'object')
+			{
+				this.log.error(`Marshal destination object is not an object; if you initialize the view yourself you must set the viewMarshalDestination property to a valid address within the view.`);
+				return;
+			}
+
+			this.informary.marshalFormToData(tmpMarshalDestinationObject,
 				function(pError)
 				{
 					if (pError)
@@ -220,6 +264,13 @@ class PictSectionForm extends libPictViewClass
 				for (let k = 0; k < tmpGroup.Rows[j].Inputs.length; k++)
 				{
 					let tmpTemplateInputScope = '-Template-Input';
+
+					tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInformaryProperties = ` data-i-form="${this.formID}" data-i-datum="${tmpGroup.Rows[j].Inputs[k].PictForm.InformaryDataAddress}" `;
+					tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInputName = ` name="${tmpGroup.Rows[j].Inputs[k].Name}" `;
+					tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInputID = ` id="${this.UUID}-FormInput-${tmpGroup.Rows[j].Inputs[k].Hash}" `;
+
+					tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInputFullProperties = `${tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInputID}${tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInputName}${tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInformaryProperties}`;
+
 
 					// Check for view-specific control/datatype templates
 					if (this.pict.TemplateProvider.getTemplate(`${this.formsTemplateSetPrefix}${tmpTemplateInputScope}-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`))

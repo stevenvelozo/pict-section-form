@@ -1,6 +1,6 @@
 {
     "name": "pict-section-form",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Pict dynamic form sections",
     "main": "source/Pict-Section-Form.js",
     "directories": {
@@ -25,14 +25,14 @@
     "license": "MIT",
     "devDependencies": {
         "browser-env": "^3.3.0",
-        "pict": "^1.0.177",
+        "pict": "^1.0.178",
         "pict-application": "^1.0.15",
         "quackage": "^1.0.29"
     },
     "dependencies": {
         "informary": "^2.0.21",
         "pict-provider": "^1.0.2",
-        "pict-view": "^1.0.43"
+        "pict-view": "^1.0.45"
     },
     "mocha": {
         "diff": true,
