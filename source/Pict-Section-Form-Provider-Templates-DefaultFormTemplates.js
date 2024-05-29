@@ -119,8 +119,8 @@ Glug glug glug
 		{
 			"HashPostfix": "-Template-Input",
 			"Template": /*HTML*/`
-					<!-- Input {~"D:Record.Hash~} {~D:Record.DataType~} -->
-					<span style="background-color:#fffdfd;">{~D:Record.Name~}:</span> <input type="text" {~D:Record.PictForm.HTMLInputFullProperties~} value="">
+					<!-- DEFAULT Input {~"D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.Macro.InputFullProperties~} value="{~D:Record.Default~}">
 `
 		},
 		// -Form-Template-Input-DataType-String
@@ -128,7 +128,7 @@ Glug glug glug
 			"HashPostfix": "-Template-Input-DataType-String",
 			"Template": /*HTML*/`
 					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.PictForm.HTMLInputFullProperties~} value="">
+					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.Macro.InputFullProperties~} value="{~D:Record.Default~}">
 `
 		},
 		// -Form-Template-Input-DataType-Number
@@ -136,7 +136,7 @@ Glug glug glug
 			"HashPostfix": "-Template-Input-DataType-Number",
 			"Template": /*HTML*/`
 					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <input type="Number" {~D:Record.PictForm.HTMLInputFullProperties~} value="">
+					<span>{~D:Record.Name~}:</span> <input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="{~D:Record.Default~}">
 `
 		},
 		// -Form-Template-Input-InputType-TextArea
@@ -144,7 +144,7 @@ Glug glug glug
 			"HashPostfix": "-Template-Input-InputType-TextArea",
 			"Template": /*HTML*/`
 					<!-- InputType TextArea {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <textarea {~D:Record.PictForm.HTMLInputFullProperties~}></textarea>
+					<span>{~D:Record.Name~}:</span> <textarea {~D:Record.Macro.InputFullProperties~}>{~D:Record.Default~}</textarea>
 `
 		}
 	]

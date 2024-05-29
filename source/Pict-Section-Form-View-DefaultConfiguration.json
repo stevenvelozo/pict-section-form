@@ -8,5 +8,23 @@
 
 	"Templates": [],
 
+	"MacroTemplates": {
+		"Section": {
+			"HTMLID": " id=\"Section-{~D:Context[0].UUID~}\" "
+		},
+		"Group": {
+			"HTMLID": " id=\"Group-{~D:Context[0].UUID~}\" "
+		},
+		"Input": {
+			"Informary": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\" ",
+
+			"HTMLName": " name=\"{~D:Record.Name~}\" ",
+			"HTMLID": " id=\"{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}\" ",
+
+			"InputFullProperties": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\"  name=\"{~D:Record.Name~}\"  id=\"{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}\" ",
+			"InputChangeHandler": " onchange=\"_Pict.views['{~D:Context[0].Hash~}'].dataChanged('{~D:Record.Hash~}')\" "
+		}
+	},
+
 	"TargetElementAddress": "#Form-Container-Div"
 }

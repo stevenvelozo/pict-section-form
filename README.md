@@ -27,6 +27,8 @@ The label on an input, group or section.
 The human-readable identifier on an input.  Expected to be unique although the default templates will prefix this with a distinct view identifier.
 7. Tip:  
 A tooltip, hover or other kinds of embedded content/help on an input element.
+8. Macro:  
+A small bit of template that's preprocessed and usable by the template partials.
 
 
 ## Example Application: Sentimental Postcard Deluxe Dot Com

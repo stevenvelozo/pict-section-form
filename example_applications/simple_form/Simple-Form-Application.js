@@ -55,14 +55,16 @@ module.exports.default_configuration.pict_configuration = (
 							{
 								"Name":"Width",
 								"Hash":"Name",
-								"DataType":"Number"
+								"DataType":"Number",
+								"Default": 100
 								,"PictForm": { "Section":"Area", "Row":2, "Width":1 }
 							},
 						"Height":
 							{
 								"Name":"Height",
 								"Hash":"Type",
-								"DataType":"Number"
+								"DataType":"Number",
+								"Default": 100
 								,"PictForm": { "Section":"Area", "Row":2, "Width":1 }
 							},
 

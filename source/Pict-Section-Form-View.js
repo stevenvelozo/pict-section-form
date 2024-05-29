@@ -62,7 +62,7 @@ class PictSectionForm extends libPictViewClass
 			tmpDefaultTemplateProvider.initialize();
 		}
 
-		// Load any form-specific templates
+		// Load any view section-specific templates
 		this.formsTemplateSetPrefix = `PFT-${this.Hash}-${this.UUID}`;
 		if (this.options.hasOwnProperty('MetaTemplates') && Array.isArray(this.options.MetaTemplates))
 		{
@@ -81,6 +81,8 @@ class PictSectionForm extends libPictViewClass
 				}
 			}
 		}
+		// The default template prefix
+		this.defaultTemplatePrefix = 'Pict-Forms-Basic';
 
 		this.formID = `Pict-Form-${this.Hash}-${this.UUID}`;
 
@@ -92,6 +94,16 @@ class PictSectionForm extends libPictViewClass
 		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
 
 		this.initializeFormGroups();
+		this.rebuildMacros();
+	}
+
+	dataChanged(pInputHash)
+	{
+		// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
+		// TODO: Determine best pattern for allowing others to override this without subclassing this.  Maybe a registered provider type?
+		this.marshalFromView();
+		this.pict.PictApplication.solve();
+		this.marshalToView();
 	}
 
 	getMarshalDestinationObject()
@@ -264,35 +276,36 @@ class PictSectionForm extends libPictViewClass
 		}
 	}
 
-	rebuildCustomTemplate()
+	rebuildMacros()
 	{
-		let tmpTemplate = ``;
-		let tmpFormTemplatePrefix = 'Pict-Forms-Basic';
-
-		if (this.pict.views.PictFormMetacontroller)
+		if (!this.options.hasOwnProperty('MacroTemplates'))
 		{
-			if (this.pict.views.PictFormMetacontroller.hasOwnProperty('formTemplatePrefix'))
-			{
-				tmpFormTemplatePrefix = this.pict.views.PictFormMetacontroller.formTemplatePrefix;
-			}
+			return false;
 		}
 
-		// Add the Form Prefix stuff
-		if (this.pict.TemplateProvider.getTemplate(`${this.formsTemplateSetPrefix}-Template-Wrap-Prefix`))
+		// Section macros
+		let tmpSectionMacroKeys = Object.keys(this.options.MacroTemplates.Section);
+		if (typeof(this.sectionDefinition.Macro) !== 'object')
 		{
-			tmpTemplate += `{~T:${this.formsTemplateSetPrefix}-Template-Wrap-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+			this.sectionDefinition.Macro = {};
 		}
-		else
+		for (let n = 0; n < tmpSectionMacroKeys.length; n++)
 		{
-			tmpTemplate += `{~T:${tmpFormTemplatePrefix}-Template-Wrap-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+			this.sectionDefinition.Macro[tmpSectionMacroKeys[n]] = this.pict.parseTemplate (this.options.MacroTemplates.Section[tmpSectionMacroKeys[n]], this.sectionDefinition, null, [this]);
 		}
-		tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Section-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
-
 		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
 		{
 			let tmpGroup = this.sectionDefinition.Groups[i];
-
-			tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Group-Prefix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
+			// Group Macros
+			let tmpGroupMacroKeys = Object.keys(this.options.MacroTemplates.Group);
+			if (!tmpGroup.hasOwnProperty('Macro'))
+			{
+				tmpGroup.Macro = {};
+			}
+			for (let n = 0; n < tmpGroupMacroKeys.length; n++)
+			{
+				tmpGroup.Macro[tmpGroupMacroKeys[n]] = this.pict.parseTemplate (this.options.MacroTemplates.Group[tmpGroupMacroKeys[n]], tmpGroup, null, [this]);
+			}
 
 			if (!Array.isArray(tmpGroup.Rows))
 			{
@@ -301,55 +314,142 @@ class PictSectionForm extends libPictViewClass
 
 			for (let j = 0; j < tmpGroup.Rows.length; j++)
 			{
-				tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Row-Prefix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
-				for (let k = 0; k < tmpGroup.Rows[j].Inputs.length; k++)
+				// TODO: Do we want row macros?  Let's be still and find out.
+				let tmpRow = tmpGroup.Rows[j];
+				for (let k = 0; k < tmpRow.Inputs.length; k++)
 				{
-					let tmpTemplateInputScope = '-Template-Input';
-
-					tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInformaryProperties = ` data-i-form="${this.formID}" data-i-datum="${tmpGroup.Rows[j].Inputs[k].PictForm.InformaryDataAddress}" `;
-					tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInputName = ` name="${tmpGroup.Rows[j].Inputs[k].Name}" `;
-					tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInputID = ` id="${this.UUID}-FormInput-${tmpGroup.Rows[j].Inputs[k].Hash}" `;
-
-					tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInputFullProperties = `${tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInputID}${tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInputName}${tmpGroup.Rows[j].Inputs[k].PictForm.HTMLInformaryProperties}`;
-
-
-					// Check for view-specific control/datatype templates
-					if (this.pict.TemplateProvider.getTemplate(`${this.formsTemplateSetPrefix}${tmpTemplateInputScope}-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`))
+					let tmpInput = tmpRow.Inputs[k];
+					// Input Macros
+					let tmpInputMacroKeys = Object.keys(this.options.MacroTemplates.Input);
+					if (!tmpInput.hasOwnProperty('Macro'))
 					{
-						tmpTemplateInputScope += `-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`;
-						tmpTemplate += `\n{~T:${this.formsTemplateSetPrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
+						tmpInput.Macro = {};
 					}
-					else if (this.pict.TemplateProvider.getTemplate(`${this.formsTemplateSetPrefix}${tmpTemplateInputScope}-DataType-${tmpGroup.Rows[j].Inputs[k].DataType}`))
+					for (let n = 0; n < tmpInputMacroKeys.length; n++)
 					{
-						tmpTemplateInputScope += `-DataType-${tmpGroup.Rows[j].Inputs[k].DataType}`;
-						tmpTemplate += `\n{~T:${this.formsTemplateSetPrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
-					}
-
-					// Check for theme-specific control/datatype templates
-					else if (this.pict.TemplateProvider.getTemplate(`${tmpFormTemplatePrefix}${tmpTemplateInputScope}-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`))
-					{
-						tmpTemplateInputScope += `-InputType-${tmpGroup.Rows[j].Inputs[k].PictForm.InputType}`;
-						tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
-					}
-					else if (this.pict.TemplateProvider.getTemplate(`${tmpFormTemplatePrefix}${tmpTemplateInputScope}-DataType-${tmpGroup.Rows[j].Inputs[k].DataType}`))
-					{
-						tmpTemplateInputScope += `-DataType-${tmpGroup.Rows[j].Inputs[k].DataType}`;
-						tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
-					}
-
-					// Fall back on the default control/datatype template
-					else
-					{
-						tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}${tmpTemplateInputScope}:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]~}`;
+						tmpInput.Macro[tmpInputMacroKeys[n]] = this.pict.parseTemplate (this.options.MacroTemplates.Input[tmpInputMacroKeys[n]], tmpInput, null, [this]);
 					}
 				}
-				tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Row-Postfix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
 			}
-			tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Group-Postfix:Pict.views["${this.Hash}"].sectionDefinition.Groups[${i}]~}`;
+		}
+	}
+
+	checkViewSpecificTemplate(pTemplatePostfix)
+	{
+		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
+		return this.pict.TemplateProvider.templates.hasOwnProperty(`${this.formsTemplateSetPrefix}${pTemplatePostfix}`)
+	}
+
+	checkThemeSpecificTemplate(pTemplatePostfix)
+	{
+		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
+		return this.pict.TemplateProvider.templates.hasOwnProperty(`${this.defaultTemplatePrefix}${pTemplatePostfix}`)
+	}
+
+	getMetatemplateTemplateReference(pTemplatePostfix, pViewDataAddress)
+	{
+		/* This is to abstract the logic of checking for section-specific templates on the metatemplate generation
+		* lines.
+		* A separate function is provided for inputs doing a similar thing with scopes.
+		*/
+		/*
+		* This is to replace blocks like this:
+			if (this.pict.TemplateProvider.getTemplate(`${this.formsTemplateSetPrefix}-Template-Wrap-Prefix`))
+			{
+				tmpTemplate += `{~T:${this.formsTemplateSetPrefix}-Template-Wrap-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+			}
+			else
+			{
+				tmpTemplate += `{~T:${this.defaultTemplatePrefix}-Template-Wrap-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+			}
+		*/
+		// 1. Check if there is a section-specific template loaded
+		if (this.checkViewSpecificTemplate(pTemplatePostfix))
+		{
+			return `\n{~T:${this.formsTemplateSetPrefix}${pTemplatePostfix}:Pict.views["${this.Hash}"].${pViewDataAddress}~}`
+		}
+		else if (this.checkThemeSpecificTemplate(pTemplatePostfix))
+		{
+			return `\n{~T:${this.defaultTemplatePrefix}${pTemplatePostfix}:Pict.views["${this.Hash}"].${pViewDataAddress}~}`
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	getInputMetatemplateTemplateReference(pDataType, pInputType, pViewDataAddress)
+	{
+		// Input types are customizable -- there could be 30 different input types for the string data type with special handling and templates
+		let tmpTemplateInputTypePostfix = `-Template-Input-InputType-${pInputType}`;
+		// Data types are not customizable; they are a fixed list based on what is available in Manyfest
+		let tmpTemplateDataTypePostfix = `-Template-Input-DataType-${pDataType}`;
+
+		// First check if there is an "input type" template available in either the section-specific configuration or in the general
+		if (pInputType)
+		{
+			let tmpTemplate = this.getMetatemplateTemplateReference(tmpTemplateInputTypePostfix, pViewDataAddress);
+			if (tmpTemplate)
+			{
+				return tmpTemplate;
+			}
 		}
 
-		tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Section-Postfix:Pict.views["${this.Hash}"].sectionDefinition~}`;
-		tmpTemplate += `\n{~T:${tmpFormTemplatePrefix}-Template-Wrap-Postfix:Pict.views["${this.Hash}"].sectionDefinition~}`;
+		// If we didn't find the template for the "input type", check for the "data type"
+		let tmpTemplate = this.getMetatemplateTemplateReference(tmpTemplateDataTypePostfix, pViewDataAddress);
+		if (tmpTemplate)
+		{
+			return tmpTemplate;
+		}
+	
+		// There wasn't an input type specific or data type specific template, so fall back to the generic input template.
+		return this.getMetatemplateTemplateReference('-Template-Input', pViewDataAddress);
+	}
+
+	rebuildCustomTemplate()
+	{
+		let tmpTemplate = ``;
+
+		if (this.pict.views.PictFormMetacontroller)
+		{
+			if (this.pict.views.PictFormMetacontroller.hasOwnProperty('formTemplatePrefix'))
+			{
+				this.defaultTemplatePrefix = this.pict.views.PictFormMetacontroller.formTemplatePrefix;
+			}
+		}
+
+		tmpTemplate += this.getMetatemplateTemplateReference(`-Template-Wrap-Prefix`, `sectionDefinition`);
+		tmpTemplate += this.getMetatemplateTemplateReference(`-Template-Section-Prefix`, `sectionDefinition`);
+
+		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
+		{
+			let tmpGroup = this.sectionDefinition.Groups[i];
+
+			tmpTemplate += this.getMetatemplateTemplateReference(`-Template-Group-Prefix`, `sectionDefinition.Groups[${i}]`)
+
+			if (!Array.isArray(tmpGroup.Rows))
+			{
+				continue;
+			}
+
+			for (let j = 0; j < tmpGroup.Rows.length; j++)
+			{
+				let tmpRow = tmpGroup.Rows[j];
+
+				tmpTemplate += this.getMetatemplateTemplateReference(`-Template-Row-Prefix`, `sectionDefinition.Groups[${i}]`)
+				for (let k = 0; k < tmpRow.Inputs.length; k++)
+				{
+					let tmpInput = tmpRow.Inputs[k];
+
+					tmpTemplate += this.getInputMetatemplateTemplateReference(tmpInput.DataType, tmpInput.PictForm.InputType, `sectionDefinition.Groups[${i}].Rows[${j}].Inputs[${k}]`);
+				}
+				tmpTemplate += this.getMetatemplateTemplateReference(`-Template-Row-Postfix`, `sectionDefinition.Groups[${i}]`)
+			}
+			tmpTemplate += this.getMetatemplateTemplateReference(`-Template-Group-Postfix`, `sectionDefinition.Groups[${i}]`)
+		}
+
+		tmpTemplate += this.getMetatemplateTemplateReference(`-Template-Section-Postfix`, `sectionDefinition`);
+		tmpTemplate += this.getMetatemplateTemplateReference(`-Template-Wrap-Postfix`, `sectionDefinition`);
 
 		this.pict.TemplateProvider.addTemplate(this.options.SectionTemplateHash, tmpTemplate);
 	}
