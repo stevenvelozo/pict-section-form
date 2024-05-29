@@ -1,17 +1,26 @@
 const libPictProvider = require('pict-provider');
 
-const defaultFormTemplates = require('./Pict-Section-Form-Provider-Templates-DefaultFormTemplates.js');
+const _DefaultFormTemplates = require('./Pict-Section-Form-Provider-Templates-DefaultFormTemplates.js');
+const _DefaultProviderConfiguration = (
+{
+	"ProviderIdentifier": "Pict-Section-Form-Provider-Templates-Basic",
+
+	"AutoInitialize": true,
+	"AutoInitializeOrdinal": 0,
+
+	"AutoSolveWithApp": false
+});
 
 class PictSectionFormTemplateProvider extends libPictProvider
 {
 	constructor(pFable, pOptions, pServiceHash)
 	{
-		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(require('./Pict-Section-Form-Provider-Templates-DefaultConfiguration.json'))), pOptions);
+		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
 		
 		// This is all you're expected to overload in this provider
 		if (!tmpOptions.hasOwnProperty('MetaTemplateSet'))
 		{
-			tmpOptions.MetaTemplateSet = JSON.parse(JSON.stringify(defaultFormTemplates));
+			tmpOptions.MetaTemplateSet = JSON.parse(JSON.stringify(_DefaultFormTemplates));
 		}
 
 		super(pFable, tmpOptions, pServiceHash);
@@ -22,7 +31,7 @@ class PictSectionFormTemplateProvider extends libPictProvider
 		if (!this.options.MetaTemplateSet.hasOwnProperty('TemplatePrefix') && (this.options.ProviderIdentifier == 'Pict-Section-Form-Provider-Templates-Basic'))
 		{
 			// The default template prefix is 'Pict-Forms-Basic'
-			this.formsTemplateSetPrefix = defaultFormTemplates.TemplatePrefix;
+			this.formsTemplateSetPrefix = _DefaultFormTemplates.TemplatePrefix;
 		}
 		else if (!this.options.MetaTemplateSet.hasOwnProperty('TemplatePrefix') && (this.options.ProviderIdentifier != 'Pict-Section-Form-Provider-Templates-Basic'))
 		{
@@ -50,9 +59,9 @@ class PictSectionFormTemplateProvider extends libPictProvider
 				});
 		}
 
-		for (let i = 0; i < defaultFormTemplates.Templates.length; i++)
+		for (let i = 0; i < _DefaultFormTemplates.Templates.length; i++)
 		{
-			let tmpTemplate = defaultFormTemplates.Templates[i];
+			let tmpTemplate = _DefaultFormTemplates.Templates[i];
 			let tmpTemplateHash = `${this.formsTemplateSetPrefix}${tmpTemplate.HashPostfix}`;
 			// Only load default templates if they are not already defined in the options
 			if (!this.formsTemplateSet.hasOwnProperty(tmpTemplateHash))
@@ -75,6 +84,4 @@ class PictSectionFormTemplateProvider extends libPictProvider
 }
 
 module.exports = PictSectionFormTemplateProvider;
-module.exports.default_configuration = require('./Pict-Section-Form-Provider-Templates-DefaultConfiguration.json');
-
-
+module.exports.default_configuration = _DefaultProviderConfiguration;

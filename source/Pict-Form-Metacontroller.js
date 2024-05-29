@@ -286,4 +286,28 @@ class PictFormMetacontroller extends libPictViewClass
 }
 
 module.exports = PictFormMetacontroller;
-module.exports.default_configuration = require('./Pict-Form-Metacontroller-DefaultConfiguration.json');
+module.exports.default_configuration = (
+{
+	"RenderOnLoad": true,
+
+	"DefaultRenderable": "Pict-Forms-Metacontainer",
+	"DefaultDestinationAddress": "#Pict-Form-Container",
+
+	"AutoMarshalDataOnSolve": true,
+
+	"MetaTemplateHash": "Pict-Forms-Metatemplate",
+
+	"Templates": [
+		{
+			"Hash": "Pict-Forms-Metatemplate",
+			"Template": "<!-- Pict-Forms-Metatemplate HAS NOT BEEN GENERATED; call pict.views.PictFormsMetatemplate.generateMetatemplate() to build the containers -->"
+		}
+	],
+	"Renderables": [
+		{
+			"RenderableHash": "Pict-Forms-Metacontainer",
+			"TemplateHash": "Pict-Forms-Metatemplate",
+			"DestinationAddress": "#Pict-Form-Container"
+		}
+	]
+});

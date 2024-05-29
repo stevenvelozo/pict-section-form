@@ -25,6 +25,7 @@
     "license": "MIT",
     "devDependencies": {
         "browser-env": "^3.3.0",
+        "jquery": "^3.7.1",
         "pict": "^1.0.178",
         "pict-application": "^1.0.15",
         "quackage": "^1.0.29"

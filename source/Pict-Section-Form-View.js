@@ -61,6 +61,12 @@ class PictSectionForm extends libPictViewClass
 			let tmpDefaultTemplateProvider = this.pict.addProvider('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
 			tmpDefaultTemplateProvider.initialize();
 		}
+		// This is for if we decide to abstract metatemplates into a separate provider for code simplification
+		// if (!this.pict.providers.PictFormSectionMetatemplateGenerator)
+		// {
+		// 	let tmpMetatemplateGenerator = this.pict.addProvider('PictFormSectionMetatemplateGenerator', libFormsMetatemplateGenerator.default_configuration, libFormsMetatemplateGenerator);
+		// 	tmpMetatemplateGenerator.initialize();
+		// }
 
 		// Load any view section-specific templates
 		this.formsTemplateSetPrefix = `PFT-${this.Hash}-${this.UUID}`;
@@ -86,7 +92,15 @@ class PictSectionForm extends libPictViewClass
 
 		this.formID = `Pict-Form-${this.Hash}-${this.UUID}`;
 
-		this.informary = new libInformary({ Form:this.formID })
+		// Informary is very old and requires jquery.
+		// TODO: Refactor informary to be a pict service, eliminating this need entirely.
+		let tmpInformaryConfiguration = { Form:this.formID };
+
+		if (this.options.hasOwnProperty('Informary'))
+		{
+			tmpInformaryConfiguration = Object.assign({}, tmpInformaryConfiguration, this.options.Informary);
+		}
+		this.informary = new libInformary(tmpInformaryConfiguration);
 
 		this.viewMarshalDestination = false;
 
