@@ -7,7 +7,7 @@ const _ViewConfiguration = (
 	DefaultRenderable: "Postcard-Main-Application",
     DefaultDestinationAddress: "#Postcard-Content-Container",
 
-	RenderOnLoad: true,
+	AutoRender: true,
 
 	CSS: ".PostcardControls { margin-top: 2em; background-color: #fff5f5; }",
 
@@ -42,11 +42,19 @@ class PostcardMainApplicationView extends libPictView
 		super(pFable, pOptions, pServiceHash);
 	}
 
+	onAfterInitialize()
+	{
+		this.pict.views.PostcardNavigation.render()
+		return super.onAfterInitialize();
+	}
+
 	onAfterRender()
 	{
 		this.pict.views.PictFormMetacontroller.render();
 		this.pict.views.PictFormMetacontroller.renderAllFormSections();
 		this.pict.PictApplication.marshalDataFromAppDataToView();
+		return super.onAfterRender();
+		//return super.onAfterRenderAsync(fCallback);
 	}
 }
 

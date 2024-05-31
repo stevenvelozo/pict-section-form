@@ -10,7 +10,6 @@ libBrowserEnv();
 const Chai = require('chai');
 const Expect = Chai.expect;
 
-const libJquery = require('jquery');
 const libPict = require('pict');
 
 const libPictSectionForm = require('../source/Pict-Section-Form.js');
@@ -42,9 +41,6 @@ suite
 								let tmpViewHash = `PictSectionForm-${manifestPostcard.Sections[0].Hash}`;
 								// The configuration is generally pulled from tne manyfest manifest Section array
 								let tmpViewConfiguration = JSON.parse(JSON.stringify(manifestPostcard.Sections[0]));
-
-								// Provide jquery to informary (this is a unit test only thing) until it's refactored
-								tmpViewConfiguration.Informary = { jQuery: libJquery };
 
 								tmpViewConfiguration.Manifests = { Section: manifestPostcard };
 

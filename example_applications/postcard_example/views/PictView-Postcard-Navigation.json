@@ -4,7 +4,7 @@
     "DefaultRenderable": "Postcard-Navigation",
     "DefaultDestinationAddress": "#Postcard-Navigation-Container",
 
-    "RenderOnLoad": true,
+    "AutoRender": true,
 
     "CSS": ".PostcardNavigation { background-color: #fff5f5; }",
 

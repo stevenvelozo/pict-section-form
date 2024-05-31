@@ -44,13 +44,17 @@ class PostcardApplication extends libPictApplication
 		this.marshalDataFromAppDataToView();
 	}
 
-	onAfterInitialize()
+	onAfterInitializeAsync(fCallback)
 	{
 		// Set a custom address for all the views to marshal to.
 		// This can also be set on specific views (same property)
 		this.pict.views.PictFormMetacontroller.viewMarshalDestination = 'AppData.PostKard';
 
+		this.pict.views.PostcardNavigation.render()
 		this.pict.views.PostcardMainApplication.render();
+		this.pict.views.PictFormMetacontroller.render();
+
+		return super.onAfterInitialize(fCallback);
 	}
 
 	marshalDataFromViewToAppData()

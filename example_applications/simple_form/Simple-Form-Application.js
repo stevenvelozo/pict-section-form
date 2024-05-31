@@ -6,7 +6,7 @@ module.exports = libPictSectionForm.PictFormApplication;
 
 module.exports.default_configuration.pict_configuration = (
 		{
-			"Product": "PictDefaultFormsApp",
+			"Product": "Simple",
 			"DefaultFormManifest":
 			{
 				"Scope": "SuperSimpleForm",

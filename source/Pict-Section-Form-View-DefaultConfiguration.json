@@ -1,5 +1,5 @@
 {
-	"RenderOnLoad": false,
+	"AutoRender": false,
 
 	"DefaultRenderable": "Form-Main",
 	"DefaultDestinationAddress": "#Pict-Form-Container",
@@ -17,11 +17,12 @@
 		},
 		"Input": {
 			"Informary": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\" ",
+			"InformaryTabular": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\" data-i-container=\"{~D:Record.PictForm.InformaryContainerAddress~}\" ",
 
 			"HTMLName": " name=\"{~D:Record.Name~}\" ",
 			"HTMLID": " id=\"{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}\" ",
 
-			"InputFullProperties": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\"  name=\"{~D:Record.Name~}\"  id=\"{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}\" ",
+			"InputFullProperties": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\"  name=\"{~D:Record.Name~}\" ",
 			"InputChangeHandler": " onchange=\"_Pict.views['{~D:Context[0].Hash~}'].dataChanged('{~D:Record.Hash~}')\" "
 		}
 	},

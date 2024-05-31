@@ -1,0 +1,32 @@
+{
+    "name": "simple_tabular_application",
+    "version": "1.0.0",
+    "description": "The most basic tabular application ever!",
+    "main": "Simple-Tabular-Application.js",
+    "scripts": {
+        "start": "node Simple-Tabular-Application.js",
+        "build": "npx quack build && npx quack copy"
+    },
+    "author": "steven",
+    "license": "MIT",
+    "devDependencies": {
+        "jquery": "^3.7.1"
+    },
+    "copyFilesSettings": {
+        "whenFileExists": "overwrite"
+    },
+    "copyFiles": [
+        {
+            "from": "./html/*",
+            "to": "./dist/"
+        },
+        {
+            "from": "../../node_modules/pict/dist/*",
+            "to": "./dist/"
+        },
+        {
+            "from": "./node_modules/jquery/dist/*",
+            "to": "./dist/"
+        }
+    ]
+}

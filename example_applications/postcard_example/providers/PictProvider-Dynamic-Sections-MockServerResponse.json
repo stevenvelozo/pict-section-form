@@ -22,18 +22,19 @@
 					],
 
 				"Description": "The content and destination for the postcard you would like to send.",
-				"Groups": [
-					{
-						"Name": "Content",
-						"Hash": "Content",
-						"Description": "The message and recipient of your postcard."
-					},
-					{
-						"Name": "Delivery Destination",
-						"Hash": "Destination",
-						"Description": "The message and recipient of your postcard."
-					}
-				]
+				"Groups":
+					[
+						{
+							"Name": "Content",
+							"Hash": "Content",
+							"Description": "The message and recipient of your postcard."
+						},
+						{
+							"Name": "Delivery Destination",
+							"Hash": "Destination",
+							"Description": "The message and recipient of your postcard."
+						}
+					]
 			},
 			{
 				"Name": "Delivery Confirmation Contact Info",

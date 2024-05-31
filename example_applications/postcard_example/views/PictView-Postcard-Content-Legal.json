@@ -4,7 +4,7 @@
     "DefaultRenderable": "Postcard-Legal",
     "DefaultDestinationAddress": "#Postcard-Content-Container",
 
-    "RenderOnLoad": false,
+    "AutoRender": false,
 
     "Templates": [
         {

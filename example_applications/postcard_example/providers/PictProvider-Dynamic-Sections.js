@@ -23,7 +23,7 @@ class PostcardDynamicSectionProvider extends libPictProvider
 		this.pict.settings.DefaultFormManifest = require('./PictProvider-Dynamic-Sections-MockServerResponse.json');
 		this.log.info('PostcardDynamicSectionProvider.onInitializeAsync() -- loaded dynamic section views from "server" to the application [settings.DefaultFormManifest] location.');
 
-		return fCallback();
+		return super.onInitializeAsync(fCallback);
 	}
 }
 
