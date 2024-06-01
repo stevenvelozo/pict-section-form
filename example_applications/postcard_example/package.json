@@ -5,9 +5,27 @@
     "main": "Pict-Application-Postcard.js",
     "scripts": {
         "start": "node Pict-Application-Postcard.js",
-        "build": "npx quack build"
+        "build": "npx quack build && npx quack copy"
     },
     "author": "steven",
     "license": "MIT",
-    "devDependencies": {}
+    "devDependencies": {},
+    "copyFilesSettings": {
+        "whenFileExists": "overwrite"
+    },
+    "copyFiles": [
+        {
+            "from": "./html/*",
+            "to": "./dist/"
+        },
+        {
+            "from": "./css/**",
+            "to": "./dist/css/"
+        },
+        {
+            "from": "../../node_modules/pict/dist/*",
+            "to": "./dist/js/"
+        }
+    ]
+
 }

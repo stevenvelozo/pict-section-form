@@ -1,7 +1,6 @@
 const libPictSectionForm = require('../../source/Pict-Section-Form.js');
 //const libPictSectionForm = require('pict-section-form');
 
-
 module.exports = libPictSectionForm.PictFormApplication;
 
 module.exports.default_configuration.pict_configuration = (
@@ -28,7 +27,7 @@ module.exports.default_configuration.pict_configuration = (
 							[
 								{
 									"HashPostfix": "-Template-Wrap-Prefix",
-									"Template": "<h1>Rectangular Area Micro-app</h1><div><a href=\"#\" onclick=\"_Pict.PictApplication.solve()\">[ solve ]</a></div><hr />"
+									"Template": "<h1>Rectangular Area Solver Micro-app</h1><div><a href=\"#\" onclick=\"_Pict.PictApplication.solve()\">[ solve ]</a></div><hr />"
 								}
 							]
 					}

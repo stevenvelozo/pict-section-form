@@ -15,16 +15,13 @@ const _ViewConfiguration = (
 		{
 			Hash: "Postcard-Main-Application-Template",
 			Template: /*html*/`
-<h1>Send a Fabulous Postkard!</h1>
-
-<!-- where the Form Metacontroller view puts its content -->
-<div id="Pict-Form-Container"></div>
-
-<div class="PostcardControls"> 
-	<a href="#" onclick="_Pict.PictApplication.marshalDataFromViewToAppData()">[ Store Data ]</a> | <a href="#" onclick="_Pict.PictApplication.marshalDataFromAppDataToView()">[ Read Data ]</a>
-	||
-	<a href="#" onclick="_Pict.PictApplication.changeToPostcardTheme()">[ Postkard Theme ]</a> | <a href="#" onclick="_Pict.PictApplication.changeToDefaultTheme()">[ Default Theme ]</a>
+<!-- This template is where the Form Metacontroller view puts its content -->
+<div class="header">
+	<h1>Send a Fabulous Postkard!</h1>
+	<h2>Where every moment becomes a cherished memory to share.</h2>
 </div>
+<!-- This div is where the actual form containers will go -->
+<div class="content" id="Pict-Form-Container"></div>
 `
 		}
 	],

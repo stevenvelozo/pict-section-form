@@ -266,5 +266,3 @@ This [manyfest](https://github.com/stevenvelozo/manyfest) file describes a list
 of application state elements. And intersects these data elements with how
 they should be presented to the user in a form.  This can work for any layout
 of data in your application.
-
-

@@ -9,9 +9,7 @@
     },
     "author": "steven",
     "license": "MIT",
-    "devDependencies": {
-        "jquery": "^3.7.1"
-    },
+    "devDependencies": {},
     "copyFilesSettings": {
         "whenFileExists": "overwrite"
     },
@@ -22,10 +20,6 @@
         },
         {
             "from": "../../node_modules/pict/dist/*",
-            "to": "./dist/"
-        },
-        {
-            "from": "./node_modules/jquery/dist/*",
             "to": "./dist/"
         }
     ]

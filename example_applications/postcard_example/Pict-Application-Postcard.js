@@ -46,6 +46,9 @@ class PostcardApplication extends libPictApplication
 
 	onAfterInitializeAsync(fCallback)
 	{
+		// Default to the Pure theme
+		this.pict.views.PictFormMetacontroller.formTemplatePrefix = _Pict.providers['Postcard-Default-Theme-Provider'].formsTemplateSetPrefix;
+
 		// Set a custom address for all the views to marshal to.
 		// This can also be set on specific views (same property)
 		this.pict.views.PictFormMetacontroller.viewMarshalDestination = 'AppData.PostKard';
