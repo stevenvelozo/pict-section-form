@@ -77,7 +77,7 @@ module.exports.default_configuration.pict_configuration = (
 							},
 						"Solutions.HeightCubeArea":
 							{
-								"Name":"Area of Width Cubed",
+								"Name":"Area of Height Cubed",
 								"Hash":"HeightCubeArea",
 								"DataType":"String"
 								,"PictForm": { "Section":"Area", "Row":3, "Width":1 }

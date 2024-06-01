@@ -497,8 +497,8 @@ class PictSectionFormView extends libPictViewClass
 
 		// This means it is easily extensible to work on JSON objects as well as arrays.
 		// TODO: (when we update informary to be a pict plugin, make the data-i-index stuff support data-i-key for objects)
-		let tmpAddressTemplate = ` data-i-index="${pRecordSubAddress.toString()}" `;
-
+		//let tmpAddressTemplate = ` data-i-index="ArrayIndex_${pRecordSubAddress.toString()}" `;
+		let tmpAddressTemplate = ` data-i-index="{~D:Record.Index~}" `;
 
 		// First check if there is an "input type" template available in either the section-specific configuration or in the general
 		if (pInputType)
@@ -797,7 +797,7 @@ class PictSectionFormView extends libPictViewClass
 
 		if (Array.isArray(pDataObject))
 		{
-			return pDataObject.map((pValue, pIndex) => { return pIndex; });
+			return pDataObject.map((pValue, pIndex) => { return { Index: pIndex }; });
 		}
 		else if (typeof(pDataObject) === 'object')
 		{

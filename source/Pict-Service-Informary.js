@@ -42,6 +42,11 @@ class PictServiceInformary extends libPictProvider
 		}
 	}
 
+	getComposedContainerAddress(pContainer, pIndex, pDatumHash)
+	{
+		return `${pContainer}[${pIndex}].${pDatumHash}`;
+	}
+
 	// TODO: DRY or bust.  Later.
 	marshalFormToData(pAppStateData, pFormHash, pManifest)
 	{
@@ -58,18 +63,21 @@ class PictServiceInformary extends libPictProvider
 
 			let tmpBrowserValue = this.pict.ContentAssignment.readContent(this.getContentBrowserAddress(pFormHash, tmpDatumAddress, tmpContainerAddress, tmpIndex));
 
+			this.log.trace(`Informary marshalling BrowserForm Data ${tmpBrowserValue} from form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}] to the datum address [${tmpDatumAddress}].`);
+
+			if (typeof(tmpBrowserValue) === 'undefined')
+			{
+				continue;
+			}
+
 			if (!tmpContainerAddress)
 			{
-				this.log.trace(`Informary marshalling BrowserForm Data ${tmpBrowserValue} from form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}] to the datum address [${tmpDatumAddress}].`);
-
-				if (typeof(tmpBrowserValue) !== 'undefined')
-				{
-					tmpManifest.setValueAtAddress(pAppStateData, tmpDatumAddress, tmpBrowserValue);
-				}
+				tmpManifest.setValueAtAddress(pAppStateData, tmpDatumAddress, tmpBrowserValue);
 			}
 			else
 			{
-
+				// Compose the address .. right now only arrays
+				tmpManifest.setValueAtAddress(pAppStateData, this.getComposedContainerAddress(tmpContainerAddress, tmpIndex, tmpDatumAddress), tmpBrowserValue);
 			}
 		}
 	}
@@ -90,6 +98,17 @@ class PictServiceInformary extends libPictProvider
 			if (!tmpContainerAddress)
 			{
 				let tmpAppStateValue = tmpManifest.getValueAtAddress(pAppStateData, tmpDatumAddress);
+
+				this.log.trace(`Informary marshalling App State data ${tmpAppStateValue} to Browser Form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}].`);
+
+				if (typeof(tmpAppStateValue) !== 'undefined')
+				{
+					this.pict.ContentAssignment.assignContent(this.getContentBrowserAddress(pFormHash, tmpDatumAddress, tmpContainerAddress, tmpIndex), tmpAppStateValue);
+				}
+			}
+			else
+			{
+				let tmpAppStateValue = tmpManifest.getValueAtAddress(pAppStateData, this.getComposedContainerAddress(tmpContainerAddress, tmpIndex, tmpDatumAddress));
 
 				this.log.trace(`Informary marshalling App State data ${tmpAppStateValue} to Browser Form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}].`);
 

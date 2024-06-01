@@ -63,8 +63,12 @@ class PictFormMetacontroller extends libPictViewClass
 
 	onAfterRender()
 	{
-		this.regenerateAllFormSectionTemplates();
-		this.renderAllFormSections();
+		if (this.options.AutoPopulateAfterRender)
+		{
+			this.regenerateAllFormSectionTemplates();
+			this.renderAllFormSections();
+			this.marshalToView();
+		}
 
 		return super.onAfterRender();
 	}
@@ -283,6 +287,8 @@ module.exports = PictFormMetacontroller;
 module.exports.default_configuration = (
 {
 	"AutoRender": true,
+
+	"AutoPopulateAfterRender": true,
 
 	"DefaultRenderable": "Pict-Forms-Metacontainer",
 	"DefaultDestinationAddress": "#Pict-Form-Container",
