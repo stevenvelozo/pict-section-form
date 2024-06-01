@@ -208,6 +208,16 @@ class PictFormMetacontroller extends libPictViewClass
 
 		let tmpManifest = this.fable.instantiateServiceProviderWithoutRegistration('Manifest', tmpManifestDescription);
 
+		if (this.options.AutoPopulateDefaultObject)
+		{
+			// Fill out the defaults at the marshal location if it doesn't exist
+			let tmpMarshalDestinationObject = tmpManifest.getValueAtAddress(this, this.viewMarshalDestination);
+			if (typeof(tmpMarshalDestinationObject) === 'object')
+			{
+				tmpManifest.populateDefaults(tmpMarshalDestinationObject);
+			}
+		}
+
 		// Get the list of Explicitly Defined section hashes from the Sections property of the manifest
 		if (tmpManifestDescription.hasOwnProperty('Sections') && Array.isArray(tmpManifestDescription.Sections))
 		{
@@ -288,6 +298,7 @@ module.exports.default_configuration = (
 {
 	"AutoRender": true,
 
+	"AutoPopulateDefaultObject": true,
 	"AutoPopulateAfterRender": true,
 
 	"DefaultRenderable": "Pict-Forms-Metacontainer",
