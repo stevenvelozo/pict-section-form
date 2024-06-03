@@ -112,6 +112,14 @@ class PictSectionFormView extends libPictViewClass
 		this.rebuildMacros();
 	}
 
+	renderToPrimary()
+	{
+		// Render to the primary view that the 
+		let tmpDefaultDestinationAddress = (this.pict.views.PictFormMetacontroller) ? this.pict.views.PictFormMetacontroller.options.DefaultDestinationAddress :
+											this.options.DefaultDestinationAddress;
+		this.render(this.options.DefaultRenderable, tmpDefaultDestinationAddress);
+	}
+
 	dataChanged(pInputHash)
 	{
 		// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
@@ -496,8 +504,6 @@ class PictSectionFormView extends libPictViewClass
 		// Tabular inputs are done in three parts -- the "begin", the "address" of the data and the "end".
 
 		// This means it is easily extensible to work on JSON objects as well as arrays.
-		// TODO: (when we update informary to be a pict plugin, make the data-i-index stuff support data-i-key for objects)
-		//let tmpAddressTemplate = ` data-i-index="ArrayIndex_${pRecordSubAddress.toString()}" `;
 		let tmpAddressTemplate = ` data-i-index="{~D:Record.Index~}" `;
 
 		// First check if there is an "input type" template available in either the section-specific configuration or in the general
@@ -603,10 +609,7 @@ class PictSectionFormView extends libPictViewClass
 
 							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Cell-Prefix`, `getTabularRecordInput("${i}","${k}")`);
 							let tmpInputType = (tmpInput.hasOwnProperty('PictForm')) ? tmpInput.PictForm.InputType : 'Default';
-							// Right now the address is just the array element for the record.
 							tmpTemplateSetRecordRowTemplate += this.getTabularInputMetatemplateTemplateReference(tmpInput.DataType, tmpInputType, `getTabularRecordInput("${i}","${k}")`, k);
-							// Accidentally did the next part of resolution a step early in the chain
-							//tmpTemplateSetRecordRowTemplate += this.getTabularInputMetatemplateTemplateReference(tmpInput.DataType, tmpInputType, `getTabularRecordInput("${i}","${tmpSupportingManifestHash}")`);
 							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Cell-Postfix`, `getTabularRecordInput("${i}","${k}")`);
 						}
 					}
@@ -801,7 +804,7 @@ class PictSectionFormView extends libPictViewClass
 		}
 		else if (typeof(pDataObject) === 'object')
 		{
-			return Object.keys(pDataObject);
+			return Object.keys(pDataObject).map((pValue, pIndex) => { return { Index: pValue }; });
 		}
 		else
 		{

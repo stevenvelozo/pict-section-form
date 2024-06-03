@@ -65,8 +65,8 @@ class PictFormMetacontroller extends libPictViewClass
 	{
 		if (this.options.AutoPopulateAfterRender)
 		{
-			this.regenerateAllFormSectionTemplates();
-			this.renderAllFormSections();
+			this.regenerateFormSectionTemplates();
+			this.renderFormSections();
 			this.marshalToView();
 		}
 
@@ -86,35 +86,61 @@ class PictFormMetacontroller extends libPictViewClass
 		return super.onSolve();
 	}
 
-	renderAllFormSections()
+	filterViews(fFilterFunction, fSortFunction)
 	{
 		let tmpViewList = Object.keys(this.fable.views);
+		let tmpFilteredViewList = [];
 
 		for (let i = 0; i < tmpViewList.length; i++)
 		{
-			if (this.fable.views[tmpViewList[i]].isPictSectionForm)
+			if (fFilterFunction && !fFilterFunction(this.fable.views[tmpViewList[i]]))
 			{
-				this.fable.views[tmpViewList[i]].render();
+				continue;
 			}
+			// If this doesn't only render dynamic sections, it will load
+			if (!this.options.OnlyRenderDynamicSections || this.fable.views[tmpViewList[i]].isPictSectionForm)
+			{
+				tmpFilteredViewList.push(this.fable.views[tmpViewList[i]]);
+			}
+		}
+
+		// This is to allow dynamic forms sections to have their own sorting criteria
+		if (typeof(fSortFunction) == 'function')
+		{
+			tmpFilteredViewList.sort(fSortFunction);
+		}
+
+		return tmpFilteredViewList;
+	}
+
+	renderSpecificFormSection(pFormSectionHash)
+	{
+		let fViewFilter = (pView) => { return pView.Hash == pFormSectionHash; };
+		this.generateMetatemplate(fViewFilter);
+		this.render();
+	}
+
+	renderFormSections(fFilterFunction, fSortFunction)
+	{
+		let tmpViewList = this.filterViews(fFilterFunction, fSortFunction);
+		for (let i = 0; i < tmpViewList.length; i++)
+		{
+			tmpViewList[i].render();
 		}
 	}
 
-	regenerateAllFormSectionTemplates()
+	regenerateFormSectionTemplates(fFormSectionFilter, fSortFunction)
 	{
-		let tmpViewList = Object.keys(this.fable.views);
-
+		let tmpViewList = this.filterViews(fFormSectionFilter, fSortFunction);
 		for (let i = 0; i < tmpViewList.length; i++)
 		{
-			if (this.fable.views[tmpViewList[i]].isPictSectionForm)
-			{
-				this.fable.views[tmpViewList[i]].rebuildCustomTemplate();
-			}
+			tmpViewList[i].rebuildCustomTemplate();
 		}
 		// Make sure any form-specific CSS is injected properly.
 		this.pict.CSSMap.injectCSS();
 	}
 
-	generateMetatemplate()
+	generateMetatemplate(fFormSectionFilter, fSortFunction)
 	{
 		let tmpTemplate = ``;
 
@@ -126,18 +152,16 @@ class PictFormMetacontroller extends libPictViewClass
 		// Add the Form Prefix stuff
 		tmpTemplate += `{~T:${this.formTemplatePrefix}-Template-Form-Container-Header:Pict.views["${this.Hash}"]~}`;
 
-		let tmpViewList = Object.keys(this.pict.views);
+		let tmpViewList = this.filterViews(fFormSectionFilter, fSortFunction);
 
 		for (let i = 0; i < tmpViewList.length; i++)
 		{
-			if (this.pict.views[tmpViewList[i]].isPictSectionForm)
-			{
-				let tmpFormView = this.pict.views[tmpViewList[i]];
-				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Prefix:Pict.views["${tmpFormView.Hash}"]~}`;
-				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container:Pict.views["${tmpFormView.Hash}"]~}`;
-				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Postfix:Pict.views["${tmpFormView.Hash}"]~}`;
-			}
+			let tmpFormView = tmpViewList[i];
+			tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Prefix:Pict.views["${tmpFormView.Hash}"]~}`;
+			tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container:Pict.views["${tmpFormView.Hash}"]~}`;
+			tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Postfix:Pict.views["${tmpFormView.Hash}"]~}`;
 		}
+		tmpTemplate += `{~T:${this.formTemplatePrefix}-Template-Form-Container-Footer:Pict.views["${this.Hash}"]~}`;
 
 		this.pict.TemplateProvider.addTemplate(this.options.MetaTemplateHash, tmpTemplate);
 	}
@@ -305,6 +329,7 @@ module.exports.default_configuration = (
 	"DefaultDestinationAddress": "#Pict-Form-Container",
 
 	"AutoMarshalDataOnSolve": true,
+	"OnlyRenderDynamicSections": true,
 
 	"MetaTemplateHash": "Pict-Forms-Metatemplate",
 

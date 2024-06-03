@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Manyfest Editor">
+
+	<title>Manyfest Editor</title>
+
+	<!-- Simple purecss framework https://purecss.io/ -->
+	<link href="css/bulma.min.css" rel="stylesheet">
+	<link href="css/ManyfestEditor.css" rel="stylesheet">
+
+	<!-- PICT Dynamic View CSS Container -->
+	<style id="PICT-CSS"></style>
+
+	<!-- Load the PICT library -->
+	<script src="js/pict.min.js" type="text/javascript"></script>
+
+	<!-- Load the Application -->
+	<script type="text/javascript">
+		//<![CDATA[
+		// Safely (for most browsers?) waits and loads pict and the application whenthe DOM is ready
+		Pict.safeOnDocumentReady(() => { Pict.safeLoadPictApplication(ManyfestEditor, 3) });
+		//]]>
+	</script>
+</head>
+
+<body>
+	<nav class="navbar" role="navigation" aria-label="main navigation">
+		<div class="navbar-brand">
+			<a class="navbar-item" href="https://github.com/stevenvelozo/manyfest">
+				<!-- Bulma had a 112w x 28h image for their logo here -->
+				manyfest.<span id="Manyfest-LoadedManyfest-Header-Container"></span>
+			</a>
+
+			<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+				data-target="navbarBasicExample">
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+			</a>
+		</div>
+
+		<div id="navbarBasicExample" class="navbar-menu">
+			<div class="navbar-start">
+				<a class="navbar-item"> Overview </a>
+				<a class="navbar-item" href="#" onclick="_Pict.views['ManyfestCodeView'].render()"> Code </a>
+				<a class="navbar-item"> Descriptors </a>
+				<a class="navbar-item"> Sections </a>
+				<a class="navbar-item"> Reference Manifests </a>
+			</div>
+
+			<div class="navbar-end">
+				<div class="navbar-item">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link"> Load </a>
+						<div class="navbar-dropdown" id="Manyfest-LoadList-Container">
+						</div>
+					</div>
+				</div>
+
+				<div class="navbar-item">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link"> Delete </a>
+						<div class="navbar-dropdown" id="Manyfest-DeleteList-Container">
+						</div>
+					</div>
+				</div>
+
+				<div class="buttons">
+					<a class="button is-primary" href="#" onclick="_Pict.providers.DataProvider.saveManyfest()"> <strong>Save</strong> </a>
+				</div>
+			</div>
+		</div>
+		</div>
+	</nav>
+
+	<section class="section" id="Manyfest-Editor-MainApp-Container">
+		<div class="container">
+			<h1 class="title">...loading...</h1>
+			<h2 class="subtitle">(the manyfest editor is currently loading)</h2>
+			<p></p>
+		</div>
+	</section>
+
+	<script src="./manyfest_editor.min.js" type="text/javascript"></script>
+</body>
+
+</html>

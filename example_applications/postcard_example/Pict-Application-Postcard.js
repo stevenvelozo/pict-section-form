@@ -31,16 +31,16 @@ class PostcardApplication extends libPictApplication
 	changeToDefaultTheme()
 	{
 		this.pict.views.PictFormMetacontroller.formTemplatePrefix = _Pict.providers.PictFormSectionDefaultTemplateProvider.formsTemplateSetPrefix
-		this.pict.views.PictFormMetacontroller.regenerateAllFormSectionTemplates();
-		this.pict.views.PictFormMetacontroller.renderAllFormSections();
+		this.pict.views.PictFormMetacontroller.regenerateFormSectionTemplates();
+		this.pict.views.PictFormMetacontroller.renderFormSections();
 		this.marshalDataFromAppDataToView();
 	}
 
 	changeToPostcardTheme()
 	{
 		this.pict.views.PictFormMetacontroller.formTemplatePrefix = _Pict.providers['Postcard-Default-Theme-Provider'].formsTemplateSetPrefix;
-		this.pict.views.PictFormMetacontroller.regenerateAllFormSectionTemplates();
-		this.pict.views.PictFormMetacontroller.renderAllFormSections();
+		this.pict.views.PictFormMetacontroller.regenerateFormSectionTemplates();
+		this.pict.views.PictFormMetacontroller.renderFormSections();
 		this.marshalDataFromAppDataToView();
 	}
 

@@ -1,0 +1,38 @@
+{
+    "name": "manyfest_editor",
+    "version": "1.0.0",
+    "description": "Edit a manyfest fiesta.",
+    "main": "source/Manyfest-Editor.js",
+    "scripts": {
+        "start": "node source/Manyfest-Editor.js",
+        "build": "npx quack build && npx quack copy"
+    },
+    "author": "steven",
+    "license": "MIT",
+    "copyFilesSettings": {
+        "whenFileExists": "overwrite"
+    },
+    "copyFiles": [
+        {
+            "from": "./html/*",
+            "to": "./dist/"
+        },
+        {
+            "from": "../../node_modules/pict/dist/*",
+            "to": "./dist/js/"
+        },
+        {
+            "from": "./css/*",
+            "to": "./dist/css/"
+        },
+        {
+            "from": "./node_modules/bulma/css/*",
+            "to": "./dist/css/"
+        }
+    ],
+    "dependencies": {
+        "bulma": "^1.0.1",
+        "codemirror": "^6.0.1",
+        "router_js": "^8.0.5"
+    }
+}
