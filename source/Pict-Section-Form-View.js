@@ -14,7 +14,7 @@ class PictSectionFormView extends libPictViewClass
 			throw new Error('PictSectionForm instantiation attempt without a Manifests in pOptions.Manifest -- cannot instantiate.');
 			return;
 		}
-		if (!tmpOptions.Manifests.hasOwnProperty('Section'))
+		if (!('Section' in tmpOptions.Manifests))
 		{
 			throw new Error('PictSectionForm instantiation attempt without a Section manifest in pOptions.Manifests -- cannot instantiate.');
 			return;
@@ -78,13 +78,13 @@ class PictSectionFormView extends libPictViewClass
 
 		// Load any view section-specific templates
 		this.formsTemplateSetPrefix = `PFT-${this.Hash}-${this.UUID}`;
-		if (this.options.hasOwnProperty('MetaTemplates') && Array.isArray(this.options.MetaTemplates))
+		if (('MetaTemplates' in this.options) && Array.isArray(this.options.MetaTemplates))
 		{
 			for (let i = 0; i < this.options.MetaTemplates.length; i++)
 			{
 				let tmpMetaTemplate = this.options.MetaTemplates[i];
 
-				if (tmpMetaTemplate.hasOwnProperty('HashPostfix') && tmpMetaTemplate.hasOwnProperty('Template'))
+				if (('HashPostfix' in tmpMetaTemplate) && ('Template' in tmpMetaTemplate))
 				{
 					let tmpTemplateHash = `${this.formsTemplateSetPrefix}${tmpMetaTemplate.HashPostfix}`;
 					this.pict.TemplateProvider.addTemplate(tmpTemplateHash, tmpMetaTemplate.Template);
@@ -249,11 +249,11 @@ class PictSectionFormView extends libPictViewClass
 					// If there is an obect in the descriptor
 					typeof(tmpDescriptor) == 'object' &&
 					// AND it has a PictForm property
-					tmpDescriptor.hasOwnProperty('PictForm') &&
+					('PictForm' in tmpDescriptor) &&
 					// AND the PictForm property is an object
 					typeof(tmpDescriptor.PictForm) == 'object' &&
 					// AND the PictForm object has a Section property
-					tmpDescriptor.PictForm.hasOwnProperty('Section') &&
+					('Section' in tmpDescriptor.PictForm) &&
 					// AND the Section property matches our section hash
 					tmpDescriptor.PictForm.Section == this.sectionDefinition.Hash
 				)
@@ -282,17 +282,17 @@ class PictSectionFormView extends libPictViewClass
 					(tmpGroup.GroupType === 'RecordSet'))
 				{
 					// Check for the supporting manifest
-					if (!tmpGroup.hasOwnProperty('RecordManifest'))
+					if (!('RecordManifest' in tmpGroup))
 					{
 						this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group but thee Group does not contain a RecordManifest property.`);
 						tmpGroup.supportingManifest  = this.fable.instantiateServiceProviderWithoutRegistration('Manifest');
 					}
-					else if (!this.options.Manifests.Section.hasOwnProperty('ReferenceManifests'))
+					else if (!('ReferenceManifests' in this.options.Manifests.Section))
 					{
 						this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group but there are no ReferenceManifests in the Section description Manifest.`);
 						tmpGroup.supportingManifest  = this.fable.instantiateServiceProviderWithoutRegistration('Manifest');
 					}
-					else if (!this.options.Manifests.Section.ReferenceManifests.hasOwnProperty(tmpGroup.RecordManifest))
+					else if (!(tmpGroup.RecordManifest in this.options.Manifests.Section.ReferenceManifests))
 					{
 						this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group and has a RecordManifest of [${tmpGroup.RecordManifest}] but the Section.ReferenceManifests object does not contain the referred to manifest.`);
 						tmpGroup.supportingManifest  = this.fable.instantiateServiceProviderWithoutRegistration('Manifest');
@@ -310,7 +310,7 @@ class PictSectionFormView extends libPictViewClass
 					{
 						let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];
 
-						if (!tmpInput.hasOwnProperty('PictForm'))
+						if (!('PictForm' in tmpInput))
 						{
 							tmpInput.PictForm = {};
 							
@@ -346,7 +346,7 @@ class PictSectionFormView extends libPictViewClass
 
 	rebuildMacros()
 	{
-		if (!this.options.hasOwnProperty('MacroTemplates'))
+		if (!('MacroTemplates' in this.options))
 		{
 			return false;
 		}
@@ -366,7 +366,7 @@ class PictSectionFormView extends libPictViewClass
 			let tmpGroup = this.sectionDefinition.Groups[i];
 			// Group Macros
 			let tmpGroupMacroKeys = Object.keys(this.options.MacroTemplates.Group);
-			if (!tmpGroup.hasOwnProperty('Macro'))
+			if (!('Macro'  in tmpGroup))
 			{
 				tmpGroup.Macro = {};
 			}
@@ -389,7 +389,7 @@ class PictSectionFormView extends libPictViewClass
 					let tmpInput = tmpRow.Inputs[k];
 					// Input Macros
 					let tmpInputMacroKeys = Object.keys(this.options.MacroTemplates.Input);
-					if (!tmpInput.hasOwnProperty('Macro'))
+					if (!('Macro' in tmpInput))
 					{
 						tmpInput.Macro = {};
 					}
@@ -409,7 +409,7 @@ class PictSectionFormView extends libPictViewClass
 
 					// Input Macros
 					let tmpInputMacroKeys = Object.keys(this.options.MacroTemplates.Input);
-					if (!tmpInput.hasOwnProperty('Macro'))
+					if (!('Macro' in tmpInput))
 					{
 						tmpInput.Macro = {};
 					}
@@ -425,13 +425,13 @@ class PictSectionFormView extends libPictViewClass
 	checkViewSpecificTemplate(pTemplatePostfix)
 	{
 		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
-		return this.pict.TemplateProvider.templates.hasOwnProperty(`${this.formsTemplateSetPrefix}${pTemplatePostfix}`)
+		return (`${this.formsTemplateSetPrefix}${pTemplatePostfix}` in this.pict.TemplateProvider.templates)
 	}
 
 	checkThemeSpecificTemplate(pTemplatePostfix)
 	{
 		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
-		return this.pict.TemplateProvider.templates.hasOwnProperty(`${this.defaultTemplatePrefix}${pTemplatePostfix}`)
+		return (`${this.defaultTemplatePrefix}${pTemplatePostfix}` in this.pict.TemplateProvider.templates)
 	}
 
 	getMetatemplateTemplateReference(pTemplatePostfix, pViewDataAddress)
@@ -546,7 +546,7 @@ class PictSectionFormView extends libPictViewClass
 
 		if (this.pict.views.PictFormMetacontroller)
 		{
-			if (this.pict.views.PictFormMetacontroller.hasOwnProperty('formTemplatePrefix'))
+			if ('formTemplatePrefix' in this.pict.views.PictFormMetacontroller)
 			{
 				this.defaultTemplatePrefix = this.pict.views.PictFormMetacontroller.formTemplatePrefix;
 			}
@@ -608,7 +608,7 @@ class PictSectionFormView extends libPictViewClass
 							tmpTemplate += this.getMetatemplateTemplateReference('-TabularTemplate-HeaderCell', `getTabularRecordInput("${i}","${k}")`);
 
 							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Cell-Prefix`, `getTabularRecordInput("${i}","${k}")`);
-							let tmpInputType = (tmpInput.hasOwnProperty('PictForm')) ? tmpInput.PictForm.InputType : 'Default';
+							let tmpInputType = ('PictForm' in tmpInput) ? tmpInput.PictForm.InputType : 'Default';
 							tmpTemplateSetRecordRowTemplate += this.getTabularInputMetatemplateTemplateReference(tmpInput.DataType, tmpInputType, `getTabularRecordInput("${i}","${k}")`, k);
 							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Cell-Postfix`, `getTabularRecordInput("${i}","${k}")`);
 						}

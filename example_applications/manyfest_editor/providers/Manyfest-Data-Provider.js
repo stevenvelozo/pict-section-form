@@ -1,8 +1,5 @@
 const libPictProvider = require('pict-provider');
 
-// Picked an open source npm module that saw a lot of use as our router
-const libRouterJS = require('router_js');
-
 const _DEFAULT_PROVIDER_CONFIGURATION =
 {
 	ProviderIdentifier: 'ManyfestDataProvider',
@@ -157,7 +154,7 @@ class ManyfestDataProvider extends libPictProvider
 
 	getItem(pKey)
 	{
-		if (this.keyCache.hasOwnProperty(pKey))
+		if (pKey in this.keyCache)
 		{
 			return this.keyCache[pKey];
 		}
@@ -173,7 +170,7 @@ class ManyfestDataProvider extends libPictProvider
 
 	removeItem(pKey)
 	{
-		if (this.keyCache.hasOwnProperty(pKey))
+		if (pKey in this.keyCache)
 		{
 			delete this.keyCache[pKey];
 			return true;

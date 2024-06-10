@@ -31,8 +31,8 @@
         }
     ],
     "dependencies": {
+        "@capitec/omni-router": "^0.2.4",
         "bulma": "^1.0.1",
-        "codemirror": "^6.0.1",
-        "router_js": "^8.0.5"
+        "codemirror": "^6.0.1"
     }
 }

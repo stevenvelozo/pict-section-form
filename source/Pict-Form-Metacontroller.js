@@ -174,7 +174,7 @@ class PictFormMetacontroller extends libPictViewClass
 			return false;
 		}
 
-		if (!pSectionObject.hasOwnProperty('Hash'))
+		if (!('Hash' in pSectionObject))
 		{
 			this.log.error('getSectionDefinition() called without a valid section object hash.');
 			return false;
@@ -184,17 +184,17 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			let tmpSectionDefinition = JSON.parse(JSON.stringify(pSectionObject));
 
-			if (!tmpSectionDefinition.hasOwnProperty('Name'))
+			if (!('Name' in tmpSectionDefinition))
 			{
 				// If there isn't a name, use the hash
 				tmpSectionDefinition.Name = tmpSectionDefinition.Hash;
 			}
-			if (!tmpSectionDefinition.hasOwnProperty('Description'))
+			if (!('Description' in tmpSectionDefinition))
 			{
 				// If there isn't a description, use the name
 				tmpSectionDefinition.Description = `PICT Section [${tmpSectionDefinition.Name}].`;
 			}
-			if (!tmpSectionDefinition.hasOwnProperty('Groups'))
+			if (!('Groups' in tmpSectionDefinition))
 			{
 				// If there isn't a groups array, create an empty one
 				tmpSectionDefinition.Groups = [];
@@ -217,9 +217,9 @@ class PictFormMetacontroller extends libPictViewClass
 		if (typeof(tmpManifestDescription) != 'object')
 		{
 			// Check and see if there is a DefaultFormManifest in the settings
-			if (this.fable.settings.hasOwnProperty('DefaultFormManifest')
+			if (('DefaultFormManifest' in this.fable.settings)
 				&& typeof(this.fable.settings.DefaultFormManifest) == 'object'
-				&& this.fable.settings.DefaultFormManifest.hasOwnProperty('Descriptors'))
+				&& ('Descriptors' in this.fable.settings.DefaultFormManifest))
 			{
 				tmpManifestDescription = this.fable.settings.DefaultFormManifest;
 			}
@@ -243,7 +243,7 @@ class PictFormMetacontroller extends libPictViewClass
 		}
 
 		// Get the list of Explicitly Defined section hashes from the Sections property of the manifest
-		if (tmpManifestDescription.hasOwnProperty('Sections') && Array.isArray(tmpManifestDescription.Sections))
+		if (('Sections' in tmpManifestDescription) && Array.isArray(tmpManifestDescription.Sections))
 		{
 			for (let i = 0; i < tmpManifestDescription.Sections.length; i++)
 			{
@@ -268,11 +268,11 @@ class PictFormMetacontroller extends libPictViewClass
 					// If there is an object in the descriptor
 					typeof(tmpDescriptor) == 'object' &&
 					// AND it has a PictForm property
-					tmpDescriptor.hasOwnProperty('PictForm') &&
+					('PictForm' in tmpDescriptor) &&
 					// AND the PictForm property is an object
 					typeof(tmpDescriptor.PictForm) == 'object' &&
 					// AND the PictForm object has a Section property
-					tmpDescriptor.PictForm.hasOwnProperty('Section') && 
+					('Section' in tmpDescriptor.PictForm) && 
 					// AND the Section property is a string
 					typeof(tmpDescriptor.PictForm.Section) == 'string'
 				)
@@ -298,13 +298,13 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			let tmpViewHash = `PictSectionForm-${tmpSectionList[i].Hash}`;
 
-			if (this.fable.views.hasOwnProperty(tmpViewHash))
+			if (tmpViewHash in this.fable.views)
 			{
 				this.log.info(`getSectionList() found an existing view for section [${tmpSectionList[i].Hash}] so will be skipped.`);
 				continue;
 			}
 			let tmpViewConfiguration = JSON.parse(JSON.stringify(tmpSectionList[i]));
-			if (!tmpViewConfiguration.hasOwnProperty('Manifests'))
+			if (!('Manifests' in tmpViewConfiguration))
 			{
 				tmpViewConfiguration.Manifests = {};
 			}

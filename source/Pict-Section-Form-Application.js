@@ -15,11 +15,6 @@ class PictSectionFormApplication extends libPictApplication
 		this.pict.addView('PictFormMetacontroller', {}, libPictSectionForm.PictFormMetacontroller);
 	}
 
-	onAfterInitialize()
-	{
-		super.onAfterInitialize();
-	}
-
 	marshalDataFromDynamicViewsToAppData()
 	{
 		this.pict.views.PictFormMetacontroller.marshalFromView();

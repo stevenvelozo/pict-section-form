@@ -18,7 +18,7 @@ class PictSectionFormTemplateProvider extends libPictProvider
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
 		
 		// This is all you're expected to overload in this provider
-		if (!tmpOptions.hasOwnProperty('MetaTemplateSet'))
+		if (!('MetaTemplateSet' in tmpOptions))
 		{
 			tmpOptions.MetaTemplateSet = JSON.parse(JSON.stringify(_DefaultFormTemplates));
 		}
@@ -28,12 +28,12 @@ class PictSectionFormTemplateProvider extends libPictProvider
 		this.formsTemplateSetPrefix = '';
 		this.formsTemplateSet = {};
 
-		if (!this.options.MetaTemplateSet.hasOwnProperty('TemplatePrefix') && (this.options.ProviderIdentifier == 'Pict-Section-Form-Provider-Templates-Basic'))
+		if (!('TemplatePrefix' in this.options.MetaTemplateSet) && (this.options.ProviderIdentifier == 'Pict-Section-Form-Provider-Templates-Basic'))
 		{
 			// The default template prefix is 'Pict-Forms-Basic'
 			this.formsTemplateSetPrefix = _DefaultFormTemplates.TemplatePrefix;
 		}
-		else if (!this.options.MetaTemplateSet.hasOwnProperty('TemplatePrefix') && (this.options.ProviderIdentifier != 'Pict-Section-Form-Provider-Templates-Basic'))
+		else if (!('TemplatePrefix' in this.options.MetaTemplateSet) && (this.options.ProviderIdentifier != 'Pict-Section-Form-Provider-Templates-Basic'))
 		{
 			this.log.error(`No TemplatePrefix defined in the provider options.MetaTemplateSet.TemplatePrefix -- Provider [${this.UUID}]::[${this.Hash}].  Templates will not be loaded.`);
 		}
@@ -42,7 +42,7 @@ class PictSectionFormTemplateProvider extends libPictProvider
 			this.formsTemplateSetPrefix = this.options.MetaTemplateSet.TemplatePrefix;
 		}
 
-		if (!this.options.MetaTemplateSet.hasOwnProperty('Templates'))
+		if (!('Templates' in this.options.MetaTemplateSet))
 		{
 			this.log.warn(`No Templates defined in the provider options.MetaTemplateSet.Templates -- Provider [${this.UUID}]::[${this.Hash}].  Using default templates only.`);
 			this.options.MetaTemplateSet.Templates = [];
@@ -64,7 +64,7 @@ class PictSectionFormTemplateProvider extends libPictProvider
 			let tmpTemplate = _DefaultFormTemplates.Templates[i];
 			let tmpTemplateHash = `${this.formsTemplateSetPrefix}${tmpTemplate.HashPostfix}`;
 			// Only load default templates if they are not already defined in the options
-			if (!this.formsTemplateSet.hasOwnProperty(tmpTemplateHash))
+			if (!(tmpTemplateHash in this.formsTemplateSet))
 			{
 				this.formsTemplateSet[tmpTemplateHash] = (
 					{
