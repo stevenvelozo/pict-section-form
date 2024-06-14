@@ -5,15 +5,23 @@ module.exports = (
 	"Sections": [
 		{
 			"Hash": "ClassManagement",
-			"Name": "Class",
+			"Name": "My Classroom",
 			"Groups": [
 				{
 					"Hash": "StudentList",
-					"Name": "My Classroom",
+					"Name": "Student List",
 
 					"Layout": "Tabular",
 					"RecordSetAddress": "StudentList",
 					"RecordManifest": "Student"
+				},
+				{
+					"Hash": "AssignmentList",
+					"Name": "Assignment List",
+
+					"Layout": "Tabular",
+					"RecordSetAddress": "AssignmentList",
+					"RecordManifest": "Assignment"
 				}
 			]
 		},
@@ -21,14 +29,23 @@ module.exports = (
 
 	"Descriptors":
 	{
-		"Students":
+		"StudentList":
 			{
 				"Name": "Student Roster",
 				"Hash": "StudentData",
 				"DataType": "Array",
 				"Default": []
 				, "PictForm": { "Section":"ClassManagement", "Group":"StudentList" }
+			},
+		"AssignmentList":
+			{
+				"Name": "Curriculum",
+				"Hash": "StudentData",
+				"DataType": "Array",
+				"Default": []
+				, "PictForm": { "Section":"ClassManagement", "Group":"AssignmentList" }
 			}
+
 	},
 
 	"ReferenceManifests":

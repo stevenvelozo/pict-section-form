@@ -35,14 +35,6 @@ class PictSectionFormView extends libPictViewClass
 		{
 			tmpOptions.SectionTemplateHash = `Pict-Form-Template-${tmpOptions.Hash}`;
 		}
-		if (!tmpOptions.SectionTabularRowVirtualTemplateHash)
-		{
-			tmpOptions.SectionTabularRowVirtualTemplateHash = `Pict-Form-Template-TabularRow-Virtual-${tmpOptions.Hash}`;
-		}
-		if (!tmpOptions.SectionTabularRowTemplateHash)
-		{
-			tmpOptions.SectionTabularRowTemplateHash = `Pict-Form-Template-TabularRow-${tmpOptions.Hash}`;
-		}
 
 		if (tmpOptions.Renderables.length < 1)
 		{
@@ -559,6 +551,10 @@ class PictSectionFormView extends libPictViewClass
 			// Add this to the group object for metatemplating
 			tmpGroup.GroupIndex = i;
 
+			tmpGroup.SectionTabularRowVirtualTemplateHash = `Pict-Form-Template-TabularRow-Virtual-${this.options.Hash}-G${tmpGroup.GroupIndex}`;
+			tmpGroup.SectionTabularRowTemplateHash = `Pict-Form-Template-TabularRow-${this.options.Hash}-G${tmpGroup.GroupIndex}`;
+
+
 			// Group layouts are customizable
 			// The three basic group layouts:
 			// 1. Record (default) - Render the whole address as a singleton record
@@ -625,16 +621,16 @@ class PictSectionFormView extends libPictViewClass
 					// TODO: Consider making this function available in manyfest in some fashion it seems dope.
 					let tmpTemplateSetVirtualRowTemplate = '';
 					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReferenceRaw(`-TabularTemplate-Row-ExtraPrefix`, `Record`);
-					tmpTemplateSetVirtualRowTemplate += `\n\n{~T:${this.options.SectionTabularRowTemplateHash}:Record~}\n`;
+					tmpTemplateSetVirtualRowTemplate += `\n\n{~T:${tmpGroup.SectionTabularRowTemplateHash}:Record~}\n`;
 					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReferenceRaw(`-TabularTemplate-Row-ExtraPostfix`, `Record`);
 
 					// This is a custom template expression
-					tmpTemplate += `\n\n{~MTVS:${this.options.SectionTabularRowVirtualTemplateHash}:${tmpGroup.GroupIndex}:${this.getMarshalDestinationAddress()}.${tmpGroup.RecordSetAddress}~}\n`;
+					tmpTemplate += `\n\n{~MTVS:${tmpGroup.SectionTabularRowVirtualTemplateHash}:${tmpGroup.GroupIndex}:${this.getMarshalDestinationAddress()}.${tmpGroup.RecordSetAddress}~}\n`;
 
 					tmpTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Group-Postfix`, `getGroup("${i}")`);
 					// Add the TemplateSetTemplate
-					this.pict.TemplateProvider.addTemplate(this.options.SectionTabularRowVirtualTemplateHash, tmpTemplateSetVirtualRowTemplate);
-					this.pict.TemplateProvider.addTemplate(this.options.SectionTabularRowTemplateHash, tmpTemplateSetRecordRowTemplate);
+					this.pict.TemplateProvider.addTemplate(tmpGroup.SectionTabularRowVirtualTemplateHash, tmpTemplateSetVirtualRowTemplate);
+					this.pict.TemplateProvider.addTemplate(tmpGroup.SectionTabularRowTemplateHash, tmpTemplateSetRecordRowTemplate);
 					break;
 				case 'Record':
 				default:
