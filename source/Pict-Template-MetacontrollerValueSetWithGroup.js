@@ -1,4 +1,4 @@
-const libPictTemplate = require('pict').PictTemplateClass;
+const libPictTemplate = require('./Pict-Template-Base.js');
 
 class PictTemplateMetacontrollerValueSet extends libPictTemplate
 {
