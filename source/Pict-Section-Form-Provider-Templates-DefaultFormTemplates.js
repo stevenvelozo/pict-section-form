@@ -142,7 +142,7 @@ Glug glug glug Oo...
 			"HashPostfix": "-Template-Input",
 			"Template": /*HTML*/`
 					<!-- DEFAULT Input {~"D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.Macro.InputFullProperties~} value="">
+					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 `
 		},
 		// -Form-Template-Input-DataType-String
@@ -150,7 +150,7 @@ Glug glug glug Oo...
 			"HashPostfix": "-Template-Input-DataType-String",
 			"Template": /*HTML*/`
 					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.Macro.InputFullProperties~} value="">
+					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 `
 		},
 		// -Form-Template-Input-DataType-Number
@@ -166,7 +166,7 @@ Glug glug glug Oo...
 			"HashPostfix": "-Template-Input-InputType-TextArea",
 			"Template": /*HTML*/`
 					<!-- InputType TextArea {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <textarea {~D:Record.Macro.InputFullProperties~}></textarea>
+					<span>{~D:Record.Name~}:</span> <textarea {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~}></textarea>
 `
 		},
 
@@ -198,18 +198,22 @@ Glug glug glug Oo...
 		},
 		{
 			"HashPostfix": "-TabularTemplate-RowHeader-ExtraPostfix",
-			"Template": /*HTML*/`<!-- TabularTemplateRowHeader-ExtraPostfix -->`
+			"Template": /*HTML*/`<!-- TabularTemplateRowHeader-ExtraPostfix -->
+						<th></th>
+`
 		},
 		{
 			"HashPostfix": "-TabularTemplate-Row-ExtraPostfix",
-			"Template": /*HTML*/`<!-- TabularTemplateRow-ExtraPostfix -->`
+			"Template": /*HTML*/`<!-- TabularTemplateRow-ExtraPostfix-->
+					<td><a href="#" onClick="_Pict.views['{~D:Context[0].Hash~}'].deleteDynamicTableRow({~D:Record.Group~},'{~D:Record.Key~}')">PICT.del</a></td>
+`
 		},
 
 		{
 			"HashPostfix": "-TabularTemplate-RowHeader-Prefix",
 			"Template": /*HTML*/`
 				<thead>
-					<tr>{~T:TabularTemplateRowHeader-ExtraPrefix~}
+					<tr>
 `
 		},
 		{
@@ -222,7 +226,7 @@ Glug glug glug Oo...
 		{
 			"HashPostfix": "-TabularTemplate-RowHeader-Postfix",
 			"Template": /*HTML*/`
-					{~T:TabularTemplateRowHeader-ExtraPostfix~}</tr>
+					</tr>
 				</thead>
 				<tbody>
 `
@@ -269,6 +273,7 @@ Glug glug glug Oo...
 			"Template": /*HTML*/`
 				</tbody>
 			</table>
+			<div><a href="#" onclick="{~D:Record.Macro.TabularCreateRowFunctionCall~}">PICT.create</a></div>
 			</div>
 			<!-- Form Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 `
@@ -287,7 +292,7 @@ Glug glug glug Oo...
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input",
-			"Template": /*HTML*/` value="">`
+			"Template": /*HTML*/` {~D:Record.Macro.InputChangeHandler~} value="">`
 		},
 
 		{
@@ -298,7 +303,7 @@ Glug glug glug Oo...
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-String",
-			"Template": /*HTML*/` value="">`
+			"Template": /*HTML*/` {~D:Record.Macro.InputChangeHandler~} value="">`
 		},
 
 		{
@@ -320,7 +325,7 @@ Glug glug glug Oo...
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-TextArea",
-			"Template": /*HTML*/`></textarea>
+			"Template": /*HTML*/` {~D:Record.Macro.InputChangeHandler~}></textarea>
 `
 		}
 

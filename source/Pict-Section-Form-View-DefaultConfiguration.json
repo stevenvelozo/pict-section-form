@@ -13,7 +13,9 @@
 			"HTMLID": " id=\"Section-{~D:Context[0].UUID~}\" "
 		},
 		"Group": {
-			"HTMLID": " id=\"Group-{~D:Context[0].UUID~}\" "
+			"HTMLID": " id=\"Group-{~D:Context[0].UUID~}\" ",
+
+			"TabularCreateRowFunctionCall": "_Pict.views['{~D:Context[0].Hash~}'].createDynamicTableRow({~D:Record.GroupIndex~})"
 		},
 		"Input": {
 			"Informary": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\" ",

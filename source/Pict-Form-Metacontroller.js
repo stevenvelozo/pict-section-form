@@ -17,6 +17,7 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			let tmpDefaultTemplateProvider = this.pict.addProvider('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
 			tmpDefaultTemplateProvider.initialize();
+			this.pict.addTemplate(require(`./Pict-Template-MetacontrollerValueSetWithGroup.js`));
 		}
 
 		this.viewMarshalDestination = 'AppData';

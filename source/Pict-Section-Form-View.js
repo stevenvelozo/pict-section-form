@@ -35,6 +35,10 @@ class PictSectionFormView extends libPictViewClass
 		{
 			tmpOptions.SectionTemplateHash = `Pict-Form-Template-${tmpOptions.Hash}`;
 		}
+		if (!tmpOptions.SectionTabularRowVirtualTemplateHash)
+		{
+			tmpOptions.SectionTabularRowVirtualTemplateHash = `Pict-Form-Template-TabularRow-Virtual-${tmpOptions.Hash}`;
+		}
 		if (!tmpOptions.SectionTabularRowTemplateHash)
 		{
 			tmpOptions.SectionTabularRowTemplateHash = `Pict-Form-Template-TabularRow-${tmpOptions.Hash}`;
@@ -109,7 +113,6 @@ class PictSectionFormView extends libPictViewClass
 		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
 
 		this.initializeFormGroups();
-		this.rebuildMacros();
 	}
 
 	renderToPrimary()
@@ -434,34 +437,28 @@ class PictSectionFormView extends libPictViewClass
 		return (`${this.defaultTemplatePrefix}${pTemplatePostfix}` in this.pict.TemplateProvider.templates)
 	}
 
-	getMetatemplateTemplateReference(pTemplatePostfix, pViewDataAddress)
+	getMetatemplateTemplateReferenceRaw(pTemplatePostfix, pRawTemplateDataAddress)
 	{
-		/* This is to abstract the logic of checking for section-specific templates on the metatemplate generation lines.
-		 * This code replace tons of blocks like this:
-			if (this.pict.TemplateProvider.getTemplate(`${this.formsTemplateSetPrefix}-Template-Wrap-Prefix`))
-			{
-				tmpTemplate += `{~T:${this.formsTemplateSetPrefix}-Template-Wrap-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
-			}
-			else
-			{
-				tmpTemplate += `{~T:${this.defaultTemplatePrefix}-Template-Wrap-Prefix:Pict.views["${this.Hash}"].sectionDefinition~}`;
-			}
-		 */
 		// 1. Check if there is a section-specific template loaded
 		if (this.checkViewSpecificTemplate(pTemplatePostfix))
 		{
-			return `\n{~T:${this.formsTemplateSetPrefix}${pTemplatePostfix}:Pict.views["${this.Hash}"].${pViewDataAddress}~}`
+			return `\n{~T:${this.formsTemplateSetPrefix}${pTemplatePostfix}:${pRawTemplateDataAddress}~}`
 		}
 		// 2. Check if there is a theme-specific template loaded for this postfix
 		else if (this.checkThemeSpecificTemplate(pTemplatePostfix))
 		{
-			return `\n{~T:${this.defaultTemplatePrefix}${pTemplatePostfix}:Pict.views["${this.Hash}"].${pViewDataAddress}~}`
+			return `\n{~T:${this.defaultTemplatePrefix}${pTemplatePostfix}:${pRawTemplateDataAddress}~}`
 		}
 		// 3. This shouldn't happen if the template is based on the base class.
 		else
 		{
 			return false;
 		}
+	}
+
+	getMetatemplateTemplateReference(pTemplatePostfix, pViewDataAddress)
+	{
+		return this.getMetatemplateTemplateReferenceRaw(pTemplatePostfix, `Pict.views["${this.Hash}"].${pViewDataAddress}`);
 	}
 
 	getInputMetatemplateTemplateReference(pDataType, pInputType, pViewDataAddress)
@@ -504,7 +501,7 @@ class PictSectionFormView extends libPictViewClass
 		// Tabular inputs are done in three parts -- the "begin", the "address" of the data and the "end".
 
 		// This means it is easily extensible to work on JSON objects as well as arrays.
-		let tmpAddressTemplate = ` data-i-index="{~D:Record.Index~}" `;
+		let tmpAddressTemplate = ` data-i-index="{~D:Record.Key~}" `;
 
 		// First check if there is an "input type" template available in either the section-specific configuration or in the general
 		if (pInputType)
@@ -559,6 +556,9 @@ class PictSectionFormView extends libPictViewClass
 		{
 			let tmpGroup = this.sectionDefinition.Groups[i];
 
+			// Add this to the group object for metatemplating
+			tmpGroup.GroupIndex = i;
+
 			// Group layouts are customizable
 			// The three basic group layouts:
 			// 1. Record (default) - Render the whole address as a singleton record
@@ -569,6 +569,8 @@ class PictSectionFormView extends libPictViewClass
 									(typeof(this.sectionDefinition.DefaultGroupLayout) === 'string') ? this.sectionDefinition.DefaultGroupLayout :
 									'Record';
 
+			// We won't skip complex layouts even if they don't have rows because the
+			// generated metatemplate has n-dimensional columns from the submanifests.
 			if (!Array.isArray(tmpGroup.Rows))
 			{
 				continue;
@@ -583,8 +585,10 @@ class PictSectionFormView extends libPictViewClass
 					// Tabular templates only have one "row" for the header in the standard template, and then a row for each record.
 					// The row for each record happens as a TemplateSet.
 					tmpTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-RowHeader-Prefix`, `getGroup("${i}")`);
+					tmpTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-RowHeader-ExtraPrefix`, `getGroup("${i}")`);
 
 					tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Row-Prefix`, `getGroup("${i}")`);
+
 					for (let j = 0; j < tmpGroup.Rows.length; j++)
 					{
 
@@ -599,7 +603,6 @@ class PictSectionFormView extends libPictViewClass
 							continue;
 						}
 
-						// TODO: Keyed objects as the entries
 						for (let k = 0; k < tmpGroup.supportingManifest.elementAddresses.length; k++)
 						{
 							let tmpSupportingManifestHash = tmpGroup.supportingManifest.elementAddresses[k];
@@ -607,23 +610,30 @@ class PictSectionFormView extends libPictViewClass
 
 							tmpTemplate += this.getMetatemplateTemplateReference('-TabularTemplate-HeaderCell', `getTabularRecordInput("${i}","${k}")`);
 
+		
 							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Cell-Prefix`, `getTabularRecordInput("${i}","${k}")`);
 							let tmpInputType = ('PictForm' in tmpInput) ? tmpInput.PictForm.InputType : 'Default';
 							tmpTemplateSetRecordRowTemplate += this.getTabularInputMetatemplateTemplateReference(tmpInput.DataType, tmpInputType, `getTabularRecordInput("${i}","${k}")`, k);
 							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Cell-Postfix`, `getTabularRecordInput("${i}","${k}")`);
 						}
 					}
+					tmpTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-RowHeader-ExtraPostfix`, `getGroup("${i}")`);
 					tmpTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-RowHeader-Postfix`, `getGroup("${i}")`);
 
 					// This is the template by which the tabular template includes the rows.
 					// The recursion here is difficult to envision without drawing it.
 					// TODO: Consider making this function available in manyfest in some fashion it seems dope.
-					tmpTemplate += `\n\n{~TS:${this.options.SectionTabularRowTemplateHash}:Context[0].tabularKeys(${this.getMarshalDestinationAddress()}.${tmpGroup.RecordSetAddress})~}\n`;
+					let tmpTemplateSetVirtualRowTemplate = '';
+					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReferenceRaw(`-TabularTemplate-Row-ExtraPrefix`, `Record`);
+					tmpTemplateSetVirtualRowTemplate += `\n\n{~T:${this.options.SectionTabularRowTemplateHash}:Record~}\n`;
+					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReferenceRaw(`-TabularTemplate-Row-ExtraPostfix`, `Record`);
 
-					tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Row-Postfix`, `getGroup("${i}")`);
+					// This is a custom template expression
+					tmpTemplate += `\n\n{~MTVS:${this.options.SectionTabularRowVirtualTemplateHash}:${tmpGroup.GroupIndex}:${this.getMarshalDestinationAddress()}.${tmpGroup.RecordSetAddress}~}\n`;
 
 					tmpTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Group-Postfix`, `getGroup("${i}")`);
 					// Add the TemplateSetTemplate
+					this.pict.TemplateProvider.addTemplate(this.options.SectionTabularRowVirtualTemplateHash, tmpTemplateSetVirtualRowTemplate);
 					this.pict.TemplateProvider.addTemplate(this.options.SectionTabularRowTemplateHash, tmpTemplateSetRecordRowTemplate);
 					break;
 				case 'Record':
@@ -651,6 +661,8 @@ class PictSectionFormView extends libPictViewClass
 
 		tmpTemplate += this.getMetatemplateTemplateReference(`-Template-Section-Postfix`, `sectionDefinition`);
 		tmpTemplate += this.getMetatemplateTemplateReference(`-Template-Wrap-Postfix`, `sectionDefinition`);
+
+		this.rebuildMacros();
 
 		this.pict.TemplateProvider.addTemplate(this.options.SectionTemplateHash, tmpTemplate);
 	}
@@ -740,6 +752,65 @@ class PictSectionFormView extends libPictViewClass
 		return this.sectionDefinition.Groups[pGroupIndex];
 	}
 
+	createDynamicTableRow(pGroupIndex)
+	{
+		let tmpGroup = this.getGroup(pGroupIndex);
+
+		if (tmpGroup)
+		{
+			let tmpDestinationObject = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+
+			if (Array.isArray(tmpDestinationObject))
+			{
+				tmpDestinationObject.push(tmpGroup.supportingManifest.populateDefaults({}))
+				this.render();
+				this.marshalToView();
+			}
+			else if (typeof(tmpDestinationObject) === 'object')
+			{
+				let tmpRowIndex = this.fable.getUUID();
+				tmpDestinationObject[tmpRowIndex] = tmpGroup.supportingManifest.populateDefaults({});
+				this.render();
+				this.marshalToView();
+			}
+		}
+	}
+
+	deleteDynamicTableRow(pGroupIndex, pRowIndex)
+	{
+		let tmpGroup = this.getGroup(pGroupIndex);
+
+		if (tmpGroup)
+		{
+			let tmpDestinationObject = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+
+			if (Array.isArray(tmpDestinationObject))
+			{
+				let tmpRowIndex = parseInt(pRowIndex, 10);
+				if (tmpDestinationObject.length <= tmpRowIndex)
+				{
+					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to delete row [${pRowIndex}] but the index is out of bounds.`);
+					return false;
+				}
+				tmpDestinationObject.splice(tmpRowIndex, 1);
+				this.render();
+				this.marshalToView();
+			}
+			else if (typeof(tmpDestinationObject) === 'object')
+			{
+				let tmpRowIndex = pRowIndex.toString();
+				if (!(tmpRowIndex in tmpDestinationObject))
+				{
+					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to delete row [${pRowIndex}] but the object does not contain this entry.`);
+					return false;
+				}
+				delete tmpDestinationObject[tmpRowIndex]
+				this.render();
+				this.marshalToView();
+			}
+		}
+	}
+
 	getRow(pGroupIndex, pRowIndex)
 	{
 		let tmpGroup = this.getGroup(pGroupIndex);
@@ -764,6 +835,11 @@ class PictSectionFormView extends libPictViewClass
 		}
 	}
 
+	getRowKeyValuePair(pGroupIndex, pRowIndex)
+	{
+		return { Key:pGroupIndex, Value:this.getRow(pGroupIndex, pRowIndex), Group:this.getGroup(pGroupIndex) };
+	}
+
 	getInput(pGroupIndex, pRowIndex, pInputIndex)
 	{
 		let tmpRow = this.getRow(pGroupIndex, pRowIndex);
@@ -785,30 +861,6 @@ class PictSectionFormView extends libPictViewClass
 		else
 		{
 			return false;
-		}
-	}
-
-	tabularKeys (pDataObject)
-	{
-		// Take an address (or a hash) and get the tabular keys for it
-		let tmpDataObject = this.getMarshalDestinationObject;
-
-		if (!pDataObject)
-		{
-			return [];
-		}
-
-		if (Array.isArray(pDataObject))
-		{
-			return pDataObject.map((pValue, pIndex) => { return { Index: pIndex }; });
-		}
-		else if (typeof(pDataObject) === 'object')
-		{
-			return Object.keys(pDataObject).map((pValue, pIndex) => { return { Index: pValue }; });
-		}
-		else
-		{
-			return [];
 		}
 	}
 

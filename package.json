@@ -26,9 +26,9 @@
     "devDependencies": {
         "browser-env": "^3.3.0",
         "jquery": "^3.7.1",
-        "pict": "^1.0.189",
+        "pict": "^1.0.195",
         "pict-application": "^1.0.18",
-        "quackage": "^1.0.29"
+        "quackage": "^1.0.30"
     },
     "dependencies": {
         "pict-provider": "^1.0.2",
