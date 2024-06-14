@@ -1,39 +1,36 @@
 module.exports = (
 {
 	"TemplatePrefix": "Pict-Forms-Basic",
-
-	"Templates":[
+	"Templates":
+	[
 		/*
-		*
-		* [ Metacontroller Templates ]
-		*
-		*/
-		// -Form-Container-Header
+		 *
+		 * [ Metacontroller Templates ]
+		 *
+		 */
+		// the form "Header", rendered once before the dynamic views, after which come the section(s), then their group(s)
 		{
 			"HashPostfix": "-Template-Form-Container-Header",
 			"Template": /*HTML*/`
-<!-- 
-Pict Form Metacontroller container Header
+<!-- Pict Form Metacontroller container Header
 
   ;,//;,    ,;/
  o:::::::;;///
 >::::::::;;\\\
   ''\\\\\'" ';\
 
-Glug glug glug Oo...
--->
+Glug glug glug Oo... -->
 <div id="Pict-{~D:Context[0].UUID~}-FormContainer" class="pict-form">`
 		},
-
-		// -Form-Container-Wrap-Prefix
+		// 
 		{
 			"HashPostfix": "-Template-Form-Container-Wrap-Prefix",
 			"Template": /*HTML*/`
 <!-- Pict Form Metacontroller container [{~D:Context[0].UUID~}] -->
-<div id="Pict-{~D:Context[0].UUID~}-FormContainer" class="pict-form">`
+<div id="Pict-{~D:Context[0].UUID~}-{~D:Record.options.Hash~}-Wrap" class="pict-form">`
 		},
-		// -Form-Container
-		// This is the DIV each section (view) renders into.
+		// the container div into which the actual view renders.
+		// if you overwrite this template, make sure this ID is available on a container somewhere or auto rendering won't work
 		{
 			"HashPostfix": "-Template-Form-Container",
 			"Template": /*HTML*/`
@@ -53,27 +50,24 @@ Glug glug glug Oo...
 
 
 		/*
-		*
-		* [ Section Wrap Templates ]
-		*
-		*/
-		// -Form-Template-Wrap-Prefix
+		 *
+		 * [ Basic Form Templates START ]
+		 *
+		 */
+		// the wrapping container for a view which is a collection of form section(s)...
 		{
 			"HashPostfix": "-Template-Wrap-Prefix",
 			"Template": /*HTML*/`
 	<!-- Pict Form Wrap Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] -->
 `
 		},
-		// -Form-Template-Wrap-Postfix
 		{
 			"HashPostfix": "-Template-Wrap-Postfix",
 			"Template": /*HTML*/`
 	<!-- Pict Form Wrap Postfix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] -->
 `
 		},
-
-
-		// -Form-Template-Section-Prefix
+		// the wrapping container for each specific section in a form... for legends and the like
 		{
 			"HashPostfix": "-Template-Section-Prefix",
 			"Template": /*HTML*/`
@@ -91,13 +85,10 @@ Glug glug glug Oo...
 `
 		},
 
-
 		/*
-		*
-		* [ Group and Row Templates (default) ]
-		*
-		*/
-		// -Form-Template-Group-Prefix
+		 * BEGIN Group and Row Templates (default)
+		 */
+		// a "group" is a cluster of inputs that are further categorized into row(s)
 		{
 			"HashPostfix": "-Template-Group-Prefix",
 			"Template": /*HTML*/`
@@ -106,7 +97,8 @@ Glug glug glug Oo...
 			<div>
 `
 		},
-		// -Form-Template-Row-Prefix
+		// row(s) are useful when our form has multiple inputs on some lines and a single on another...
+		// like city, state and zip all in the same "row" of an address form
 		{
 			"HashPostfix": "-Template-Row-Prefix",
 			"Template": /*HTML*/`
@@ -114,7 +106,6 @@ Glug glug glug Oo...
 				<div>
 `
 		},
-		// -Form-Template-Row-Postfix
 		{
 			"HashPostfix": "-Template-Row-Postfix",
 			"Template": /*HTML*/`
@@ -122,7 +113,6 @@ Glug glug glug Oo...
 				<!-- Form Template Row Postfix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 `
 		},
-		// -Form-Template-Group-Postfix
 		{
 			"HashPostfix": "-Template-Group-Postfix",
 			"Template": /*HTML*/`
@@ -130,14 +120,13 @@ Glug glug glug Oo...
 			<!-- Form Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 `
 		},
-
+		/*
+		 * END Group and Row Templates (default)
+		 */
 
 		/*
-		*
-		* [ Input Templates (Default) ]
-		*
-		*/
-		// -Form-Template-Input
+		 * BEGIN Input Templates (default)
+		 */
 		{
 			"HashPostfix": "-Template-Input",
 			"Template": /*HTML*/`
@@ -145,7 +134,6 @@ Glug glug glug Oo...
 					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 `
 		},
-		// -Form-Template-Input-DataType-String
 		{
 			"HashPostfix": "-Template-Input-DataType-String",
 			"Template": /*HTML*/`
@@ -153,7 +141,6 @@ Glug glug glug Oo...
 					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 `
 		},
-		// -Form-Template-Input-DataType-Number
 		{
 			"HashPostfix": "-Template-Input-DataType-Number",
 			"Template": /*HTML*/`
@@ -161,7 +148,6 @@ Glug glug glug Oo...
 					<span>{~D:Record.Name~}:</span> <input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 `
 		},
-		// -Form-Template-Input-InputType-TextArea
 		{
 			"HashPostfix": "-Template-Input-InputType-TextArea",
 			"Template": /*HTML*/`
@@ -169,33 +155,51 @@ Glug glug glug Oo...
 					<span>{~D:Record.Name~}:</span> <textarea {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~}></textarea>
 `
 		},
+		/*
+		 * END Input Templates (default)
+		 */
+		/*
+		 *
+		 * [ Basic Form Templates END ]
+		 *
+		 */
+
 
 
 		/*
-		*
-		* [ Tabular Templates ]
-		*
-		*/
+		 *
+		 * [ Tabular Templates START ]
+		 *
+		 */
 		{
 			"HashPostfix": "-TabularTemplate-Group-Prefix",
 			"Template": /*HTML*/`
 			<div>
 			<table>
 					<tbody>
-			<!-- Form Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+			<!-- Form Tabular Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-Group-Postfix",
+			"Template": /*HTML*/`
+				</tbody>
+			</table>
+			<div><a href="#" onclick="{~D:Record.Macro.TabularCreateRowFunctionCall~}">PICT.create</a></div>
+			</div>
+			<!-- Form Tabular Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 `
 		},
 
-
-		// These templates are meant to be an easily overridable "add buttons to the row" template.
+		/*
+		 * BEGIN Tabular Template "Extra" Columns
+		 * these are meant to be easy ways to add controls to the left or right side of a record column
+		 */
 		{
 			"HashPostfix": "-TabularTemplate-RowHeader-ExtraPrefix",
 			"Template": /*HTML*/`<!-- TabularTemplateRowHeader-ExtraPrefix -->`
 		},
-		{
-			"HashPostfix": "-TabularTemplate-Row-ExtraPrefix",
-			"Template": /*HTML*/`<!-- TabularTemplateRow-ExtraPrefix -->`
-		},
+		// because the row extension template below adds an extra column, we need to make our header have parity
 		{
 			"HashPostfix": "-TabularTemplate-RowHeader-ExtraPostfix",
 			"Template": /*HTML*/`<!-- TabularTemplateRowHeader-ExtraPostfix -->
@@ -203,12 +207,23 @@ Glug glug glug Oo...
 `
 		},
 		{
+			"HashPostfix": "-TabularTemplate-Row-ExtraPrefix",
+			"Template": /*HTML*/`<!-- TabularTemplateRow-ExtraPrefix -->`
+		},
+		// by default PICT puts a "delete row" button on the right side of a tabular templateset
+		{
 			"HashPostfix": "-TabularTemplate-Row-ExtraPostfix",
 			"Template": /*HTML*/`<!-- TabularTemplateRow-ExtraPostfix-->
 					<td><a href="#" onClick="_Pict.views['{~D:Context[0].Hash~}'].deleteDynamicTableRow({~D:Record.Group~},'{~D:Record.Key~}')">PICT.del</a></td>
 `
 		},
+		/*
+		 * END Tabular Template "Extra" Columns
+		 */
 
+		/*
+		 * BEGIN Tabular Template Header Columns
+		 */
 		{
 			"HashPostfix": "-TabularTemplate-RowHeader-Prefix",
 			"Template": /*HTML*/`
@@ -231,12 +246,13 @@ Glug glug glug Oo...
 				<tbody>
 `
 		},
-
+		/*
+		 * END Tabular Template Header Columns
+		 */
 
 		/*
-		 *
-		 * BEGINNING of the  Tabular TemplateSet metatemplate entries
-		 * 
+		 * BEGIN Tabular TemplateSet Templates (row and cell prefix/postfix ... tr/td)
+		 * (these are repeated for each "row" which is a record, and then wrap each "cell" which is a columnar input)
 		 */
 		{
 			"HashPostfix": "-TabularTemplate-Row-Prefix",
@@ -262,27 +278,12 @@ Glug glug glug Oo...
 					{~T:TabularTemplateRow-ExtraPostfix~}</tr>`
 		},
 		/*
-		 *
-		 * END of the above Tabular TemplateSet metatemplate entries
-		 * 
+		 * END Tabular TemplateSet Templates
 		 */
 
 
-		{
-			"HashPostfix": "-TabularTemplate-Group-Postfix",
-			"Template": /*HTML*/`
-				</tbody>
-			</table>
-			<div><a href="#" onclick="{~D:Record.Macro.TabularCreateRowFunctionCall~}">PICT.create</a></div>
-			</div>
-			<!-- Form Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
-`
-		},
-
 		/*
-		 *
-		 * Input Templates (tabular)
-		 *
+		 * BEGIN Tabular Input Templates
 		 */
 		{
 			"HashPostfix": "-TabularTemplate-Begin-Input",
@@ -328,6 +329,14 @@ Glug glug glug Oo...
 			"Template": /*HTML*/` {~D:Record.Macro.InputChangeHandler~}></textarea>
 `
 		}
+		/*
+		 * END Tabular Input Templates
+		 */
+		/*
+		 *
+		 * [ Tabular Templates END ]
+		 *
+		 */
 
 	]
 });

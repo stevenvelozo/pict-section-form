@@ -22,5 +22,6 @@ module.exports.default_configuration.pict_configuration = (
 	{
 		"Product": "Grademaster",
 
-		"DefaultFormManifest": require(`./manifests/Gradebook-Manifest.js`)
+		"DefaultFormManifest": require(`./manifests/Gradebook-Manifest.js`),
+		"ConfigurationOnlyViews": require(`./views/BasicContent-View-Templates.json`)
 	});
