@@ -68,6 +68,7 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			this.regenerateFormSectionTemplates();
 			this.renderFormSections();
+//			this.solve();
 			this.marshalToView();
 		}
 
@@ -324,6 +325,7 @@ module.exports.default_configuration = (
 	"AutoRender": true,
 
 	"AutoPopulateDefaultObject": true,
+	"AutoSolveBeforeRender": true,
 	"AutoPopulateAfterRender": true,
 
 	"DefaultRenderable": "Pict-Forms-Metacontainer",

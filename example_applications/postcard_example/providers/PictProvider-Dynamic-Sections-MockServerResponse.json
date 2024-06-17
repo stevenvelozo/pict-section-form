@@ -30,7 +30,11 @@
 				"Name": "Delivery Confirmation Contact Info",
 				"Hash": "Confirmation",
 				"Description": "The email address and phone number of the sender.",
-				"Groups": []
+				"Groups": [{
+							"Name": "Delivery Confirmation Information",
+							"Hash": "DeliveryConfirmationInfo",
+							"Description": "How should we tell you that it got there safely."
+						}]
 			}
 		],
 
@@ -122,7 +126,7 @@
 					"Hash":"SenderEmailAddress",
 					"Description":"The email address of the sender, for notification when the postcard is shipped.",
 					"DataType":"String"
-					,"PictForm": { "Section":"Confirmation", "Row":1, "Width":12 }
+					,"PictForm": { "Section":"DeliveryConfirmationInfo", "Row":1, "Width":12 }
 				},
 			"SenderData.PhoneNumber": 
 				{
@@ -130,7 +134,7 @@
 					"Hash":"SenderPhoneNumber",
 					"Description":"The phone number where the sender can be texted, for notification when the postcard is shipped.",
 					"DataType":"String"
-					,"PictForm": { "Section":"Confirmation", "Row":2, "Width":10, "CSSClasses": ["VeryImportantData"] }
+					,"PictForm": { "Section":"DeliveryConfirmationInfo", "Row":2, "Width":10, "CSSClasses": ["VeryImportantData"] }
 				},
 			"SenderData.ExplicitConsentToMailers": 
 				{
@@ -138,7 +142,7 @@
 					"Hash":"SenderExplicitMarketingConsent",
 					"Description":"I agree to receiving marketing material at this phone number and email address.",
 					"DataType":"Boolean"
-					,"PictForm": { "Section":"Confirmation", "Row":1, "Width":2 }
+					,"PictForm": { "Section":"DeliveryConfirmationInfo", "Row":1, "Width":2 }
 				}
 		}
 }

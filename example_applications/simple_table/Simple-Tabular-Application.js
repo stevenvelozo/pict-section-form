@@ -36,6 +36,7 @@ module.exports.default_configuration.pict_configuration = (
 							"Name": "FruitGrid",
 
 							"Layout": "Tabular",
+
 							"RecordSetAddress": "FruitData.FruityVice",
 							"RecordManifest": "FruitEditor"
 						}
@@ -45,7 +46,7 @@ module.exports.default_configuration.pict_configuration = (
 
 			"Descriptors":
 			{
-				"FruityVice":
+				"FruitData.FruityVice":
 				{
 					"Name": "Fruits of the Earth",
 					"Hash": "FruitGrid",

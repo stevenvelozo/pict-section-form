@@ -55,6 +55,20 @@ class PictSectionFormView extends libPictViewClass
 		// Initialize the section manifest -- instantiated to live only the lifecycle of this view
 		this.sectionManifest = this.fable.instantiateServiceProviderWithoutRegistration('Manifest', this.options.Manifests.Section);
 
+		// Shift solvers to an array of tasks
+		this.sectionSolvers = [];
+		// Pull in solvers
+		if (('Solvers' in this.options) && Array.isArray(this.options.Solvers))
+		{
+			for (let i = 0; i < this.options.Solvers.length; i++)
+			{
+				if (typeof(this.options.Solvers[i]) === 'string')
+				{
+					this.sectionSolvers.push(this.options.Solvers[i]);
+				}
+			}
+		}
+
 		if (!this.pict.providers.PictFormSectionDefaultTemplateProvider)
 		{
 			let tmpDefaultTemplateProvider = this.pict.addProvider('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
@@ -105,6 +119,16 @@ class PictSectionFormView extends libPictViewClass
 		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
 
 		this.initializeFormGroups();
+	}
+
+	addSolver(pSolveFunctionString)
+	{
+		return (
+			{
+				"Type": "SingleSolve",
+				"Priority": 0,
+				"SolveFunction": pSolveFunctionString
+			});
 	}
 
 	renderToPrimary()
@@ -207,6 +231,44 @@ class PictSectionFormView extends libPictViewClass
 		if (this.options.AutoMarshalDataOnSolve)
 		{
 			this.marshalFromView();
+		}
+
+		// Solve the groups
+		for (let j = 0; j < this.sectionDefinition.Groups.length; j++)
+		{
+			let tmpGroup = this.sectionDefinition.Groups[j];
+
+			if (`RecordSetSolvers` in tmpGroup)
+			{
+				for (let k = 0; k < tmpGroup.RecordSetSolvers.length; k++)
+				{
+					this.log.trace(`Dynamic View [${this.UUID}]::[${this.Hash}] solving equation ${k} [${tmpGroup.RecordSetSolvers[k]}]`);
+
+					let tmpRecordSet = this.getTabularRecordSet(j);
+
+					if (typeof(tmpRecordSet) == 'object')
+					{
+						let tmpRecordSetKeys = Object.keys(tmpRecordSet);
+						for (let l = 0; l < tmpRecordSetKeys.length; l++)
+						{
+							let tmpRecord = tmpRecordSet[tmpRecordSetKeys[l]];
+							let tmpResultsObject = {};
+							let tmpSolutionValue = this.fable.ExpressionParser.solve(tmpGroup.RecordSetSolvers[k], tmpRecord, tmpResultsObject, tmpGroup.supportingManifest, tmpRecord);
+							this.log.trace(`Group ${tmpGroup.Hash} solver ${k} [${tmpGroup.RecordSetSolvers[k]}] record ${l} result was ${tmpSolutionValue}`);
+						}
+					}
+					if (typeof(tmpRecordSet) == 'array')
+					{
+						for (let l = 0; l < tmpRecordSet.length; l++)
+						{
+							let tmpRecord = tmpRecordSet[l];
+							let tmpResultsObject = {};
+							let tmpSolutionValue = this.fable.ExpressionParser.solve(tmpGroup.RecordSetSolvers[k], tmpRecord, tmpResultsObject, tmpGroup.supportingManifest, tmpRecord);
+							this.log.trace(`Group ${tmpGroup.Hash} solver ${k} [${tmpGroup.RecordSetSolvers[k]}] record ${l} result was ${tmpSolutionValue}`);
+						}
+					}
+				}
+			}
 		}
 
 		if (Array.isArray(this.options.Solvers))
@@ -732,6 +794,18 @@ class PictSectionFormView extends libPictViewClass
 		}
 	}
 
+	getTabularRecordSet(pGroupIndex)
+	{
+		// The neat thing about how the tabular groups work is that we can make it clever about whether it's an object or an array.
+		let tmpGroup = this.getGroup(pGroupIndex);
+		if (!tmpGroup)
+		{
+			this.log.warn(`PICT View Metatemplate Helper getTabularRecordSet ${pGroupIndex} was not a valid group.`);
+			return false;
+		}
+		return this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+	}
+
 	getGroup(pGroupIndex)
 	{
 		if (isNaN(pGroupIndex))
@@ -771,6 +845,97 @@ class PictSectionFormView extends libPictViewClass
 			}
 		}
 	}
+
+	setDynamicTableRowIndex(pGroupIndex, pRowIndex, pNewRowIndex)
+	{
+		let tmpGroup = this.getGroup(pGroupIndex);
+
+		if (tmpGroup)
+		{
+			let tmpDestinationObject = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+
+			if (Array.isArray(tmpDestinationObject))
+			{
+				let tmpRowIndex = parseInt(pRowIndex, 10);
+				let tmpNewRowIndex = parseInt(pNewRowIndex, 10);
+				if ((tmpDestinationObject.length <= tmpRowIndex) || (tmpRowIndex < 0))
+				{
+					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] to [${pNewRowIndex}] but the index is out of bounds.`);
+					return false;
+				}
+				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
+				tmpDestinationObject.splice(tmpNewRowIndex, 0, tmpElementToBeMoved[0]);
+				this.render();
+				this.marshalToView();
+			}
+			else if (typeof(tmpDestinationObject) === 'object')
+			{
+				this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] to [${pNewRowIndex}] but it's an object not an array; order isn't controllable.`);
+			}
+		}
+	}
+
+	moveDynamicTableRowDown(pGroupIndex, pRowIndex)
+	{
+		let tmpGroup = this.getGroup(pGroupIndex);
+
+		if (tmpGroup)
+		{
+			let tmpDestinationObject = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+
+			if (Array.isArray(tmpDestinationObject))
+			{
+				let tmpRowIndex = parseInt(pRowIndex, 10);
+				if (tmpDestinationObject.length <= tmpRowIndex)
+				{
+					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] down but it's already at the bottom.`);
+					return false;
+				}
+				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
+				tmpDestinationObject.splice(tmpRowIndex + 1, 0, tmpElementToBeMoved[0]);
+				this.render();
+				this.marshalToView();
+			}
+			else if (typeof(tmpDestinationObject) === 'object')
+			{
+				this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but it's an object not an array; order isn't controllable.`);
+			}
+		}
+	}
+
+	moveDynamicTableRowUp(pGroupIndex, pRowIndex)
+	{
+		let tmpGroup = this.getGroup(pGroupIndex);
+
+		if (tmpGroup)
+		{
+			let tmpDestinationObject = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+
+			if (Array.isArray(tmpDestinationObject))
+			{
+				let tmpRowIndex = parseInt(pRowIndex, 10);
+				if (tmpRowIndex == 0)
+				{
+					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] up but it's already at the top.`);
+					return false;
+				}
+				if (tmpDestinationObject.length <= tmpRowIndex)
+				{
+					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but the index is out of bounds.`);
+					return false;
+				}
+				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
+				tmpDestinationObject.splice(tmpRowIndex - 1, 0, tmpElementToBeMoved[0]);
+				this.render();
+				this.marshalToView();
+			}
+			else if (typeof(tmpDestinationObject) === 'object')
+			{
+				this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but it's an object not an array; order isn't controllable.`);
+			}
+		}
+	}
+
 
 	deleteDynamicTableRow(pGroupIndex, pRowIndex)
 	{

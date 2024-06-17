@@ -185,7 +185,7 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/`
 				</tbody>
 			</table>
-			<div><a href="#" onclick="{~D:Record.Macro.TabularCreateRowFunctionCall~}">PICT.create</a></div>
+			<div><a href="#" onclick="{~D:Record.Macro.TabularCreateRowFunctionCall~}">create</a></div>
 			</div>
 			<!-- Form Tabular Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 `
@@ -203,7 +203,7 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-RowHeader-ExtraPostfix",
 			"Template": /*HTML*/`<!-- TabularTemplateRowHeader-ExtraPostfix -->
-						<th></th>
+						<th style="min-width:100px;"></th>
 `
 		},
 		{
@@ -214,7 +214,9 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-Row-ExtraPostfix",
 			"Template": /*HTML*/`<!-- TabularTemplateRow-ExtraPostfix-->
-					<td><a href="#" onClick="_Pict.views['{~D:Context[0].Hash~}'].deleteDynamicTableRow({~D:Record.Group~},'{~D:Record.Key~}')">PICT.del</a></td>
+					<td><a href="#" onClick="_Pict.views['{~D:Context[0].Hash~}'].deleteDynamicTableRow({~D:Record.Group~},'{~D:Record.Key~}')">del</a>
+					<a href="#" onClick="_Pict.views['{~D:Context[0].Hash~}'].moveDynamicTableRowUp({~D:Record.Group~},'{~D:Record.Key~}')">up</a>
+					<a href="#" onClick="_Pict.views['{~D:Context[0].Hash~}'].moveDynamicTableRowDown({~D:Record.Group~},'{~D:Record.Key~}')">down</a></td>
 `
 		},
 		/*
