@@ -36,7 +36,9 @@ module.exports.default_configuration.pict_configuration = (
 						[
 							"TotalFruitCalories = SUM(FruitNutritionCalories)",
 							"AverageFruitCalories = MEAN(FruitNutritionCalories)",
-							"AverageFatPercent = MEAN(FruitPercentTotalFat)"
+							"AverageFatPercent = MEAN(FruitPercentTotalFat)",
+							"RecipeCounterSurfaceArea = RecipeCounterWidth * RecipeCounterDepth",
+							"RecipeCounterVolume = RecipeCounterSurfaceArea * RecipeVerticalClearance",
 						],
 
 					"Groups": [
@@ -101,7 +103,7 @@ module.exports.default_configuration.pict_configuration = (
 					"PictForm": { "Section": "Recipe", "Group": "Statistics", "Row": 2, "Width": 1 }
 				},
 				"Recipe.CounterSurfaceArea": {
-					"Name": "Required Counter Surface Area", "Hash": "RecipeCounterDepth", "DataType": "PreciseNumber",
+					"Name": "Required Counter Surface Area", "Hash": "RecipeCounterSurfaceArea", "DataType": "PreciseNumber",
 					"PictForm": { "Section": "Recipe", "Group": "Statistics", "Row": 2, "Width": 1 }
 				},
 
