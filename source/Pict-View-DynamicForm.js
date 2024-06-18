@@ -1,13 +1,13 @@
 const libPictViewClass = require('pict-view');
 
-const libInformary = require('./Pict-Service-Informary.js');
-const libFormsTemplateProvider = require('./Pict-Section-Form-Provider-Templates.js');
+const libInformary = require('./Pict-Provider-Informary.js');
+const libFormsTemplateProvider = require('./Pict-Provider-DynamicTemplates.js');
 
-class PictSectionFormView extends libPictViewClass
+class PictViewDynamicForm extends libPictViewClass
 {
 	constructor(pFable, pOptions, pServiceHash)
 	{
-		let tmpOptions = Object.assign({}, require('./Pict-Section-Form-View-DefaultConfiguration.json'), pOptions);
+		let tmpOptions = Object.assign({}, require('./Pict-View-DynamicForm-DefaultConfiguration.json'), pOptions);
 
 		if (!tmpOptions.Manifests)
 		{
@@ -228,11 +228,6 @@ class PictSectionFormView extends libPictViewClass
 
 	onSolve()
 	{
-		if (this.options.AutoMarshalDataOnSolve)
-		{
-			this.marshalFromView();
-		}
-
 		// Solve the groups
 		for (let j = 0; j < this.sectionDefinition.Groups.length; j++)
 		{
@@ -1031,4 +1026,4 @@ class PictSectionFormView extends libPictViewClass
 	}
 }
 
-module.exports = PictSectionFormView;
+module.exports = PictViewDynamicForm;

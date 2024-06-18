@@ -1,6 +1,6 @@
 const libPictViewClass = require('pict-view');
 
-const libFormsTemplateProvider = require('./Pict-Section-Form-Provider-Templates.js');
+const libFormsTemplateProvider = require('./Pict-Provider-DynamicTemplates.js');
 
 // "What dependency injection in javascript?"
 //  -- Ned
@@ -17,7 +17,7 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			let tmpDefaultTemplateProvider = this.pict.addProvider('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
 			tmpDefaultTemplateProvider.initialize();
-			this.pict.addTemplate(require(`./Pict-Template-MetacontrollerValueSetWithGroup.js`));
+			this.pict.addTemplate(require(`./Pict-Template-Metacontroller-ValueSetWithGroup.js`));
 		}
 
 		this.viewMarshalDestination = 'AppData';
@@ -80,7 +80,7 @@ class PictFormMetacontroller extends libPictViewClass
 		let tmpViewList = Object.keys(this.fable.views);
 		for (let i = 0; i < tmpViewList.length; i++)
 		{
-			if (this.fable.views[tmpViewList[i]].isPictSectionForm)
+			if ((this.fable.views[tmpViewList[i]].isPictSectionForm) && (this.fable.views[tmpViewList[i]]))
 			{
 				this.fable.views[tmpViewList[i]].marshalFromView();
 			}
@@ -312,7 +312,7 @@ class PictFormMetacontroller extends libPictViewClass
 			}
 			tmpViewConfiguration.Manifests.Section = tmpManifestDescription;
 			tmpViewConfiguration.AutoMarshalDataOnSolve = this.options.AutoMarshalDataOnSolve;
-			this.fable.addView(tmpViewHash, tmpViewConfiguration, require('./Pict-Section-Form-View.js'));
+			this.fable.addView(tmpViewHash, tmpViewConfiguration, require('./Pict-View-DynamicForm.js'));
 		}
 
 		return tmpSectionList;

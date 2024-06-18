@@ -1,5 +1,6 @@
 const libFableServiceBase = require('fable-serviceproviderbase');
 
+// TODO: Separate this out into its own module so we can use it without copying it around.
 class PictTemplateProvider extends libFableServiceBase
 {
 	/**

@@ -69,7 +69,8 @@ module.exports.default_configuration.pict_configuration = (
 							"Layout": "Tabular",
 
 							"RecordSetSolvers": [
-								"PercentTotalFat = (Fat * 9) / Calories"
+								"PercentTotalFat = (Fat * 9) / Calories",
+								{"Ordinal": 1, "Solver": "Calories = SUM(FruitNutritionCalories)"}
 							],
 							"RecordSetAddress": "FruitData.FruityVice",
 							"RecordManifest": "FruitEditor"

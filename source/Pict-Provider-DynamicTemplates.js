@@ -1,6 +1,7 @@
 const libPictProvider = require('pict-provider');
 
-const _DefaultFormTemplates = require('./Pict-Section-Form-Provider-Templates-DefaultFormTemplates.js');
+const _DefaultFormTemplates = require('./Pict-Provider-DynamicTemplates-DefaultFormTemplates.js');
+
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-Section-Form-Provider-Templates-Basic",
