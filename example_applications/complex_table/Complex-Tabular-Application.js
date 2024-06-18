@@ -1,27 +1,14 @@
 const libPictSectionForm = require('../../source/Pict-Section-Form.js');
 
-class FruityGrid extends libPictSectionForm.PictFormApplication
-{
-	constructor(pFable, pOptions, pServiceHash)
-	{
-		super(pFable, pOptions, pServiceHash);
-	}
-
-	onBeforeInitialize()
-	{
-		this.log.trace(`Loading the fruitiest data ever!`);
-		this.AppData.FruitData = require('./FruitData.json');
-		this.log.trace(`... LOADED THE FRUIT!`);
-		return super.onBeforeInitialize();
-	}
-}
-
-module.exports = FruityGrid;
+module.exports = libPictSectionForm.PictFormApplication;
 
 module.exports.default_configuration = libPictSectionForm.PictFormApplication.default_configuration;
 module.exports.default_configuration.pict_configuration = (
 	{
 		"Product": "SimpleTable",
+	
+		"DefaultAppData": require('./FruitData.json'),
+
 		"DefaultFormManifest":
 		{
 			"Scope": "SuperSimpleTabularForm",
@@ -56,7 +43,6 @@ module.exports.default_configuration.pict_configuration = (
 						}
 					]
 				},
-
 				{
 					"Hash": "FruitGrid",
 					"Name": "Fruits of the World",

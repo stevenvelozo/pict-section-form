@@ -4,9 +4,9 @@ let tmpFruityData = require('../simple_table/FruitData.json');
 
 let tmpFruityViceObjectMap = {};
 
-for (let i = 0; i < tmpFruityData.FruityVice.length; i++)
+for (let i = 0; i < tmpFruityData.FruitData.FruityVice.length; i++)
 {
-	let tmpFruit = tmpFruityData.FruityVice[i];
+	let tmpFruit = tmpFruityData.FruitData.FruityVice[i];
 	tmpFruityKey = `${tmpFruit.name}${tmpFruit.family}${tmpFruit.order}${tmpFruit.genus}`;
 	tmpFruityViceObjectMap[tmpFruityKey] = tmpFruit;
 }
