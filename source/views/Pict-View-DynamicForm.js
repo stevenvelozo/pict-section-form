@@ -1,7 +1,7 @@
 const libPictViewClass = require('pict-view');
 
-const libInformary = require('./Pict-Provider-Informary.js');
-const libFormsTemplateProvider = require('./Pict-Provider-DynamicTemplates.js');
+const libInformary = require('../providers/Pict-Provider-Informary.js');
+const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
 
 class PictViewDynamicForm extends libPictViewClass
 {

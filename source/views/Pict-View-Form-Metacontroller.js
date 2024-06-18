@@ -1,6 +1,6 @@
 const libPictViewClass = require('pict-view');
 
-const libFormsTemplateProvider = require('./Pict-Provider-DynamicTemplates.js');
+const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
 
 // "What dependency injection in javascript?"
 //  -- Ned
@@ -17,7 +17,7 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			let tmpDefaultTemplateProvider = this.pict.addProvider('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
 			tmpDefaultTemplateProvider.initialize();
-			this.pict.addTemplate(require(`./Pict-Template-Metacontroller-ValueSetWithGroup.js`));
+			this.pict.addTemplate(require(`../templates/Pict-Template-Metacontroller-ValueSetWithGroup.js`));
 		}
 
 		this.viewMarshalDestination = 'AppData';

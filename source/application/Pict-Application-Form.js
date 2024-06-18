@@ -1,6 +1,6 @@
 const libPictApplication = require('pict-application');
 
-const libPictSectionForm = require('./Pict-Section-Form.js');
+const libPictSectionForm = require('../Pict-Section-Form.js');
 
 class PictSectionFormApplication extends libPictApplication
 {
