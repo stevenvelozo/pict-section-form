@@ -1,5 +1,10 @@
-const libPictTemplate = require('./Pict-Template-Base.js');
+const libPictTemplate = require('pict-template');
 
+/**
+ * This is a template that will take a value set and render a template for each value in the set.
+ * 
+ * It passes along additional context (the metacontroller group) for dynamic programming tables.
+ */
 class PictTemplateMetacontrollerValueSet extends libPictTemplate
 {
 	/**

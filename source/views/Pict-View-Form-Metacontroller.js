@@ -86,6 +86,16 @@ class PictFormMetacontroller extends libPictViewClass
 		return super.onSolve();
 	}
 
+
+	/**
+	 * Filters the views based on the provided filter and sort functions.
+	 * 
+	 * By default, filters views based on the provided filter function and sorts them based on the provided sort function.
+	 * 
+	 * @param {Function} fFilterFunction - The filter function used to determine if a view should be included.
+	 * @param {Function} fSortFunction - The sort function used to sort the filtered views.
+	 * @returns {Array} - The filtered and sorted views.
+	 */
 	filterViews(fFilterFunction, fSortFunction)
 	{
 		let tmpViewList = Object.keys(this.fable.views);
@@ -113,6 +123,14 @@ class PictFormMetacontroller extends libPictViewClass
 		return tmpFilteredViewList;
 	}
 
+	/**
+	 * Renders a specific dynamic form section based on the provided form section hash.
+	 * 
+	 * For this to work, we need the container for the section to be available on the form.
+	 *
+	 * @param {string} pFormSectionHash - The hash of the form section to render.
+	 * @returns {void}
+	 */
 	renderSpecificFormSection(pFormSectionHash)
 	{
 		let fViewFilter = (pView) => { return pView.Hash == pFormSectionHash; };
@@ -120,6 +138,14 @@ class PictFormMetacontroller extends libPictViewClass
 		this.render();
 	}
 
+	/**
+	 * Renders the form sections based on the provided filter and sort functions.
+	 * 
+	 * If no filter and sort functions are provided, render all form sections.
+	 *
+	 * @param {Function} fFilterFunction - The filter function used to filter the views.
+	 * @param {Function} fSortFunction - The sort function used to sort the views.
+	 */
 	renderFormSections(fFilterFunction, fSortFunction)
 	{
 		let tmpViewList = this.filterViews(fFilterFunction, fSortFunction);

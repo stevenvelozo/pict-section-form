@@ -2,7 +2,7 @@ const libPictProvider = require('pict-provider');
 
 const _DefaultProviderConfiguration = (
 {
-	"ProviderIdentifier": "Pict-DynamicForm-Solve",
+	"ProviderIdentifier": "Pict-DynamicForms-Solver",
 
 	"AutoInitialize": true,
 	"AutoInitializeOrdinal": 0,
@@ -10,8 +10,18 @@ const _DefaultProviderConfiguration = (
 	"AutoSolveWithApp": false
 });
 
-class PictSectionFormTemplateProvider extends libPictProvider
+/**
+ * The PictDynamicSolver class is a provider that solves configuration-generated dynamic views.
+ */
+class PictDynamicSolver extends libPictProvider
 {
+	/**
+	 * Creates an instance of the PictDynamicSolver class.
+	 * 
+	 * @param {object} pFable - The fable object.
+	 * @param {object} pOptions - The options object.
+	 * @param {object} pServiceHash - The service hash object.
+	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
@@ -33,7 +43,6 @@ class PictSectionFormTemplateProvider extends libPictProvider
 		let tmpSolver = pSolver;
 		if (tmpSolver === undefined)
 		{
-			console.log('wut');
 			return;
 		}
 		if (typeof(tmpSolver) === 'string')
@@ -60,7 +69,8 @@ class PictSectionFormTemplateProvider extends libPictProvider
 	}
 
 	/**
-	 * Runs each recordset solver formulae for a dynamic view group at a given ordinal.
+	 * Runs each RecordSet solver formulae for a dynamic view group at a given ordinal.
+	 * 
 	 * Or for all ordinals if no ordinal is passed.
 	 *
 	 * @param {array} pGroupSolverArray - An array of Solvers from the groups to solve.
@@ -82,7 +92,13 @@ class PictSectionFormTemplateProvider extends libPictProvider
 				continue;
 			}
 
-			tmpView.log.trace(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] solving RecordSet ordinal ${tmpSolver.Ordinal} [${tmpSolver.Expression}]`);
+			tmpSolver.StartTimeStamp = +new Date();
+			tmpSolver.Hash = `${pGroupSolverArray[j].ViewHash}-GroupSolver-${j}`;
+
+			if (this.pict.LogNoisiness > 1)
+			{
+				tmpView.log.trace(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] solving RecordSet ordinal ${tmpSolver.Ordinal} [${tmpSolver.Expression}]`);
+			}
 
 			let tmpRecordSet = tmpView.getTabularRecordSet(j);
 
@@ -92,9 +108,12 @@ class PictSectionFormTemplateProvider extends libPictProvider
 				for (let l = 0; l < tmpRecordSetKeys.length; l++)
 				{
 					let tmpRecord = tmpRecordSet[tmpRecordSetKeys[l]];
-					let tmpResultsObject = {};
-					let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpRecord, tmpResultsObject, tmpGroup.supportingManifest, tmpRecord);
-					tmpView.log.trace(`Group ${tmpGroup.Hash} [${tmpSolver.Expression}] record ${l} result was ${tmpSolutionValue}`);
+					tmpSolver.ResultsObject = {};
+					let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpRecord, tmpSolver.ResultsObject, tmpGroup.supportingManifest, tmpRecord);
+					if (this.pict.LogNoisiness > 1)
+					{
+						tmpView.log.trace(`Group ${tmpGroup.Hash} [${tmpSolver.Expression}] record ${l} result was ${tmpSolutionValue}`);
+					}
 				}
 			}
 			if (typeof(tmpRecordSet) == 'array')
@@ -102,16 +121,20 @@ class PictSectionFormTemplateProvider extends libPictProvider
 				for (let l = 0; l < tmpRecordSet.length; l++)
 				{
 					let tmpRecord = tmpRecordSet[l];
-					let tmpResultsObject = {};
-					let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpRecord, tmpResultsObject, tmpGroup.supportingManifest, tmpRecord);
-					tmpView.log.trace(`Group ${tmpGroup.Hash} [${tmpSolver.Expression}] record ${l} result was ${tmpSolutionValue}`);
+					tmpSolver.ResultsObject = {};
+					let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpRecord, tmpSolver.ResultsObject, tmpGroup.supportingManifest, tmpRecord);
+					if (this.pict.LogNoisiness > 1)
+					{
+						tmpView.log.trace(`Group ${tmpGroup.Hash} [${tmpSolver.Expression}] record ${l} result was ${tmpSolutionValue}`);
+					}
 				}
 			}
+			tmpSolver.EndTimeStamp = +new Date();
 		}
 	}
 
 	/**
-	 * Executes the section solvers.
+	 * Executes the section solvers at a given ordinal (or all if no ordinal is passed).
 	 *
 	 * @param {Array} pViewSectionSolverArray - The array of view section solvers.
 	 * @param {number} pOrdinal - The ordinal value.
@@ -129,16 +152,26 @@ class PictSectionFormTemplateProvider extends libPictProvider
 				continue;
 			}
 
+			tmpSolver.StartTimeStamp = +new Date();
+			tmpSolver.Hash = `${pViewSectionSolverArray[i].ViewHash}-SectionSolver-${i}`;
+
 			// TODO: Precompile the solvers (it's super easy)
-			tmpView.log.trace(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] solving equation ${i} ordinal ${tmpSolver.Ordinal} [${tmpView.options.Solvers[i]}]`);
-			let tmpResultsObject = {};
-			let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpView.getMarshalDestinationObject(), tmpResultsObject, tmpView.sectionManifest, tmpView.getMarshalDestinationObject());
-			tmpView.log.trace(`[${tmpSolver.Expression}] result was ${tmpSolutionValue}`);
+			if (this.pict.LogNoisiness > 1)
+			{
+				tmpView.log.trace(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] solving equation ${i} ordinal ${tmpSolver.Ordinal} [${tmpView.options.Solvers[i]}]`);
+			}
+			tmpSolver.ResultsObject = {};
+			let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpView.getMarshalDestinationObject(), tmpSolver.ResultsObject, tmpView.sectionManifest, tmpView.getMarshalDestinationObject());
+			if (this.pict.LogNoisiness > 1)
+			{
+				tmpView.log.trace(`[${tmpSolver.Expression}] result was ${tmpSolutionValue}`);
+			}
+			tmpSolver.EndTimeStamp = +new Date();
 		}
 	}
 
 	/**
-	 * Executes the view solvers for the given array of views.
+	 * Executes the view solvers for the given array of view hashes.
 	 *
 	 * @param {Array} pViewSolverArray - The array of view solvers to execute.
 	 * @param {number} pOrdinal - The ordinal value.
@@ -150,17 +183,32 @@ class PictSectionFormTemplateProvider extends libPictProvider
 		for (let i = 0; i < pViewSolverArray.length; i++)
 		{
 			let tmpSolver = this.checkSolver(pViewSolverArray[i].Solver, tmpFiltered, pOrdinal);
+			tmpSolver.Hash = `${pViewSolverArray[i].ViewHash}-ViewSolve-${i}`;
+			tmpSolver.StartTimeStamp = +new Date();
 			if (typeof(tmpSolver) === 'undefined')
 			{
 				continue;
 			}
-			// Solve a normal view
-			tmpView.log.trace(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] running solve() on view [${pViewSolverArray[i].ViewHash}`);
+			if (this.pict.LogNoisiness > 1)
+			{
+				tmpView.log.trace(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] running solve() on view [${pViewSolverArray[i].ViewHash}`);
+			}
+			// Solve with the normal view solve() pipeline
 			let tmpView = this.pict.views[pViewSolverArray[i].ViewHash];
 			tmpView.solve();
+			tmpSolver.EndTimeStamp = +new Date();
 		}
 	}
 
+	/**
+	 * Checks if the given ordinal exists in the provided ordinal set. 
+	 * 
+	 * If not, it adds the ordinal to the set.
+	 * 
+	 * @param {number} pOrdinal - The ordinal to check.
+	 * @param {Object} pOrdinalSet - The ordinal set to check against.
+	 * @returns {Object} - The ordinal object from the ordinal set.
+	 */
 	checkAutoSolveOrdinal (pOrdinal, pOrdinalSet)
 	{
 		if (!(pOrdinal.toString() in pOrdinalSet))
@@ -179,7 +227,7 @@ class PictSectionFormTemplateProvider extends libPictProvider
 	 * order across two dimensions:
 	 * 
 	 * 1. The order of the views in the view hash array.
-	 * 2. Precedence order
+	 * 2. Precedence order (based on Ordinal)
 	 * 
 	 * The way it manages the precedence order solving is by enumerating the 
 	 * view hash array multiple times until it exhausts the solution set.
@@ -197,8 +245,12 @@ class PictSectionFormTemplateProvider extends libPictProvider
 		this.log.trace(`Dynamic View Provider [${this.UUID}]::[${this.Hash}] solving views.`);
 		let tmpViewHashes = Array.isArray(pViewHashes) ? pViewHashes : Object.keys(this.fable.views);
 
-		let tmpOrdinalsToSolve = {};
+		let tmpSolveOutcome = {};
+		tmpSolveOutcome.StartTimeStamp = +new Date();
+		tmpSolveOutcome.ViewHashes = tmpViewHashes;
 
+		let tmpOrdinalsToSolve = {};
+		tmpSolveOutcome.SolveOrdinals = tmpOrdinalsToSolve;
 		for (let i = 0; i < tmpViewHashes.length; i++)
 		{
 			let tmpView = this.fable.views[tmpViewHashes[i]];
@@ -250,15 +302,22 @@ class PictSectionFormTemplateProvider extends libPictProvider
 		// Now enumerate the keys and solve each layer of the solution set
 		for (let i = 0; i < tmpOrdinalKeys.length; i++)
 		{
+			if (this.pict.LogNoisiness > 1)
+			{
+				this.log.trace(`DynamicSolver [${this.UUID}]::[${this.Hash}] Solving ordinal ${tmpOrdinalKeys[i]}`);
+			}
 			let tmpOrdinalContainer = tmpOrdinalsToSolve[tmpOrdinalKeys[i]];
 			this.executeGroupSolvers(tmpOrdinalContainer.GroupSolvers, tmpOrdinalKeys[i]);
 			this.executeSectionSolvers(tmpOrdinalContainer.SectionSolvers, tmpOrdinalKeys[i]);
 			this.executeViewSolvers(tmpOrdinalContainer.ViewSolvers, tmpOrdinalKeys[i]);
 		}
-		
-		console.log(tmpOrdinalsToSolve);
+
+		tmpSolveOutcome.EndTimeStamp = +new Date();
+
+		// It's up to the developer to decide if they want to use this information somewhere.
+		this.lastSolveOutcome = tmpSolveOutcome;
 	}
 }
 
-module.exports = PictSectionFormTemplateProvider;
+module.exports = PictDynamicSolver;
 module.exports.default_configuration = _DefaultProviderConfiguration;

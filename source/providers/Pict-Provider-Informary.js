@@ -3,7 +3,7 @@ const libPictProvider = require('pict-provider');
 // TODO: Pull this back to pict as a core service once we are happy with the shape.
 const _DefaultProviderConfiguration = (
 {
-	"ProviderIdentifier": "Pict-Section-Form-Provider-Informary",
+	"ProviderIdentifier": "Pict-DynamicForms-Informary",
 
 	"AutoInitialize": false,
 	"AutoInitializeOrdinal": 0,
@@ -11,8 +11,18 @@ const _DefaultProviderConfiguration = (
 	"AutoSolveWithApp": false
 });
 
-class PictServiceInformary extends libPictProvider
+/**
+ * Represents a provider for dynamic forms in the PICT system.
+ * Extends the `libPictProvider` class.
+ */
+class PictDynamicFormsInformary extends libPictProvider
 {
+	/**
+	 * Creates an instance of the `PictDynamicFormsInformary` class.
+	 * @param {object} pFable - The fable object.
+	 * @param {object} pOptions - The options object.
+	 * @param {object} pServiceHash - The service hash object.
+	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
@@ -22,6 +32,12 @@ class PictServiceInformary extends libPictProvider
 		this.genericManifest = this.pict.newManyfest({Scope:'GenericInformary'});		
 	}
 
+	/**
+	 * Retrieves all form elements for a given form hash.
+	 *
+	 * @param {string} pFormHash - The hash of the form.
+	 * @returns {HTMLElement[]} - An array of HTML elements representing the form elements.
+	 */
 	getFormElements(pFormHash)
 	{
 		let tmpSelector = `[data-i-form="${pFormHash}"]`;
@@ -29,6 +45,17 @@ class PictServiceInformary extends libPictProvider
 		return this.pict.ContentAssignment.getElement(tmpSelector);
 	}
 
+	/**
+	 * Get a full content browser address based on the form, datum and optionally the container and index.
+	 * 
+	 * This can be used in getDomElementByAddress or jquery selectors to return the element.
+	 *
+	 * @param {string} pFormHash - The form hash.
+	 * @param {string} pDatumHash - The datum hash.
+	 * @param {string|null} pContainer - The container (optional).
+	 * @param {number} pIndex - The index.
+	 * @returns {string} The content browser address.
+	 */
 	getContentBrowserAddress(pFormHash, pDatumHash, pContainer, pIndex)
 	{
 		// TODO: Need some guards, yo
@@ -42,12 +69,26 @@ class PictServiceInformary extends libPictProvider
 		}
 	}
 
+	/**
+	 * Returns the composed container address string for a given container, index, and datum hash.
+	 *
+	 * @param {string} pContainer - The container name.
+	 * @param {number} pIndex - The index of the container.
+	 * @param {string} pDatumHash - The datum hash.
+	 * @returns {string} The composed container address.
+	 */
 	getComposedContainerAddress(pContainer, pIndex, pDatumHash)
 	{
 		return `${pContainer}[${pIndex}].${pDatumHash}`;
 	}
 
-	// TODO: DRY or bust.  Later.
+	/**
+	 * Marshals form data to the provided application state data object using the given form hash and manifest.
+	 *
+	 * @param {object} pAppStateData - The application state data object to marshal the form data to.
+	 * @param {string} pFormHash - The form hash representing the form elements.
+	 * @param {object} pManifest - The manifest object used to map form data to the application state data.
+	 */
 	marshalFormToData(pAppStateData, pFormHash, pManifest)
 	{
 		let tmpManifest = typeof(pManifest) === 'object' ? pManifest : this.genericManifest;
@@ -85,6 +126,13 @@ class PictServiceInformary extends libPictProvider
 		}
 	}
 
+	/**
+	 * Marshals data from some application state object to a specific subset of browser form elements.
+	 *
+	 * @param {object} pAppStateData - The application state data to marshal into the form.  Usually AppData but can be other objects.
+	 * @param {string} pFormHash - The hash of the form to marshal data into.  This is the data-i-form attribute.
+	 * @param {object} pManifest - The manifest object.  If not provided, the generic manifest is used.
+	 */
 	marshalDataToForm(pAppStateData, pFormHash, pManifest)
 	{
 		let tmpManifest = typeof(pManifest) === 'object' ? pManifest : this.genericManifest;
@@ -130,5 +178,5 @@ class PictServiceInformary extends libPictProvider
 	}
 }
 
-module.exports = PictServiceInformary;
+module.exports = PictDynamicFormsInformary;
 module.exports.default_configuration = _DefaultProviderConfiguration;

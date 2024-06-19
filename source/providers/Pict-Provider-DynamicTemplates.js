@@ -4,7 +4,7 @@ const _DefaultFormTemplates = require('./Pict-Provider-DynamicTemplates-DefaultF
 
 const _DefaultProviderConfiguration = (
 {
-	"ProviderIdentifier": "Pict-Section-Form-Provider-Templates-Basic",
+	"ProviderIdentifier": "Pict-DynamicForms-MetaTemplates-Basic",
 
 	"AutoInitialize": true,
 	"AutoInitializeOrdinal": 0,
@@ -12,7 +12,7 @@ const _DefaultProviderConfiguration = (
 	"AutoSolveWithApp": false
 });
 
-class PictSectionFormTemplateProvider extends libPictProvider
+class PictDynamicFormsTemplates extends libPictProvider
 {
 	constructor(pFable, pOptions, pServiceHash)
 	{
@@ -29,12 +29,12 @@ class PictSectionFormTemplateProvider extends libPictProvider
 		this.formsTemplateSetPrefix = '';
 		this.formsTemplateSet = {};
 
-		if (!('TemplatePrefix' in this.options.MetaTemplateSet) && (this.options.ProviderIdentifier == 'Pict-Section-Form-Provider-Templates-Basic'))
+		if (!('TemplatePrefix' in this.options.MetaTemplateSet) && (this.options.ProviderIdentifier == 'Pict-DynamicForms-MetaTemplates-Basic'))
 		{
 			// The default template prefix is 'Pict-Forms-Basic'
 			this.formsTemplateSetPrefix = _DefaultFormTemplates.TemplatePrefix;
 		}
-		else if (!('TemplatePrefix' in this.options.MetaTemplateSet) && (this.options.ProviderIdentifier != 'Pict-Section-Form-Provider-Templates-Basic'))
+		else if (!('TemplatePrefix' in this.options.MetaTemplateSet) && (this.options.ProviderIdentifier != 'Pict-DynamicForms-MetaTemplates-Basic'))
 		{
 			this.log.error(`No TemplatePrefix defined in the provider options.MetaTemplateSet.TemplatePrefix -- Provider [${this.UUID}]::[${this.Hash}].  Templates will not be loaded.`);
 		}
@@ -86,5 +86,5 @@ class PictSectionFormTemplateProvider extends libPictProvider
 	}
 }
 
-module.exports = PictSectionFormTemplateProvider;
+module.exports = PictDynamicFormsTemplates;
 module.exports.default_configuration = _DefaultProviderConfiguration;

@@ -85,12 +85,6 @@ class PictViewDynamicForm extends libPictViewClass
 			let tmpDynamicSolver = this.pict.addProvider('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
 			tmpDynamicSolver.initialize();
 		}
-		// This is for if we decide to abstract metatemplates into a separate provider for code simplification
-		// if (!this.pict.providers.PictFormSectionMetatemplateGenerator)
-		// {
-		// 	let tmpMetatemplateGenerator = this.pict.addProvider('PictFormSectionMetatemplateGenerator', libFormsMetatemplateGenerator.default_configuration, libFormsMetatemplateGenerator);
-		// 	tmpMetatemplateGenerator.initialize();
-		// }
 
 		// Load any view section-specific templates
 		this.formsTemplateSetPrefix = `PFT-${this.Hash}-${this.UUID}`;
@@ -125,16 +119,6 @@ class PictViewDynamicForm extends libPictViewClass
 		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
 
 		this.initializeFormGroups();
-	}
-
-	addSolver(pSolveFunctionString)
-	{
-		return (
-			{
-				"Type": "SingleSolve",
-				"Priority": 0,
-				"SolveFunction": pSolveFunctionString
-			});
 	}
 
 	renderToPrimary()
