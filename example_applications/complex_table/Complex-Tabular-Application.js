@@ -23,7 +23,7 @@ module.exports.default_configuration.pict_configuration = (
 						[
 							"TotalFruitCalories = SUM(FruitNutritionCalories)",
 							"AverageFruitCalories = MEAN(FruitNutritionCalories)",
-							"AverageFatPercent = MEAN(FruitPercentTotalFat)",
+							{ "Ordinal": 99, "Expression": "AverageFatPercent = MEAN(FruitPercentTotalFat)"},
 							"RecipeCounterSurfaceArea = RecipeCounterWidth * RecipeCounterDepth",
 							"RecipeCounterVolume = RecipeCounterSurfaceArea * RecipeVerticalClearance",
 						],
@@ -55,8 +55,7 @@ module.exports.default_configuration.pict_configuration = (
 							"Layout": "Tabular",
 
 							"RecordSetSolvers": [
-								"PercentTotalFat = (Fat * 9) / Calories",
-								{"Ordinal": 1, "Solver": "Calories = SUM(FruitNutritionCalories)"}
+								{"Ordinal": 0, "Expression": "PercentTotalFat = (Fat * 9) / Calories"}
 							],
 							"RecordSetAddress": "FruitData.FruityVice",
 							"RecordManifest": "FruitEditor"

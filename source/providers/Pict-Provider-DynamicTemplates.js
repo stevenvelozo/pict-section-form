@@ -81,6 +81,8 @@ class PictSectionFormTemplateProvider extends libPictProvider
 		{
 			this.pict.TemplateProvider.addTemplate(this.formsTemplateSet[tmpTemplateList[i]].Hash, this.formsTemplateSet[tmpTemplateList[i]].Template);
 		}
+
+		this.pict.addTemplate(require(`../templates/Pict-Template-Metacontroller-ValueSetWithGroup.js`));
 	}
 }
 

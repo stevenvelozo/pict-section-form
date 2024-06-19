@@ -1,6 +1,7 @@
 const libPictViewClass = require('pict-view');
 
 const libInformary = require('../providers/Pict-Provider-Informary.js');
+const libDynamicSolver = require('../providers/Pict-Provider-DynamicSolver.js');
 const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
 
 class PictViewDynamicForm extends libPictViewClass
@@ -78,6 +79,11 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			let tmpInformary = this.pict.addProvider('Informary', libInformary.default_configuration, libInformary);
 			tmpInformary.initialize();
+		}
+		if (!this.pict.providers.DynamicSolver)
+		{
+			let tmpDynamicSolver = this.pict.addProvider('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
+			tmpDynamicSolver.initialize();
 		}
 		// This is for if we decide to abstract metatemplates into a separate provider for code simplification
 		// if (!this.pict.providers.PictFormSectionMetatemplateGenerator)
@@ -228,58 +234,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 	onSolve()
 	{
-		// Solve the groups
-		for (let j = 0; j < this.sectionDefinition.Groups.length; j++)
-		{
-			let tmpGroup = this.sectionDefinition.Groups[j];
-
-			if (`RecordSetSolvers` in tmpGroup)
-			{
-				for (let k = 0; k < tmpGroup.RecordSetSolvers.length; k++)
-				{
-					this.log.trace(`Dynamic View [${this.UUID}]::[${this.Hash}] solving equation ${k} [${tmpGroup.RecordSetSolvers[k]}]`);
-
-					let tmpRecordSet = this.getTabularRecordSet(j);
-
-					if (typeof(tmpRecordSet) == 'object')
-					{
-						let tmpRecordSetKeys = Object.keys(tmpRecordSet);
-						for (let l = 0; l < tmpRecordSetKeys.length; l++)
-						{
-							let tmpRecord = tmpRecordSet[tmpRecordSetKeys[l]];
-							let tmpResultsObject = {};
-							let tmpSolutionValue = this.fable.ExpressionParser.solve(tmpGroup.RecordSetSolvers[k], tmpRecord, tmpResultsObject, tmpGroup.supportingManifest, tmpRecord);
-							this.log.trace(`Group ${tmpGroup.Hash} solver ${k} [${tmpGroup.RecordSetSolvers[k]}] record ${l} result was ${tmpSolutionValue}`);
-						}
-					}
-					if (typeof(tmpRecordSet) == 'array')
-					{
-						for (let l = 0; l < tmpRecordSet.length; l++)
-						{
-							let tmpRecord = tmpRecordSet[l];
-							let tmpResultsObject = {};
-							let tmpSolutionValue = this.fable.ExpressionParser.solve(tmpGroup.RecordSetSolvers[k], tmpRecord, tmpResultsObject, tmpGroup.supportingManifest, tmpRecord);
-							this.log.trace(`Group ${tmpGroup.Hash} solver ${k} [${tmpGroup.RecordSetSolvers[k]}] record ${l} result was ${tmpSolutionValue}`);
-						}
-					}
-				}
-			}
-		}
-
-		if (Array.isArray(this.options.Solvers))
-		{
-			for (let i = 0; i < this.options.Solvers.length; i++)
-			{
-				// TODO: Precompile the solvers (it's super easy)
-				this.log.trace(`Dynamic View [${this.UUID}]::[${this.Hash}] solving equation ${i} [${this.options.Solvers[i]}]`);
-
-				let tmpResultsObject = {};
-
-				let tmpSolutionValue = this.fable.ExpressionParser.solve(this.options.Solvers[i], this.getMarshalDestinationObject(), tmpResultsObject, this.sectionManifest, this.getMarshalDestinationObject());
-
-				this.log.trace(`[${this.options.Solvers[i]}] result was ${tmpSolutionValue}`);
-			}
-		}
+		this.pict.providers.DynamicSolver.solveViews([this.Hash]);
 
 		if (this.options.AutoMarshalDataOnSolve)
 		{
@@ -581,7 +536,7 @@ class PictViewDynamicForm extends libPictViewClass
 			return tmpBeginTemplate + tmpAddressTemplate + tmpEndTemplate;
 		}
 	
-		// There wasn't some k ind of catastrophic failure -- the above templates should always be loaded.
+		// There was some kind of catastrophic failure -- the above templates should always be loaded.
 		this.log.error(`PICT Form [${this.UUID}]::[${this.Hash}] catastrophic error generating tabular metatemplate: missing input template for Data Type ${pDataType} and Input Type ${pInputType}, Data Address ${pViewDataAddress} and Record Subaddress ${pRecordSubAddress}}.`)
 		return '';
 	}
@@ -665,7 +620,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 		
 							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Cell-Prefix`, `getTabularRecordInput("${i}","${k}")`);
-							let tmpInputType = ('PictForm' in tmpInput) ? tmpInput.PictForm.InputType : 'Default';
+							let tmpInputType = (('PictForm' in tmpInput) && tmpInput.PictForm.InputType) ? tmpInput.PictForm.InputType : 'Default';
 							tmpTemplateSetRecordRowTemplate += this.getTabularInputMetatemplateTemplateReference(tmpInput.DataType, tmpInputType, `getTabularRecordInput("${i}","${k}")`, k);
 							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Cell-Postfix`, `getTabularRecordInput("${i}","${k}")`);
 						}

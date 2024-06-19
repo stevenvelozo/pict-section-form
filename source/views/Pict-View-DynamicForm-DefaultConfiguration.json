@@ -1,5 +1,6 @@
 {
 	"AutoRender": false,
+	"AutoSolveWithApp": false,
 
 	"DefaultRenderable": "Form-Main",
 	"DefaultDestinationAddress": "#Pict-Form-Container",

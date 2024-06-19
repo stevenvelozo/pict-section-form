@@ -1,6 +1,11 @@
 const libPictViewClass = require('pict-view');
+const libDynamicSolver = require('../providers/Pict-Provider-DynamicSolver.js');
 
 const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
+
+// TODO: Create an internalized list of views for this to manage, separate from the pict.views object
+// TODO: Manage view lifecycle internally, including destruction
+// Why?  This allows us to dynamically add and remove sections without having to reload the application.
 
 // "What dependency injection in javascript?"
 //  -- Ned
@@ -15,9 +20,12 @@ class PictFormMetacontroller extends libPictViewClass
 
 		if (!this.pict.providers.PictFormSectionDefaultTemplateProvider)
 		{
-			let tmpDefaultTemplateProvider = this.pict.addProvider('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
-			tmpDefaultTemplateProvider.initialize();
-			this.pict.addTemplate(require(`../templates/Pict-Template-Metacontroller-ValueSetWithGroup.js`));
+			this.pict.addProvider('PictFormSectionDefaultTemplateProvider', {}, libFormsTemplateProvider);
+		}
+		if (!this.pict.providers.DynamicSolver)
+		{
+			let tmpDynamicSolver = this.pict.addProvider('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
+			tmpDynamicSolver.initialize();
 		}
 
 		this.viewMarshalDestination = 'AppData';
@@ -55,10 +63,8 @@ class PictFormMetacontroller extends libPictViewClass
 	{
 		// This is safe -- if there is no settings.DefaultFormManifest configuration, it just doesn't do anything
 		this.bootstrapPictFormViewsFromManifest();
-
 		// Generate the metatemplate (the container for each section)
 		this.generateMetatemplate();
-
 		return super.onAfterInitializeAsync(fCallback);
 	}
 
@@ -68,7 +74,6 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			this.regenerateFormSectionTemplates();
 			this.renderFormSections();
-//			this.solve();
 			this.marshalToView();
 		}
 
@@ -77,14 +82,7 @@ class PictFormMetacontroller extends libPictViewClass
 
 	onSolve()
 	{
-		let tmpViewList = Object.keys(this.fable.views);
-		for (let i = 0; i < tmpViewList.length; i++)
-		{
-			if ((this.fable.views[tmpViewList[i]].isPictSectionForm) && (this.fable.views[tmpViewList[i]]))
-			{
-				this.fable.views[tmpViewList[i]].marshalFromView();
-			}
-		}
+		this.pict.providers.DynamicSolver.solveViews();
 		return super.onSolve();
 	}
 
@@ -131,6 +129,12 @@ class PictFormMetacontroller extends libPictViewClass
 		}
 	}
 
+	/**
+	 * Regenerates the DyunamicForm section templates based on the provided filter and sort function.
+	 *
+	 * @param {Function} fFormSectionFilter - (optional) The filter function used to determine which views to include in the regeneration.
+	 * @param {Function} fSortFunction - (optional) The sort function used to determine the order of the views in the regeneration.
+	 */
 	regenerateFormSectionTemplates(fFormSectionFilter, fSortFunction)
 	{
 		let tmpViewList = this.filterViews(fFormSectionFilter, fSortFunction);
@@ -142,6 +146,13 @@ class PictFormMetacontroller extends libPictViewClass
 		this.pict.CSSMap.injectCSS();
 	}
 
+	/**
+	 * Generates a meta template for the DynamicForm views managed by this Metacontroller.
+	 *
+	 * @param {Function} fFormSectionFilter - (optional) The filter function to apply on the form section.
+	 * @param {Function} fSortFunction - (optional) The sort function to apply on the form section.
+	 * @returns {void}
+	 */
 	generateMetatemplate(fFormSectionFilter, fSortFunction)
 	{
 		let tmpTemplate = ``;
@@ -168,6 +179,12 @@ class PictFormMetacontroller extends libPictViewClass
 		this.pict.TemplateProvider.addTemplate(this.options.MetaTemplateHash, tmpTemplate);
 	}
 
+	/**
+	 * Retrieves a safe clone of the section definition for a given manyfest section description object.
+	 *
+	 * @param {object} pSectionObject - The section object.
+	 * @returns {object|boolean} - The section definition if successful, otherwise false.
+	 */
 	getSectionDefinition(pSectionObject)
 	{
 		if (typeof(pSectionObject) != 'object')
@@ -211,6 +228,12 @@ class PictFormMetacontroller extends libPictViewClass
 		}
 	}
 
+	/**
+	 * Bootstraps Pict DynamicForm views from a Manyfest description JSON object.
+	 * 
+	 * @param {Object} pManifestDescription - The manifest description object.
+	 * @returns {Array} - An array of section definitions.
+	 */
 	bootstrapPictFormViewsFromManifest(pManifestDescription)
 	{
 		let tmpManifestDescription = (typeof(pManifestDescription) === 'object') ? pManifestDescription : false;
@@ -316,6 +339,11 @@ class PictFormMetacontroller extends libPictViewClass
 		}
 
 		return tmpSectionList;
+	}
+
+	get isPictMetacontroller()
+	{
+		return true;
 	}
 }
 
