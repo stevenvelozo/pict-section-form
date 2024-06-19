@@ -31,16 +31,30 @@ class PostcardApplication extends libPictApplication
 	changeToDefaultTheme()
 	{
 		this.pict.views.PictFormMetacontroller.formTemplatePrefix = _Pict.providers.PictFormSectionDefaultTemplateProvider.formsTemplateSetPrefix
+		// This generates the container metatemplates after we switch themes.
+		this.pict.views.PictFormMetacontroller.generateMetatemplate();
+		// This generates the view templates for each dynamic view generated from config.
 		this.pict.views.PictFormMetacontroller.regenerateFormSectionTemplates();
+		// Now render the new containers for the dynamic sections
+		this.pict.views.PictFormMetacontroller.render();
+		// This renders each of the dynamic view form sections.
 		this.pict.views.PictFormMetacontroller.renderFormSections();
+		// This puts the data into the view from AppData after it's rendered.
 		this.marshalDataFromAppDataToView();
 	}
 
 	changeToPostcardTheme()
 	{
 		this.pict.views.PictFormMetacontroller.formTemplatePrefix = _Pict.providers['Postcard-Default-Theme-Provider'].formsTemplateSetPrefix;
+		// This generates the container metatemplates after we switch themes.
+		this.pict.views.PictFormMetacontroller.generateMetatemplate();
+		// This generates the view templates for each dynamic view generated from config.
 		this.pict.views.PictFormMetacontroller.regenerateFormSectionTemplates();
+		// Now render the new containers for the dynamic sections
+		this.pict.views.PictFormMetacontroller.render();
+		// This renders each of the dynamic view form sections.
 		this.pict.views.PictFormMetacontroller.renderFormSections();
+		// This puts the data into the view from AppData after it's rendered.
 		this.marshalDataFromAppDataToView();
 	}
 
@@ -55,6 +69,7 @@ class PostcardApplication extends libPictApplication
 
 		this.pict.views.PostcardNavigation.render()
 		this.pict.views.PostcardMainApplication.render();
+		this.changeToPostcardTheme();
 		this.pict.views.PictFormMetacontroller.render();
 
 		return super.onAfterInitialize(fCallback);
