@@ -51,7 +51,7 @@ class PictDynamicSolver extends libPictProvider
 		}
 		if (!('Expression' in tmpSolver))
 		{
-			pView.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] group ${tmpGroup.Hash} solver ${k} is missing the Expression property.`);
+			this.pict.log.error(`Dynamic View solver ${pOrdinal} is missing the Expression property.`, { Solver: pSolver });
 			return;
 		}
 		if (!(`Ordinal` in tmpSolver))
@@ -116,7 +116,7 @@ class PictDynamicSolver extends libPictProvider
 					}
 				}
 			}
-			if (typeof(tmpRecordSet) == 'array')
+			if (Array.isArray(tmpRecordSet))
 			{
 				for (let l = 0; l < tmpRecordSet.length; l++)
 				{
@@ -183,12 +183,12 @@ class PictDynamicSolver extends libPictProvider
 		for (let i = 0; i < pViewSolverArray.length; i++)
 		{
 			let tmpSolver = this.checkSolver(pViewSolverArray[i].Solver, tmpFiltered, pOrdinal);
-			tmpSolver.Hash = `${pViewSolverArray[i].ViewHash}-ViewSolve-${i}`;
-			tmpSolver.StartTimeStamp = +new Date();
 			if (typeof(tmpSolver) === 'undefined')
 			{
 				continue;
 			}
+			tmpSolver.Hash = `${pViewSolverArray[i].ViewHash}-ViewSolve-${i}`;
+			tmpSolver.StartTimeStamp = +new Date();
 			if (this.pict.LogNoisiness > 1)
 			{
 				tmpView.log.trace(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] running solve() on view [${pViewSolverArray[i].ViewHash}`);

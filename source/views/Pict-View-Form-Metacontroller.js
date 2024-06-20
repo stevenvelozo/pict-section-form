@@ -249,7 +249,7 @@ class PictFormMetacontroller extends libPictViewClass
 		}
 		catch(pError)
 		{
-			this.log.error('getSectionDefinition() failed to parse the section object.');
+			this.log.error(`getSectionDefinition() failed to parse the section object with error: ${pError.message || pError}`);
 			return false;
 		}
 	}

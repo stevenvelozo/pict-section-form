@@ -13,12 +13,10 @@ class PictViewDynamicForm extends libPictViewClass
 		if (!tmpOptions.Manifests)
 		{
 			throw new Error('PictSectionForm instantiation attempt without a Manifests in pOptions.Manifest -- cannot instantiate.');
-			return;
 		}
 		if (!('Section' in tmpOptions.Manifests))
 		{
 			throw new Error('PictSectionForm instantiation attempt without a Section manifest in pOptions.Manifests -- cannot instantiate.');
-			return;
 		}
 
 		// Set the default destination address to be based on the section hash if it hasn't been overridden by the manifest section definition
