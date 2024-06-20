@@ -7,6 +7,8 @@
 const libBrowserEnv = require('browser-env')
 libBrowserEnv();
 
+const libPictView = require('pict-view');
+
 const Chai = require('chai');
 const Expect = Chai.expect;
 
@@ -15,6 +17,38 @@ const libPict = require('pict');
 const libPictSectionForm = require('../source/Pict-Section-Form.js');
 
 const manifestPostcard = require('../example_applications/postcard_example/providers/PictProvider-Dynamic-Sections-MockServerResponse.json');
+
+class DoNothingApplication extends libPictSectionForm.PictFormApplication
+{
+	constructor(pFable, pOptions, pServiceHash)
+	{
+		super(pFable, pOptions, pServiceHash);
+
+		this.pict.addView('DoNothingView', {}, DoNothingView);
+	}
+
+	/**
+	 * @param {function} fDone - Callback that finishes the test
+	 */
+	set testDone(fDone)
+	{
+		this._testDone = fDone;
+	}
+
+	onAfterInitialize()
+	{
+		this.solve();
+		this._testDone();
+	}
+}
+
+class DoNothingView extends libPictView
+{
+	constructor(pict, configuration)
+	{
+		super(pict, configuration);
+	}
+}
 
 suite
 (
@@ -48,6 +82,59 @@ suite
 
 								Expect(_PictSectionForm).to.be.an('object');
 								return fDone();
+							}
+						);
+					});
+		suite
+			(
+				'Solver Tests',
+				() =>
+				{
+					test(
+							'No-Op Solve',
+							(fDone) =>
+							{
+								//NOTE: code is a clone of Pict.safeLoadPictApplication
+								let _Pict;
+								if (DoNothingApplication && ('default_configuration' in DoNothingApplication) && ('pict_configuration' in DoNothingApplication.default_configuration))
+								{
+									_Pict = new libPict(DoNothingApplication.default_configuration.pict_configuration);
+								}
+								else
+								{
+									_Pict = new libPict();
+								}
+
+								_Pict.LogNoisiness = 1;
+
+								let tmpApplicationHash = 'DefaultApplication';
+								let tmpDefaultConfiguration = {};
+
+								if ('default_configuration' in DoNothingApplication)
+								{
+									tmpDefaultConfiguration = DoNothingApplication.default_configuration;
+
+									if ('Hash' in DoNothingApplication.default_configuration)
+									{
+										tmpDefaultConfiguration = DoNothingApplication.default_configuration;
+										tmpApplicationHash = DoNothingApplication.default_configuration.Hash;
+									}
+								}
+								_Pict.log.info(`Loading the pict application [${tmpApplicationHash}] and associated views.`);
+
+								_Pict.addApplication(tmpApplicationHash, tmpDefaultConfiguration, DoNothingApplication);
+
+								_Pict.PictApplication.testDone = fDone;
+
+								_Pict.PictApplication.initializeAsync(
+									function (pError)
+									{
+										if (pError)
+										{
+											console.log('Error initializing the pict application: '+pError)
+										}
+										_Pict.log.info('Loading the Application and associated views.');
+									});
 							}
 						);
 				}

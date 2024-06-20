@@ -19,16 +19,22 @@
         "tests": "npx mocha -u tdd --exit -R spec --grep",
         "coverage": "npx nyc --reporter=lcov --reporter=text-lcov npx mocha -- -u tdd -R spec",
         "build": "npx quack build",
-        "test": "npx mocha -u tdd -R spec"
+        "test": "npx mocha -u tdd -R spec",
+        "lint": "eslint source/**",
+        "types": "npx -p typescript tsc -p . --outDir types"
     },
+    "types": "types/Pict-Section-Form.d.ts",
     "author": "steven velozo <steven@velozo.com>",
     "license": "MIT",
     "devDependencies": {
+        "@eslint/js": "^9.4.0",
         "browser-env": "^3.3.0",
+        "eslint": "^9.4.0",
         "jquery": "^3.7.1",
         "pict": "^1.0.200",
         "pict-application": "^1.0.18",
-        "quackage": "^1.0.30"
+        "quackage": "^1.0.30",
+        "typescript": "^5.4.5"
     },
     "dependencies": {
         "fable-serviceproviderbase": "^3.0.13",

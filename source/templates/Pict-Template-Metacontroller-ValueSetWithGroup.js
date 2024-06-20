@@ -128,7 +128,7 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 		{
 			for (let i = 0; i < tmpData.length; i++)
 			{
-				tmpDataValueSet.push({ Value: tmpData[i], Key: i, Group: tmpGroupIndex });
+				tmpDataValueSet.push({ Value: tmpData[i], Key: i, });
 			}
 		}
 		else if (typeof (tmpData) === 'object')
@@ -136,7 +136,7 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 			let tmpValueKeys = Object.keys(tmpData);
 			for (let i = 0; i < tmpValueKeys.length; i++)
 			{
-				tmpDataValueSet.push({ Value: tmpData[tmpValueKeys[i]], Key: tmpValueKeys[i], Group: tmpGroupIndex  });
+				tmpDataValueSet.push({ Value: tmpData[tmpValueKeys[i]], Key: tmpValueKeys[i] });
 			}
 		}
 		else
