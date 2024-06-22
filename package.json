@@ -31,7 +31,7 @@
         "browser-env": "^3.3.0",
         "eslint": "^9.4.0",
         "jquery": "^3.7.1",
-        "pict": "^1.0.200",
+        "pict": "^1.0.201",
         "pict-application": "^1.0.18",
         "quackage": "^1.0.30",
         "typescript": "^5.4.5"
@@ -39,7 +39,7 @@
     "dependencies": {
         "fable-serviceproviderbase": "^3.0.13",
         "pict-provider": "^1.0.2",
-        "pict-template": "^1.0.1",
+        "pict-template": "^1.0.2",
         "pict-view": "^1.0.47"
     },
     "mocha": {

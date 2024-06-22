@@ -155,6 +155,14 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span> <textarea {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~}></textarea>
 `
 		},
+		{
+			"HashPostfix": "-Template-Input-InputType-Option",
+			"Template": /*HTML*/`
+					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span> <select id="SELECT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}"></select>
+`
+		},
 		/*
 		 * END Input Templates (default)
 		 */
@@ -293,9 +301,15 @@ Glug glug glug Oo... -->
 					<!-- DEFAULT Input {~"D:Record.Hash~} {~D:Record.DataType~} -->
 					<input type="text" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
 		},
+
 		{
-			"HashPostfix": "-TabularTemplate-End-Input",
-			"Template": /*HTML*/` {~D:Record.Macro.InputChangeHandler~} value="">`
+			"HashPostfix": "-TabularTemplate-Mid-Input",
+			"Template": /*HTML*/`  `
+		},
+
+		{
+			"HashPostfix": "-TabularTemplate-InformaryAddress-Input",
+			"Template": /*HTML*/` data-i-index="{~D:Context[2].Key~}" data-i-cooooool="cools" onchange="_Pict.views['{~D:Context[0].Hash~}'].dataChangedTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"  `
 		},
 
 		{
@@ -306,7 +320,7 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-String",
-			"Template": /*HTML*/` {~D:Record.Macro.InputChangeHandler~} value="">`
+			"Template": /*HTML*/` value="">`
 		},
 
 		{
@@ -317,7 +331,7 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-Number",
-			"Template": /*HTML*/` {~D:Record.Macro.InputChangeHandler~} value="">
+			"Template": /*HTML*/` value="">
 `
 		},
 		{
@@ -328,9 +342,22 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-TextArea",
-			"Template": /*HTML*/` {~D:Record.Macro.InputChangeHandler~}></textarea>
+			"Template": /*HTML*/` ></textarea>
 `
-		}
+		},
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Option",
+			"Template": /*HTML*/`
+					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" id="SELECT-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-Option",
+			"Template": /*HTML*/` value="">
+					<select id="SELECT-TABULAR-DROPDOWN-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" data-i-pictselect="SELECT-TABULAR-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="_Pict.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"></select>
+`
+		},
+
 		/*
 		 * END Tabular Input Templates
 		 */

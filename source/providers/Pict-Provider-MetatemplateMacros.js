@@ -2,7 +2,7 @@ const libPictProvider = require('pict-provider');
 
 const _DefaultProviderConfiguration = (
 {
-	"ProviderIdentifier": "Pict-Section-Form-Provider-MetatemplateGenerator",
+	"ProviderIdentifier": "Pict-Section-Form-Provider-MetatemplateMacros",
 
 	"AutoInitialize": true,
 	"AutoInitializeOrdinal": 0,
@@ -10,7 +10,7 @@ const _DefaultProviderConfiguration = (
 	"AutoSolveWithApp": false
 })
 
-class PictMetatemplateGenerator extends libPictProvider
+class PictMetatemplateMacros extends libPictProvider
 {
 	constructor(pFable, pOptions, pServiceHash)
 	{
@@ -20,7 +20,7 @@ class PictMetatemplateGenerator extends libPictProvider
 	}
 }
 
-module.exports = PictMetatemplateGenerator;
+module.exports = PictMetatemplateMacros;
 module.exports.default_configuration = _DefaultProviderConfiguration;
 
 

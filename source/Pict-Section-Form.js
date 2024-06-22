@@ -7,6 +7,9 @@ module.exports.default_configuration = require('./views/Pict-View-DynamicForm-De
 // The base provider class for form section templates; meant to be subclassed
 module.exports.PictFormTemplateProvider = require('./providers/Pict-Provider-DynamicTemplates.js');
 
+// The base provider class for Input Extensions
+module.exports.PictInputExtensionProvider = require('./providers/Pict-Provider-InputExtension.js');
+
 // The metacontroller view
 module.exports.PictFormMetacontroller = require('./views/Pict-View-Form-Metacontroller.js');
 

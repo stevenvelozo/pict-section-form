@@ -22,12 +22,20 @@
 			"Informary": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\" ",
 			"InformaryTabular": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\" data-i-container=\"{~D:Record.PictForm.InformaryContainerAddress~}\" ",
 
+			"HTMLSelector": "[data-i-form=\"{~D:Context[0].formID~}\"][data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\"]",
+			"HTMLSelectorTabular": "[data-i-form=\"{~D:Context[0].formID~}\"][data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\"][data-i-container=\"{~D:Record.PictForm.InformaryContainerAddress~}\"]",
+
+			"RawHTMLID": "{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}",
+
 			"HTMLName": " name=\"{~D:Record.Name~}\" ",
+			"HTMLIDAddress": "#{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}",
 			"HTMLID": " id=\"{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}\" ",
 			"HTMLForID": " for=\"{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}\" ",
 
 			"InputFullProperties": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\"  name=\"{~D:Record.Name~}\" ",
-			"InputChangeHandler": " onchange=\"_Pict.views['{~D:Context[0].Hash~}'].dataChanged('{~D:Record.Hash~}')\" "
+			"InputChangeHandler": " onchange=\"_Pict.views['{~D:Context[0].Hash~}'].dataChanged('{~D:Record.Hash~}')\" ",
+
+			"DataRequestFunction": " _Pict.views['{~D:Context[0].Hash~}'].inputDataRequest('{~D:Record.Hash~}'); "
 		}
 	},
 

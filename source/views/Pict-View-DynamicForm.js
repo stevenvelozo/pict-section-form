@@ -20,32 +20,35 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 
 		// Set the default destination address to be based on the section hash if it hasn't been overridden by the manifest section definition
-		if (tmpOptions.DefaultDestinationAddress == '#Pict-Form-Container')
+		if (tmpOptions.DefaultDestinationAddress === '#Pict-Form-Container')
 		{
 			tmpOptions.DefaultDestinationAddress = `#Pict-Form-Container-${tmpOptions.Hash}`;
 		}
 
-		if (tmpOptions.DefaultRenderable == 'Form-Main')
+		// Set the default renderable to be based on the section hash if it hasn't been overridden by the manifest section definition
+		if (tmpOptions.DefaultRenderable === 'Form-Main')
 		{
 			tmpOptions.DefaultRenderable = `Form-${tmpOptions.Hash}`;
 		}
 
+		// Set the template hash (which is the section-specific template prefix) if it hasn't been overridden by the manifest section definition
 		if (!tmpOptions.SectionTemplateHash)
 		{
 			tmpOptions.SectionTemplateHash = `Pict-Form-Template-${tmpOptions.Hash}`;
 		}
 
+		// Create a renderable if none exist
 		if (tmpOptions.Renderables.length < 1)
 		{
 			tmpOptions.Renderables.push(
 				{
 					RenderableHash: tmpOptions.DefaultRenderable,
 					TemplateHash: tmpOptions.SectionTemplateHash,
-					// one of append, prepend, replace or append_once
 					RenderMethod: 'replace'
 				});
 		}
 
+		// Now construct the view.
 		super(pFable, tmpOptions, pServiceHash);
 
 		// Pull in the section definition
@@ -108,30 +111,99 @@ class PictViewDynamicForm extends libPictViewClass
 
 		this.formID = `Pict-Form-${this.Hash}-${this.UUID}`;
 
-		// Informary is very old and requires jquery.
-		// TODO: Refactor informary to be a pict service, eliminating this need entirely.
-
 		this.viewMarshalDestination = false;
-
-		// Initialize the solver service if it isn't up
-		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
 
 		this.initializeFormGroups();
 	}
 
-	renderToPrimary()
-	{
-		// Render to the primary view that the 
-		let tmpDefaultDestinationAddress = (this.pict.views.PictFormMetacontroller) ? this.pict.views.PictFormMetacontroller.options.DefaultDestinationAddress :
-											this.options.DefaultDestinationAddress;
-		this.render(this.options.DefaultRenderable, tmpDefaultDestinationAddress);
-	}
-
 	dataChanged(pInputHash)
 	{
-		// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
-		// TODO: Determine best pattern for allowing others to override this without subclassing this.  Maybe a registered provider type?
-		this.marshalFromView();
+		let tmpInput = this.getInputFromHash(pInputHash);
+ 		// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
+		// TODO: Make this more specific to the input hash.  Should be trivial with new informary.
+		if (pInputHash)
+		{
+			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
+			let tmpHashAddress = this.sectionManifest.resolveHashAddress(pInputHash);
+			try
+			{
+				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
+				this.pict.providers.Informary.marshalFormToData(tmpMarshalDestinationObject, this.formID, this.sectionManifest, tmpHashAddress);
+				// Now run any providers connected to this input
+				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+				{
+					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
+					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+					{
+						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
+						{
+							this.pict.providers[tmpInput.PictForm.Providers[i]].onDataChange(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+						}
+						else
+						{
+							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}].`);
+						}
+					}
+				}
+			}
+			catch (pError)
+			{
+				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) data from view in dataChanged event: ${pError}`);
+			}
+		}
+		else
+		{
+			this.marshalFromView();
+		}
+		// Run any dynamic input providers for the input hash.
+		this.pict.PictApplication.solve();
+		this.marshalToView();
+	}
+
+	dataChangedTabular(pGroupIndex, pInputIndex, pRowIndex)
+	{
+		let tmpInput = this.getTabularRecordInput(pGroupIndex, pInputIndex);
+		if (pGroupIndex && pInputIndex && pRowIndex && tmpInput)
+		{
+			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
+			let tmpHashAddress = tmpInput.Address;
+			try
+			{
+				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
+				this.pict.providers.Informary.marshalFormToData(tmpMarshalDestinationObject, this.formID, this.sectionManifest, tmpHashAddress, pRowIndex);
+
+				// Now run any providers connected to this input
+				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+				{
+					// TODO: Can we simplify this?
+					let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
+					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
+					// Each row has a distinct address!
+					let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
+					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+					{
+						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
+						{
+							this.pict.providers[tmpInput.PictForm.Providers[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
+						}
+						else
+						{
+							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
+						}
+					}
+				}
+			}
+			catch (pError)
+			{
+				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
+			}
+		}
+		else
+		{
+			// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
+			this.marshalFromView();
+		}
+		// Run any dynamic input providers for the input hash.
 		this.pict.PictApplication.solve();
 		this.marshalToView();
 	}
@@ -185,17 +257,17 @@ class PictViewDynamicForm extends libPictViewClass
 
 	onMarshalToView()
 	{
+		// TODO: Only marshal data that has changed since the last marshal.  Thought experiment: who decides what changes happened?
 		try
 		{
 			let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
-
-			this.pict.providers.Informary.marshalDataToForm(tmpMarshalDestinationObject, this.formID);
+			this.pict.providers.Informary.marshalDataToForm(tmpMarshalDestinationObject, this.formID, this.sectionManifest);
+			this.runInputProviderFunctions('onDataMarshalToForm');
 		}
 		catch (pError)
 		{
 			this.log.error(`Gross error marshaling data to view: ${pError}`);
 		}
-
 		return super.onMarshalToView();
 	}
 
@@ -204,8 +276,7 @@ class PictViewDynamicForm extends libPictViewClass
 		try
 		{
 			let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
-
-			this.pict.providers.Informary.marshalFormToData(tmpMarshalDestinationObject, this.formID);
+			this.pict.providers.Informary.marshalFormToData(tmpMarshalDestinationObject, this.formID, this.sectionManifest);
 		}
 		catch (pError)
 		{
@@ -223,6 +294,125 @@ class PictViewDynamicForm extends libPictViewClass
 			this.marshalToView();
 		}
 		return super.onSolve();
+	}
+
+	onAfterRender()
+	{
+		this.runInputProviderFunctions('onInputInitialize');
+	}
+
+	runInputProviderFunctions(pFunctionName)
+	{
+		// Check to see if there are any hooks set from the input templates
+		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
+		{
+			let tmpGroup = this.sectionDefinition.Groups[i];
+
+			if (Array.isArray(tmpGroup.Rows))
+			{
+				for (let j = 0; j < tmpGroup.Rows.length; j++)
+				{
+					// TODO: Do we want row macros?  Let's be still and find out.
+					let tmpRow = tmpGroup.Rows[j];
+					for (let k = 0; k < tmpRow.Inputs.length; k++)
+					{
+						let tmpInput = tmpRow.Inputs[k];
+						// Now run any providers connected to this input
+						if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+						{
+							for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+							{
+								if (this.pict.providers[tmpInput.PictForm.Providers[i]])
+								{
+									let tmpHashAddress = this.sectionManifest.resolveHashAddress(tmpInput.Hash);
+									let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpHashAddress);
+									this.pict.providers[tmpInput.PictForm.Providers[i]][pFunctionName](this, tmpGroup, j, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+								}
+								else
+								{
+									this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}].`);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if (tmpGroup.supportingManifest)
+			{
+				let tmpSupportingManifestDescriptorKeys = Object.keys(tmpGroup.supportingManifest.elementDescriptors);
+				for (let k = 0; k < tmpSupportingManifestDescriptorKeys.length; k++)
+				{
+					let tmpTabularRecordSet = this.getTabularRecordSet(tmpGroup.GroupIndex);
+					// No data in the record set, no events to push to providers.
+					if (!tmpTabularRecordSet)
+					{
+						continue;
+					}
+
+					let tmpTabularRecordSetLength = 0;
+
+					if (Array.isArray(tmpTabularRecordSet))
+					{
+						let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];
+						// Now run any providers connected to this input
+						if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm))
+						{
+							for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+							{
+								for (let r = 0; r < tmpTabularRecordSet.length; r++)
+								{
+									if (this.pict.providers[tmpInput.PictForm.Providers[i]])
+									{
+										// There is a provider, we have an input and it is supposed to be run through for a record
+										let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, r, tmpInput.PictForm.InformaryDataAddress);
+										let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
+										this.pict.providers[tmpInput.PictForm.Providers[i]][pFunctionName+'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r);
+									}
+									else
+									{
+										this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}].`);
+									}
+								}
+							}
+						}
+					}
+					else if (typeof(tmpTabularRecordSet) === 'object')
+					{
+						let tmpRecordSetKeys = Object.keys(tmpTabularRecordSet);
+						let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];
+						// Now run any providers connected to this input
+						if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm))
+						{
+							for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+							{
+								for (let r = 0; r < tmpRecordSetKeys.length; r++)
+								{
+									if (this.pict.providers[tmpInput.PictForm.Providers[i]])
+									{
+										// There is a provider, we have an input and it is supposed to be run through for a record
+										let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, tmpRecordSetKeys[r], tmpInput.PictForm.InformaryDataAddress);
+										let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
+										this.pict.providers[tmpInput.PictForm.Providers[i]][pFunctionName+'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, tmpRecordSetKeys[r]);
+									}
+									else
+									{
+										this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}].`);
+									}
+								}
+							}
+						}
+					}
+
+				}
+			}
+		}		
+	}
+
+	onAfterMarshalToForm()
+	{
+		// Check to see if there are any hooks set from the input templates
+		this.runInputProviderFunctions('onAfterMarshalToForm');
 	}
 
 	initializeFormGroups()
@@ -414,13 +604,13 @@ class PictViewDynamicForm extends libPictViewClass
 	checkViewSpecificTemplate(pTemplatePostfix)
 	{
 		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
-		return (`${this.formsTemplateSetPrefix}${pTemplatePostfix}` in this.pict.TemplateProvider.templates)
+		return (`${this.formsTemplateSetPrefix}${pTemplatePostfix}` in this.pict.TemplateProvider.templates);
 	}
 
 	checkThemeSpecificTemplate(pTemplatePostfix)
 	{
 		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
-		return (`${this.defaultTemplatePrefix}${pTemplatePostfix}` in this.pict.TemplateProvider.templates)
+		return (`${this.defaultTemplatePrefix}${pTemplatePostfix}` in this.pict.TemplateProvider.templates);
 	}
 
 	getMetatemplateTemplateReferenceRaw(pTemplatePostfix, pRawTemplateDataAddress)
@@ -428,12 +618,12 @@ class PictViewDynamicForm extends libPictViewClass
 		// 1. Check if there is a section-specific template loaded
 		if (this.checkViewSpecificTemplate(pTemplatePostfix))
 		{
-			return `\n{~T:${this.formsTemplateSetPrefix}${pTemplatePostfix}:${pRawTemplateDataAddress}~}`
+			return `\n{~T:${this.formsTemplateSetPrefix}${pTemplatePostfix}:${pRawTemplateDataAddress}~}`;
 		}
 		// 2. Check if there is a theme-specific template loaded for this postfix
 		else if (this.checkThemeSpecificTemplate(pTemplatePostfix))
 		{
-			return `\n{~T:${this.defaultTemplatePrefix}${pTemplatePostfix}:${pRawTemplateDataAddress}~}`
+			return `\n{~T:${this.defaultTemplatePrefix}${pTemplatePostfix}:${pRawTemplateDataAddress}~}`;
 		}
 		// 3. This shouldn't happen if the template is based on the base class.
 		else
@@ -475,28 +665,33 @@ class PictViewDynamicForm extends libPictViewClass
 		return this.getMetatemplateTemplateReference('-Template-Input', pViewDataAddress);
 	}
 
-	getTabularInputMetatemplateTemplateReference(pDataType, pInputType, pViewDataAddress, pRecordSubAddress)
+	getTabularInputMetatemplateTemplateReference(pDataType, pInputType, pViewDataAddress, pGroupIndex, pRowIndex)
 	{
 		// Input types are customizable -- there could be 30 different input types for the string data type with special handling and templates
 		let tmpTemplateBeginInputTypePostfix = `-TabularTemplate-Begin-Input-InputType-${pInputType}`;
+		let tmpTemplateMidInputTypePostfix = `-TabularTemplate-Mid-Input-InputType-${pInputType}`;
 		let tmpTemplateEndInputTypePostfix = `-TabularTemplate-End-Input-InputType-${pInputType}`;
 		// Data types are not customizable; they are a fixed list based on what is available in Manyfest
 		let tmpTemplateBeginDataTypePostfix = `-TabularTemplate-Begin-Input-DataType-${pDataType}`;
+		let tmpTemplateMidDataTypePostfix = `-TabularTemplate-Mid-Input-DataType-${pDataType}`;
 		let tmpTemplateEndDataTypePostfix = `-TabularTemplate-End-Input-DataType-${pDataType}`;
 
 		// Tabular inputs are done in three parts -- the "begin", the "address" of the data and the "end".
 
 		// This means it is easily extensible to work on JSON objects as well as arrays.
-		let tmpAddressTemplate = ` data-i-index="{~D:Record.Key~}" `;
+		let tmpMidTemplate = this.getMetatemplateTemplateReference('-TabularTemplate-Mid-Input', pViewDataAddress, pGroupIndex, pRowIndex);
+		let tmpInformaryDataAddressTemplate = this.getMetatemplateTemplateReference('-TabularTemplate-InformaryAddress-Input', pViewDataAddress, pGroupIndex, pRowIndex);
 
 		// First check if there is an "input type" template available in either the section-specific configuration or in the general
 		if (pInputType)
 		{
 			let tmpBeginTemplate = this.getMetatemplateTemplateReference(tmpTemplateBeginInputTypePostfix, pViewDataAddress);
 			let tmpEndTemplate = this.getMetatemplateTemplateReference(tmpTemplateEndInputTypePostfix, pViewDataAddress);
+			let tmpCustomMidTemplate = this.getMetatemplateTemplateReference(tmpTemplateMidInputTypePostfix, pViewDataAddress, pGroupIndex, pRowIndex);
+			tmpMidTemplate = (tmpCustomMidTemplate) ? tmpCustomMidTemplate : tmpMidTemplate;
 			if (tmpBeginTemplate && tmpEndTemplate)
 			{
-				return tmpBeginTemplate + tmpAddressTemplate + tmpEndTemplate;
+				return tmpBeginTemplate + tmpMidTemplate + tmpInformaryDataAddressTemplate + tmpEndTemplate;
 			}
 		}
 
@@ -505,7 +700,9 @@ class PictViewDynamicForm extends libPictViewClass
 		let tmpEndTemplate = this.getMetatemplateTemplateReference(tmpTemplateEndDataTypePostfix, pViewDataAddress);
 		if (tmpBeginTemplate && tmpEndTemplate)
 		{
-			return tmpBeginTemplate + tmpAddressTemplate + tmpEndTemplate;
+			let tmpCustomMidTemplate = this.getMetatemplateTemplateReference(tmpTemplateMidDataTypePostfix, pViewDataAddress, pGroupIndex, pRowIndex);
+			tmpMidTemplate = (tmpCustomMidTemplate) ? tmpCustomMidTemplate : tmpMidTemplate;
+			return tmpBeginTemplate + tmpMidTemplate + tmpInformaryDataAddressTemplate + tmpEndTemplate;
 		}
 	
 
@@ -515,11 +712,11 @@ class PictViewDynamicForm extends libPictViewClass
 		tmpEndTemplate = this.getMetatemplateTemplateReference('TabularTemplate-End-Input', pViewDataAddress);
 		if (tmpBeginTemplate && tmpEndTemplate)
 		{
-			return tmpBeginTemplate + tmpAddressTemplate + tmpEndTemplate;
+			return tmpBeginTemplate + tmpMidTemplate + tmpInformaryDataAddressTemplate + tmpEndTemplate;
 		}
 	
 		// There was some kind of catastrophic failure -- the above templates should always be loaded.
-		this.log.error(`PICT Form [${this.UUID}]::[${this.Hash}] catastrophic error generating tabular metatemplate: missing input template for Data Type ${pDataType} and Input Type ${pInputType}, Data Address ${pViewDataAddress} and Record Subaddress ${pRecordSubAddress}}.`)
+		this.log.error(`PICT Form [${this.UUID}]::[${this.Hash}] catastrophic error generating tabular metatemplate: missing input template for Data Type ${pDataType} and Input Type ${pInputType}, Data Address ${pViewDataAddress}, Group Index ${pGroupIndex} and Record Subaddress ${pRowIndex}}.`)
 		return '';
 	}
 
@@ -577,8 +774,6 @@ class PictViewDynamicForm extends libPictViewClass
 					tmpTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-RowHeader-Prefix`, `getGroup("${i}")`);
 					tmpTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-RowHeader-ExtraPrefix`, `getGroup("${i}")`);
 
-					tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Row-Prefix`, `getGroup("${i}")`);
-
 					for (let j = 0; j < tmpGroup.Rows.length; j++)
 					{
 
@@ -597,16 +792,20 @@ class PictViewDynamicForm extends libPictViewClass
 						{
 							let tmpSupportingManifestHash = tmpGroup.supportingManifest.elementAddresses[k];
 							let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
+							// Update the InputIndex to match the current render config
+							tmpInput.PictForm.InputIndex = k;
+							tmpInput.PictForm.GroupIndex = tmpGroup.GroupIndex;
 
 							tmpTemplate += this.getMetatemplateTemplateReference('-TabularTemplate-HeaderCell', `getTabularRecordInput("${i}","${k}")`);
 
 		
 							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Cell-Prefix`, `getTabularRecordInput("${i}","${k}")`);
 							let tmpInputType = (('PictForm' in tmpInput) && tmpInput.PictForm.InputType) ? tmpInput.PictForm.InputType : 'Default';
-							tmpTemplateSetRecordRowTemplate += this.getTabularInputMetatemplateTemplateReference(tmpInput.DataType, tmpInputType, `getTabularRecordInput("${i}","${k}")`, k);
+							tmpTemplateSetRecordRowTemplate += this.getTabularInputMetatemplateTemplateReference(tmpInput.DataType, tmpInputType, `getTabularRecordInput("${i}","${k}")`, i, k);
 							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Cell-Postfix`, `getTabularRecordInput("${i}","${k}")`);
 						}
 					}
+
 					tmpTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-RowHeader-ExtraPostfix`, `getGroup("${i}")`);
 					tmpTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-RowHeader-Postfix`, `getGroup("${i}")`);
 
@@ -614,9 +813,11 @@ class PictViewDynamicForm extends libPictViewClass
 					// The recursion here is difficult to envision without drawing it.
 					// TODO: Consider making this function available in manyfest in some fashion it seems dope.
 					let tmpTemplateSetVirtualRowTemplate = '';
+					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Row-Prefix`, `getGroup("${i}")`);
 					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReferenceRaw(`-TabularTemplate-Row-ExtraPrefix`, `Record`);
 					tmpTemplateSetVirtualRowTemplate += `\n\n{~T:${tmpGroup.SectionTabularRowTemplateHash}:Record~}\n`;
 					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReferenceRaw(`-TabularTemplate-Row-ExtraPostfix`, `Record`);
+					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReference(`-TabularTemplate-Row-Postfix`, `getGroup("${i}")`);
 
 					// This is a custom template expression
 					tmpTemplate += `\n\n{~MTVS:${tmpGroup.SectionTabularRowVirtualTemplateHash}:${tmpGroup.GroupIndex}:${this.getMarshalDestinationAddress()}.${tmpGroup.RecordSetAddress}~}\n`;
@@ -639,6 +840,9 @@ class PictViewDynamicForm extends libPictViewClass
 						for (let k = 0; k < tmpRow.Inputs.length; k++)
 						{
 							let tmpInput = tmpRow.Inputs[k];
+							// Update the InputIndex to match the current render config
+							tmpInput.PictForm.InputIndex = k;
+							tmpInput.PictForm.GroupIndex = tmpGroup.GroupIndex;
 
 							tmpTemplate += this.getInputMetatemplateTemplateReference(tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("${i}","${j}","${k}")`);
 						}
@@ -933,6 +1137,11 @@ class PictViewDynamicForm extends libPictViewClass
 		return { Key:pGroupIndex, Value:this.getRow(pGroupIndex, pRowIndex), Group:this.getGroup(pGroupIndex) };
 	}
 
+	getInputFromHash(pInputHash)
+	{
+		return this.sectionManifest.getDescriptorByHash(pInputHash);
+	}
+
 	getInput(pGroupIndex, pRowIndex, pInputIndex)
 	{
 		let tmpRow = this.getRow(pGroupIndex, pRowIndex);
@@ -955,6 +1164,85 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			return false;
 		}
+	}
+
+	inputDataRequest(pInputHash)
+	{
+		let tmpInput = this.getInputFromHash(pInputHash);
+		if (pInputHash)
+		{
+			let tmpHashAddress = this.sectionManifest.resolveHashAddress(pInputHash);
+			try
+			{
+				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
+				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+				{
+					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
+					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+					{
+						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
+						{
+							this.pict.providers[tmpInput.PictForm.Providers[i]].onDataRequest(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+						}
+						else
+						{
+							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] inputDataRequest cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}].`);
+						}
+					}
+				}
+			}
+			catch (pError)
+			{
+				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error running inputDataRequest specific (${pInputHash}) data from view in dataChanged event: ${pError}`);
+			}
+		}
+		else
+		{
+			this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find input hash [${pInputHash}] for inputDataRequest event.`);
+		}
+	}
+
+	inputDataRequestTabular(pGroupIndex, pInputIndex, pRowIndex)
+	{
+		let tmpInput = this.getTabularRecordInput(pGroupIndex, pInputIndex);
+		if (pGroupIndex && pInputIndex && pRowIndex && tmpInput)
+		{
+			try
+			{
+				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
+				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+				{
+					// TODO: Can we simplify this?
+					let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
+					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
+
+					let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
+					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+					{
+						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
+						{
+							this.pict.providers[tmpInput.PictForm.Providers[i]].onDataRequestTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
+						}
+						else
+						{
+							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
+						}
+					}
+				}
+			}
+			catch (pError)
+			{
+				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
+			}
+		}
+		else
+		{
+			// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
+			this.marshalFromView();
+		}
+		// Run any dynamic input providers for the input hash.
+		this.pict.PictApplication.solve();
+		this.marshalToView();
 	}
 
 	get isPictSectionForm()

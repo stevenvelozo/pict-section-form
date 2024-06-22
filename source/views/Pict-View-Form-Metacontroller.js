@@ -1,4 +1,5 @@
 const libPictViewClass = require('pict-view');
+
 const libDynamicSolver = require('../providers/Pict-Provider-DynamicSolver.js');
 
 const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
@@ -70,10 +71,11 @@ class PictFormMetacontroller extends libPictViewClass
 
 	onAfterRender()
 	{
+		this.regenerateFormSectionTemplates();
+		this.renderFormSections();
+
 		if (this.options.AutoPopulateAfterRender)
 		{
-			this.regenerateFormSectionTemplates();
-			this.renderFormSections();
 			this.marshalToView();
 		}
 

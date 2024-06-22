@@ -1,5 +1,8 @@
 const libPictProvider = require('pict-provider');
 
+const libDynamicMetaLists = require('./Pict-Provider-MetaLists.js');
+const libInputSelect = require('./inputs/Pict-Provider-Input-Select.js');
+
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-Solver",
@@ -26,6 +29,20 @@ class PictDynamicSolver extends libPictProvider
 	{
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
 		super(pFable, tmpOptions, pServiceHash);
+
+		// Initialize the solver service if it isn't up
+		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
+
+		if (!this.pict.providers.DynamicMetaLists)
+		{
+			let tmpDynamicMetaLists = this.pict.addProvider('DynamicMetaLists', libDynamicMetaLists.default_configuration, libDynamicMetaLists);
+			tmpDynamicMetaLists.initialize();
+		}
+		if (!this.pict.providers['Pict-Input-Select']);
+		{
+			let tmpInputSelectProvider = this.pict.addProvider('Pict-Input-Select', libInputSelect.default_configuration, libInputSelect);
+			tmpInputSelectProvider.initialize();
+		}
 	}
 
 	/**
@@ -311,6 +328,9 @@ class PictDynamicSolver extends libPictProvider
 			this.executeSectionSolvers(tmpOrdinalContainer.SectionSolvers, tmpOrdinalKeys[i]);
 			this.executeViewSolvers(tmpOrdinalContainer.ViewSolvers, tmpOrdinalKeys[i]);
 		}
+
+		// Now regenerate the metalists .. after the solve has happened.
+		this.pict.providers.DynamicMetaLists.buildLists(tmpViewHashes);
 
 		tmpSolveOutcome.EndTimeStamp = +new Date();
 

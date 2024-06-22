@@ -88,11 +88,17 @@ class PictDynamicFormsInformary extends libPictProvider
 	 * @param {object} pAppStateData - The application state data object to marshal the form data to.
 	 * @param {string} pFormHash - The form hash representing the form elements.
 	 * @param {object} pManifest - The manifest object used to map form data to the application state data.
+	 * @param {string} pDatum - The datum hash to pull in.  If not provided, all data is marshalled.
+	 * @param {number} pRecordIndex - The record index to pull in.  If not provided, all data is marshalled.
 	 */
-	marshalFormToData(pAppStateData, pFormHash, pManifest)
+	marshalFormToData(pAppStateData, pFormHash, pManifest, pDatum, pRecordIndex)
 	{
 		let tmpManifest = typeof(pManifest) === 'object' ? pManifest : this.genericManifest;
 		let tmpFormElements = this.getFormElements(pFormHash);
+
+		// Optional Filters (so we don't just blindly do the whole form)
+		let tmpDatum = (typeof(pDatum) === 'undefined') ? false : pDatum;
+		let tmpRecordIndex = (typeof(pRecordIndex) === 'undefined') ? false : pRecordIndex;
 
 		// Enumerate the form elements, and put data in them for each address
 		for (let i = 0; i < tmpFormElements.length; i++)
@@ -101,6 +107,18 @@ class PictDynamicFormsInformary extends libPictProvider
 
 			let tmpContainerAddress = tmpFormElements[i].getAttribute('data-i-container');
 			let tmpIndex = tmpFormElements[i].getAttribute('data-i-index');
+
+			// Process the filters
+			if (tmpDatum && (tmpDatum !== tmpDatumAddress))
+			{
+				// Falls outside the filter, continue on
+				continue;
+			}
+			if (tmpIndex && tmpRecordIndex && (tmpRecordIndex !== tmpIndex))
+			{
+				// Falls outside the filter, continue on
+				continue;
+			}
 
 			let tmpBrowserValue = this.pict.ContentAssignment.readContent(this.getContentBrowserAddress(pFormHash, tmpDatumAddress, tmpContainerAddress, tmpIndex));
 
@@ -135,6 +153,7 @@ class PictDynamicFormsInformary extends libPictProvider
 	 */
 	marshalDataToForm(pAppStateData, pFormHash, pManifest)
 	{
+		// TODO: Take a list of hashes and/or index addresses to marshal in, preventing OVERMARSHAL from taking control
 		let tmpManifest = typeof(pManifest) === 'object' ? pManifest : this.genericManifest;
 		let tmpFormElements = this.getFormElements(pFormHash);
 
