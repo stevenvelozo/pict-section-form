@@ -1,3 +1,19 @@
 {
-	"workbench.colorTheme": "FreshCut"
+	"workbench.colorTheme": "FreshCut",
+	"sqltools.connections": [
+		{
+			"mysqlOptions": {
+				"authProtocol": "default",
+				"enableSsl": "Disabled"
+			},
+			"previewLimit": 50,
+			"server": "mysql.qa.headlight.com",
+			"port": 3306,
+			"driver": "MySQL",
+			"name": "Headlight QA",
+			"group": "Headlight",
+			"database": "mpi",
+			"username": "steven.velozo"
+		}
+	]
 }

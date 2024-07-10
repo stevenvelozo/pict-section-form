@@ -2,7 +2,9 @@ const libPictViewClass = require('pict-view');
 
 const libInformary = require('../providers/Pict-Provider-Informary.js');
 const libDynamicSolver = require('../providers/Pict-Provider-DynamicSolver.js');
+
 const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
+const libFormsTemplateProviderReadOnly = require('../providers/Pict-Provider-DynamicTemplates-DefaultFormTemplates-ReadOnly.js');
 
 class PictViewDynamicForm extends libPictViewClass
 {
@@ -75,6 +77,11 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			let tmpDefaultTemplateProvider = this.pict.addProvider('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
 			tmpDefaultTemplateProvider.initialize();
+		}
+		if (!this.pict.providers.PictFormSectionDefaultTemplateProviderReadOnly)
+		{
+			let tmpDefaultTemplateProviderReadOnly = this.pict.addProvider('PictFormSectionDefaultTemplateProviderReadOnly', libFormsTemplateProviderReadOnly.default_configuration, libFormsTemplateProviderReadOnly);
+			tmpDefaultTemplateProviderReadOnly.initialize();
 		}
 		if (!this.pict.providers.Informary)
 		{
