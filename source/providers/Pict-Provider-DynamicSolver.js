@@ -259,7 +259,7 @@ class PictDynamicSolver extends libPictProvider
 	 */
 	solveViews(pViewHashes)
 	{
-		this.log.trace(`Dynamic View Provider [${this.UUID}]::[${this.Hash}] solving views.`);
+		//this.log.trace(`Dynamic View Provider [${this.UUID}]::[${this.Hash}] solving views.`);
 		let tmpViewHashes = Array.isArray(pViewHashes) ? pViewHashes : Object.keys(this.fable.views);
 
 		let tmpSolveOutcome = {};

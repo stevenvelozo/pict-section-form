@@ -51,7 +51,7 @@ class PictMetalist extends libPictProvider
 
 	buildLists(pViewHashes)
 	{
-		this.log.trace(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] pulling Metalists.`);
+		// this.log.trace(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] pulling Metalists.`);
 		let tmpViewHashes = Array.isArray(pViewHashes) ? pViewHashes : Object.keys(this.fable.views);
 
 		for (let i = 0; i < tmpViewHashes.length; i++)
