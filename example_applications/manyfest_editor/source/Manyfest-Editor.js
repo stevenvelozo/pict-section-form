@@ -1,7 +1,6 @@
 const libPictSectionForm = require('../../../source/Pict-Section-Form.js');
 
 const libManyfestLoadListView = require('../views/Manyfest-LoadList-View.js');
-const libManyfestSummaryView = require('../views/Manyfest-Summary-View.js');
 const libManyfestCodeView = require('../views/Manyfest-Code-View.js');
 
 class ManyfestEditor extends libPictSectionForm.PictFormApplication
@@ -15,7 +14,6 @@ class ManyfestEditor extends libPictSectionForm.PictFormApplication
 		this.pict.addProvider('ManyfestRouter', {}, require('../providers/Manyfest-Router.js'));
 		this.pict.addProvider('DataProvider', {}, require('../providers/Manyfest-Data-Provider.js'));
 
-		this.pict.addView('ManyfestSummaryView', libManyfestSummaryView.default_configuration, libManyfestSummaryView);
 		this.pict.addView('ManyfestCodeView', libManyfestCodeView.default_configuration, libManyfestCodeView);
 		this.pict.addView('ManyfestLoadListView', libManyfestLoadListView.default_configuration, libManyfestLoadListView);
 

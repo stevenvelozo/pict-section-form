@@ -44,7 +44,7 @@
 			"Width":
 				{
 					"Name":"Width",
-					"Hash":"Name",
+					"Hash":"Width",
 					"DataType":"Number",
 					"Default": 100
 					,"PictForm": { "Section":"Area", "Row":2, "Width":1 }
@@ -52,7 +52,7 @@
 			"Height":
 				{
 					"Name":"Height",
-					"Hash":"Type",
+					"Hash":"Height",
 					"DataType":"Number",
 					"Default": 100
 					,"PictForm": { "Section":"Area", "Row":2, "Width":1 }

@@ -163,6 +163,21 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span> <select id="SELECT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}"></select>
 `
 		},
+		{
+			"HashPostfix": "-Template-Input-InputType-Boolean",
+			"Template": /*HTML*/`
+					<!-- InputType Boolean {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="checkbox" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="" />
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-DataType-DateTime",
+			"Template": /*HTML*/`
+					<!-- DataType DateTime {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
+					<span>{~D:Record.Name~}:</span> <input id="DATETIME-INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}" type="datetime-local" value="" />
+`
+		},
 		/*
 		 * END Input Templates (default)
 		 */
@@ -357,7 +372,30 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-Option",
 			"Template": /*HTML*/` value="">
-					<select id="SELECT-TABULAR-DROPDOWN-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" data-i-pictselect="SELECT-TABULAR-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="_Pict.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"></select>
+					<select id="SELECT-TABULAR-DROPDOWN-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="_Pict.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"></select>
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Boolean",
+			"Template": /*HTML*/`
+					<!-- InputType Boolean {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="checkbox"  {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-Boolean",
+			"Template": /*HTML*/` value="" />
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-DataType-DateTime",
+			"Template": /*HTML*/`
+					<!-- DataType DateTime {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" id="DATETIME-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-DataType-DateTime",
+			"Template": /*HTML*/` value="">
+					<input id="DATETIME-TABULAR-INPUT-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~D:Record.Macro.DataRequestFunction~}" type="datetime-local" value="" />
 `
 		},
 		/*

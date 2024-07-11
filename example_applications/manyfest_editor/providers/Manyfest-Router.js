@@ -1,7 +1,5 @@
 const libPictProvider = require('pict-provider');
-
-// Picked an open source npm module that saw a lot of use as our router
-//const libRouterJS = require('@capitec/omni-router');
+const libNavigo = require('navigo');
 
 const _DEFAULT_PROVIDER_CONFIGURATION =
 {
@@ -18,39 +16,23 @@ class ManyfestRouter extends libPictProvider
 		let tmpOptions = Object.assign({}, _DEFAULT_PROVIDER_CONFIGURATION, pOptions);
 		super(pFable, tmpOptions, pServiceHash);
 
-		// Like wow.  These routers are really wanting to be fancy (made 3 work so far and holy crap)
-		// But eff that at this point.  Let's keep the example simple.
+		// Initialize the navigo router and set the base path to '/'
+		this.router = new libNavigo('/', { hash: true });
 	}
 
 	onInitializeAsync(fCallback)
 	{
-		// // Map some routes.  Could DRY A bit.
-		// this.router.map(
-		// 	function (fMatch)
-		// 	{
-		// 		fMatch("/view/:pViewHash").to("renderView");
-		// 		fMatch("/load/:pManyfestHash").to("loadManyfest");
-		// 		fMatch("/save").to("saveManyfest");
-		// 	});
-
-		// this.routerHandlers.renderView = {
-		// 	model: function (pRouteParameters)
-		// 	{
-		// 		// This loads the model then passes it on to the setup
-		// 		return pRouteParameters;
-		// 	},
-
-		// 	setup: function (pRouteParameters)
-		// 	{
-		// 		// Render the View with the parameters
-		// 		this.pict.views[pRouteParameters.pViewHash].render();
-		// 	}
-		// };
-
-		// this.router.getRoute = function (pHandlerName)
-		// {
-		// 	return this.routerHandlers[name];
-		// };
+		// Define the routes for our application
+		this.router.on('/Manyfest/Editor',
+			(pData) =>
+			{
+				this.pict.views.PictFormMetacontroller.render()
+			});
+		this.router.on('/Manyfest/Code',
+			(pData) =>
+			{
+				_Pict.views.ManyfestCodeView.render();
+			});
 
 		return super.onInitializeAsync(fCallback);
 	}

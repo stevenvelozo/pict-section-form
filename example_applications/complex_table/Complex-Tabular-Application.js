@@ -16,7 +16,7 @@ module.exports = ComplexTabularApplication;
 
 module.exports.default_configuration = libPictSectionForm.PictFormApplication.default_configuration;
 module.exports.default_configuration.pict_configuration = {
-	Product: "SimpleTable",
+	Product: "ComplexTable",
 
 	DefaultAppData: require("./FruitData.json"),
 
@@ -134,12 +134,7 @@ module.exports.default_configuration.pict_configuration = {
 					{
 						Section:"Recipe",
 						Group:"Recipe",
-						Row: 1,
-						"InputType":"Combo",
-						"Entries":
-							[
-								"Smoothie", "Salad", "Dessert", "Main Course", "Side Dish", "Snack"
-							]
+						Row: 1
 					},
 			},
 			RecipeDescription: {
@@ -154,11 +149,25 @@ module.exports.default_configuration.pict_configuration = {
 				DataType: "String",
 				PictForm: { Section: "Recipe", Group: "Recipe", Row: 3 },
 			},
+			Proprietary: {
+				Name: "Proprietary",
+				Hash: "Proprietary",
+				DataType: "Boolean",
+				PictForm: { InputType: "Boolean", Section: "Recipe", Group: "Recipe", Row: 3 },
+			},
 			"MetaFruit.Information.FavoriteGenus": {
 				Name: "Favorite Genus",
 				Hash: "FavoriteGenus",
 				DataType: "String",
 				PictForm: { Section: "Recipe", Group: "Recipe", Row: 4 },
+			},
+			"MetaFruit.Information.LastPrepared": {
+				Name: "Last Prepared",
+				Hash: "LastPrepared",
+				DataType: "DateTime",
+				PictForm: { Section: "Recipe", Group: "Recipe", Row: 4,
+					"Providers": ["Pict-Input-DateTime"]
+				},
 			},
 
 			"Recipe.Feeds": {

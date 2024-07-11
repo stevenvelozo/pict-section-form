@@ -1,7 +1,9 @@
 const libPictProvider = require('pict-provider');
 
 const libDynamicMetaLists = require('./Pict-Provider-MetaLists.js');
+
 const libInputSelect = require('./inputs/Pict-Provider-Input-Select.js');
+const libInputDateTime = require('./inputs/Pict-Provider-Input-DateTime.js');
 
 const _DefaultProviderConfiguration = (
 {
@@ -42,6 +44,11 @@ class PictDynamicSolver extends libPictProvider
 		{
 			let tmpInputSelectProvider = this.pict.addProvider('Pict-Input-Select', libInputSelect.default_configuration, libInputSelect);
 			tmpInputSelectProvider.initialize();
+		}
+		if (!this.pict.providers['Pict-Input-DateTime']);
+		{
+			let tmpInputDateTimeProvider = this.pict.addProvider('Pict-Input-DateTime', libInputDateTime.default_configuration, libInputDateTime);
+			tmpInputDateTimeProvider.initialize();
 		}
 	}
 
