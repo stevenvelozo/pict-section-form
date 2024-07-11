@@ -46,8 +46,10 @@ declare class PictDynamicFormsInformary {
      * @param {object} pAppStateData - The application state data object to marshal the form data to.
      * @param {string} pFormHash - The form hash representing the form elements.
      * @param {object} pManifest - The manifest object used to map form data to the application state data.
+     * @param {string} pDatum - The datum hash to pull in.  If not provided, all data is marshalled.
+     * @param {number} pRecordIndex - The record index to pull in.  If not provided, all data is marshalled.
      */
-    marshalFormToData(pAppStateData: object, pFormHash: string, pManifest: object): void;
+    marshalFormToData(pAppStateData: object, pFormHash: string, pManifest: object, pDatum: string, pRecordIndex: number): void;
     /**
      * Marshals data from some application state object to a specific subset of browser form elements.
      *

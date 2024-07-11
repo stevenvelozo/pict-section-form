@@ -18,16 +18,22 @@ declare const _exports: {
             Input: {
                 Informary: string;
                 InformaryTabular: string;
+                HTMLSelector: string;
+                HTMLSelectorTabular: string;
+                RawHTMLID: string;
                 HTMLName: string;
+                HTMLIDAddress: string;
                 HTMLID: string;
                 HTMLForID: string;
                 InputFullProperties: string;
                 InputChangeHandler: string;
+                DataRequestFunction: string;
             };
         };
         TargetElementAddress: string;
     };
     PictFormTemplateProvider: typeof import("./providers/Pict-Provider-DynamicTemplates.js");
+    PictInputExtensionProvider: typeof import("./providers/Pict-Provider-InputExtension.js");
     PictFormMetacontroller: typeof import("./views/Pict-View-Form-Metacontroller.js");
     PictFormApplication: typeof import("./application/Pict-Application-Form.js");
 };

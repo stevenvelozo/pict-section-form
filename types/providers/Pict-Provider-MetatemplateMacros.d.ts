@@ -1,8 +1,8 @@
-export = PictMetatemplateGenerator;
-declare class PictMetatemplateGenerator {
+export = PictMetatemplateMacros;
+declare class PictMetatemplateMacros {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
 }
-declare namespace PictMetatemplateGenerator {
+declare namespace PictMetatemplateMacros {
     export { _DefaultProviderConfiguration as default_configuration };
 }
 declare namespace _DefaultProviderConfiguration {
@@ -11,4 +11,4 @@ declare namespace _DefaultProviderConfiguration {
     let AutoInitializeOrdinal: number;
     let AutoSolveWithApp: boolean;
 }
-//# sourceMappingURL=Pict-Provider-MetatemplateGenerator.d.ts.map
+//# sourceMappingURL=Pict-Provider-MetatemplateMacros.d.ts.map

@@ -8,13 +8,16 @@ declare class PictViewDynamicForm {
     defaultTemplatePrefix: string;
     formID: string;
     viewMarshalDestination: boolean;
-    renderToPrimary(): void;
     dataChanged(pInputHash: any): void;
+    dataChangedTabular(pGroupIndex: any, pInputIndex: any, pRowIndex: any): void;
     getMarshalDestinationAddress(): any;
     getMarshalDestinationObject(): boolean;
     onMarshalToView(): any;
     onMarshalFromView(): any;
     onSolve(): any;
+    onAfterRender(): void;
+    runInputProviderFunctions(pFunctionName: any): void;
+    onAfterMarshalToForm(): void;
     initializeFormGroups(): void;
     rebuildMacros(): boolean;
     checkViewSpecificTemplate(pTemplatePostfix: any): boolean;
@@ -22,7 +25,7 @@ declare class PictViewDynamicForm {
     getMetatemplateTemplateReferenceRaw(pTemplatePostfix: any, pRawTemplateDataAddress: any): string | false;
     getMetatemplateTemplateReference(pTemplatePostfix: any, pViewDataAddress: any): string | false;
     getInputMetatemplateTemplateReference(pDataType: any, pInputType: any, pViewDataAddress: any): string | false;
-    getTabularInputMetatemplateTemplateReference(pDataType: any, pInputType: any, pViewDataAddress: any, pRecordSubAddress: any): string;
+    getTabularInputMetatemplateTemplateReference(pDataType: any, pInputType: any, pViewDataAddress: any, pGroupIndex: any, pRowIndex: any): string;
     rebuildCustomTemplate(): void;
     getTabularRecordInput(pGroupIndex: any, pInputIndex: any): any;
     getTabularRecordData(pGroupIndex: any, pRowIdentifier: any): any;
@@ -39,7 +42,10 @@ declare class PictViewDynamicForm {
         Value: any;
         Group: any;
     };
+    getInputFromHash(pInputHash: any): any;
     getInput(pGroupIndex: any, pRowIndex: any, pInputIndex: any): any;
+    inputDataRequest(pInputHash: any): void;
+    inputDataRequestTabular(pGroupIndex: any, pInputIndex: any, pRowIndex: any): void;
     get isPictSectionForm(): boolean;
 }
 //# sourceMappingURL=Pict-View-DynamicForm.d.ts.map
