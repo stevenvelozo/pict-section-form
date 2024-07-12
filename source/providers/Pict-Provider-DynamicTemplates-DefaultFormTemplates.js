@@ -395,7 +395,7 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-DateTime",
 			"Template": /*HTML*/` value="">
-					<input id="DATETIME-TABULAR-INPUT-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~D:Record.Macro.DataRequestFunction~}" type="datetime-local" value="" />
+					<input id="DATETIME-TABULAR-INPUT-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="_Pict.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')" type="datetime-local" value="" />
 `
 		},
 		/*

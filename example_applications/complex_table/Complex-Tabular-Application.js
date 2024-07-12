@@ -312,6 +312,12 @@ module.exports.default_configuration.pict_configuration = {
 						DataType: "String",
 						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
 					},
+					lastWatered: {
+						Name: "Last Watered",
+						Hash: "LastWatered",
+						DataType: "DateTime",
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid", "InputType":"DateTime", "Providers": ["Pict-Input-DateTime"]},
+					},
 					"nutritions.calories": {
 						Name: "Calories",
 						Hash: "Calories",

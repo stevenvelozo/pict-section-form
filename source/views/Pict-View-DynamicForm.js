@@ -170,7 +170,12 @@ class PictViewDynamicForm extends libPictViewClass
 	dataChangedTabular(pGroupIndex, pInputIndex, pRowIndex)
 	{
 		let tmpInput = this.getTabularRecordInput(pGroupIndex, pInputIndex);
-		if (pGroupIndex && pInputIndex && pRowIndex && tmpInput)
+		if 	(
+				(typeof(pGroupIndex) != 'undefined')
+				&& (typeof(pInputIndex) != 'undefined')
+				&& (typeof(pRowIndex) != 'undefined')
+				&& (typeof(tmpInput) == 'object')
+			)
 		{
 			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
 			let tmpHashAddress = tmpInput.Address;

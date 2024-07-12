@@ -2,7 +2,6 @@
 	"FruitData": {
 		"DataURL": "https://www.fruityvice.com/",
 		"DataLicense": "Public Domain",
-
 		"FruityVice": [
 			{
 				"name": "Persimmon",
@@ -38,6 +37,7 @@
 				"family": "Musaceae",
 				"order": "Zingiberales",
 				"genus": "Musa",
+				"lastWatered": "2022-05-19T04:52",
 				"nutritions": {
 					"calories": 96,
 					"fat": 0.2,
@@ -691,5 +691,10 @@
 				}
 			}
 		]
+	},
+	"MetaFruit": {
+		"Information": {
+			"LastPrepared": "2020-01-25T08:33"
+		}
 	}
 }
