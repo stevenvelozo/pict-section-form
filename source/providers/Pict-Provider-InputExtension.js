@@ -152,6 +152,38 @@ class PictInputExtensionProvider extends libPictProvider
 	{
 		return true;
 	}
+
+
+	/**
+	 * Handles events for the Pict-Provider-InputExtension.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {string} pValue - The value from AppData.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @returns {boolean} - Returns true.
+	 */
+	onEvent(pView, pInput, pValue, pHTMLSelector, pEvent)
+	{
+		return true;
+	}
+
+	/**
+	 * Handles events for the Pict-Provider-InputExtension.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {string} pValue - The value from AppData.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {number} pRowIndex - The row index of the tabular data.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @returns {boolean} - Returns true.
+	 */
+	onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent)
+	{
+		return true;
+	}
 }
 
 module.exports = PictInputExtensionProvider;

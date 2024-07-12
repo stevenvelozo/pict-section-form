@@ -4,7 +4,10 @@ const libPictSectionForm = require('../../source/Pict-Section-Form.js');
 
 const libProviderDynamicSection = require('./providers/PictProvider-Dynamic-Sections.js');
 
+const libProviderInputExtension = require('./providers/PictProvider-PostKardInputExtension.js');
+
 const libMainApplicationView = require('./views/PictView-Postcard-MainApplication.js')
+
 
 class PostcardApplication extends libPictApplication
 {
@@ -14,6 +17,8 @@ class PostcardApplication extends libPictApplication
 
 		this.pict.addProvider('Postcard-DynamicSection-Provider', libProviderDynamicSection.default_configuration, libProviderDynamicSection);
 		this.pict.addProvider('Postcard-Default-Theme-Provider', {}, require('./providers/PictProvider-BestPostcardTheme.js'));
+
+		this.pict.addProvider('PostKardInputExtension', libProviderInputExtension.default_configuration, libProviderInputExtension);
 
 		this.pict.addView('PostcardNavigation', require('./views/PictView-Postcard-Navigation.json'));
 		this.pict.addView('PostcardAbout', require('./views/PictView-Postcard-Content-About.json'));

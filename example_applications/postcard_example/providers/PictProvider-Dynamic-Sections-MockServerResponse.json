@@ -78,7 +78,7 @@
 					"Hash":"SignatureLine",
 					"Description":"How you would like your card signed.",
 					"DataType":"String"
-					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":4, "Width":12 }
+					,"PictForm": { "InputType":"PostKardSignature", "Section":"Postcard", "Group":"Content", "Row":4, "Width":12, "Providers": ["PostKardInputExtension"] }
 				},
 			"DeliveryDestination.StreetAddress1": 
 				{

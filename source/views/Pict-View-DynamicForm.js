@@ -1245,6 +1245,42 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 	}
 
+	inputEvent(pInputHash, pEvent)
+	{
+		let tmpInput = this.getInputFromHash(pInputHash);
+		if (pInputHash)
+		{
+			let tmpHashAddress = this.sectionManifest.resolveHashAddress(pInputHash);
+			try
+			{
+				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
+				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+				{
+					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
+					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+					{
+						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
+						{
+							this.pict.providers[tmpInput.PictForm.Providers[i]].onEvent(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, pEvent);
+						}
+						else
+						{
+							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] inputEvent ${pEvent} cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}].`);
+						}
+					}
+				}
+			}
+			catch (pError)
+			{
+				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error running inputEvent ${pEvent} specific (${pInputHash}) data from view in dataChanged event: ${pError}`);
+			}
+		}
+		else
+		{
+			this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find input hash [${pInputHash}] for inputEvent ${pEvent} event.`);
+		}
+	}
+
 	inputDataRequestTabular(pGroupIndex, pInputIndex, pRowIndex)
 	{
 		let tmpInput = this.getTabularRecordInput(pGroupIndex, pInputIndex);
@@ -1276,6 +1312,49 @@ class PictViewDynamicForm extends libPictViewClass
 			catch (pError)
 			{
 				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
+			}
+		}
+		else
+		{
+			// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
+			this.marshalFromView();
+		}
+		// Run any dynamic input providers for the input hash.
+		this.pict.PictApplication.solve();
+		this.marshalToView();
+	}
+
+	inputEventTabular(pGroupIndex, pInputIndex, pRowIndex, pEvent)
+	{
+		let tmpInput = this.getTabularRecordInput(pGroupIndex, pInputIndex);
+		if (pGroupIndex && pInputIndex && pRowIndex && tmpInput)
+		{
+			try
+			{
+				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
+				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+				{
+					// TODO: Can we simplify this?
+					let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
+					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
+
+					let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
+					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+					{
+						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
+						{
+							this.pict.providers[tmpInput.PictForm.Providers[i]].onEventTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex, pEvent);
+						}
+						else
+						{
+							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}] row ${pRowIndex} calling inputEvent ${pEvent}.`);
+						}
+					}
+				}
+			}
+			catch (pError)
+			{
+				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in calling inputEvent ${pEvent}: ${pError}`);
 			}
 		}
 		else

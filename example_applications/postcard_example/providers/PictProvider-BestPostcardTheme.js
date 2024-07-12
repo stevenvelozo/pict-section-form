@@ -107,6 +107,17 @@ Glug glug CUSTOMIZED glug Oo... -->
             </div>
 
 	`
+			},
+			{
+				"HashPostfix": "-Template-Input-InputType-PostKardSignature",
+				"Template": /*HTML*/`
+            <div class="pure-u-1 pure-u-md-1-3">
+                <label {~D:Record.Macro.HTMLForID~}><em>{~D:Record.Name~}:</em></label>
+				<input type="text" {~D:Record.Macro.HTMLID~} {~D:Record.Macro.InputFullProperties~} class="pure-u-23-24" />
+				<a href="#" onclick="_Pict.views['{~D:Context[0].Hash~}'].inputEvent('{~D:Record.Hash~}', 'BestEventEvarrrr')" class="pure-button">Sign</a>
+            </div>
+
+	`
 			}
 		]});
 
