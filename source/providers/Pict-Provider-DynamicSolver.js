@@ -278,7 +278,7 @@ class PictDynamicSolver extends libPictProvider
 		for (let i = 0; i < tmpViewHashes.length; i++)
 		{
 			let tmpView = this.fable.views[tmpViewHashes[i]];
-			if (!tmpView.isPictSectionForm && !tmpView.isPictMetacontroller)
+			if (tmpView.isPictView && !tmpView.isPictSectionForm && !tmpView.isPictMetacontroller)
 			{
 				// This is just a normal view.  We will solve it at the appropriate ordinal.
 				let tmpOrdinalContainer = this.checkAutoSolveOrdinal(tmpView.options.AutoSolveOrdinal, tmpOrdinalsToSolve);

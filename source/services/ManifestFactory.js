@@ -122,7 +122,7 @@ class ManifestFactory extends libFableServiceProviderBase
 	 *
 	 * @return {Object} the descriptor
 	 */
-	tabularRowAddDescriptor(pRecord)
+	tabularRowAddDescriptor(pManifestFactory, pRecord)
 	{
 		if (typeof(pRecord) !== 'object')
 		{
@@ -175,14 +175,6 @@ class ManifestFactory extends libFableServiceProviderBase
 			tmpDescriptor.PictForm.SpreadsheetNotes = tmpRecord['Input Notes'];
 		}
 
-		/*
-		 * Now that we've constructed the descriptor, add it to the correct manifest (this could be a ReferenceManifests manifest)...
-		 *
-		 * FYI this code might be tricker than it first reads ... the descriptor may end up being in a reference manifest,
-		 * so tmpManifest is not always this.
-		 */
-		let tmpManifestFactory = this;
-
 		if ((`SubManifest` in tmpRecord) && (tmpRecord.SubManifest))
 		{
 			if (!(tmpRecord.SubManifest in this.manifest.ReferenceManifests))
@@ -192,14 +184,14 @@ class ManifestFactory extends libFableServiceProviderBase
 				// Pointer arithmatic?
 				this.manifest.ReferenceManifests[tmpRecord.SubManifest] = this.referenceManifestFactories[tmpRecord.SubManifest].manifest;
 			}
-			tmpManifestFactory = this.referenceManifestFactories[tmpRecord.SubManifest];
+			pManifestFactory = this.referenceManifestFactories[tmpRecord.SubManifest];
 		}
 
 		// Setup the Section and the Group
 		const tmpSectionName = tmpRecord['Section Name'] ?? 'Default_Section';
 		const tmpSectionHash = this.fable.DataFormat.cleanNonAlphaCharacters(tmpSectionName);
 		tmpDescriptor.PictForm.Section = tmpSectionHash;
-		const tmpSection = tmpManifestFactory.getManifestSection(tmpSectionHash);
+		const tmpSection = pManifestFactory.getManifestSection(tmpSectionHash);
 		if (tmpRecord['Section Name'])
 		{
 			tmpSection.Name = tmpRecord['Section Name'];
@@ -212,17 +204,17 @@ class ManifestFactory extends libFableServiceProviderBase
 		const tmpGroupName = tmpRecord['Group Name'] ?? 'Default_Group';
 		const tmpGroupHash = this.fable.DataFormat.cleanNonAlphaCharacters(tmpGroupName);
 		tmpDescriptor.PictForm.Group = tmpGroupHash;
-		const tmpGroup = tmpManifestFactory.getManifestGroup(tmpSection, tmpGroupHash);
+		const tmpGroup = pManifestFactory.getManifestGroup(tmpSection, tmpGroupHash);
 		if (tmpRecord['Group Name'])
 		{
 			tmpGroup.Name = tmpRecord['Group Name'];
 		}
-		if (tmpDescriptor.Hash in tmpManifestFactory.manifest.Descriptors)
+		if (tmpDescriptor.Hash in pManifestFactory.manifest.Descriptors)
 		{
 			console.info(`[ERROR] Duplicate descriptor hash found ${tmpDescriptor.Hash}.  This will overwrite the original descriptor.`);
 		}
 
-		tmpManifestFactory.addDescriptor(tmpDescriptor);
+		pManifestFactory.addDescriptor(tmpDescriptor);
 
 		return tmpDescriptor;
 	}
@@ -275,12 +267,19 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 			if (tmpRecord['Input Hash'])
 			{
-				this.tabularRowAddDescriptor(tmpRecord);
+				this.tabularRowAddDescriptor(tmpManifest, tmpRecord);
 			}
 		}
 
 		this.fable.log.info(`Generated ${Object.keys(tmpManifests).length} manifests.`);
-		return tmpManifests;
+
+		let tmpManifestKeys = Object.keys(tmpManifests);
+		let tmpOutputManifests = {};
+		for (let i = 0; i < tmpManifestKeys.length; i++)
+		{
+			tmpOutputManifests[tmpManifestKeys[i]] = tmpManifests[tmpManifestKeys[i]].manifest;
+		}
+		return tmpOutputManifests;
 	}
 }
 

@@ -357,8 +357,6 @@ class PictViewDynamicForm extends libPictViewClass
 						continue;
 					}
 
-					let tmpTabularRecordSetLength = 0;
-
 					if (Array.isArray(tmpTabularRecordSet))
 					{
 						let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];

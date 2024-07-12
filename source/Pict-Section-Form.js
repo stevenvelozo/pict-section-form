@@ -15,3 +15,6 @@ module.exports.PictFormMetacontroller = require('./views/Pict-View-Form-Metacont
 
 // The application container
 module.exports.PictFormApplication = require('./application/Pict-Application-Form.js');
+
+// The ManifestFactory, for when we want to convert tabular data to configuration
+module.exports.ManifestFactory = require('./services/ManifestFactory.js');

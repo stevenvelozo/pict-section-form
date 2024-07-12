@@ -1,0 +1,948 @@
+{
+    "ScourEvaluation": {
+        "Form": "ScourEvaluation",
+        "Descriptors": {
+            "ScourEvaluation.Phase2Analysis": {
+                "Hash": "ScourEvaluationPhase2Analysis",
+                "Name": "Phase 2 Analysis",
+                "DataAddress": "ScourEvaluation.Phase2Analysis",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Scour_Vulnerability",
+                    "Group": "Phase___Findings"
+                },
+                "Default": "No"
+            },
+            "ScourEvaluation.Remarks": {
+                "Hash": "ScourEvaluationRemarks",
+                "Name": "Remarks",
+                "DataAddress": "ScourEvaluation.Remarks",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Recommendations",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Summary of Findings": {
+                "Hash": "ScourEvaluationSummary of Findings",
+                "Name": "Summary of Findings",
+                "DataAddress": "ScourEvaluation.Summary of Findings",
+                "DataType": "String",
+                "PictForm": {
+                    "SpreadsheetNotes": "Alphanumeric entry",
+                    "Section": "Scour_Vulnerability",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Recommendations": {
+                "Hash": "ScourEvaluationRecommendations",
+                "Name": "Recommendations",
+                "DataAddress": "ScourEvaluation.Recommendations",
+                "DataType": "String",
+                "PictForm": {
+                    "SpreadsheetNotes": "Alphanumeric entry",
+                    "Section": "Scour_Vulnerability",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Basis for Evaluation": {
+                "Hash": "ScourEvaluationBasis for Evaluation",
+                "Name": "Basis for Evaluation",
+                "DataAddress": "ScourEvaluation.Basis for Evaluation",
+                "DataType": "String",
+                "PictForm": {
+                    "SpreadsheetNotes": "Alphanumeric entry",
+                    "Section": "Scour_Vulnerability",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Material and Documentation": {
+                "Hash": "ScourEvaluationMaterial and Documentation",
+                "Name": "Material and Documentation",
+                "DataAddress": "ScourEvaluation.Material and Documentation",
+                "DataType": "String",
+                "PictForm": {
+                    "SpreadsheetNotes": "Alphanumeric entry",
+                    "Section": "Scour_Vulnerability",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Scour Mode": {
+                "Hash": "ScourEvaluationScour Mode",
+                "Name": "Scour Mode",
+                "DataAddress": "ScourEvaluation.Scour Mode",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Scour_Vulnerability_Rating__Per_FHWA_",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Scour Critical": {
+                "Hash": "ScourEvaluationScour Critical",
+                "Name": "Scour Critical",
+                "DataAddress": "ScourEvaluation.Scour Critical",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Scour_Vulnerability_Rating__Per_FHWA_",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Scour Susceptible": {
+                "Hash": "ScourEvaluationScour Susceptible",
+                "Name": "Scour Susceptible",
+                "DataAddress": "ScourEvaluation.Scour Susceptible",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Scour_Vulnerability_Rating__Per_FHWA_",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Foundation": {
+                "Hash": "ScourEvaluationFoundation",
+                "Name": "Foundation",
+                "DataAddress": "ScourEvaluation.Foundation",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Abutments",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Reasons for Rating": {
+                "Hash": "ScourEvaluationReasons for Rating",
+                "Name": "Reasons for Rating",
+                "DataAddress": "ScourEvaluation.Reasons for Rating",
+                "DataType": "String",
+                "PictForm": {
+                    "SpreadsheetNotes": "Alphanumeric entry",
+                    "Section": "Scour_Vulnerability_Rating__Per_FHWA_",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Last Recorded Value": {
+                "Hash": "ScourEvaluationLast Recorded Value",
+                "Name": "Last Recorded Value",
+                "DataAddress": "ScourEvaluation.Last Recorded Value",
+                "DataType": "Number",
+                "PictForm": {
+                    "SpreadsheetNotes": "Mix Selector",
+                    "Section": "HDOT_____Scour_Critical_Code",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Date": {
+                "Hash": "ScourEvaluationDate",
+                "Name": "Date",
+                "DataAddress": "ScourEvaluation.Date",
+                "DataType": "DateTime",
+                "PictForm": {
+                    "InputType": "Date",
+                    "Section": "HDOT_____Scour_Critical_Code",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Recommended Value": {
+                "Hash": "ScourEvaluationRecommended Value",
+                "Name": "Recommended Value",
+                "DataAddress": "ScourEvaluation.Recommended Value",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "HDOT_____Scour_Critical_Code",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Phase 2 Analysis Recommendation": {
+                "Hash": "ScourEvaluationPhase 2 Analysis Recommendation",
+                "Name": "Phase 2 Analysis Recommendation",
+                "DataAddress": "ScourEvaluation.Phase 2 Analysis Recommendation",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Recommendations",
+                    "Group": ""
+                },
+                "Default": "No"
+            },
+            "ScourEvaluation.Phase 2 Priority": {
+                "Hash": "ScourEvaluationPhase 2 Priority",
+                "Name": "Phase 2 Priority",
+                "DataAddress": "ScourEvaluation.Phase 2 Priority",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Recommendations",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Type": {
+                "Hash": "ScourEvaluationType",
+                "Name": "Type",
+                "DataAddress": "ScourEvaluation.Type",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Abutments",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Spread Footing": {
+                "Hash": "ScourEvaluationSpread Footing",
+                "Name": "Spread Footing",
+                "DataAddress": "ScourEvaluation.Spread Footing",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Abutments",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Length": {
+                "Hash": "ScourEvaluationLength",
+                "Name": "Length",
+                "DataAddress": "ScourEvaluation.Length",
+                "DataType": "Number",
+                "PictForm": {
+                    "Units": "FT",
+                    "Section": "Abutments",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Width": {
+                "Hash": "ScourEvaluationWidth",
+                "Name": "Width",
+                "DataAddress": "ScourEvaluation.Width",
+                "DataType": "Number",
+                "PictForm": {
+                    "Units": "FT",
+                    "Section": "Abutments",
+                    "Group": ""
+                }
+            },
+            "ScourEvaluation.Depth": {
+                "Hash": "ScourEvaluationDepth",
+                "Name": "Depth",
+                "DataAddress": "ScourEvaluation.Depth",
+                "DataType": "Number",
+                "PictForm": {
+                    "Units": "FT",
+                    "Section": "Abutments",
+                    "Group": ""
+                }
+            }
+        },
+        "Sections": [
+            {
+                "Name": "Scour Vulnerability",
+                "Hash": "Scour_Vulnerability",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "Phase 1 Findings",
+                        "Hash": "Phase___Findings",
+                        "Rows": []
+                    },
+                    {
+                        "Name": "",
+                        "Hash": "",
+                        "Rows": []
+                    }
+                ]
+            },
+            {
+                "Name": "Scour Vulnerability Rating (Per FHWA)",
+                "Hash": "Scour_Vulnerability_Rating__Per_FHWA_",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "",
+                        "Hash": "",
+                        "Rows": []
+                    }
+                ]
+            },
+            {
+                "Name": "HDOT 113 Scour Critical Code",
+                "Hash": "HDOT_____Scour_Critical_Code",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "",
+                        "Hash": "",
+                        "Rows": []
+                    }
+                ]
+            },
+            {
+                "Name": "Recommendations",
+                "Hash": "Recommendations",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "",
+                        "Hash": "",
+                        "Rows": []
+                    }
+                ]
+            },
+            {
+                "Name": "Abutments",
+                "Hash": "Abutments",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "",
+                        "Hash": "",
+                        "Rows": []
+                    }
+                ]
+            }
+        ],
+        "ReferenceManifests": {}
+    },
+    "DataItemsNBI": {
+        "Form": "DataItemsNBI",
+        "Descriptors": {
+            "DataItemsNBI.Bridge Number": {
+                "Hash": "DataItemsNBIBridge Number",
+                "Name": "Bridge Number",
+                "DataAddress": "DataItemsNBI.Bridge Number",
+                "DataType": "String",
+                "PictForm": {
+                    "SpreadsheetNotes": "Alphanumeric entry",
+                    "Section": "Bridge_Identification",
+                    "Group": "Identification"
+                }
+            },
+            "DataItemsNBI.Metropolitan Planning Organization": {
+                "Hash": "DataItemsNBIMetropolitan Planning Organization",
+                "Name": "Metropolitan Planning Organization",
+                "DataAddress": "DataItemsNBI.Metropolitan Planning Organization",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "Select Fixed",
+                    "SpreadsheetNotes": "B.L.12",
+                    "Section": "Bridge_Identification",
+                    "Group": "Location"
+                }
+            },
+            "DataItemsNBI.Emergency Evacuation Designation": {
+                "Hash": "DataItemsNBIEmergency Evacuation Designation",
+                "Name": "Emergency Evacuation Designation",
+                "DataAddress": "DataItemsNBI.Emergency Evacuation Designation",
+                "DataType": "",
+                "PictForm": {
+                    "SpreadsheetNotes": "B.CL.06",
+                    "Section": "Bridge_Identification",
+                    "Group": "Classification"
+                }
+            },
+            "DataItemsNBI.Number of Beam Lines": {
+                "Hash": "DataItemsNBINumber of Beam Lines",
+                "Name": "Number of Beam Lines",
+                "DataAddress": "DataItemsNBI.Number of Beam Lines",
+                "DataType": "Float",
+                "PictForm": {
+                    "Units": "FT",
+                    "Section": "Bridge_Material_and_Type",
+                    "Group": "Span_Material_and_Type"
+                }
+            },
+            "DataItemsNBI.Span Protective System": {
+                "Hash": "DataItemsNBISpan Protective System",
+                "Name": "Span Protective System",
+                "DataAddress": "DataItemsNBI.Span Protective System",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Bridge_Material_and_Type",
+                    "Group": "Span_Material_and_Type"
+                }
+            },
+            "DataItemsNBI.Deck Interaction": {
+                "Hash": "DataItemsNBIDeck Interaction",
+                "Name": "Deck Interaction",
+                "DataAddress": "DataItemsNBI.Deck Interaction",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Bridge_Material_and_Type",
+                    "Group": "Span_Material_and_Type"
+                }
+            },
+            "DataItemsNBI.Deck Stay-In-Place Forms": {
+                "Hash": "DataItemsNBIDeck Stay-In-Place Forms",
+                "Name": "Deck Stay-In-Place Forms",
+                "DataAddress": "DataItemsNBI.Deck Stay-In-Place Forms",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Bridge_Material_and_Type",
+                    "Group": "Span_Material_and_Type"
+                }
+            },
+            "DataItemsNBI.Substructure Configuration Designation": {
+                "Hash": "DataItemsNBISubstructure Configuration Designation",
+                "Name": "Substructure Configuration Designation",
+                "DataAddress": "DataItemsNBI.Substructure Configuration Designation",
+                "DataType": "String",
+                "PictForm": {
+                    "Section": "Bridge_Material_and_Type",
+                    "Group": "Substructure_Material_and_Type"
+                }
+            },
+            "DataItemsNBI.Number of Substructure Units": {
+                "Hash": "DataItemsNBINumber of Substructure Units",
+                "Name": "Number of Substructure Units",
+                "DataAddress": "DataItemsNBI.Number of Substructure Units",
+                "DataType": "String",
+                "PictForm": {
+                    "Section": "Bridge_Material_and_Type",
+                    "Group": "Substructure_Material_and_Type"
+                }
+            },
+            "DataItemsNBI.Substructure Material": {
+                "Hash": "DataItemsNBISubstructure Material",
+                "Name": "Substructure Material",
+                "DataAddress": "DataItemsNBI.Substructure Material",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Bridge_Material_and_Type",
+                    "Group": "Substructure_Material_and_Type"
+                }
+            },
+            "DataItemsNBI.Substructure Type": {
+                "Hash": "DataItemsNBISubstructure Type",
+                "Name": "Substructure Type",
+                "DataAddress": "DataItemsNBI.Substructure Type",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Bridge_Material_and_Type",
+                    "Group": "Substructure_Material_and_Type"
+                }
+            },
+            "DataItemsNBI.Substructure Protective System": {
+                "Hash": "DataItemsNBISubstructure Protective System",
+                "Name": "Substructure Protective System",
+                "DataAddress": "DataItemsNBI.Substructure Protective System",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Bridge_Material_and_Type",
+                    "Group": "Substructure_Material_and_Type"
+                }
+            },
+            "DataItemsNBI.Foundation Type": {
+                "Hash": "DataItemsNBIFoundation Type",
+                "Name": "Foundation Type",
+                "DataAddress": "DataItemsNBI.Foundation Type",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Bridge_Material_and_Type",
+                    "Group": "Substructure_Material_and_Type"
+                }
+            },
+            "DataItemsNBI.Foundation Protective System": {
+                "Hash": "DataItemsNBIFoundation Protective System",
+                "Name": "Foundation Protective System",
+                "DataAddress": "DataItemsNBI.Foundation Protective System",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Bridge_Material_and_Type",
+                    "Group": "Substructure_Material_and_Type"
+                }
+            },
+            "DataItemsNBI.Curved Bridge": {
+                "Hash": "DataItemsNBICurved Bridge",
+                "Name": "Curved Bridge",
+                "DataAddress": "DataItemsNBI.Curved Bridge",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Bridge_Geometry",
+                    "Group": ""
+                }
+            },
+            "DataItemsNBI.Maximum Bridge Height": {
+                "Hash": "DataItemsNBIMaximum Bridge Height",
+                "Name": "Maximum Bridge Height",
+                "DataAddress": "DataItemsNBI.Maximum Bridge Height",
+                "DataType": "Number",
+                "PictForm": {
+                    "Section": "Bridge_Geometry",
+                    "Group": ""
+                }
+            },
+            "DataItemsNBI.Sidehill Bridge": {
+                "Hash": "DataItemsNBISidehill Bridge",
+                "Name": "Sidehill Bridge",
+                "DataAddress": "DataItemsNBI.Sidehill Bridge",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Bridge_Geometry",
+                    "Group": ""
+                }
+            },
+            "DataItemsNBI.Irregular Deck Area": {
+                "Hash": "DataItemsNBIIrregular Deck Area",
+                "Name": "Irregular Deck Area",
+                "DataAddress": "DataItemsNBI.Irregular Deck Area",
+                "DataType": "Number",
+                "PictForm": {
+                    "Units": "SQFT",
+                    "Section": "Bridge_Geometry",
+                    "Group": ""
+                }
+            },
+            "DataItemsNBI.Crossing Bridge Number": {
+                "Hash": "DataItemsNBICrossing Bridge Number",
+                "Name": "Crossing Bridge Number",
+                "DataAddress": "DataItemsNBI.Crossing Bridge Number",
+                "DataType": "",
+                "PictForm": {
+                    "SpreadsheetNotes": "Alphanumeric entry or user can search from bridge inventory list by bridge number and add bridge number from there",
+                    "Section": "Features",
+                    "Group": "Highways"
+                }
+            },
+            "DataItemsNBI.Railroad Service Type": {
+                "Hash": "DataItemsNBIRailroad Service Type",
+                "Name": "Railroad Service Type",
+                "DataAddress": "DataItemsNBI.Railroad Service Type",
+                "DataType": "String",
+                "PictForm": {
+                    "SpreadsheetNotes": "Single choice",
+                    "Section": "Features",
+                    "Group": "Railroads"
+                }
+            },
+            "DataItemsNBI.Navigation Channel Minimum Horizontal Clearance": {
+                "Hash": "DataItemsNBINavigation Channel Minimum Horizontal Clearance",
+                "Name": "Navigation Channel Minimum Horizontal Clearance",
+                "DataAddress": "DataItemsNBI.Navigation Channel Minimum Horizontal Clearance",
+                "DataType": "Float",
+                "PictForm": {
+                    "SpreadsheetNotes": "Only available to be completed when item B.N.01 (Navigable Waterway) is YFloating point entry, 1 decimal",
+                    "Section": "Features",
+                    "Group": "Navigable_Waterways"
+                }
+            },
+            "DataItemsNBI.Design Method": {
+                "Hash": "DataItemsNBIDesign Method",
+                "Name": "Design Method",
+                "DataAddress": "DataItemsNBI.Design Method",
+                "DataType": "DateTime",
+                "PictForm": {
+                    "InputType": "Date",
+                    "Section": "Loads__Load_Rating_and_Posting",
+                    "Group": "Loads_and_Load_Rating"
+                }
+            },
+            "DataItemsNBI.Load Rating Date": {
+                "Hash": "DataItemsNBILoad Rating Date",
+                "Name": "Load Rating Date",
+                "DataAddress": "DataItemsNBI.Load Rating Date",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Loads__Load_Rating_and_Posting",
+                    "Group": "Loads_and_Load_Rating"
+                }
+            },
+            "DataItemsNBI.Controlling Legal Load Rating Factor": {
+                "Hash": "DataItemsNBIControlling Legal Load Rating Factor",
+                "Name": "Controlling Legal Load Rating Factor",
+                "DataAddress": "DataItemsNBI.Controlling Legal Load Rating Factor",
+                "DataType": "Number",
+                "PictForm": {
+                    "Section": "Loads__Load_Rating_and_Posting",
+                    "Group": "Loads_and_Load_Rating"
+                }
+            },
+            "DataItemsNBI.Routine Permit Loads": {
+                "Hash": "DataItemsNBIRoutine Permit Loads",
+                "Name": "Routine Permit Loads",
+                "DataAddress": "DataItemsNBI.Routine Permit Loads",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Loads__Load_Rating_and_Posting",
+                    "Group": "Loads_and_Load_Rating"
+                }
+            },
+            "DataItemsNBI.Posting Status Change Date": {
+                "Hash": "DataItemsNBIPosting Status Change Date",
+                "Name": "Posting Status Change Date",
+                "DataAddress": "DataItemsNBI.Posting Status Change Date",
+                "DataType": "DateTime",
+                "PictForm": {
+                    "InputType": "Date",
+                    "Section": "Loads__Load_Rating_and_Posting",
+                    "Group": "Load_Posting_Status"
+                }
+            },
+            "DataItemsNBI.Legal Load Configuration": {
+                "Hash": "DataItemsNBILegal Load Configuration",
+                "Name": "Legal Load Configuration",
+                "DataAddress": "DataItemsNBI.Legal Load Configuration",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Loads__Load_Rating_and_Posting",
+                    "Group": "Load_Evaluation_and_Posting"
+                }
+            },
+            "DataItemsNBI.Legal Load Rating Factor": {
+                "Hash": "DataItemsNBILegal Load Rating Factor",
+                "Name": "Legal Load Rating Factor",
+                "DataAddress": "DataItemsNBI.Legal Load Rating Factor",
+                "DataType": "Number",
+                "PictForm": {
+                    "Section": "Loads__Load_Rating_and_Posting",
+                    "Group": "Load_Evaluation_and_Posting"
+                }
+            },
+            "DataItemsNBI.Posting Type": {
+                "Hash": "DataItemsNBIPosting Type",
+                "Name": "Posting Type",
+                "DataAddress": "DataItemsNBI.Posting Type",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Loads__Load_Rating_and_Posting",
+                    "Group": "Load_Evaluation_and_Posting"
+                }
+            },
+            "DataItemsNBI.Posting Value": {
+                "Hash": "DataItemsNBIPosting Value",
+                "Name": "Posting Value",
+                "DataAddress": "DataItemsNBI.Posting Value",
+                "DataType": "Number",
+                "PictForm": {
+                    "Section": "Loads__Load_Rating_and_Posting",
+                    "Group": "Load_Evaluation_and_Posting"
+                }
+            },
+            "DataItemsNBI.Fatigue Details": {
+                "Hash": "DataItemsNBIFatigue Details",
+                "Name": "Fatigue Details",
+                "DataAddress": "DataItemsNBI.Fatigue Details",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "SpreadsheetNotes": "Do not report this item for bridges that do nothave steel members as indicated in ItemsB.SP.04 (Span Material) and B.SB.03(Substructure Material).",
+                    "Section": "Inspections",
+                    "Group": "Inspection_Requirements"
+                }
+            },
+            "DataItemsNBI.Complex Feature": {
+                "Hash": "DataItemsNBIComplex Feature",
+                "Name": "Complex Feature",
+                "DataAddress": "DataItemsNBI.Complex Feature",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "SelectFixed",
+                    "Section": "Inspections",
+                    "Group": "Inspection_Requirements"
+                }
+            },
+            "DataItemsNBI.Inspection Completion Date": {
+                "Hash": "DataItemsNBIInspection Completion Date",
+                "Name": "Inspection Completion Date",
+                "DataAddress": "DataItemsNBI.Inspection Completion Date",
+                "DataType": "DateTime",
+                "PictForm": {
+                    "InputType": "Date",
+                    "SpreadsheetNotes": "Report the last site visit date",
+                    "Section": "Inspections",
+                    "Group": "Inspection_Events"
+                }
+            },
+            "DataItemsNBI.Nationally Certified Bridge Inspector": {
+                "Hash": "DataItemsNBINationally Certified Bridge Inspector",
+                "Name": "Nationally Certified Bridge Inspector",
+                "DataAddress": "DataItemsNBI.Nationally Certified Bridge Inspector",
+                "DataType": "",
+                "PictForm": {
+                    "SpreadsheetNotes": "AlphanumericThis could be an entry in the first release and then change to pulling the unique identifier code of the team leader for the inspection from the list of inspectors and qualifications based on the inspectors name",
+                    "Section": "Inspections",
+                    "Group": "Inspection_Events"
+                }
+            },
+            "DataItemsNBI.Inspection Due Date": {
+                "Hash": "DataItemsNBIInspection Due Date",
+                "Name": "Inspection Due Date",
+                "DataAddress": "DataItemsNBI.Inspection Due Date",
+                "DataType": "",
+                "PictForm": {
+                    "SpreadsheetNotes": "HIBridge to calculate this and the ability to overwrite if inspection was late This value is calculated by the FHWA based on Item B.IE.03 (Inspection Completion Date) plus the value of Item B.IE.05 (Inspection Interval)",
+                    "Section": "Inspections",
+                    "Group": "Inspection_Events"
+                }
+            },
+            "DataItemsNBI.Risk-Based Inspection Interval Method": {
+                "Hash": "DataItemsNBIRisk-Based Inspection Interval Method",
+                "Name": "Risk-Based Inspection Interval Method",
+                "DataAddress": "DataItemsNBI.Risk-Based Inspection Interval Method",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Inspections",
+                    "Group": "Inspection_Events"
+                }
+            },
+            "DataItemsNBI.Inspection Quality Control Date": {
+                "Hash": "DataItemsNBIInspection Quality Control Date",
+                "Name": "Inspection Quality Control Date",
+                "DataAddress": "DataItemsNBI.Inspection Quality Control Date",
+                "DataType": "DateTime",
+                "PictForm": {
+                    "InputType": "Date",
+                    "SpreadsheetNotes": "The date that the QC review was completed. This should be able to be left blank or select 'No QC review' if one was not perfo",
+                    "Section": "Inspections",
+                    "Group": "Inspection_Events"
+                }
+            },
+            "DataItemsNBI.Inspection Quality Assurance Date": {
+                "Hash": "DataItemsNBIInspection Quality Assurance Date",
+                "Name": "Inspection Quality Assurance Date",
+                "DataAddress": "DataItemsNBI.Inspection Quality Assurance Date",
+                "DataType": "DateTime",
+                "PictForm": {
+                    "InputType": "Date",
+                    "SpreadsheetNotes": "DateThe date that the QA review wascompleted.This should be able to be left blank or select 'No QC review' if one was not performed",
+                    "Section": "Inspections",
+                    "Group": "Inspection_Events"
+                }
+            },
+            "DataItemsNBI.Inspection Data Update Date": {
+                "Hash": "DataItemsNBIInspection Data Update Date",
+                "Name": "Inspection Data Update Date",
+                "DataAddress": "DataItemsNBI.Inspection Data Update Date",
+                "DataType": "DateTime",
+                "PictForm": {
+                    "InputType": "Date",
+                    "SpreadsheetNotes": "DateDate that the HDOT database was updated with the NBI inspection data.For HIBridge to be confirmed with HDOT that this is the date the information is pushed to BrM",
+                    "Section": "Inspections",
+                    "Group": "Inspection_Events"
+                }
+            },
+            "DataItemsNBI.Inspection Note": {
+                "Hash": "DataItemsNBIInspection Note",
+                "Name": "Inspection Note",
+                "DataAddress": "DataItemsNBI.Inspection Note",
+                "DataType": "",
+                "PictForm": {
+                    "SpreadsheetNotes": "AlphanumericLimit to 300 characters.This field may end up linking and taking data from a different note in the form at a later date",
+                    "Section": "Inspections",
+                    "Group": "Inspection_Events"
+                }
+            },
+            "DataItemsNBI.Inspection Equipment": {
+                "Hash": "DataItemsNBIInspection Equipment",
+                "Name": "Inspection Equipment",
+                "DataAddress": "DataItemsNBI.Inspection Equipment",
+                "DataType": "",
+                "PictForm": {
+                    "SpreadsheetNotes": "Dropdown with the following options, multiple choice: (titles in Bold cannot be selected but separate the lists)",
+                    "Section": "Inspections",
+                    "Group": "Inspection_Events"
+                }
+            },
+            "DataItemsNBI.Bridge Bearings Condition Rating": {
+                "Hash": "DataItemsNBIBridge Bearings Condition Rating",
+                "Name": "Bridge Bearings Condition Rating",
+                "DataAddress": "DataItemsNBI.Bridge Bearings Condition Rating",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Bridge_Condition",
+                    "Group": "Component_Condition_Ratings"
+                }
+            },
+            "DataItemsNBI.Bridge Joints Condition Rating": {
+                "Hash": "DataItemsNBIBridge Joints Condition Rating",
+                "Name": "Bridge Joints Condition Rating",
+                "DataAddress": "DataItemsNBI.Bridge Joints Condition Rating",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Bridge_Condition",
+                    "Group": "Component_Condition_Ratings"
+                }
+            },
+            "DataItemsNBI.Channel Protection Condition Rating": {
+                "Hash": "DataItemsNBIChannel Protection Condition Rating",
+                "Name": "Channel Protection Condition Rating",
+                "DataAddress": "DataItemsNBI.Channel Protection Condition Rating",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Bridge_Condition",
+                    "Group": "Component_Condition_Ratings"
+                }
+            },
+            "DataItemsNBI.NSTM Inspection Condition": {
+                "Hash": "DataItemsNBINSTM Inspection Condition",
+                "Name": "NSTM Inspection Condition",
+                "DataAddress": "DataItemsNBI.NSTM Inspection Condition",
+                "DataType": "",
+                "PictForm": {
+                    "SpreadsheetNotes": "Grey out or show as not applicable when Item B.IR.01 (NSTM Inspection Required) is N",
+                    "Section": "Bridge_Condition",
+                    "Group": "Component_Condition_Ratings"
+                }
+            },
+            "DataItemsNBI.Underwater Inspection Condition": {
+                "Hash": "DataItemsNBIUnderwater Inspection Condition",
+                "Name": "Underwater Inspection Condition",
+                "DataAddress": "DataItemsNBI.Underwater Inspection Condition",
+                "DataType": "",
+                "PictForm": {
+                    "SpreadsheetNotes": "Grey out or show as not applicable when Item B.IR.03 (NSTM Inspection Required) is N",
+                    "Section": "Bridge_Condition",
+                    "Group": "Component_Condition_Ratings"
+                }
+            },
+            "DataItemsNBI.Seismic Vulnerability": {
+                "Hash": "DataItemsNBISeismic Vulnerability",
+                "Name": "Seismic Vulnerability",
+                "DataAddress": "DataItemsNBI.Seismic Vulnerability",
+                "DataType": "",
+                "PictForm": {
+                    "Section": "Bridge_Condition",
+                    "Group": "Appraisal"
+                }
+            }
+        },
+        "Sections": [
+            {
+                "Name": "Bridge Identification",
+                "Hash": "Bridge_Identification",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "Identification",
+                        "Hash": "Identification",
+                        "Rows": []
+                    },
+                    {
+                        "Name": "Location",
+                        "Hash": "Location",
+                        "Rows": []
+                    },
+                    {
+                        "Name": "Classification",
+                        "Hash": "Classification",
+                        "Rows": []
+                    }
+                ]
+            },
+            {
+                "Name": "Bridge Material and Type",
+                "Hash": "Bridge_Material_and_Type",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "Span Material and Type",
+                        "Hash": "Span_Material_and_Type",
+                        "Rows": []
+                    },
+                    {
+                        "Name": "Substructure Material and Type",
+                        "Hash": "Substructure_Material_and_Type",
+                        "Rows": []
+                    }
+                ]
+            },
+            {
+                "Name": "Bridge Geometry",
+                "Hash": "Bridge_Geometry",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "",
+                        "Hash": "",
+                        "Rows": []
+                    }
+                ]
+            },
+            {
+                "Name": "Features",
+                "Hash": "Features",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "Highways",
+                        "Hash": "Highways",
+                        "Rows": []
+                    },
+                    {
+                        "Name": "Railroads",
+                        "Hash": "Railroads",
+                        "Rows": []
+                    },
+                    {
+                        "Name": "Navigable Waterways",
+                        "Hash": "Navigable_Waterways",
+                        "Rows": []
+                    }
+                ]
+            },
+            {
+                "Name": "Loads, Load Rating and Posting",
+                "Hash": "Loads__Load_Rating_and_Posting",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "Loads and Load Rating",
+                        "Hash": "Loads_and_Load_Rating",
+                        "Rows": []
+                    },
+                    {
+                        "Name": "Load Posting Status",
+                        "Hash": "Load_Posting_Status",
+                        "Rows": []
+                    },
+                    {
+                        "Name": "Load Evaluation and Posting",
+                        "Hash": "Load_Evaluation_and_Posting",
+                        "Rows": []
+                    }
+                ]
+            },
+            {
+                "Name": "Inspections",
+                "Hash": "Inspections",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "Inspection Requirements",
+                        "Hash": "Inspection_Requirements",
+                        "Rows": []
+                    },
+                    {
+                        "Name": "Inspection Events",
+                        "Hash": "Inspection_Events",
+                        "Rows": []
+                    }
+                ]
+            },
+            {
+                "Name": "Bridge Condition",
+                "Hash": "Bridge_Condition",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "Component Condition Ratings",
+                        "Hash": "Component_Condition_Ratings",
+                        "Rows": []
+                    },
+                    {
+                        "Name": "Appraisal",
+                        "Hash": "Appraisal",
+                        "Rows": []
+                    }
+                ]
+            }
+        ],
+        "ReferenceManifests": {}
+    }
+}
