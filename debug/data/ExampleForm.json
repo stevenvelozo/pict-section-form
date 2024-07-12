@@ -1,0 +1,301 @@
+{
+    "Form": "ExampleForm",
+    "Descriptors": {
+        "Header.FirstName": {
+            "Hash": "HeaderFirstName",
+            "Name": "First Name",
+            "DataAddress": "Header.FirstName",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "1",
+                "Width": "1",
+                "Section": "Header",
+                "Group": "General_Info"
+            }
+        },
+        "Header.LastName": {
+            "Hash": "HeaderLastName",
+            "Name": "Last Name",
+            "DataAddress": "Header.LastName",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "1",
+                "Width": "1",
+                "Section": "Header",
+                "Group": "General_Info"
+            }
+        },
+        "Header.JobTitle": {
+            "Hash": "JobTitle",
+            "Name": "Job Title",
+            "DataAddress": "Header.JobTitle",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "1",
+                "Width": "2",
+                "Section": "Header",
+                "Group": "General_Info"
+            }
+        },
+        "Header.Description": {
+            "Hash": "Description",
+            "Name": "Description",
+            "DataAddress": "Header.Description",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "2",
+                "Width": "4",
+                "Section": "Header",
+                "Group": "General_Info"
+            }
+        },
+        "Header.Planet": {
+            "Hash": "Planet",
+            "Name": "Planet",
+            "DataAddress": "Header.Planet",
+            "DataType": "String",
+            "PictForm": {
+                "InputType": "SelectFixed",
+                "Row": "3",
+                "Width": "1",
+                "Units": "planetary",
+                "Section": "Header",
+                "Group": "General_Info"
+            }
+        },
+        "Header.Location.Address": {
+            "Hash": "Address",
+            "Name": "Address",
+            "DataAddress": "Header.Location.Address",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "1",
+                "Width": "1",
+                "Section": "Header",
+                "Group": "Address"
+            }
+        },
+        "Header.Location.City": {
+            "Hash": "City",
+            "Name": "City",
+            "DataAddress": "Header.Location.City",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "2",
+                "Width": "2",
+                "Section": "Header",
+                "Group": "Address"
+            }
+        },
+        "Header.Location.State": {
+            "Hash": "State",
+            "Name": "State",
+            "DataAddress": "Header.Location.State",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "2",
+                "Width": "2",
+                "Section": "Header",
+                "Group": "Address"
+            }
+        },
+        "Header.Location.Zip": {
+            "Hash": "Zip",
+            "Name": "Zip",
+            "DataAddress": "Header.Location.Zip",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "2",
+                "Width": "1",
+                "Section": "Header",
+                "Group": "Address"
+            }
+        },
+        "Header.Location.Country": {
+            "Hash": "Country",
+            "Name": "Country",
+            "DataAddress": "Header.Location.Country",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "3",
+                "Width": "1",
+                "Section": "Header",
+                "Group": "Address"
+            }
+        },
+        "Header.Location.Phone": {
+            "Hash": "Phone",
+            "Name": "Phone",
+            "DataAddress": "Header.Location.Phone",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "3",
+                "Width": "1",
+                "Section": "Header",
+                "Group": "Address"
+            }
+        },
+        "Inventory.Packages": {
+            "Hash": "PackageAddress",
+            "Name": "PackageAddress",
+            "DataAddress": "Inventory.Packages",
+            "DataType": "Array",
+            "PictForm": {
+                "InputType": "TabularAddress",
+                "Row": "1",
+                "Width": "3",
+                "Section": "Package_Dimensions",
+                "Group": "Size"
+            }
+        },
+        "Packages[].Area": {
+            "Hash": "AreaSet",
+            "Name": "AreaSet",
+            "DataAddress": "Packages[].Area",
+            "DataType": "Number",
+            "PictForm": {
+                "InputType": "Ignored",
+                "Row": "1",
+                "Width": "1",
+                "Section": "Totals",
+                "Group": "Aggregate_Data"
+            }
+        },
+        "Aggregate.StorageVolume": {
+            "Hash": "StorageVolume",
+            "Name": "Storage Volume Required",
+            "DataAddress": "Aggregate.StorageVolume",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "1",
+                "Width": "1",
+                "Section": "Totals",
+                "Group": "Aggregate_Data"
+            }
+        }
+    },
+    "Sections": [
+        {
+            "Name": "Header",
+            "Hash": "Header",
+            "Solvers": [],
+            "Groups": [
+                {
+                    "Name": "General Info",
+                    "Hash": "General_Info",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                },
+                {
+                    "Name": "Address",
+                    "Hash": "Address",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                }
+            ]
+        },
+        {
+            "Name": "Package Dimensions",
+            "Hash": "Package_Dimensions",
+            "Solvers": [
+                "Area = Width * Height"
+            ],
+            "Groups": [
+                {
+                    "Name": "Size",
+                    "Hash": "Size",
+                    "Rows": [],
+                    "RecordSetSolvers": [],
+                    "Layout": "Tabular",
+                    "RecordSetAddress": "Inventory.Packages",
+                    "RecordManifest": "Packages"
+                }
+            ]
+        },
+        {
+            "Name": "Totals",
+            "Hash": "Totals",
+            "Solvers": [],
+            "Groups": [
+                {
+                    "Name": "Aggregate Data",
+                    "Hash": "Aggregate_Data",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                }
+            ]
+        }
+    ],
+    "ReferenceManifests": {
+        "Packages": {
+            "Scope": "Packages",
+            "Descriptors": {
+                "Name": {
+                    "Hash": "PackageName",
+                    "Name": "Package Name",
+                    "DataAddress": "Name",
+                    "DataType": "String",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "3",
+                        "Section": "Package_Dimensions",
+                        "Group": "Size"
+                    }
+                },
+                "ReceiveDate": {
+                    "Hash": "ReceiveDate",
+                    "Name": "Receive Date",
+                    "DataAddress": "ReceiveDate",
+                    "DataType": "DateTime",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Section": "Package_Dimensions",
+                        "Group": "Size"
+                    }
+                },
+                "Width": {
+                    "Hash": "Width",
+                    "Name": "Width",
+                    "DataAddress": "Width",
+                    "DataType": "Number",
+                    "PictForm": {
+                        "Row": "2",
+                        "Width": "1",
+                        "Units": "inches",
+                        "Section": "Package_Dimensions",
+                        "Group": "Size"
+                    }
+                },
+                "Height": {
+                    "Hash": "Height",
+                    "Name": "Height",
+                    "DataAddress": "Height",
+                    "DataType": "Number",
+                    "PictForm": {
+                        "Row": "2",
+                        "Width": "1",
+                        "Units": "inches",
+                        "Section": "Package_Dimensions",
+                        "Group": "Size"
+                    }
+                },
+                "Area": {
+                    "Hash": "Area",
+                    "Name": "Area",
+                    "DataAddress": "Area",
+                    "DataType": "Number",
+                    "PictForm": {
+                        "Row": "3",
+                        "Width": "2",
+                        "Units": "square inches",
+                        "Section": "Package_Dimensions",
+                        "Group": "Size"
+                    }
+                }
+            },
+            "Sections": [],
+            "ReferenceManifests": {}
+        }
+    }
+}

@@ -165,6 +165,12 @@ class PictDynamicFormsInformary extends libPictProvider
 			let tmpContainerAddress = tmpFormElements[i].getAttribute('data-i-container');
 			let tmpIndex = tmpFormElements[i].getAttribute('data-i-index');
 
+			if (!tmpDatumAddress)
+			{
+				this.log.warn(`Informary found a form element without a datum address.  Skipping.`);
+				continue;
+			}
+
 			if (!tmpContainerAddress)
 			{
 				let tmpAppStateValue = tmpManifest.getValueAtAddress(pAppStateData, tmpDatumAddress);

@@ -90,7 +90,7 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 		}
 		// Add the group if it do no exist
-		const tmpGroup = { Name: pGroupHash, Hash: pGroupHash, Rows: [] };
+		const tmpGroup = { Name:pGroupHash, Hash:pGroupHash, Rows:[], RecordSetSolvers:[] };
 		tmpManifestSection.Groups.push(tmpGroup);
 		return tmpGroup;
 	}
@@ -175,23 +175,27 @@ class ManifestFactory extends libFableServiceProviderBase
 			tmpDescriptor.PictForm.SpreadsheetNotes = tmpRecord['Input Notes'];
 		}
 
-		if ((`SubManifest` in tmpRecord) && (tmpRecord.SubManifest))
+		let tmpIsTabular = false;
+		// This is used for Section and Group, regardless of where the Descriptor goes.
+		let tmpCoreManifestFactory = pManifestFactory;
+		if ((`SubManifest` in tmpRecord) && (tmpRecord.SubManifest) && (tmpRecord.InputType != 'TabularAddress'))
 		{
-			if (!(tmpRecord.SubManifest in this.manifest.ReferenceManifests))
+			// Below is what amounts to complex pointer arithmatic.
+			if (!(tmpRecord.SubManifest in pManifestFactory.manifest.ReferenceManifests))
 			{
 				// Build a reference manifest if it doesn't exist
-				this.referenceManifestFactories[tmpRecord.SubManifest] = this.fable.instantiateServiceProviderWithoutRegistration('ManifestFactory', { Manifest: { Scope: tmpRecord.SubManifest } }, `${this.UUID}-${tmpRecord.SubManifest}`);
-				// Pointer arithmatic?
-				this.manifest.ReferenceManifests[tmpRecord.SubManifest] = this.referenceManifestFactories[tmpRecord.SubManifest].manifest;
+				pManifestFactory.referenceManifestFactories[tmpRecord.SubManifest] = this.fable.instantiateServiceProviderWithoutRegistration('ManifestFactory', { Manifest: { Scope: tmpRecord.SubManifest } }, `${this.UUID}-${tmpRecord.SubManifest}`);
+				pManifestFactory.manifest.ReferenceManifests[tmpRecord.SubManifest] = pManifestFactory.referenceManifestFactories[tmpRecord.SubManifest].manifest;
 			}
-			pManifestFactory = this.referenceManifestFactories[tmpRecord.SubManifest];
+			pManifestFactory = pManifestFactory.referenceManifestFactories[tmpRecord.SubManifest];
+			tmpIsTabular = true;
 		}
 
 		// Setup the Section and the Group
 		const tmpSectionName = tmpRecord['Section Name'] ?? 'Default_Section';
 		const tmpSectionHash = this.fable.DataFormat.cleanNonAlphaCharacters(tmpSectionName);
 		tmpDescriptor.PictForm.Section = tmpSectionHash;
-		const tmpSection = pManifestFactory.getManifestSection(tmpSectionHash);
+		const tmpSection = tmpCoreManifestFactory.getManifestSection(tmpSectionHash);
 		if (tmpRecord['Section Name'])
 		{
 			tmpSection.Name = tmpRecord['Section Name'];
@@ -204,7 +208,7 @@ class ManifestFactory extends libFableServiceProviderBase
 		const tmpGroupName = tmpRecord['Group Name'] ?? 'Default_Group';
 		const tmpGroupHash = this.fable.DataFormat.cleanNonAlphaCharacters(tmpGroupName);
 		tmpDescriptor.PictForm.Group = tmpGroupHash;
-		const tmpGroup = pManifestFactory.getManifestGroup(tmpSection, tmpGroupHash);
+		const tmpGroup = tmpCoreManifestFactory.getManifestGroup(tmpSection, tmpGroupHash);
 		if (tmpRecord['Group Name'])
 		{
 			tmpGroup.Name = tmpRecord['Group Name'];
@@ -213,8 +217,36 @@ class ManifestFactory extends libFableServiceProviderBase
 		{
 			console.info(`[ERROR] Duplicate descriptor hash found ${tmpDescriptor.Hash}.  This will overwrite the original descriptor.`);
 		}
+		// Now checking if the group is Tabular -- if it is we need to set some extra values on the Group and have solvers occur inline
+		// Layout: "Tabular",
+		// RecordSetSolvers: [
+		// 	{
+		// 		Ordinal: 0,
+		// 		Expression: "PercentTotalFat = (Fat * 9) / Calories",
+		// 	},
+		// ],
+		// RecordSetAddress: "FruitData.FruityVice",
+		// RecordManifest: "FruitEditor",
+		if (tmpRecord.InputType == 'TabularAddress')
+		{
+			tmpGroup.Layout = 'Tabular';
+			tmpGroup.RecordSetAddress = tmpDescriptor.DataAddress;
+			tmpGroup.RecordManifest = tmpRecord.SubManifest;
+		}
 
-		pManifestFactory.addDescriptor(tmpDescriptor);
+		// if (tmpRecord.DataOnly)
+		// {
+		// 	delete tmpDescriptor.PictForm;
+		// }
+
+		if (tmpRecord.InputType != 'TabularAddress')
+		{
+			pManifestFactory.addDescriptor(tmpDescriptor);
+		}
+		else
+		{
+			tmpCoreManifestFactory.addDescriptor(tmpDescriptor);
+		}
 
 		return tmpDescriptor;
 	}

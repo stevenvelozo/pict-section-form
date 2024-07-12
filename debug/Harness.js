@@ -1,2 +1,2 @@
 const libParseCSV = require('./ParseCSV.js');
-libParseCSV.run(['import']);
+libParseCSV.run(['node', 'Harness.js', 'import']);

@@ -463,35 +463,6 @@ class PictViewDynamicForm extends libPictViewClass
 					tmpGroup.Rows = [];
 				}
 
-				// Check the Group type and get the manifest if it is a RECORDSET-based group.
-				// The three built-in set groups (Record, Tabular, Columnar) will do this or the
-				// developer can set a property on Group called "GroupType" to "RecordSet" for
-				// custom layouts.
-				if (((tmpGroup.Layout === 'Tabular') || (tmpGroup.Layout === 'Tabular') || (tmpGroup.Layout === 'Tabular')) ||
-					(tmpGroup.GroupType === 'RecordSet'))
-				{
-					// Check for the supporting manifest
-					if (!('RecordManifest' in tmpGroup))
-					{
-						this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group but thee Group does not contain a RecordManifest property.`);
-						tmpGroup.supportingManifest  = this.fable.instantiateServiceProviderWithoutRegistration('Manifest');
-					}
-					else if (!('ReferenceManifests' in this.options.Manifests.Section))
-					{
-						this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group but there are no ReferenceManifests in the Section description Manifest.`);
-						tmpGroup.supportingManifest  = this.fable.instantiateServiceProviderWithoutRegistration('Manifest');
-					}
-					else if (!(tmpGroup.RecordManifest in this.options.Manifests.Section.ReferenceManifests))
-					{
-						this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group and has a RecordManifest of [${tmpGroup.RecordManifest}] but the Section.ReferenceManifests object does not contain the referred to manifest.`);
-						tmpGroup.supportingManifest  = this.fable.instantiateServiceProviderWithoutRegistration('Manifest');
-					}
-					else
-					{
-						tmpGroup.supportingManifest = this.fable.instantiateServiceProviderWithoutRegistration('Manifest', this.options.Manifests.Section.ReferenceManifests[tmpGroup.RecordManifest]);
-					}
-				}
-
 				if (tmpGroup.supportingManifest && (typeof(tmpGroup.RecordSetAddress) == 'string'))
 				{
 					let tmpSupportingManifestDescriptorKeys = Object.keys(tmpGroup.supportingManifest.elementDescriptors);
@@ -502,7 +473,6 @@ class PictViewDynamicForm extends libPictViewClass
 						if (!('PictForm' in tmpInput))
 						{
 							tmpInput.PictForm = {};
-							
 						}
 
 						tmpInput.PictForm.InformaryDataAddress = tmpSupportingManifestDescriptorKeys[k];
@@ -531,6 +501,41 @@ class PictViewDynamicForm extends libPictViewClass
 				}
 			}
 		}
+
+		// Now check to see if we need to build group
+		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
+		{
+			let tmpGroup = this.sectionDefinition.Groups[i];
+			// Check the Group type and get the manifest if it is a RECORDSET-based group.
+			// The three built-in set groups (Record, Tabular, Columnar) will do this or the
+			// developer can set a property on Group called "GroupType" to "RecordSet" for
+			// custom layouts.
+			if ((tmpGroup.Layout === 'Tabular') ||
+				(tmpGroup.GroupType === 'RecordSet'))
+			{
+				// Check for the supporting manifest
+				if (!('RecordManifest' in tmpGroup))
+				{
+					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group but thee Group does not contain a RecordManifest property.`);
+					tmpGroup.supportingManifest  = this.fable.instantiateServiceProviderWithoutRegistration('Manifest');
+				}
+				else if (!('ReferenceManifests' in this.options.Manifests.Section))
+				{
+					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group but there are no ReferenceManifests in the Section description Manifest.`);
+					tmpGroup.supportingManifest  = this.fable.instantiateServiceProviderWithoutRegistration('Manifest');
+				}
+				else if (!(tmpGroup.RecordManifest in this.options.Manifests.Section.ReferenceManifests))
+				{
+					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group and has a RecordManifest of [${tmpGroup.RecordManifest}] but the Section.ReferenceManifests object does not contain the referred to manifest.`);
+					tmpGroup.supportingManifest  = this.fable.instantiateServiceProviderWithoutRegistration('Manifest');
+				}
+				else
+				{
+					tmpGroup.supportingManifest = this.fable.instantiateServiceProviderWithoutRegistration('Manifest', this.options.Manifests.Section.ReferenceManifests[tmpGroup.RecordManifest]);
+				}
+			}
+		}
+
 	}
 
 	rebuildMacros()
@@ -553,6 +558,7 @@ class PictViewDynamicForm extends libPictViewClass
 		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
 		{
 			let tmpGroup = this.sectionDefinition.Groups[i];
+
 			// Group Macros
 			let tmpGroupMacroKeys = Object.keys(this.options.MacroTemplates.Group);
 			if (!('Macro'  in tmpGroup))
@@ -566,9 +572,8 @@ class PictViewDynamicForm extends libPictViewClass
 
 			if (!Array.isArray(tmpGroup.Rows))
 			{
-				continue;
+				tmpGroup.Rows = [];
 			}
-
 			for (let j = 0; j < tmpGroup.Rows.length; j++)
 			{
 				// TODO: Do we want row macros?  Let's be still and find out.
@@ -606,6 +611,31 @@ class PictViewDynamicForm extends libPictViewClass
 					{
 						tmpInput.Macro[tmpInputMacroKeys[n]] = this.pict.parseTemplate (this.options.MacroTemplates.Input[tmpInputMacroKeys[n]], tmpInput, null, [this]);
 					}
+				}
+			}
+
+			if (tmpGroup.RecordSetAddress)
+			{
+				// Check if there is a record set address
+				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
+				let tmpRecordSetDataObjectExists = this.sectionManifest.checkAddressExistsByHash(tmpMarshalDestinationObject, tmpGroup.RecordSetAddress);
+				let tmpRecordSetDataObject = this.sectionManifest.getValueAtAddress(tmpMarshalDestinationObject, tmpGroup.RecordSetAddress);
+				if (!tmpRecordSetDataObjectExists)
+				{
+					this.log.warn(`Automatically setting an empty array at [${tmpGroup.RecordSetAddress}].`);
+					this.sectionManifest.setValueByHash(tmpMarshalDestinationObject, tmpGroup.RecordSetAddress, []);
+				}
+				else if (Array.isArray(tmpRecordSetDataObject))
+				{
+					this.log.trace(`RecordSetAddress is an Array for [${tmpGroup.Hash}]`);
+				}
+				else if (typeof(tmpRecordSetDataObject) === 'object')
+				{
+					this.log.trace(`RecordSetAddress is an Object for [${tmpGroup.Hash}]`);
+				}
+				else
+				{
+					this.log.error(`RecordSetAddress is not an Array or Object for [${tmpGroup.Hash}]; it is a [${typeof(tmpRecordSetDataObject)}] -- this is going to likely cause problems.`);
 				}
 			}
 		}
@@ -790,7 +820,6 @@ class PictViewDynamicForm extends libPictViewClass
 						let tmpRow = tmpGroup.Rows[j];
 
 						// Tabular are odd in that they have a header row and then a meta TemplateSet for the rows()
-
 						// In this case we are going to load the descriptors from the supportingManifests
 						if (!tmpGroup.supportingManifest)
 						{
@@ -803,6 +832,10 @@ class PictViewDynamicForm extends libPictViewClass
 							let tmpSupportingManifestHash = tmpGroup.supportingManifest.elementAddresses[k];
 							let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
 							// Update the InputIndex to match the current render config
+							if (!('PictForm' in tmpInput))
+							{
+								tmpInput.PictForm = {};
+							}
 							tmpInput.PictForm.InputIndex = k;
 							tmpInput.PictForm.GroupIndex = tmpGroup.GroupIndex;
 
