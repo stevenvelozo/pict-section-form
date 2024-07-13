@@ -32,7 +32,7 @@ class ManyfestEditor extends libPictSectionForm.PictFormApplication
 	onAfterInitialize()
 	{
 		// Load the list of Manifests that have been saved.
-		_Pict.views.ManyfestLoadListView.render()
+		this.pict.views.ManyfestLoadListView.render()
 	}
 }
 

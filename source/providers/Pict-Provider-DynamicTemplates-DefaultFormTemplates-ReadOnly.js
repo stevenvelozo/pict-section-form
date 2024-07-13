@@ -195,9 +195,9 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-Row-ExtraPostfix",
 			"Template": /*HTML*/`<!-- TabularTemplateRow-ExtraPostfix-->
-					<td><a href="#" onClick="_Pict.views['{~D:Context[0].Hash~}'].deleteDynamicTableRow({~D:Record.Group~},'{~D:Record.Key~}')">del</a>
-					<a href="#" onClick="_Pict.views['{~D:Context[0].Hash~}'].moveDynamicTableRowUp({~D:Record.Group~},'{~D:Record.Key~}')">up</a>
-					<a href="#" onClick="_Pict.views['{~D:Context[0].Hash~}'].moveDynamicTableRowDown({~D:Record.Group~},'{~D:Record.Key~}')">down</a></td>
+					<td><a href="#" onClick="{~P~}.views['{~D:Context[0].Hash~}'].deleteDynamicTableRow({~D:Record.Group~},'{~D:Record.Key~}')">del</a>
+					<a href="#" onClick="{~P~}.views['{~D:Context[0].Hash~}'].moveDynamicTableRowUp({~D:Record.Group~},'{~D:Record.Key~}')">up</a>
+					<a href="#" onClick="{~P~}.views['{~D:Context[0].Hash~}'].moveDynamicTableRowDown({~D:Record.Group~},'{~D:Record.Key~}')">down</a></td>
 `
 		},
 		/*
@@ -285,7 +285,7 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-TabularTemplate-InformaryAddress-Input",
-			"Template": /*HTML*/` data-i-index="{~D:Context[2].Key~}" onchange="_Pict.views['{~D:Context[0].Hash~}'].dataChangedTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"  `
+			"Template": /*HTML*/` data-i-index="{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].dataChangedTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"  `
 		},
 		/*
 		 * END Tabular Input Templates

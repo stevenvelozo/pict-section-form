@@ -31,8 +31,15 @@ class ManyfestRouter extends libPictProvider
 		this.router.on('/Manyfest/Code',
 			(pData) =>
 			{
-				_Pict.views.ManyfestCodeView.render();
+				this.pict.views.ManyfestCodeView.render();
 			});
+
+		this.router.on('/Manyfest/Save',
+			(pData) =>
+			{
+				this.pict.providers.DataProvider.saveManyfest()
+			});
+		)
 
 		return super.onInitializeAsync(fCallback);
 	}

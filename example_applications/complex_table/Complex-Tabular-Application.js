@@ -45,7 +45,7 @@ module.exports.default_configuration.pict_configuration = {
 					{
 						//onclick="{~D:Record.Macro.DataRequestFunction~}"
 						"HashPostfix": "-Template-Wrap-Prefix",
-						"Template": "<h1>Rectangular Area Solver Micro-app</h1><div><a href=\"#\" onclick=\"_Pict.PictApplication.solve()\">[ solve ]</a></div><hr />"
+						"Template": "<h1>Rectangular Area Solver Micro-app</h1><div><a href=\"#\" onclick=\"{~Pict~}.PictApplication.solve()\">[ solve ]</a></div><hr />"
 					}
 				],
 

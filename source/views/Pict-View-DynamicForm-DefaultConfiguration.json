@@ -16,7 +16,7 @@
 		"Group": {
 			"HTMLID": " id=\"Group-{~D:Context[0].UUID~}\" ",
 
-			"TabularCreateRowFunctionCall": "_Pict.views['{~D:Context[0].Hash~}'].createDynamicTableRow({~D:Record.GroupIndex~})"
+			"TabularCreateRowFunctionCall": "{~P~}.views['{~D:Context[0].Hash~}'].createDynamicTableRow({~D:Record.GroupIndex~})"
 		},
 		"Input": {
 			"Informary": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\" ",
@@ -33,9 +33,9 @@
 			"HTMLForID": " for=\"{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}\" ",
 
 			"InputFullProperties": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\"  name=\"{~D:Record.Name~}\" ",
-			"InputChangeHandler": " onchange=\"_Pict.views['{~D:Context[0].Hash~}'].dataChanged('{~D:Record.Hash~}')\" ",
+			"InputChangeHandler": " onchange=\"{~P~}.views['{~D:Context[0].Hash~}'].dataChanged('{~D:Record.Hash~}')\" ",
 
-			"DataRequestFunction": " _Pict.views['{~D:Context[0].Hash~}'].inputDataRequest('{~D:Record.Hash~}'); "
+			"DataRequestFunction": " {~P~}.views['{~D:Context[0].Hash~}'].inputDataRequest('{~D:Record.Hash~}'); "
 		}
 	},
 

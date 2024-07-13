@@ -463,24 +463,6 @@ class PictViewDynamicForm extends libPictViewClass
 					tmpGroup.Rows = [];
 				}
 
-				if (tmpGroup.supportingManifest && (typeof(tmpGroup.RecordSetAddress) == 'string'))
-				{
-					let tmpSupportingManifestDescriptorKeys = Object.keys(tmpGroup.supportingManifest.elementDescriptors);
-					for (let k = 0; k < tmpSupportingManifestDescriptorKeys.length; k++)
-					{
-						let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];
-
-						if (!('PictForm' in tmpInput))
-						{
-							tmpInput.PictForm = {};
-						}
-
-						tmpInput.PictForm.InformaryDataAddress = tmpSupportingManifestDescriptorKeys[k];
-						tmpInput.PictForm.InformaryContainerAddress = tmpGroup.RecordSetAddress;
-						tmpInput.RowIdentifierTemplateHash = '{~D:Record.RowID~}';
-					}
-				}
-
 				let tmpRowHash = (typeof(tmpDescriptor.PictForm.Row) == 'string') ? tmpDescriptor.PictForm.Row :
 								(typeof(tmpDescriptor.PictForm.Row) == 'number') ? `Row_${tmpDescriptor.PictForm.Row.toString()}` :
 								'Row_Default';
@@ -532,6 +514,23 @@ class PictViewDynamicForm extends libPictViewClass
 				else
 				{
 					tmpGroup.supportingManifest = this.fable.instantiateServiceProviderWithoutRegistration('Manifest', this.options.Manifests.Section.ReferenceManifests[tmpGroup.RecordManifest]);
+				}
+			}
+			if (tmpGroup.supportingManifest && (typeof(tmpGroup.RecordSetAddress) == 'string'))
+			{
+				let tmpSupportingManifestDescriptorKeys = Object.keys(tmpGroup.supportingManifest.elementDescriptors);
+				for (let k = 0; k < tmpSupportingManifestDescriptorKeys.length; k++)
+				{
+					let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];
+
+					if (!('PictForm' in tmpInput))
+					{
+						tmpInput.PictForm = {};
+					}
+
+					tmpInput.PictForm.InformaryDataAddress = tmpSupportingManifestDescriptorKeys[k];
+					tmpInput.PictForm.InformaryContainerAddress = tmpGroup.RecordSetAddress;
+					tmpInput.RowIdentifierTemplateHash = '{~D:Record.RowID~}';
 				}
 			}
 		}

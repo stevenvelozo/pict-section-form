@@ -16,7 +16,7 @@ const _DEFAULT_VIEW_CONFIGURATION = (
 		<div class="container">
 			<h1 class="title">Manyfest Raw Code</h1>
 			<h2 class="subtitle">Your lens into the guts of this machine.</h2>
-			<textarea {~D:Record.Macro.InputFullProperties~} id="ManyfestRawCodeEditor" onchange="_Pict.views.ManyfestCodeView.marshalFromView()">{~D:Context[0].getManyfestRawCode()~}</textarea>
+			<textarea {~D:Record.Macro.InputFullProperties~} id="ManyfestRawCodeEditor" onchange="{~P~}.views.ManyfestCodeView.marshalFromView()">{~D:Context[0].getManyfestRawCode()~}</textarea>
 		</div>
 `
 		}

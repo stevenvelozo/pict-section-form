@@ -35,7 +35,7 @@ class PostcardApplication extends libPictApplication
 
 	changeToDefaultTheme()
 	{
-		this.pict.views.PictFormMetacontroller.formTemplatePrefix = _Pict.providers.PictFormSectionDefaultTemplateProvider.formsTemplateSetPrefix
+		this.pict.views.PictFormMetacontroller.formTemplatePrefix = this.pict.providers.PictFormSectionDefaultTemplateProvider.formsTemplateSetPrefix
 		// This generates the container metatemplates after we switch themes.
 		this.pict.views.PictFormMetacontroller.generateMetatemplate();
 		// This generates the view templates for each dynamic view generated from config.
@@ -50,7 +50,7 @@ class PostcardApplication extends libPictApplication
 
 	changeToPostcardTheme()
 	{
-		this.pict.views.PictFormMetacontroller.formTemplatePrefix = _Pict.providers['Postcard-Default-Theme-Provider'].formsTemplateSetPrefix;
+		this.pict.views.PictFormMetacontroller.formTemplatePrefix = this.pict.providers['Postcard-Default-Theme-Provider'].formsTemplateSetPrefix;
 		// This generates the container metatemplates after we switch themes.
 		this.pict.views.PictFormMetacontroller.generateMetatemplate();
 		// This generates the view templates for each dynamic view generated from config.
@@ -66,7 +66,7 @@ class PostcardApplication extends libPictApplication
 	onAfterInitializeAsync(fCallback)
 	{
 		// Default to the Pure theme
-		this.pict.views.PictFormMetacontroller.formTemplatePrefix = _Pict.providers['Postcard-Default-Theme-Provider'].formsTemplateSetPrefix;
+		this.pict.views.PictFormMetacontroller.formTemplatePrefix = this.pict.providers['Postcard-Default-Theme-Provider'].formsTemplateSetPrefix;
 
 		// Set a custom address for all the views to marshal to.
 		// This can also be set on specific views (same property)

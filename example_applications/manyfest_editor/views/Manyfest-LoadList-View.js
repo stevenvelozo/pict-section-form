@@ -21,7 +21,7 @@ const _DEFAULT_VIEW_CONFIGURATION = (
 		{
 			Hash: "Manyfest-LoadList-Entry-Template",
 			Template: /*html*/`
-							<a class="navbar-item" href="#" onclick="_Pict.providers.DataProvider.loadManyfest('{~D:Record.Scope~}')"> {~D:Record.Scope~} </a>
+							<a class="navbar-item" href="#" onclick="{~P~}.providers.DataProvider.loadManyfest('{~D:Record.Scope~}')"> {~D:Record.Scope~} </a>
 `
 		},
 		{
@@ -33,7 +33,7 @@ const _DEFAULT_VIEW_CONFIGURATION = (
 		{
 			Hash: "Manyfest-DeleteList-Entry-Template",
 			Template: /*html*/`
-							<a class="navbar-item" href="#" onclick="_Pict.providers.DataProvider.removeScopeFromManyfestList('{~D:Record.Scope~}')"> {~D:Record.Scope~} </a>
+							<a class="navbar-item" href="#" onclick="{~P~}.providers.DataProvider.removeScopeFromManyfestList('{~D:Record.Scope~}')"> {~D:Record.Scope~} </a>
 `
 		},
 		{
