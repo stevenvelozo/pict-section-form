@@ -75,23 +75,19 @@ class PictViewDynamicForm extends libPictViewClass
 
 		if (!this.pict.providers.PictFormSectionDefaultTemplateProvider)
 		{
-			let tmpDefaultTemplateProvider = this.pict.addProvider('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
-			tmpDefaultTemplateProvider.initialize();
+			this.pict.addProvider('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
 		}
 		if (!this.pict.providers.PictFormSectionDefaultTemplateProviderReadOnly)
 		{
-			let tmpDefaultTemplateProviderReadOnly = this.pict.addProvider('PictFormSectionDefaultTemplateProviderReadOnly', libFormsTemplateProviderReadOnly.default_configuration, libFormsTemplateProviderReadOnly);
-			tmpDefaultTemplateProviderReadOnly.initialize();
+			this.pict.addProvider('PictFormSectionDefaultTemplateProviderReadOnly', libFormsTemplateProviderReadOnly.default_configuration, libFormsTemplateProviderReadOnly);
 		}
 		if (!this.pict.providers.Informary)
 		{
-			let tmpInformary = this.pict.addProvider('Informary', libInformary.default_configuration, libInformary);
-			tmpInformary.initialize();
+			this.pict.addProvider('Informary', libInformary.default_configuration, libInformary);
 		}
 		if (!this.pict.providers.DynamicSolver)
 		{
-			let tmpDynamicSolver = this.pict.addProvider('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
-			tmpDynamicSolver.initialize();
+			this.pict.addProvider('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
 		}
 
 		// Load any view section-specific templates

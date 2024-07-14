@@ -25,8 +25,7 @@ class PictFormMetacontroller extends libPictViewClass
 		}
 		if (!this.pict.providers.DynamicSolver)
 		{
-			let tmpDynamicSolver = this.pict.addProvider('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
-			tmpDynamicSolver.initialize();
+			this.pict.addProvider('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
 		}
 
 		this.viewMarshalDestination = 'AppData';

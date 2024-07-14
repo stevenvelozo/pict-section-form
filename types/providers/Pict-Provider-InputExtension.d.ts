@@ -104,6 +104,29 @@ declare class PictInputExtensionProvider {
      * @returns {boolean} - Returns true.
      */
     onDataRequestTabular(pView: any, pInput: any, pValue: string, pHTMLSelector: string, pRowIndex: number): boolean;
+    /**
+     * Handles events for the Pict-Provider-InputExtension.
+     *
+     * @param {Object} pView - The view object.
+     * @param {Object} pInput - The input object.
+     * @param {string} pValue - The value from AppData.
+     * @param {string} pHTMLSelector - The HTML selector.
+     * @param {string} pEvent - The event hash that is expected to be triggered.
+     * @returns {boolean} - Returns true.
+     */
+    onEvent(pView: any, pInput: any, pValue: string, pHTMLSelector: string, pEvent: string): boolean;
+    /**
+     * Handles events for the Pict-Provider-InputExtension.
+     *
+     * @param {Object} pView - The view object.
+     * @param {Object} pInput - The input object.
+     * @param {string} pValue - The value from AppData.
+     * @param {string} pHTMLSelector - The HTML selector.
+     * @param {number} pRowIndex - The row index of the tabular data.
+     * @param {string} pEvent - The event hash that is expected to be triggered.
+     * @returns {boolean} - Returns true.
+     */
+    onEventTabular(pView: any, pInput: any, pValue: string, pHTMLSelector: string, pRowIndex: number, pEvent: string): boolean;
 }
 declare namespace PictInputExtensionProvider {
     export { _DefaultProviderConfiguration as default_configuration };

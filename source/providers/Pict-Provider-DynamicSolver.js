@@ -37,18 +37,15 @@ class PictDynamicSolver extends libPictProvider
 
 		if (!this.pict.providers.DynamicMetaLists)
 		{
-			let tmpDynamicMetaLists = this.pict.addProvider('DynamicMetaLists', libDynamicMetaLists.default_configuration, libDynamicMetaLists);
-			tmpDynamicMetaLists.initialize();
+			this.pict.addProvider('DynamicMetaLists', libDynamicMetaLists.default_configuration, libDynamicMetaLists);
 		}
 		if (!this.pict.providers['Pict-Input-Select']);
 		{
-			let tmpInputSelectProvider = this.pict.addProvider('Pict-Input-Select', libInputSelect.default_configuration, libInputSelect);
-			tmpInputSelectProvider.initialize();
+			this.pict.addProvider('Pict-Input-Select', libInputSelect.default_configuration, libInputSelect);
 		}
 		if (!this.pict.providers['Pict-Input-DateTime']);
 		{
-			let tmpInputDateTimeProvider = this.pict.addProvider('Pict-Input-DateTime', libInputDateTime.default_configuration, libInputDateTime);
-			tmpInputDateTimeProvider.initialize();
+			this.pict.addProvider('Pict-Input-DateTime', libInputDateTime.default_configuration, libInputDateTime);
 		}
 	}
 

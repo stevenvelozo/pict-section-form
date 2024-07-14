@@ -35,7 +35,7 @@ declare class ManifestFactory {
      *
      * @return {Object} the descriptor
      */
-    tabularRowAddDescriptor(pRecord: any): any;
+    tabularRowAddDescriptor(pManifestFactory: any, pRecord: any): any;
     /**
      * Create some manifests with a "factory" pattern.
      *

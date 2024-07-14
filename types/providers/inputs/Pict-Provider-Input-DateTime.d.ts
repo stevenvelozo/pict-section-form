@@ -1,9 +1,9 @@
 export = CustomInputHandler;
 declare class CustomInputHandler extends libPictSectionInputExtension {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
-    getSelectInputHTMLID(pInputHTMLID: any): string;
-    getTabularSelectInputID(pInputHTMLID: any, pRowIndex: any): string;
-    getTabularSelectDateTimeID(pInputHTMLID: any, pRowIndex: any): string;
+    getDateTimeInputHTMLID(pInputHTMLID: any): string;
+    getTabularDateTimeHiddenInputHTMLID(pInputHTMLID: any, pRowIndex: any): string;
+    getTabularDateTimeInputHTMLID(pInputHTMLID: any, pRowIndex: any): string;
     onDataMarshalToForm(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: any): boolean;
     onDataMarshalToFormTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: any, pRowIndex: any): boolean;
     onDataRequest(pView: any, pInput: any, pValue: any, pHTMLSelector: any): boolean;

@@ -45,7 +45,9 @@ declare class PictViewDynamicForm {
     getInputFromHash(pInputHash: any): any;
     getInput(pGroupIndex: any, pRowIndex: any, pInputIndex: any): any;
     inputDataRequest(pInputHash: any): void;
+    inputEvent(pInputHash: any, pEvent: any): void;
     inputDataRequestTabular(pGroupIndex: any, pInputIndex: any, pRowIndex: any): void;
+    inputEventTabular(pGroupIndex: any, pInputIndex: any, pRowIndex: any, pEvent: any): void;
     get isPictSectionForm(): boolean;
 }
 //# sourceMappingURL=Pict-View-DynamicForm.d.ts.map
