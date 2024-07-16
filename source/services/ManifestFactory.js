@@ -40,6 +40,125 @@ class ManifestFactory extends libFableServiceProviderBase
 		this.defaultHashCounter = 0;
 	}
 
+	/**
+	 * Initialize the form groups.
+	 * 
+	 * This function will initialize the form groups of a view based on the manifest.
+	 * 
+	 * TODO: Figure out if this is the best place for this.  It *is* pretty useful for
+	 * inferring manifests, so has uses outside of the view lifecycle.
+	 * 
+	 * @param {Object} pView - The view to initialize form groups for
+	 */
+	initializeFormGroups(pView)
+	{
+		// Enumerate the manifest and make sure a group exists for each group in the section definition
+		let tmpDescriptorKeys = Object.keys(pView.options.Manifests.Section.Descriptors);
+		for (let i = 0; i < tmpDescriptorKeys.length; i++)
+		{
+			// TODO: Change this to use the parsed sectionManifest rather than parsing the manifest itself
+			let tmpDescriptor = pView.options.Manifests.Section.Descriptors[tmpDescriptorKeys[i]];
+
+			if (
+					// If there is an obect in the descriptor
+					typeof(tmpDescriptor) == 'object' &&
+					// AND it has a PictForm property
+					('PictForm' in tmpDescriptor) &&
+					// AND the PictForm property is an object
+					typeof(tmpDescriptor.PictForm) == 'object' &&
+					// AND the PictForm object has a Section property
+					('Section' in tmpDescriptor.PictForm) &&
+					// AND the Section property matches our section hash
+					tmpDescriptor.PictForm.Section == pView.sectionDefinition.Hash
+				)
+			{
+				tmpDescriptor.PictForm.InformaryDataAddress = tmpDescriptorKeys[i];
+
+				let tmpGroupHash = (typeof(tmpDescriptor.PictForm.Group) == 'string') ? tmpDescriptor.PictForm.Group : 'Default';
+				let tmpGroup = pView.sectionDefinition.Groups.find((pGroup) => { return pGroup.Hash == tmpGroupHash; });
+				if (!tmpGroup)
+				{
+					tmpGroup = { Hash: tmpGroupHash, Name: tmpGroupHash, Description: false, Rows: [] };
+					pView.sectionDefinition.Groups.push(tmpGroup);
+				}
+				else if (!Array.isArray(tmpGroup.Rows))
+				{
+					tmpGroup.Rows = [];
+				}
+
+				let tmpRowHash = (typeof(tmpDescriptor.PictForm.Row) == 'string') ? tmpDescriptor.PictForm.Row :
+								(typeof(tmpDescriptor.PictForm.Row) == 'number') ? `Row_${tmpDescriptor.PictForm.Row.toString()}` :
+								'Row_Default';
+
+				tmpDescriptor.PictForm.RowHash = tmpRowHash;
+
+				let tmpRow = tmpGroup.Rows.find((pRow) => { return pRow.Hash == tmpRowHash; });
+
+				if (!tmpRow)
+				{
+					tmpRow = { Hash: tmpRowHash, Name: tmpRowHash, Inputs: [] };
+					tmpGroup.Rows.push(tmpRow);
+					tmpRow.Inputs.push(tmpDescriptor);
+				}
+				else
+				{
+					tmpRow.Inputs.push(tmpDescriptor);
+				}
+			}
+		}
+
+		// Now check to see if we need to build group
+		for (let i = 0; i < pView.sectionDefinition.Groups.length; i++)
+		{
+			let tmpGroup = pView.sectionDefinition.Groups[i];
+			// Check the Group type and get the manifest if it is a RECORDSET-based group.
+			// The three built-in set groups (Record, Tabular, Columnar) will do this or the
+			// developer can set a property on Group called "GroupType" to "RecordSet" for
+			// custom layouts.
+			if ((tmpGroup.Layout === 'Tabular') ||
+				(tmpGroup.GroupType === 'RecordSet'))
+			{
+				// Check for the supporting manifest
+				if (!('RecordManifest' in tmpGroup))
+				{
+					pView.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group but thee Group does not contain a RecordManifest property.`);
+					tmpGroup.supportingManifest  = pView.fable.instantiateServiceProviderWithoutRegistration('Manifest');
+				}
+				else if (!('ReferenceManifests' in pView.options.Manifests.Section))
+				{
+					pView.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group but there are no ReferenceManifests in the Section description Manifest.`);
+					tmpGroup.supportingManifest  = pView.fable.instantiateServiceProviderWithoutRegistration('Manifest');
+				}
+				else if (!(tmpGroup.RecordManifest in pView.options.Manifests.Section.ReferenceManifests))
+				{
+					pView.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group and has a RecordManifest of [${tmpGroup.RecordManifest}] but the Section.ReferenceManifests object does not contain the referred to manifest.`);
+					tmpGroup.supportingManifest  = pView.fable.instantiateServiceProviderWithoutRegistration('Manifest');
+				}
+				else
+				{
+					tmpGroup.supportingManifest = pView.fable.instantiateServiceProviderWithoutRegistration('Manifest', pView.options.Manifests.Section.ReferenceManifests[tmpGroup.RecordManifest]);
+				}
+			}
+			if (tmpGroup.supportingManifest && (typeof(tmpGroup.RecordSetAddress) == 'string'))
+			{
+				let tmpSupportingManifestDescriptorKeys = Object.keys(tmpGroup.supportingManifest.elementDescriptors);
+				for (let k = 0; k < tmpSupportingManifestDescriptorKeys.length; k++)
+				{
+					let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];
+
+					if (!('PictForm' in tmpInput))
+					{
+						tmpInput.PictForm = {};
+					}
+
+					tmpInput.PictForm.InformaryDataAddress = tmpSupportingManifestDescriptorKeys[k];
+					tmpInput.PictForm.InformaryContainerAddress = tmpGroup.RecordSetAddress;
+					tmpInput.RowIdentifierTemplateHash = '{~D:Record.RowID~}';
+				}
+			}
+		}
+	}
+
 	addDescriptor(pManifestDescriptor)
 	{
 		if (pManifestDescriptor.DataAddress in this.manifest.Descriptors)

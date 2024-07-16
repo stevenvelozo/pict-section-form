@@ -157,6 +157,7 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-Template-Input-InputType-Option",
+			"DefaultInputExtensions": ["Pict-Input-Select"],
 			"Template": /*HTML*/`
 					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
 					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
@@ -172,6 +173,7 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-Template-Input-DataType-DateTime",
+			"DefaultInputExtensions": ["Pict-Input-DateTime"],
 			"Template": /*HTML*/`
 					<!-- DataType DateTime {~D:Record.Hash~} {~D:Record.DataType~} -->
 					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
@@ -372,6 +374,7 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Option",
+			"DefaultInputExtensions": ["Pict-Input-Select"],
 			"Template": /*HTML*/`
 					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
 					<input type="hidden" id="SELECT-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
@@ -395,6 +398,7 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-TabularTemplate-Begin-Input-DataType-DateTime",
+			"DefaultInputExtensions": ["Pict-Input-DateTime"],
 			"Template": /*HTML*/`
 					<!-- DataType DateTime {~D:Record.Hash~} {~D:Record.DataType~} -->
 					<input type="hidden" id="DATETIME-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `

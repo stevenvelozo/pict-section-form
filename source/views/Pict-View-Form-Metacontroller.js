@@ -19,10 +19,6 @@ class PictFormMetacontroller extends libPictViewClass
 
 		this.serviceType = 'PictFormMetacontroller';
 
-		if (!this.pict.providers.PictFormSectionDefaultTemplateProvider)
-		{
-			this.pict.addProvider('PictFormSectionDefaultTemplateProvider', {}, libFormsTemplateProvider);
-		}
 		if (!this.pict.providers.DynamicSolver)
 		{
 			this.pict.addProvider('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
