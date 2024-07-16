@@ -61,6 +61,10 @@ class PictDynamicFormsTemplates extends libPictProvider
 			if ('DefaultInputExtensions' in tmpTemplate)
 			{
 				this.formsTemplateSet[tmpTemplateHash].DefaultInputExtensions = tmpTemplate.DefaultInputExtensions;
+				for (let i = 0; i < tmpTemplate.DefaultInputExtensions.length; i++)
+				{
+					this.pict.providers.DynamicInput.addDefaultInputProvider(tmpTemplateHash, tmpTemplate.DefaultInputExtensions[i]);
+				}
 			}
 		}
 

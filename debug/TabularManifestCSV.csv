@@ -3,7 +3,7 @@ ExampleForm,Example Form,,,Header,General Info,1,1,Header.FirstName,First Name,H
 ExampleForm,,,,Header,General Info,1,1,Header.LastName,Last Name,HeaderLastName,,,String,,,,,,
 ExampleForm,,,,Header,General Info,1,2,Header.JobTitle,Job Title,JobTitle,,,String,,,,,,
 ExampleForm,,,,Header,General Info,2,4,Header.Description,Description,Description,,,String,,,,,,
-ExampleForm,,,,Header,General Info,3,1,Header.Planet,Planet,Planet,"Earth,Mars,Saturn,Jupiter",planetary,String,SelectFixed,,,,,
+ExampleForm,,,,Header,General Info,3,1,Header.Planet,Planet,Planet,"Earth,Mars,Saturn,Jupiter",planetary,String,Option,,,,,
 ExampleForm,,,,Header,Address,1,1,Header.Location.Address,Address,Address,,,String,,,,,,
 ExampleForm,,,,Header,Address,2,2,Header.Location.City,City,City,,,String,,,,,,
 ExampleForm,,,,Header,Address,2,2,Header.Location.State,State,State,,,String,,,,,,

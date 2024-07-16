@@ -56,10 +56,28 @@
                 "DataAddress": "Header.Planet",
                 "DataType": "String",
                 "PictForm": {
-                    "InputType": "SelectFixed",
+                    "InputType": "Option",
                     "Row": "3",
                     "Width": "1",
                     "Units": "planetary",
+                    "SelectOptions": [
+                        {
+                            "id": "Earth",
+                            "text": "Earth"
+                        },
+                        {
+                            "id": "Mars",
+                            "text": "Mars"
+                        },
+                        {
+                            "id": "Saturn",
+                            "text": "Saturn"
+                        },
+                        {
+                            "id": "Jupiter",
+                            "text": "Jupiter"
+                        }
+                    ],
                     "Section": "Header",
                     "Group": "General_Info"
                 }
@@ -198,15 +216,15 @@
             {
                 "Name": "Package Dimensions",
                 "Hash": "Package_Dimensions",
-                "Solvers": [
-                    "Area = Width * Height"
-                ],
+                "Solvers": [],
                 "Groups": [
                     {
                         "Name": "Size",
                         "Hash": "Size",
                         "Rows": [],
-                        "RecordSetSolvers": [],
+                        "RecordSetSolvers": [
+                            "Area = Width * Height"
+                        ],
                         "Layout": "Tabular",
                         "RecordSetAddress": "Inventory.Packages",
                         "RecordManifest": "Packages"
@@ -241,7 +259,8 @@
                             "Width": "3",
                             "Section": "Package_Dimensions",
                             "Group": "Size"
-                        }
+                        },
+                        "IsTabular": true
                     },
                     "ReceiveDate": {
                         "Hash": "ReceiveDate",
@@ -253,7 +272,8 @@
                             "Width": "1",
                             "Section": "Package_Dimensions",
                             "Group": "Size"
-                        }
+                        },
+                        "IsTabular": true
                     },
                     "Width": {
                         "Hash": "Width",
@@ -266,7 +286,8 @@
                             "Units": "inches",
                             "Section": "Package_Dimensions",
                             "Group": "Size"
-                        }
+                        },
+                        "IsTabular": true
                     },
                     "Height": {
                         "Hash": "Height",
@@ -279,7 +300,8 @@
                             "Units": "inches",
                             "Section": "Package_Dimensions",
                             "Group": "Size"
-                        }
+                        },
+                        "IsTabular": true
                     },
                     "Area": {
                         "Hash": "Area",
@@ -292,7 +314,8 @@
                             "Units": "square inches",
                             "Section": "Package_Dimensions",
                             "Group": "Size"
-                        }
+                        },
+                        "IsTabular": true
                     }
                 },
                 "Sections": [],

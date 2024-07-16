@@ -289,16 +289,44 @@ class ManifestFactory extends libFableServiceProviderBase
 		{
 			tmpDescriptor.PictForm.Units = tmpRecord.Units;
 		}
+
 		if (tmpRecord['Input Notes'])
 		{
 			tmpDescriptor.PictForm.SpreadsheetNotes = tmpRecord['Input Notes'];
 		}
 
-		let tmpIsTabular = false;
+		if ((tmpDescriptor.PictForm.InputType == 'Option') && (tmpRecord['Input Extra']))
+		{
+			let tmpOptionSet = [];
+			let tmpOptionSetValues = tmpRecord['Input Extra'].split(',');
+
+			for (let i = 0; i < tmpOptionSetValues.length; i++)
+			{
+				if (tmpOptionSetValues[i].trim() != '')
+				{
+					let tmpOptionSetValuePair = tmpOptionSetValues[i].split('^');
+					if (tmpOptionSetValuePair.length == 2)
+					{
+						tmpOptionSet.push({ id:tmpOptionSetValuePair[0].trim(), text:tmpOptionSetValuePair[1].trim() });
+					}
+					else
+					{
+						tmpOptionSet.push({ id:tmpOptionSetValues[i].trim(), text:tmpOptionSetValues[i].trim() });
+					}
+				}
+			}
+
+			if (tmpOptionSet.length > 0)
+			{
+				tmpDescriptor.PictForm.SelectOptions = tmpOptionSet;
+			}
+		}
+
 		// This is used for Section and Group, regardless of where the Descriptor goes.
 		let tmpCoreManifestFactory = pManifestFactory;
 		if ((`SubManifest` in tmpRecord) && (tmpRecord.SubManifest) && (tmpRecord.InputType != 'TabularAddress'))
 		{
+			tmpDescriptor.IsTabular = true;
 			// Below is what amounts to complex pointer arithmatic.
 			if (!(tmpRecord.SubManifest in pManifestFactory.manifest.ReferenceManifests))
 			{
@@ -307,7 +335,6 @@ class ManifestFactory extends libFableServiceProviderBase
 				pManifestFactory.manifest.ReferenceManifests[tmpRecord.SubManifest] = pManifestFactory.referenceManifestFactories[tmpRecord.SubManifest].manifest;
 			}
 			pManifestFactory = pManifestFactory.referenceManifestFactories[tmpRecord.SubManifest];
-			tmpIsTabular = true;
 		}
 
 		// Setup the Section and the Group
@@ -318,10 +345,6 @@ class ManifestFactory extends libFableServiceProviderBase
 		if (tmpRecord['Section Name'])
 		{
 			tmpSection.Name = tmpRecord['Section Name'];
-		}
-		if (tmpRecord['Equation'])
-		{
-			tmpSection.Solvers.push(tmpRecord['Equation']);
 		}
 
 		const tmpGroupName = tmpRecord['Group Name'] ?? 'Default_Group';
@@ -336,6 +359,7 @@ class ManifestFactory extends libFableServiceProviderBase
 		{
 			console.info(`[ERROR] Duplicate descriptor hash found ${tmpDescriptor.Hash}.  This will overwrite the original descriptor.`);
 		}
+
 		// Now checking if the group is Tabular -- if it is we need to set some extra values on the Group and have solvers occur inline
 		// Layout: "Tabular",
 		// RecordSetSolvers: [
@@ -351,6 +375,18 @@ class ManifestFactory extends libFableServiceProviderBase
 			tmpGroup.Layout = 'Tabular';
 			tmpGroup.RecordSetAddress = tmpDescriptor.DataAddress;
 			tmpGroup.RecordManifest = tmpRecord.SubManifest;
+		}
+
+		if (tmpRecord['Equation'])
+		{
+			if (tmpGroup.Layout == 'Tabular')
+			{
+				tmpGroup.RecordSetSolvers.push(tmpRecord['Equation']);
+			}
+			else
+			{
+				tmpSection.Solvers.push(tmpRecord['Equation']);
+			}
 		}
 
 		// if (tmpRecord.DataOnly)

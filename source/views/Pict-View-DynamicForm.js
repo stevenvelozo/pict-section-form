@@ -132,19 +132,18 @@ class PictViewDynamicForm extends libPictViewClass
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
 				this.pict.providers.Informary.marshalFormToData(tmpMarshalDestinationObject, this.formID, this.sectionManifest, tmpHashAddress);
 				// Now run any providers connected to this input
-				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
+
+				let tmpInputProviderList = this.getInputProviderList(tmpInput);
+				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
-					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
-					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
-						{
-							this.pict.providers[tmpInput.PictForm.Providers[i]].onDataChange(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
-						}
-						else
-						{
-							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}].`);
-						}
+						this.pict.providers[tmpInputProviderList[i]].onDataChange(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+					}
+					else
+					{
+						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
 					}
 				}
 			}
@@ -179,24 +178,21 @@ class PictViewDynamicForm extends libPictViewClass
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
 				this.pict.providers.Informary.marshalFormToData(tmpMarshalDestinationObject, this.formID, this.sectionManifest, tmpHashAddress, pRowIndex);
 
-				// Now run any providers connected to this input
-				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+				// TODO: Can we simplify this?
+				let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
+				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
+				// Each row has a distinct address!
+				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
+				let tmpInputProviderList = this.getInputProviderList(tmpInput);
+				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
-					// TODO: Can we simplify this?
-					let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
-					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
-					// Each row has a distinct address!
-					let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
-					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
-						{
-							this.pict.providers[tmpInput.PictForm.Providers[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
-						}
-						else
-						{
-							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
-						}
+						this.pict.providers[tmpInputProviderList[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
+					}
+					else
+					{
+						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
 					}
 				}
 			}
@@ -327,15 +323,7 @@ class PictViewDynamicForm extends libPictViewClass
 						// Now run any providers connected to this input
 						if (tmpInput && tmpInput.PictForm)
 						{
-							let tmpInputProviderList = [];
-							if (('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
-							{
-								tmpInputProviderList = tmpInput.PictForm.Providers;
-							}
-							else
-							{
-								let tmpDefaultInputProviderList = this.pict.providers.DynamicInput.getDefaultInputProviders(tmpInput);
-							}
+							let tmpInputProviderList = this.getInputProviderList(tmpInput);
 							for (let i = 0; i < tmpInputProviderList.length; i++)
 							{
 								if (this.pict.providers[tmpInputProviderList[i]])
@@ -372,11 +360,7 @@ class PictViewDynamicForm extends libPictViewClass
 						// Now run any providers connected to this input
 						if (tmpInput && tmpInput.PictForm)
 						{
-							let tmpInputProviderList = [];
-							if (('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
-							{
-								tmpInputProviderList = tmpInput.PictForm.Providers;
-							}
+							let tmpInputProviderList = this.getInputProviderList(tmpInput);
 							for (let i = 0; i < tmpInputProviderList.length; i++)
 							{
 								for (let r = 0; r < tmpTabularRecordSet.length; r++)
@@ -401,28 +385,21 @@ class PictViewDynamicForm extends libPictViewClass
 						let tmpRecordSetKeys = Object.keys(tmpTabularRecordSet);
 						let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];
 						// Now run any providers connected to this input
-						if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm))
+						let tmpInputProviderList = this.getInputProviderList(tmpInput);
+						for (let i = 0; i < tmpInputProviderList.length; i++)
 						{
-							let tmpInputProviderList = [];
-							if (('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+							for (let r = 0; r < tmpRecordSetKeys.length; r++)
 							{
-								tmpInputProviderList = tmpInput.PictForm.Providers;
-							}
-							for (let i = 0; i < tmpInputProviderList.length; i++)
-							{
-								for (let r = 0; r < tmpRecordSetKeys.length; r++)
+								if (this.pict.providers[tmpInputProviderList[i]])
 								{
-									if (this.pict.providers[tmpInputProviderList[i]])
-									{
-										// There is a provider, we have an input and it is supposed to be run through for a record
-										let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, tmpRecordSetKeys[r], tmpInput.PictForm.InformaryDataAddress);
-										let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
-										this.pict.providers[tmpInputProviderList[i]][pFunctionName+'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, tmpRecordSetKeys[r]);
-									}
-									else
-									{
-										this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
-									}
+									// There is a provider, we have an input and it is supposed to be run through for a record
+									let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, tmpRecordSetKeys[r], tmpInput.PictForm.InformaryDataAddress);
+									let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
+									this.pict.providers[tmpInputProviderList[i]][pFunctionName+'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, tmpRecordSetKeys[r]);
+								}
+								else
+								{
+									this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
 								}
 							}
 						}
@@ -442,13 +419,22 @@ class PictViewDynamicForm extends libPictViewClass
 	checkViewSpecificTemplate(pTemplatePostfix)
 	{
 		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
-		return (`${this.formsTemplateSetPrefix}${pTemplatePostfix}` in this.pict.TemplateProvider.templates);
+		return (this.getViewSpecificTemplateHash(pTemplatePostfix) in this.pict.TemplateProvider.templates);
+	}
+	getViewSpecificTemplateHash(pTemplatePostfix)
+	{
+		return `${this.formsTemplateSetPrefix}${pTemplatePostfix}`;	
 	}
 
 	checkThemeSpecificTemplate(pTemplatePostfix)
 	{
 		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
-		return (`${this.defaultTemplatePrefix}${pTemplatePostfix}` in this.pict.TemplateProvider.templates);
+		return (this.getThemeSpecificTemplateHash(pTemplatePostfix) in this.pict.TemplateProvider.templates);
+	}
+	getThemeSpecificTemplateHash(pTemplatePostfix)
+	{
+		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
+		return `${this.defaultTemplatePrefix}${pTemplatePostfix}`;
 	}
 
 	rebuildCustomTemplate()
@@ -761,6 +747,18 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 	}
 
+	getInputProviderList(pInput)
+	{
+		if (('Providers' in pInput.PictForm) && Array.isArray(pInput.PictForm.Providers))
+		{
+			return pInput.PictForm.Providers;
+		}
+		else
+		{
+			return this.pict.providers.DynamicInput.getDefaultInputProviders(this, pInput);
+		}
+	}
+
 	inputDataRequest(pInputHash)
 	{
 		let tmpInput = this.getInputFromHash(pInputHash);
@@ -770,19 +768,17 @@ class PictViewDynamicForm extends libPictViewClass
 			try
 			{
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
-				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
+				let tmpInputProviderList = this.getInputProviderList(tmpInput);
+				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
-					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
-					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
-						{
-							this.pict.providers[tmpInput.PictForm.Providers[i]].onDataRequest(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
-						}
-						else
-						{
-							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] inputDataRequest cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}].`);
-						}
+						this.pict.providers[tmpInputProviderList[i]].onDataRequest(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+					}
+					else
+					{
+						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] inputDataRequest cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
 					}
 				}
 			}
@@ -806,19 +802,17 @@ class PictViewDynamicForm extends libPictViewClass
 			try
 			{
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
-				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
+				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
+				let tmpInputProviderList = this.getInputProviderList(tmpInput);
+				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
-					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
-					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
-						{
-							this.pict.providers[tmpInput.PictForm.Providers[i]].onEvent(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, pEvent);
-						}
-						else
-						{
-							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] inputEvent ${pEvent} cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}].`);
-						}
+						this.pict.providers[tmpInputProviderList[i]].onEvent(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, pEvent);
+					}
+					else
+					{
+						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] inputEvent ${pEvent} cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
 					}
 				}
 			}
@@ -841,23 +835,21 @@ class PictViewDynamicForm extends libPictViewClass
 			try
 			{
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
-				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
-				{
-					// TODO: Can we simplify this?
-					let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
-					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
+				// TODO: Can we simplify this?
+				let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
+				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
 
-					let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
-					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
+				let tmpInputProviderList = this.getInputProviderList(tmpInput);
+				for (let i = 0; i < tmpInputProviderList.length; i++)
+				{
+					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
-						{
-							this.pict.providers[tmpInput.PictForm.Providers[i]].onDataRequestTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
-						}
-						else
-						{
-							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
-						}
+						this.pict.providers[tmpInputProviderList[i]].onDataRequestTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
+					}
+					else
+					{
+						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
 					}
 				}
 			}
@@ -884,23 +876,22 @@ class PictViewDynamicForm extends libPictViewClass
 			try
 			{
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
-				if (tmpInput && tmpInput.PictForm && ('Providers' in tmpInput.PictForm) && Array.isArray(tmpInput.PictForm.Providers))
-				{
-					// TODO: Can we simplify this?
-					let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
-					let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
+				
+				// TODO: Can we simplify this?
+				let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
+				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
 
-					let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
-					for (let i = 0; i < tmpInput.PictForm.Providers.length; i++)
+				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
+				let tmpInputProviderList = this.getInputProviderList(tmpInput);
+				for (let i = 0; i < tmpInputProviderList.length; i++)
+				{
+					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						if (this.pict.providers[tmpInput.PictForm.Providers[i]])
-						{
-							this.pict.providers[tmpInput.PictForm.Providers[i]].onEventTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex, pEvent);
-						}
-						else
-						{
-							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInput.PictForm.Providers[i]}] for input [${tmpInput.Hash}] row ${pRowIndex} calling inputEvent ${pEvent}.`);
-						}
+						this.pict.providers[tmpInputProviderList[i]].onEventTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex, pEvent);
+					}
+					else
+					{
+						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}] row ${pRowIndex} calling inputEvent ${pEvent}.`);
 					}
 				}
 			}
