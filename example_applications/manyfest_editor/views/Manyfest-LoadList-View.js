@@ -14,27 +14,19 @@ const _DEFAULT_VIEW_CONFIGURATION = (
 	Templates: [
 		{
 			Hash: "Manyfest-LoadList-Template",
-			Template: /*html*/`
-{~TS:Manyfest-LoadList-Entry-Template:Context[0].pict.providers.DataProvider.listManyfests()~}
-`
+			Template: /*html*/` {~TS:Manyfest-LoadList-Entry-Template:Context[0].pict.providers.DataProvider.listManyfests()~} `
 		},
 		{
 			Hash: "Manyfest-LoadList-Entry-Template",
-			Template: /*html*/`
-							<a class="navbar-item" href="#" onclick="{~P~}.providers.DataProvider.loadManyfest('{~D:Record.Scope~}')"> {~D:Record.Scope~} </a>
-`
+			Template: /*html*/` <a class="navbar-item" href="#/Manyfest/Load/{~D:Record.Scope~}"> {~D:Record.Scope~} </a> `
 		},
 		{
 			Hash: "Manyfest-DeleteList-Template",
-			Template: /*html*/`
-{~TS:Manyfest-DeleteList-Entry-Template:Context[0].pict.providers.DataProvider.listManyfests()~}
-`
+			Template: /*html*/` {~TS:Manyfest-DeleteList-Entry-Template:Context[0].pict.providers.DataProvider.listManyfests()~} `
 		},
 		{
 			Hash: "Manyfest-DeleteList-Entry-Template",
-			Template: /*html*/`
-							<a class="navbar-item" href="#" onclick="{~P~}.providers.DataProvider.removeScopeFromManyfestList('{~D:Record.Scope~}')"> {~D:Record.Scope~} </a>
-`
+			Template: /*html*/`<a class="navbar-item" href="#/Manyfest/Delete/{~D:Record.Scope~}"> {~D:Record.Scope~} </a>`
 		},
 		{
 			Hash: "Manyfest-LoadedManyfest-Header",

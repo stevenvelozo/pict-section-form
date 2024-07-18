@@ -27,6 +27,32 @@ class ManyfestDataProvider extends libPictProvider
 		this.loadManyfestList();
 	}
 
+	loadManyfest(pManifest)
+	{
+		let tmpManyfestListJSON = this.storageProvider.getItem(`Manyfest_List`);
+
+		if (!tmpManyfestListJSON)
+		{
+			tmpManyfestListJSON = '[]';
+			this.storageProvider.setItem('Manyfest_List', tmpManyfestListJSON);
+		}
+
+		this.manyfestList = JSON.parse(tmpManyfestListJSON);
+
+		if (!Array.isArray(this.manyfestList))
+		{
+			this.manyfestList = [];
+			this.saveManyfestList()
+		}
+
+		if (this.pict.views.ManyfestLoadListView)
+		{
+			this.pict.views.ManyfestLoadListView.render()
+		}
+
+		return this.manyfestList;
+	}
+
 	listManyfests()
 	{
 		return this.manyfestList.map((pValue, pIndex) => { return { Index: pIndex, Scope: pValue }; })

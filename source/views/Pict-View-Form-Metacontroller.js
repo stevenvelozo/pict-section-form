@@ -2,8 +2,6 @@ const libPictViewClass = require('pict-view');
 
 const libDynamicSolver = require('../providers/Pict-Provider-DynamicSolver.js');
 
-const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
-
 // TODO: Create an internalized list of views for this to manage, separate from the pict.views object
 // TODO: Manage view lifecycle internally, including destruction
 // Why?  This allows us to dynamically add and remove sections without having to reload the application.
@@ -19,10 +17,7 @@ class PictFormMetacontroller extends libPictViewClass
 
 		this.serviceType = 'PictFormMetacontroller';
 
-		if (!this.pict.providers.DynamicSolver)
-		{
-			this.pict.addProvider('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
-		}
+		this.pict.addProviderSingleton('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
 
 		this.viewMarshalDestination = 'AppData';
 

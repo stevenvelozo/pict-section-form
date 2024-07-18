@@ -39,7 +39,12 @@ class ManyfestRouter extends libPictProvider
 			{
 				this.pict.providers.DataProvider.saveManyfest()
 			});
-		)
+
+		this.router.on('/Manyfest/Load/:Scope',
+			(pData) =>
+			{
+				this.pict.providers.DataProvider.loadManyfest(pData.Scope)
+			});
 
 		return super.onInitializeAsync(fCallback);
 	}

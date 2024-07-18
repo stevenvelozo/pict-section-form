@@ -32,8 +32,10 @@
     ],
     "dependencies": {
         "bulma": "^1.0.1",
-        "codemirror": "^6.0.1",
-        "crossroads": "^0.12.2",
-        "navigo": "^8.11.1"
+        "install": "^0.13.0",
+        "jsoneditor": "^10.1.0",
+        "navigo": "^8.11.1",
+        "npm": "^10.8.2",
+        "pict-section-tuigrid": "^1.0.24"
     }
 }

@@ -1,6 +1,4 @@
-const libPictDynamicTemplate = require('./Pict-Provider-DynamicTemplates.js');
-
-const _Theme = (
+module.exports = (
 {
 	"TemplatePrefix": "Pict-Forms-ReadOnly",
 	"Templates":
@@ -133,7 +131,60 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-Template-Input",
 			"Template": /*HTML*/`
 					<!-- DEFAULT Input {~"D:Record.Hash~} {~D:Record.DataType~} -->
-					<div><span>{~D:Record.Name~}:</span> <span {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~}></span></div>
+					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-DataType-String",
+			"Template": /*HTML*/`
+					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <input type="text" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-DataType-Number",
+			"Template": /*HTML*/`
+					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-TextArea",
+			"Template": /*HTML*/`
+					<!-- InputType TextArea {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <textarea {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~}></textarea>
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-Option",
+			"DefaultInputExtensions": ["Pict-Input-Select"],
+			"Template": /*HTML*/`
+					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span> <select id="SELECT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}"></select>
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-Boolean",
+			"Template": /*HTML*/`
+					<!-- InputType Boolean {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="checkbox" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-DataType-DateTime",
+			"DefaultInputExtensions": ["Pict-Input-DateTime"],
+			"Template": /*HTML*/`
+					<!-- DataType DateTime {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
+					<span>{~D:Record.Name~}:</span> <input id="DATETIME-INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}" type="datetime-local" value="" />
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-Hidden",
+			"Template": /*HTML*/`
+					<!-- InputType Hidden {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~}>
 `
 		},
 		/*
@@ -272,11 +323,11 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-TabularTemplate-Begin-Input",
 			"Template": /*HTML*/`
 					<!-- DEFAULT Input {~"D:Record.Hash~} {~D:Record.DataType~} -->
-					<span {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+					<input type="text" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input",
-			"Template": /*HTML*/`></span>`
+			"Template": /*HTML*/` value="">`
 		},
 
 		{
@@ -287,6 +338,90 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-TabularTemplate-InformaryAddress-Input",
 			"Template": /*HTML*/` data-i-index="{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].dataChangedTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"  `
 		},
+
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-DataType-String",
+			"Template": /*HTML*/`
+					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="text" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-DataType-String",
+			"Template": /*HTML*/` value="">`
+		},
+
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-DataType-Number",
+			"Template": /*HTML*/`
+					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="Number" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-DataType-Number",
+			"Template": /*HTML*/` value="">
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-TextArea",
+			"Template": /*HTML*/`
+					<!-- InputType TextArea {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<textarea {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-TextArea",
+			"Template": /*HTML*/` ></textarea>
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Option",
+			"DefaultInputExtensions": ["Pict-Input-Select"],
+			"Template": /*HTML*/`
+					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" id="SELECT-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-Option",
+			"Template": /*HTML*/` value="">
+					<select id="SELECT-TABULAR-DROPDOWN-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"></select>
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Boolean",
+			"Template": /*HTML*/`
+					<!-- InputType Boolean {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="checkbox" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-Boolean",
+			"Template": /*HTML*/` value="" />
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-DataType-DateTime",
+			"DefaultInputExtensions": ["Pict-Input-DateTime"],
+			"Template": /*HTML*/`
+					<!-- DataType DateTime {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" id="DATETIME-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-DataType-DateTime",
+			"Template": /*HTML*/` value="">
+					<input id="DATETIME-TABULAR-INPUT-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')" type="datetime-local" value="" />
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Hidden",
+			"Template": /*HTML*/`
+					<!-- InputType Hidden {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} {~D:Record.Macro.InformaryTabular~}
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-Hidden",
+			"Template": /*HTML*/` value="">
+`
+		},
+
 		/*
 		 * END Tabular Input Templates
 		 */
@@ -295,17 +430,5 @@ Glug glug glug Oo... -->
 		 * [ Tabular Templates END ]
 		 *
 		 */
-
 	]
 });
-
-class DefaultFormTemplateReadOnly extends libPictDynamicTemplate
-{
-	constructor(pFable, pOptions, pServiceHash)
-	{
-		let tmpOptions = Object.assign({}, pOptions, {MetaTemplateSet:_Theme});
-		super(pFable, tmpOptions, pServiceHash);
-	}
-}
-
-module.exports = DefaultFormTemplateReadOnly;

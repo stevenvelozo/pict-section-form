@@ -1,6 +1,8 @@
 const libPictProvider = require('pict-provider');
 
-const _DefaultFormTemplates = require('./Pict-Provider-DynamicTemplates-DefaultFormTemplates.js');
+const libDynamicInput = require('../providers/Pict-Provider-DynamicInput.js');
+
+const templateSetDefaultFormTemplates = require('./dynamictemplates/Pict-DynamicTemplates-DefaultFormTemplates.js');
 
 const _DefaultProviderConfiguration = (
 {
@@ -12,70 +14,100 @@ const _DefaultProviderConfiguration = (
 	"AutoSolveWithApp": false
 });
 
+/**
+ * Represents a class that provides dynamic templates for the Pict form section provider.
+ * @extends libPictProvider
+ */
 class PictDynamicFormsTemplates extends libPictProvider
 {
+	/**
+	 * Constructs a new instance of the PictProviderDynamicTemplates class.
+	 * @param {Object} pFable - The pFable object.
+	 * @param {Object} pOptions - The options object.
+	 * @param {Object} pServiceHash - The service hash object.
+	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
 		
-		// This is all you're expected to overload in this provider
-		if (!('MetaTemplateSet' in tmpOptions))
-		{
-			tmpOptions.MetaTemplateSet = JSON.parse(JSON.stringify(_DefaultFormTemplates));
-		}
-
 		super(pFable, tmpOptions, pServiceHash);
 
-		this.formsTemplateSetPrefix = '';
-		this.formsTemplateSet = {};
+		this.pict.addProviderSingleton('DynamicInput', libDynamicInput.default_configuration, libDynamicInput);
 
-		if (!('TemplatePrefix' in this.options.MetaTemplateSet) && (this.options.ProviderIdentifier == 'Pict-DynamicForms-MetaTemplates-Basic'))
+		this.pict.addTemplate(require('../templates/Pict-Template-Metacontroller-ValueSetWithGroup.js'));
+
+		if (this.options?.MetaTemplateSet && typeof(this.options.MetaTemplateSet) === 'object')
 		{
-			// The default template prefix is 'Pict-Forms-Basic'
-			this.formsTemplateSetPrefix = _DefaultFormTemplates.TemplatePrefix;
-		}
-		else if (!('TemplatePrefix' in this.options.MetaTemplateSet) && (this.options.ProviderIdentifier != 'Pict-DynamicForms-MetaTemplates-Basic'))
-		{
-			this.log.error(`No TemplatePrefix defined in the provider options.MetaTemplateSet.TemplatePrefix -- Provider [${this.UUID}]::[${this.Hash}].  Templates will not be loaded.`);
+			this.injectTemplateSet(this.options.MetaTemplateSet);
 		}
 		else
 		{
-			this.formsTemplateSetPrefix = this.options.MetaTemplateSet.TemplatePrefix;
+			this.injectTemplateSet(templateSetDefaultFormTemplates);
 		}
+		this.injectTemplateSet(require('./dynamictemplates/Pict-DynamicTemplates-DefaultFormTemplates-ReadOnly.js'));
+	}
 
-		if (!('Templates' in this.options.MetaTemplateSet))
-		{
-			this.log.warn(`No Templates defined in the provider options.MetaTemplateSet.Templates -- Provider [${this.UUID}]::[${this.Hash}].  Using default templates only.`);
-			this.options.MetaTemplateSet.Templates = [];
-		}
+	/**
+	 * Injects a template set into Pict for the Dynamic Form Section Provider.
+	 * 
+	 * The TemplateSet object expects to have a `TemplatePrefix` and `Templates` property.
+	 * 
+	 * The `TemplatePrefix` is used to prefix the hash of the template.
+	 * 
+	 * The `Templates` property is an array of objects with the following properties:
+	 * - `HashPostfix` - The postfix to be added to the template hash.  This defines which dynamic template in the Layout it represents.
+	 * - `Template` - The template string to be injected.
+	 * - `DefaultInputExtensions` - An optional array of default input extensions to be added to the Dynamic Input provider.
+	 * 
+	 * The context of the template *is not the data*.  The template context is one of these five things depending on the layout layer:
+	 * - `Form` - The form object.
+	 * - `Section` - The section object.
+	 * - `Group` - The group object.
+	 * - `Row` - The row object.
+	 * - `Input` - The input object.
+	 * 
+	 * @param {Object} pTemplateSet - The template set to be injected.
+	 */
+	injectTemplateSet(pTemplateSet)
+	{
+		let tmpTemplatePrefix = 'PictFormsUnknown';
+		let tmpTemplates = [];
+		let tmpTemplateSet = {};
 
-		for (let i = 0; i < this.options.MetaTemplateSet.Templates.length; i++)
+		tmpTemplatePrefix = this.options?.MetaTemplateSet ?? tmpTemplatePrefix;
+		tmpTemplates = this.options?.MetaTemplateSet?.Templates ?? tmpTemplates;
+
+		tmpTemplatePrefix = pTemplateSet?.TemplatePrefix ?? tmpTemplatePrefix;
+		tmpTemplates = pTemplateSet?.Templates ?? tmpTemplates;
+
+		for (let i = 0; i < tmpTemplates.length; i++)
 		{
-			let tmpTemplate = this.options.MetaTemplateSet.Templates[i];
-			let tmpTemplateHash = `${this.formsTemplateSetPrefix}${tmpTemplate.HashPostfix}`;
-			this.formsTemplateSet[tmpTemplateHash] = (
+			let tmpMetaTemplate = tmpTemplates[i];
+			let tmpMetaTemplateHash = `${tmpTemplatePrefix}${tmpMetaTemplate.HashPostfix}`;
+			tmpTemplateSet[tmpMetaTemplateHash] = (
 				{
-					Hash: tmpTemplateHash,
-					Template: tmpTemplate.Template
+					Hash: tmpMetaTemplateHash,
+					Template: tmpMetaTemplate.Template
 				});
-			if ('DefaultInputExtensions' in tmpTemplate)
+			// If there is an array of default input extensions, add them to the DynamicInput provider as a default set
+			if ('DefaultInputExtensions' in tmpMetaTemplate)
 			{
-				this.formsTemplateSet[tmpTemplateHash].DefaultInputExtensions = tmpTemplate.DefaultInputExtensions;
-				for (let i = 0; i < tmpTemplate.DefaultInputExtensions.length; i++)
+				tmpTemplateSet[tmpMetaTemplateHash].DefaultInputExtensions = tmpMetaTemplate.DefaultInputExtensions;
+				for (let i = 0; i < tmpMetaTemplate.DefaultInputExtensions.length; i++)
 				{
-					this.pict.providers.DynamicInput.addDefaultInputProvider(tmpTemplateHash, tmpTemplate.DefaultInputExtensions[i]);
+					this.pict.providers.DynamicInput.addDefaultInputProvider(tmpMetaTemplateHash, tmpMetaTemplate.DefaultInputExtensions[i]);
 				}
 			}
 		}
 
-		for (let i = 0; i < _DefaultFormTemplates.Templates.length; i++)
+		for (let i = 0; i < templateSetDefaultFormTemplates.Templates.length; i++)
 		{
-			let tmpTemplate = _DefaultFormTemplates.Templates[i];
-			let tmpTemplateHash = `${this.formsTemplateSetPrefix}${tmpTemplate.HashPostfix}`;
+			let tmpTemplate = templateSetDefaultFormTemplates.Templates[i];
+			let tmpTemplateHash = `${tmpTemplatePrefix}${tmpTemplate.HashPostfix}`;
 			// Only load default templates if they are not already defined in the options
-			if (!(tmpTemplateHash in this.formsTemplateSet))
+			if (!(tmpTemplateHash in tmpTemplateSet))
 			{
-				this.formsTemplateSet[tmpTemplateHash] = (
+				tmpTemplateSet[tmpTemplateHash] = (
 					{
 						Hash: tmpTemplateHash,
 						Template: tmpTemplate.Template
@@ -83,14 +115,12 @@ class PictDynamicFormsTemplates extends libPictProvider
 			}
 		}
 
-		let tmpTemplateList = Object.keys(this.formsTemplateSet);
-		this.log.info(`Pict Form Section Provider for [${this.formsTemplateSetPrefix}] Loaded ${tmpTemplateList.length} templates.`);
+		let tmpTemplateList = Object.keys(tmpTemplateSet);
+		this.log.info(`Pict Form Section Provider for [${tmpTemplatePrefix}] Loaded ${tmpTemplateList.length} templates.`);
 		for (let i = 0; i < tmpTemplateList.length; i++)
 		{
-			this.pict.TemplateProvider.addTemplate(this.formsTemplateSet[tmpTemplateList[i]].Hash, this.formsTemplateSet[tmpTemplateList[i]].Template);
+			this.pict.TemplateProvider.addTemplate(tmpTemplateSet[tmpTemplateList[i]].Hash, tmpTemplateSet[tmpTemplateList[i]].Template);
 		}
-
-		this.pict.addTemplate(require(`../templates/Pict-Template-Metacontroller-ValueSetWithGroup.js`));
 	}
 }
 

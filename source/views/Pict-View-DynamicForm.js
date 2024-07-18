@@ -10,7 +10,6 @@ const libMetatemplateGenerator = require('../providers/Pict-Provider-Metatemplat
 const libMetatemplateMacros = require('../providers/Pict-Provider-MetatemplateMacros.js');
 
 const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
-const libFormsTemplateProviderReadOnly = require('../providers/Pict-Provider-DynamicTemplates-DefaultFormTemplates-ReadOnly.js');
 
 class PictViewDynamicForm extends libPictViewClass
 {
@@ -82,7 +81,6 @@ class PictViewDynamicForm extends libPictViewClass
 		this.pict.addProviderSingleton('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
 
 		this.pict.addProviderSingleton('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
-		this.pict.addProviderSingleton('PictFormSectionDefaultTemplateProviderReadOnly', libFormsTemplateProviderReadOnly.default_configuration, libFormsTemplateProviderReadOnly);
 
 		this.pict.addProviderSingleton('MetatemplateGenerator', libMetatemplateGenerator.default_configuration, libMetatemplateGenerator);
 		this.pict.addProviderSingleton('MetatemplateMacros', libMetatemplateMacros.default_configuration, libMetatemplateMacros);
@@ -109,13 +107,29 @@ class PictViewDynamicForm extends libPictViewClass
 			}
 		}
 		// The default template prefix
-		this.defaultTemplatePrefix = 'Pict-Forms-Basic';
+		this.customDefaultTemplatePrefix = false;
 
 		this.formID = `Pict-Form-${this.Hash}-${this.UUID}`;
 
 		this.viewMarshalDestination = false;
 
 		this.fable.ManifestFactory.initializeFormGroups(this);
+	}
+
+	get defaultTemplatePrefix()
+	{
+		if (this.customDefaultTemplatePrefix)
+		{
+			return this.customDefaultTemplatePrefix;
+		}
+		else if (this.pict.views.PictFormMetacontroller)
+		{
+			return this.pict.views.PictFormMetacontroller.formTemplatePrefix;
+		}
+		else
+		{
+			return 'Pict-Forms-Basic';
+		}
 	}
 
 	dataChanged(pInputHash)
