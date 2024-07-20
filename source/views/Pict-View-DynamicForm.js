@@ -9,6 +9,12 @@ const libManifestFactory = require('../services/ManifestFactory.js');
 const libMetatemplateGenerator = require('../providers/Pict-Provider-MetatemplateGenerator.js');
 const libMetatemplateMacros = require('../providers/Pict-Provider-MetatemplateMacros.js');
 
+const libPictLayoutRecord = require('../providers/layouts/Pict-Layout-Record.js');
+const libPictLayoutTabular = require('../providers/layouts/Pict-Layout-Tabular.js');
+const libPictLayoutRecordSet = require('../providers/layouts/Pict-Layout-RecordSet.js');
+const libPictLayoutChart = require('../providers/layouts/Pict-Layout-Chart.js');
+const libPictLayoutTuiGrid = require('../providers/layouts/Pict-Layout-TuiGrid.js');
+
 const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
 
 class PictViewDynamicForm extends libPictViewClass
@@ -84,6 +90,12 @@ class PictViewDynamicForm extends libPictViewClass
 
 		this.pict.addProviderSingleton('MetatemplateGenerator', libMetatemplateGenerator.default_configuration, libMetatemplateGenerator);
 		this.pict.addProviderSingleton('MetatemplateMacros', libMetatemplateMacros.default_configuration, libMetatemplateMacros);
+
+		this.pict.addProviderSingleton('Pict-Layout-Record', libPictLayoutRecord.default_configuration, libPictLayoutRecord);
+		this.pict.addProviderSingleton('Pict-Layout-Tabular', libPictLayoutTabular.default_configuration, libPictLayoutTabular);
+		this.pict.addProviderSingleton('Pict-Layout-RecordSet', libPictLayoutRecordSet.default_configuration, libPictLayoutRecordSet);
+		this.pict.addProviderSingleton('Pict-Layout-Chart', libPictLayoutChart.default_configuration, libPictLayoutChart);
+		this.pict.addProviderSingleton('Pict-Layout-TuiGrid', libPictLayoutTuiGrid.default_configuration, libPictLayoutTuiGrid);
 
 		this.pict.addProviderSingleton('Informary', libInformary.default_configuration, libInformary);
 

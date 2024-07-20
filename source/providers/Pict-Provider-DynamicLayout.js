@@ -27,6 +27,17 @@ class PictDynamicLayout extends libPictProvider
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
 		super(pFable, tmpOptions, pServiceHash);
 	}
+
+	/**
+	 * Generate a group layout template for the Dynamically Generated views.
+	 * 
+	 * @param {object} pView - The view to generate and inject dynamic layout templates for
+	 * @returns 
+	 */
+	generateGroupLayoutTemplate(pView)
+	{
+		return '';
+	}
 }
 
 module.exports = PictDynamicLayout;

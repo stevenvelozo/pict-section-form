@@ -1,7 +1,5 @@
 const libPictProvider = require('pict-provider');
 
-const libPictSectionTuiGrid = require('pict-section-tuigrid');
-
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-Section-Form-Provider-MetatemplateGenerator",
@@ -247,93 +245,25 @@ class PictMetatemplateGenerator extends libPictProvider
 
 			switch(tmpGroupLayout)
 			{
+				case 'TuiGrid':
+					tmpTemplate += this.pict.providers['Pict-Layout-TuiGrid'].generateGroupLayoutTemplate(pView, tmpGroup);
+					break;
 				case 'Tabular':
-					// Tabular layout
-					let tmpTemplateSetRecordRowTemplate = '';
-					tmpTemplate += this.getMetatemplateTemplateReference(pView, `-TabularTemplate-Group-Prefix`, `getGroup("${i}")`);
-					// Tabular templates only have one "row" for the header in the standard template, and then a row for each record.
-					// The row for each record happens as a TemplateSet.
-					tmpTemplate += this.getMetatemplateTemplateReference(pView, `-TabularTemplate-RowHeader-Prefix`, `getGroup("${i}")`);
-					tmpTemplate += this.getMetatemplateTemplateReference(pView, `-TabularTemplate-RowHeader-ExtraPrefix`, `getGroup("${i}")`);
-
-					for (let j = 0; j < tmpGroup.Rows.length; j++)
-					{
-
-						let tmpRow = tmpGroup.Rows[j];
-
-						// Tabular are odd in that they have a header row and then a meta TemplateSet for the rows()
-						// In this case we are going to load the descriptors from the supportingManifests
-						if (!tmpGroup.supportingManifest)
-						{
-							this.log.error(`PICT Form [${pView.UUID}]::[${pView.Hash}] error generating tabular metatemplate: missing group manifest ${tmpGroup.RecordManifest} from supportingManifests.`);
-							continue;
-						}
-
-						for (let k = 0; k < tmpGroup.supportingManifest.elementAddresses.length; k++)
-						{
-							let tmpSupportingManifestHash = tmpGroup.supportingManifest.elementAddresses[k];
-							let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
-							// Update the InputIndex to match the current render config
-							if (!('PictForm' in tmpInput))
-							{
-								tmpInput.PictForm = {};
-							}
-							tmpInput.PictForm.InputIndex = k;
-							tmpInput.PictForm.GroupIndex = tmpGroup.GroupIndex;
-
-							tmpTemplate += this.getMetatemplateTemplateReference(pView, `-TabularTemplate-HeaderCell`, `getTabularRecordInput("${i}","${k}")`);
-
-		
-							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(pView, `-TabularTemplate-Cell-Prefix`, `getTabularRecordInput("${i}","${k}")`);
-							let tmpInputType = (('PictForm' in tmpInput) && tmpInput.PictForm.InputType) ? tmpInput.PictForm.InputType : 'Default';
-							tmpTemplateSetRecordRowTemplate += this.getTabularInputMetatemplateTemplateReference(pView, tmpInput.DataType, tmpInputType, `getTabularRecordInput("${i}","${k}")`, i, k);
-							tmpTemplateSetRecordRowTemplate += this.getMetatemplateTemplateReference(pView, `-TabularTemplate-Cell-Postfix`, `getTabularRecordInput("${i}","${k}")`);
-						}
-					}
-
-					tmpTemplate += this.getMetatemplateTemplateReference(pView, `-TabularTemplate-RowHeader-ExtraPostfix`, `getGroup("${i}")`);
-					tmpTemplate += this.getMetatemplateTemplateReference(pView, `-TabularTemplate-RowHeader-Postfix`, `getGroup("${i}")`);
-
-					// This is the template by which the tabular template includes the rows.
-					// The recursion here is difficult to envision without drawing it.
-					// TODO: Consider making this function available in manyfest in some fashion it seems dope.
-					let tmpTemplateSetVirtualRowTemplate = '';
-					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReference(pView, `-TabularTemplate-Row-Prefix`, `getGroup("${i}")`);
-					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReferenceRaw(pView, `-TabularTemplate-Row-ExtraPrefix`, `Record`);
-					tmpTemplateSetVirtualRowTemplate += `\n\n{~T:${tmpGroup.SectionTabularRowTemplateHash}:Record~}\n`;
-					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReferenceRaw(pView, `-TabularTemplate-Row-ExtraPostfix`, `Record`);
-					tmpTemplateSetVirtualRowTemplate += this.getMetatemplateTemplateReference(pView, `-TabularTemplate-Row-Postfix`, `getGroup("${i}")`);
-
-					// This is a custom template expression
-					tmpTemplate += `\n\n{~MTVS:${tmpGroup.SectionTabularRowVirtualTemplateHash}:${tmpGroup.GroupIndex}:${pView.getMarshalDestinationAddress()}.${tmpGroup.RecordSetAddress}~}\n`;
-
-					tmpTemplate += this.getMetatemplateTemplateReference(pView, `-TabularTemplate-Group-Postfix`, `getGroup("${i}")`);
-					// Add the TemplateSetTemplate
-					this.pict.TemplateProvider.addTemplate(tmpGroup.SectionTabularRowVirtualTemplateHash, tmpTemplateSetVirtualRowTemplate);
-					this.pict.TemplateProvider.addTemplate(tmpGroup.SectionTabularRowTemplateHash, tmpTemplateSetRecordRowTemplate);
+					tmpTemplate += this.pict.providers['Pict-Layout-Tabular'].generateGroupLayoutTemplate(pView, tmpGroup);
 					break;
 				case 'Record':
+					tmpTemplate += this.pict.providers['Pict-Layout-Record'].generateGroupLayoutTemplate(pView, tmpGroup);
+					break;
 				default:
-					tmpTemplate += this.getMetatemplateTemplateReference(pView, `-Template-Group-Prefix`, `getGroup("${i}")`);
-					for (let j = 0; j < tmpGroup.Rows.length; j++)
+					// Try to load a custom layout, then fall back to the Record layout if it doesn't exist
+					if (`Pict-Layout-${tmpGroupLayout}` in this.pict.providers)
 					{
-						let tmpRow = tmpGroup.Rows[j];
-
-						tmpTemplate += this.getMetatemplateTemplateReference(pView, `-Template-Row-Prefix`, `getGroup("${i}")`);
-
-						// There are three row layouts: Record, Tabular and Columnar
-						for (let k = 0; k < tmpRow.Inputs.length; k++)
-						{
-							let tmpInput = tmpRow.Inputs[k];
-							// Update the InputIndex to match the current render config
-							tmpInput.PictForm.InputIndex = k;
-							tmpInput.PictForm.GroupIndex = tmpGroup.GroupIndex;
-
-							tmpTemplate += this.getInputMetatemplateTemplateReference(pView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("${i}","${j}","${k}")`);
-						}
-						tmpTemplate += this.getMetatemplateTemplateReference(pView, `-Template-Row-Postfix`, `getGroup("${i}")`);
+						tmpTemplate += this.pict.providers[`Pict-Layout-${tmpGroupLayout}`].generateGroupLayoutTemplate(pView, tmpGroup);
 					}
-					tmpTemplate += this.getMetatemplateTemplateReference(pView, `-Template-Group-Postfix`, `getGroup("${i}")`);
+					else
+					{
+						tmpTemplate += this.pict.providers['Pict-Layout-Record'].generateGroupLayoutTemplate(pView, tmpGroup);
+					}
 					break;
 			}
 		}
