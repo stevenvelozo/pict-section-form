@@ -40,6 +40,7 @@
     "dependencies": {
         "fable-serviceproviderbase": "^3.0.13",
         "pict-provider": "^1.0.2",
+        "pict-section-tuigrid": "^1.0.24",
         "pict-template": "^1.0.2",
         "pict-view": "^1.0.49"
     },

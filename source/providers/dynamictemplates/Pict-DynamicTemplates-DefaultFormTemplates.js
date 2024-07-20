@@ -180,13 +180,6 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span> <input id="DATETIME-INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}" type="datetime-local" value="" />
 `
 		},
-		{
-			"HashPostfix": "-Template-Input-InputType-Hidden",
-			"Template": /*HTML*/`
-					<!-- InputType Hidden {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~}>
-`
-		},
 		/*
 		 * END Input Templates (default)
 		 */
@@ -196,6 +189,16 @@ Glug glug glug Oo... -->
 		 *
 		 */
 
+		/*
+		 *
+		 * [ External Control Templates START ]
+		 *
+		 */
+		/*
+		 *
+		 * [ External Control Templates END ]
+		 *
+		 */
 
 
 		/*

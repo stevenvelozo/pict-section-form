@@ -1,5 +1,7 @@
 const libPictProvider = require('pict-provider');
 
+const libPictSectionTuiGrid = require('pict-section-tuigrid');
+
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-Section-Form-Provider-MetatemplateGenerator",
