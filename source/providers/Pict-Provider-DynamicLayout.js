@@ -31,12 +31,26 @@ class PictDynamicLayout extends libPictProvider
 	/**
 	 * Generate a group layout template for the Dynamically Generated views.
 	 * 
-	 * @param {object} pView - The view to generate and inject dynamic layout templates for
+	 * @param {object} pView - The view to generate the dynamic group layout for
+	 * @param {object} pGroup - The group to generate and inject dynamic layout templates
 	 * @returns 
 	 */
-	generateGroupLayoutTemplate(pView)
+	generateGroupLayoutTemplate(pView, pGroup)
 	{
 		return '';
+	}
+
+	/**
+	 * After a group template has been rendered, this lets a layout initialize any controls that 
+	 * are necessary (e.g. a custom input type or such).
+	 * 
+	 * @param {object} pView  - The view to initialize the newly rendered control for
+	 * @param {object} pGroup - The group to initialize the newly rendered control for
+	 * @returns 
+	 */
+	onGroupLayoutInitialize(pView, pGroup)
+	{
+		return true;
 	}
 }
 

@@ -1,0 +1,26 @@
+{
+    "name": "complex_tuigrid_application",
+    "version": "1.0.0",
+    "description": "The most complex TuiGrid application ever!",
+    "main": "Complex-TuiGrid-Application.js",
+    "scripts": {
+        "start": "node Complex-TuiGrid-Application.js",
+        "build": "npx quack build && npx quack copy"
+    },
+    "author": "steven",
+    "license": "MIT",
+    "devDependencies": {},
+    "copyFilesSettings": {
+        "whenFileExists": "overwrite"
+    },
+    "copyFiles": [
+        {
+            "from": "./html/*",
+            "to": "./dist/"
+        },
+        {
+            "from": "../../node_modules/pict/dist/*",
+            "to": "./dist/"
+        }
+    ]
+}

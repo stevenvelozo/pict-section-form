@@ -327,7 +327,18 @@ class PictViewDynamicForm extends libPictViewClass
 
 	onAfterRender()
 	{
+		this.runLayoutProviderFunctions('onGroupLayoutInitialize')
 		this.runInputProviderFunctions('onInputInitialize');
+	}
+
+	runLayoutProviderFunctions(pFunctionName)
+	{
+		// Check to see if there are any hooks set from the input templates
+		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
+		{
+			let tmpGroup = this.sectionDefinition.Groups[i];
+			
+		}		
 	}
 
 	runInputProviderFunctions(pFunctionName)

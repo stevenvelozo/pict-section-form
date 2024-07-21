@@ -1,27 +1,23 @@
 const libPictSectionForm = require('../../source/Pict-Section-Form.js');
 
-const libCustomDataProvider = require('./Complex-Tabular-CustomDataProvider.js');
-
-class ComplexTabularApplication extends libPictSectionForm.PictFormApplication
+class ComplexTuiGridApplication extends libPictSectionForm.PictFormApplication
 {
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
-
-		this.pict.addProvider('CustomDataProvider', libCustomDataProvider.default_configuration, libCustomDataProvider);
 	}
 }
 
-module.exports = ComplexTabularApplication;
+module.exports = ComplexTuiGridApplication;
 
 module.exports.default_configuration = libPictSectionForm.PictFormApplication.default_configuration;
 module.exports.default_configuration.pict_configuration = {
-	Product: "ComplexTable",
+	Product: "ComplexTuiGrid",
 
 	DefaultAppData: require("./FruitData.json"),
 
 	DefaultFormManifest: {
-		Scope: "SuperComplexTabularForm",
+		Scope: "SuperComplexTuiGridForm",
 
 		Sections: [
 			{
@@ -104,7 +100,7 @@ module.exports.default_configuration.pict_configuration = {
 						Hash: "FruitGrid",
 						Name: "FruitGrid",
 
-						Layout: "Tabular",
+						Layout: "TuiGrid",
 
 						RecordSetSolvers: [
 							{
