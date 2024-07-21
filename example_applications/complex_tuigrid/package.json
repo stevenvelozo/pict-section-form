@@ -19,6 +19,10 @@
             "to": "./dist/"
         },
         {
+            "from": "./externals/*",
+            "to": "./dist/"
+        },
+        {
             "from": "../../node_modules/pict/dist/*",
             "to": "./dist/"
         }

@@ -337,7 +337,12 @@ class PictViewDynamicForm extends libPictViewClass
 		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
 		{
 			let tmpGroup = this.sectionDefinition.Groups[i];
-			
+			let tmpLayoutProvider = this.pict.providers.MetatemplateGenerator.getGroupLayoutProvider(this, tmpGroup);
+			if (tmpLayoutProvider && (pFunctionName in tmpLayoutProvider))
+			{
+				let tmpFunction = tmpLayoutProvider[pFunctionName];
+				tmpFunction.call(tmpLayoutProvider, this, tmpGroup);
+			}
 		}		
 	}
 

@@ -203,6 +203,32 @@ class PictMetatemplateGenerator extends libPictProvider
 		return '';
 	}
 
+	getGroupLayoutProvider(pView, pGroup)
+	{
+		let tmpGroupLayout = (typeof(pGroup.Layout) === 'string') ? pGroup.Layout :
+								(typeof(pView.sectionDefinition.DefaultGroupLayout) === 'string') ? pView.sectionDefinition.DefaultGroupLayout :
+								'Record';
+		// This switch is unnecessary but meant to be illustrative of what this function does.
+		// It could technically be as simple as the default stanza.
+		switch(tmpGroupLayout)
+		{
+			case 'Tabular':
+				return this.pict.providers['Pict-Layout-Tabular'];
+			case 'Record':
+				return this.pict.providers['Pict-Layout-Record'];
+			default:
+				// Try to load a custom layout, then fall back to the Record layout if it doesn't exist
+				if (`Pict-Layout-${tmpGroupLayout}` in this.pict.providers)
+				{
+					return this.pict.providers[`Pict-Layout-${tmpGroupLayout}`];
+				}
+				else
+				{
+					return this.pict.providers['Pict-Layout-Record'];
+				}
+		}
+	}
+
 	rebuildCustomTemplate(pView)
 	{
 		let tmpTemplate = ``;
@@ -221,51 +247,10 @@ class PictMetatemplateGenerator extends libPictProvider
 
 			// Add pView to the group object for metatemplating
 			tmpGroup.GroupIndex = i;
-
 			tmpGroup.SectionTabularRowVirtualTemplateHash = `Pict-Form-Template-TabularRow-Virtual-${pView.options.Hash}-G${tmpGroup.GroupIndex}`;
 			tmpGroup.SectionTabularRowTemplateHash = `Pict-Form-Template-TabularRow-${pView.options.Hash}-G${tmpGroup.GroupIndex}`;
 
-
-			// Group layouts are customizable
-			// The three basic group layouts:
-			// 1. Record (default) - Render the whole address as a singleton record
-			//                       placing inputs into rows based on configuration.
-			// 2. Tabular          - Expect either an Array of objects or a POJO to
-			//                       be rendered one record per row.
-			let tmpGroupLayout = (typeof(tmpGroup.Layout) === 'string') ? tmpGroup.Layout :
-									(typeof(pView.sectionDefinition.DefaultGroupLayout) === 'string') ? pView.sectionDefinition.DefaultGroupLayout :
-									'Record';
-
-			// We won't skip complex layouts even if they don't have rows because the
-			// generated metatemplate has n-dimensional columns from the submanifests.
-			if (!Array.isArray(tmpGroup.Rows))
-			{
-				continue;
-			}
-
-			switch(tmpGroupLayout)
-			{
-				case 'TuiGrid':
-					tmpTemplate += this.pict.providers['Pict-Layout-TuiGrid'].generateGroupLayoutTemplate(pView, tmpGroup);
-					break;
-				case 'Tabular':
-					tmpTemplate += this.pict.providers['Pict-Layout-Tabular'].generateGroupLayoutTemplate(pView, tmpGroup);
-					break;
-				case 'Record':
-					tmpTemplate += this.pict.providers['Pict-Layout-Record'].generateGroupLayoutTemplate(pView, tmpGroup);
-					break;
-				default:
-					// Try to load a custom layout, then fall back to the Record layout if it doesn't exist
-					if (`Pict-Layout-${tmpGroupLayout}` in this.pict.providers)
-					{
-						tmpTemplate += this.pict.providers[`Pict-Layout-${tmpGroupLayout}`].generateGroupLayoutTemplate(pView, tmpGroup);
-					}
-					else
-					{
-						tmpTemplate += this.pict.providers['Pict-Layout-Record'].generateGroupLayoutTemplate(pView, tmpGroup);
-					}
-					break;
-			}
+			tmpTemplate += this.getGroupLayoutProvider(pView, tmpGroup).generateGroupLayoutTemplate(pView, tmpGroup);
 		}
 
 		tmpTemplate += this.getMetatemplateTemplateReference(pView, `-Template-Section-Postfix`, `sectionDefinition`);

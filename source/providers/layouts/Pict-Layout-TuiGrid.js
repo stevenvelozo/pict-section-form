@@ -8,31 +8,58 @@ class TuiGridLayout extends libPictSectionGroupLayout
 	{
 		super(pFable, pOptions, pServiceHash);
 
-		this.views = {};
+		this.viewGridConfigurations = {};
+		this.viewTuiGrids = {};
+	}
+
+	getViewUniqueIdentifier(pView, pGroup)
+	{
+		return `View-${pView.UUID}-GroupTuiGrid-${pGroup.GroupIndex}`;
 	}
 
 	getViewTuiHtmlID(pView, pGroup)
 	{
-		return `${pView.UUID}-GroupTuiGrid-${pGroup.GroupIndex}`;
+		return `#${this.getViewUniqueIdentifier(pView, pGroup)}`;
+	}
+
+	getViewGrid(pView, pGroup)
+	{
+		let tmpGridUUID = this.getViewUniqueIdentifier(pView, pGroup);
+		if (!this.viewTuiGrids.hasOwnProperty(tmpGridUUID))
+		{
+			return false;
+		}
+		return this.viewTuiGrids[tmpGridUUID];
+	}
+
+	createViewTuiGrid(pView, pGroup)
+	{
+		let tmpGridUUID = this.getViewUniqueIdentifier(pView, pGroup);
+		if (this.viewTuiGrids.hasOwnProperty(tmpGridUUID))
+		{
+			// Purely for information for now.
+			this.pict.log.info(`Dynamic TuiGrid view [${pView.UUID}]::[${pView.Hash}] is reinitializing a TuiGrid in group ${pGroup.GroupIndex} TuiGrid UUID [${tmpGridUUID}].`);
+			// ...we need to clear out the littered tuiGrid views probably.
+		}
+		// Generate the pict view
+		let tmpGridConfiguration = this.getViewTuiConfiguration(pView, pGroup);
+		let tmpGridView = this.pict.addView(tmpGridUUID, tmpGridConfiguration, libPictSectionTuiGrid);
+		// Manually initialize the view
+		tmpGridView.initialize();
+		this.viewTuiGrids[tmpGridUUID] = tmpGridView;
+		return tmpGridView;
 	}
 
 	getViewTuiConfiguration(pView, pGroup)
 	{
+		let tmpGridUUID = this.getViewUniqueIdentifier(pView, pGroup);
 		// If there isn't yet a tui configuration, make a new one.
-		if (!this.views.hasOwnProperty(pView.UUID))
-		{
-			this.views[pView.UUID] = {};
-		}
-
-		// If there was a grid config created with this group index already, just use that.
-		if (this.views[pView.UUID].hasOwnProperty(pGroup.GroupIndex))
-		{
-			return this.views[pView.UUID][pGroup.GroupIndex];
-		}
-		else
+		if (!this.viewGridConfigurations.hasOwnProperty(tmpGridUUID))
 		{
 			// Generate a unique destination for the TuiGrid
 			let tmpGroupTuiGridConfiguration = JSON.parse(JSON.stringify(libPictSectionTuiGrid.default_configuration));
+			this.viewGridConfigurations[tmpGridUUID] = tmpGroupTuiGridConfiguration;
+
 			tmpGroupTuiGridConfiguration.GridData = [];
 			tmpGroupTuiGridConfiguration.DefaultDestinationAddress = this.getViewTuiHtmlID(pView, pGroup);
 			tmpGroupTuiGridConfiguration.TargetElementAddress = this.getViewTuiHtmlID(pView, pGroup);
@@ -75,13 +102,12 @@ class TuiGridLayout extends libPictSectionGroupLayout
 				}
 			}
 		}
+
+		return this.viewGridConfigurations[tmpGridUUID];
 	}
 
 	/**
-	 * Generate a group layout template for a single-record dynamically generated group view.
-	 * 
-	 * This is the standard name / field entry form that you're used to filling out for addresses
-	 * and such.
+	 * Generate a group layout template for a TuiGrid dynamically generated group view.
 	 * 
 	 * @param {object} pView - The view to generate the dynamic group layout for
 	 * @param {object} pGroup - The group to generate and inject dynamic layout templates
@@ -102,10 +128,25 @@ class TuiGridLayout extends libPictSectionGroupLayout
 
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-Group-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
 		// TODO: This feels dirty and out of pattern, but, aaaaagh the id generation is kinda messy because of the layer comms to this layout.  DISCUSS
-		tmpTemplate += `<div id="${this.getViewTuiHtmlID(pView, pGroup)}"></div>`;
+		tmpTemplate += `<div id="${this.getViewUniqueIdentifier(pView, pGroup)}"></div>`;
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-Group-Postfix`, `getGroup("${pGroup.GroupIndex}")`);
 
 		return tmpTemplate;
+	}
+
+	/**
+	 * Initialize the TuiGrid!
+	 * 
+	 * @param {object} pView  - The view to initialize the newly rendered control for
+	 * @param {object} pGroup - The group to initialize the newly rendered control for
+	 * @returns 
+	 */
+	onGroupLayoutInitialize(pView, pGroup)
+	{
+		// We do this at the last minute to avoid extraneous creation of these.
+		let tmpTuiGridView = this.createViewTuiGrid(pView, pGroup);
+		tmpTuiGridView.render();
+		return true;
 	}
 }
 
