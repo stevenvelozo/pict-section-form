@@ -192,14 +192,14 @@ module.exports.default_configuration.pict_configuration = {
 			"Recipe.CounterWidth": {
 				Name: "Counter Prep Width Requirements",
 				Hash: "RecipeCounterWidth",
-				DataType: "PreciseNumber",
+				DataType: "Number",
 				Default: "10",
 				PictForm: { Section: "Recipe", Group: "Statistics", Row: 2, Width: 1 },
 			},
 			"Recipe.CounterDepth": {
 				Name: "Counter Prep Depth Requirements",
 				Hash: "RecipeCounterDepth",
-				DataType: "PreciseNumber",
+				DataType: "Number",
 				Default: "5",
 				PictForm: { Section: "Recipe", Group: "Statistics", Row: 2, Width: 1 },
 			},
@@ -213,7 +213,7 @@ module.exports.default_configuration.pict_configuration = {
 			"Recipe.VerticalClearance": {
 				Name: "Prep Vertical Clearance",
 				Hash: "RecipeVerticalClearance",
-				DataType: "PreciseNumber",
+				DataType: "Number",
 				Default: "12",
 				PictForm: { Section: "Recipe", Group: "Statistics", Row: 3, Width: 1 },
 			},

@@ -1,10 +1,13 @@
 const libPictViewClass = require('pict-view');
 
-const libInformary = require('../providers/Pict-Provider-Informary.js');
+const libManifestFactory = require('../services/ManifestFactory.js');
+
 const libDynamicSolver = require('../providers/Pict-Provider-DynamicSolver.js');
 const libDynamicInput = require('../providers/Pict-Provider-DynamicInput.js');
+const libDynamicInputEvents = require('../providers/Pict-Provider-DynamicInputEvents.js');
+const libDynamicTabularData = require('../providers/Pict-Provider-DynamicTabularData.js');
 
-const libManifestFactory = require('../services/ManifestFactory.js');
+const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
 
 const libMetatemplateGenerator = require('../providers/Pict-Provider-MetatemplateGenerator.js');
 const libMetatemplateMacros = require('../providers/Pict-Provider-MetatemplateMacros.js');
@@ -15,7 +18,7 @@ const libPictLayoutRecordSet = require('../providers/layouts/Pict-Layout-RecordS
 const libPictLayoutChart = require('../providers/layouts/Pict-Layout-Chart.js');
 const libPictLayoutTuiGrid = require('../providers/layouts/Pict-Layout-TuiGrid.js');
 
-const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
+const libInformary = require('../providers/Pict-Provider-Informary.js');
 
 class PictViewDynamicForm extends libPictViewClass
 {
@@ -84,7 +87,9 @@ class PictViewDynamicForm extends libPictViewClass
 		this.fable.addAndInstantiateSingletonService('ManifestFactory', libManifestFactory.default_configuration, libManifestFactory);
 
 		this.pict.addProviderSingleton('DynamicInput', libDynamicInput.default_configuration, libDynamicInput);
+		this.pict.addProviderSingleton('DynamicInputEvents', libDynamicInputEvents.default_configuration, libDynamicInputEvents);
 		this.pict.addProviderSingleton('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
+		this.pict.addProviderSingleton('DynamicTabularData', libDynamicTabularData.default_configuration, libDynamicTabularData);
 
 		this.pict.addProviderSingleton('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
 
@@ -314,6 +319,12 @@ class PictViewDynamicForm extends libPictViewClass
 		return super.onMarshalFromView();
 	}
 
+	onAfterMarshalToForm()
+	{
+		// Check to see if there are any hooks set from the input templates
+		this.runInputProviderFunctions('onAfterMarshalToForm');
+	}
+
 	onSolve()
 	{
 		this.pict.providers.DynamicSolver.solveViews([this.Hash]);
@@ -452,12 +463,6 @@ class PictViewDynamicForm extends libPictViewClass
 		}		
 	}
 
-	onAfterMarshalToForm()
-	{
-		// Check to see if there are any hooks set from the input templates
-		this.runInputProviderFunctions('onAfterMarshalToForm');
-	}
-
 	checkViewSpecificTemplate(pTemplatePostfix)
 	{
 		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
@@ -484,87 +489,6 @@ class PictViewDynamicForm extends libPictViewClass
 		this.pict.providers.MetatemplateGenerator.rebuildCustomTemplate(this);
 	}
 
-
-	// Metatemplate Helper Functions
-	getTabularRecordInput(pGroupIndex, pInputIndex)
-	{
-		// The neat thing about how the tabular groups work is that we can make it clever about whether it's an object or an array.
-		let tmpGroup = this.getGroup(pGroupIndex);
-
-		if (!tmpGroup)
-		{
-			this.log.warn(`PICT View Metatemplate Helper getTabularRowData ${pGroupIndex} was not a valid group.`);
-			return false;
-		}
-
-		// Now get the supporting manifest and the input element
-		// This needs more guards
-		let tmpSupportingManifestHash = tmpGroup.supportingManifest.elementAddresses[pInputIndex];
-		return tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
-	}
-	
-	getTabularRecordData(pGroupIndex, pRowIdentifier)
-	{
-		// The neat thing about how the tabular groups work is that we can make it clever about whether it's an object or an array.
-		let tmpGroup = this.getGroup(pGroupIndex);
-
-		if (!tmpGroup)
-		{
-			this.log.warn(`PICT View Metatemplate Helper getTabularRowData ${pGroupIndex} was not a valid group.`);
-			return false;
-		}
-
-		// Now identify the group
-		let tmpRowSourceRecord =  this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
-
-		if (!tmpRowSourceRecord)
-		{
-			// Try the address
-			tmpRowSourceRecord = this.sectionManifest.getValueAtAddress(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
-		}
-		
-		if (!tmpRowSourceRecord)
-		{
-			this.log.warn(`PICT View Metatemplate Helper getTabularRowData ${pGroupIndex} could not find the record set for ${tmpGroup.RecordSetAddress}.`);
-			return false;
-		}
-
-		// Now we have the source record let's see what it is
-		try
-		{
-			if (Array.isArray(tmpRowSourceRecord))
-			{
-				return tmpRowSourceRecord[pRowIdentifier];
-			}
-			else if (typeof(tmpRowSourceRecord) === 'object')
-			{
-				return tmpRowSourceRecord[pRowIdentifier];
-			}
-			else
-			{
-				this.log.warn(`PICT View Metatemplate Helper getTabularRowData ${pGroupIndex} could not determine the type of the record set for ${tmpGroup.RecordSetAddress}.`);
-				return false;
-			}
-		}
-		catch (pError)
-		{
-			this.log.error(`PICT View Metatemplate Helper getTabularRowData ${pGroupIndex} encountered an error: ${pError}`);
-			return false;
-		}
-	}
-
-	getTabularRecordSet(pGroupIndex)
-	{
-		// The neat thing about how the tabular groups work is that we can make it clever about whether it's an object or an array.
-		let tmpGroup = this.getGroup(pGroupIndex);
-		if (!tmpGroup)
-		{
-			this.log.warn(`PICT View Metatemplate Helper getTabularRecordSet ${pGroupIndex} was not a valid group.`);
-			return false;
-		}
-		return this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
-	}
-
 	getGroup(pGroupIndex)
 	{
 		if (isNaN(pGroupIndex))
@@ -579,156 +503,6 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 
 		return this.sectionDefinition.Groups[pGroupIndex];
-	}
-
-	createDynamicTableRow(pGroupIndex)
-	{
-		let tmpGroup = this.getGroup(pGroupIndex);
-
-		if (tmpGroup)
-		{
-			let tmpDestinationObject = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
-
-			if (Array.isArray(tmpDestinationObject))
-			{
-				tmpDestinationObject.push(tmpGroup.supportingManifest.populateDefaults({}))
-				this.render();
-				this.marshalToView();
-			}
-			else if (typeof(tmpDestinationObject) === 'object')
-			{
-				let tmpRowIndex = this.fable.getUUID();
-				tmpDestinationObject[tmpRowIndex] = tmpGroup.supportingManifest.populateDefaults({});
-				this.render();
-				this.marshalToView();
-			}
-		}
-	}
-
-	setDynamicTableRowIndex(pGroupIndex, pRowIndex, pNewRowIndex)
-	{
-		let tmpGroup = this.getGroup(pGroupIndex);
-
-		if (tmpGroup)
-		{
-			let tmpDestinationObject = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
-
-			if (Array.isArray(tmpDestinationObject))
-			{
-				let tmpRowIndex = parseInt(pRowIndex, 10);
-				let tmpNewRowIndex = parseInt(pNewRowIndex, 10);
-				if ((tmpDestinationObject.length <= tmpRowIndex) || (tmpRowIndex < 0))
-				{
-					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] to [${pNewRowIndex}] but the index is out of bounds.`);
-					return false;
-				}
-				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
-				tmpDestinationObject.splice(tmpNewRowIndex, 0, tmpElementToBeMoved[0]);
-				this.render();
-				this.marshalToView();
-			}
-			else if (typeof(tmpDestinationObject) === 'object')
-			{
-				this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] to [${pNewRowIndex}] but it's an object not an array; order isn't controllable.`);
-			}
-		}
-	}
-
-	moveDynamicTableRowDown(pGroupIndex, pRowIndex)
-	{
-		let tmpGroup = this.getGroup(pGroupIndex);
-
-		if (tmpGroup)
-		{
-			let tmpDestinationObject = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
-
-			if (Array.isArray(tmpDestinationObject))
-			{
-				let tmpRowIndex = parseInt(pRowIndex, 10);
-				if (tmpDestinationObject.length <= tmpRowIndex)
-				{
-					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] down but it's already at the bottom.`);
-					return false;
-				}
-				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
-				tmpDestinationObject.splice(tmpRowIndex + 1, 0, tmpElementToBeMoved[0]);
-				this.render();
-				this.marshalToView();
-			}
-			else if (typeof(tmpDestinationObject) === 'object')
-			{
-				this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but it's an object not an array; order isn't controllable.`);
-			}
-		}
-	}
-
-	moveDynamicTableRowUp(pGroupIndex, pRowIndex)
-	{
-		let tmpGroup = this.getGroup(pGroupIndex);
-
-		if (tmpGroup)
-		{
-			let tmpDestinationObject = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
-
-			if (Array.isArray(tmpDestinationObject))
-			{
-				let tmpRowIndex = parseInt(pRowIndex, 10);
-				if (tmpRowIndex == 0)
-				{
-					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] up but it's already at the top.`);
-					return false;
-				}
-				if (tmpDestinationObject.length <= tmpRowIndex)
-				{
-					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but the index is out of bounds.`);
-					return false;
-				}
-				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
-				tmpDestinationObject.splice(tmpRowIndex - 1, 0, tmpElementToBeMoved[0]);
-				this.render();
-				this.marshalToView();
-			}
-			else if (typeof(tmpDestinationObject) === 'object')
-			{
-				this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but it's an object not an array; order isn't controllable.`);
-			}
-		}
-	}
-
-
-	deleteDynamicTableRow(pGroupIndex, pRowIndex)
-	{
-		let tmpGroup = this.getGroup(pGroupIndex);
-
-		if (tmpGroup)
-		{
-			let tmpDestinationObject = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
-
-			if (Array.isArray(tmpDestinationObject))
-			{
-				let tmpRowIndex = parseInt(pRowIndex, 10);
-				if (tmpDestinationObject.length <= tmpRowIndex)
-				{
-					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to delete row [${pRowIndex}] but the index is out of bounds.`);
-					return false;
-				}
-				tmpDestinationObject.splice(tmpRowIndex, 1);
-				this.render();
-				this.marshalToView();
-			}
-			else if (typeof(tmpDestinationObject) === 'object')
-			{
-				let tmpRowIndex = pRowIndex.toString();
-				if (!(tmpRowIndex in tmpDestinationObject))
-				{
-					this.pict.log.error(`Dynamic View [${this.UUID}]::[${this.Hash}] Group ${tmpGroup.Hash} attempting to delete row [${pRowIndex}] but the object does not contain this entry.`);
-					return false;
-				}
-				delete tmpDestinationObject[tmpRowIndex]
-				this.render();
-				this.marshalToView();
-			}
-		}
 	}
 
 	getRow(pGroupIndex, pRowIndex)
@@ -760,11 +534,6 @@ class PictViewDynamicForm extends libPictViewClass
 		return { Key:pGroupIndex, Value:this.getRow(pGroupIndex, pRowIndex), Group:this.getGroup(pGroupIndex) };
 	}
 
-	getInputFromHash(pInputHash)
-	{
-		return this.sectionManifest.getDescriptorByHash(pInputHash);
-	}
-
 	getInput(pGroupIndex, pRowIndex, pInputIndex)
 	{
 		let tmpRow = this.getRow(pGroupIndex, pRowIndex);
@@ -788,6 +557,10 @@ class PictViewDynamicForm extends libPictViewClass
 			return false;
 		}
 	}
+	getInputFromHash(pInputHash)
+	{
+		return this.sectionManifest.getDescriptorByHash(pInputHash);
+	}
 
 	getInputProviderList(pInput)
 	{
@@ -803,153 +576,53 @@ class PictViewDynamicForm extends libPictViewClass
 
 	inputDataRequest(pInputHash)
 	{
-		let tmpInput = this.getInputFromHash(pInputHash);
-		if (pInputHash)
-		{
-			let tmpHashAddress = this.sectionManifest.resolveHashAddress(pInputHash);
-			try
-			{
-				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
-				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
-				let tmpInputProviderList = this.getInputProviderList(tmpInput);
-				for (let i = 0; i < tmpInputProviderList.length; i++)
-				{
-					if (this.pict.providers[tmpInputProviderList[i]])
-					{
-						this.pict.providers[tmpInputProviderList[i]].onDataRequest(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
-					}
-					else
-					{
-						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] inputDataRequest cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
-					}
-				}
-			}
-			catch (pError)
-			{
-				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error running inputDataRequest specific (${pInputHash}) data from view in dataChanged event: ${pError}`);
-			}
-		}
-		else
-		{
-			this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find input hash [${pInputHash}] for inputDataRequest event.`);
-		}
+		return this.pict.providers.DynamicInputEvents.inputDataRequest(this, pInputHash);
 	}
-
 	inputEvent(pInputHash, pEvent)
 	{
-		let tmpInput = this.getInputFromHash(pInputHash);
-		if (pInputHash)
-		{
-			let tmpHashAddress = this.sectionManifest.resolveHashAddress(pInputHash);
-			try
-			{
-				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
-				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
-				let tmpInputProviderList = this.getInputProviderList(tmpInput);
-				for (let i = 0; i < tmpInputProviderList.length; i++)
-				{
-					if (this.pict.providers[tmpInputProviderList[i]])
-					{
-						this.pict.providers[tmpInputProviderList[i]].onEvent(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, pEvent);
-					}
-					else
-					{
-						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] inputEvent ${pEvent} cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
-					}
-				}
-			}
-			catch (pError)
-			{
-				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error running inputEvent ${pEvent} specific (${pInputHash}) data from view in dataChanged event: ${pError}`);
-			}
-		}
-		else
-		{
-			this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find input hash [${pInputHash}] for inputEvent ${pEvent} event.`);
-		}
+		return this.pict.providers.DynamicInputEvents.inputEvent(this, pInputHash, pEvent);
 	}
 
 	inputDataRequestTabular(pGroupIndex, pInputIndex, pRowIndex)
 	{
-		let tmpInput = this.getTabularRecordInput(pGroupIndex, pInputIndex);
-		if (pGroupIndex && pInputIndex && pRowIndex && tmpInput)
-		{
-			try
-			{
-				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
-				// TODO: Can we simplify this?
-				let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
-				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
-
-				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
-				let tmpInputProviderList = this.getInputProviderList(tmpInput);
-				for (let i = 0; i < tmpInputProviderList.length; i++)
-				{
-					if (this.pict.providers[tmpInputProviderList[i]])
-					{
-						this.pict.providers[tmpInputProviderList[i]].onDataRequestTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
-					}
-					else
-					{
-						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
-					}
-				}
-			}
-			catch (pError)
-			{
-				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
-			}
-		}
-		else
-		{
-			// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
-			this.marshalFromView();
-		}
-		// Run any dynamic input providers for the input hash.
-		this.pict.PictApplication.solve();
-		this.marshalToView();
+		return this.pict.providers.DynamicInputEvents.inputDataRequestTabular(this, pGroupIndex, pInputIndex, pRowIndex);
 	}
-
 	inputEventTabular(pGroupIndex, pInputIndex, pRowIndex, pEvent)
 	{
-		let tmpInput = this.getTabularRecordInput(pGroupIndex, pInputIndex);
-		if (pGroupIndex && pInputIndex && pRowIndex && tmpInput)
-		{
-			try
-			{
-				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
-				
-				// TODO: Can we simplify this?
-				let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
-				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
+		return this.pict.providers.DynamicInputEvents.inputEventTabular(this, pGroupIndex, pInputIndex, pRowIndex, pEvent);
+	}
 
-				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
-				let tmpInputProviderList = this.getInputProviderList(tmpInput);
-				for (let i = 0; i < tmpInputProviderList.length; i++)
-				{
-					if (this.pict.providers[tmpInputProviderList[i]])
-					{
-						this.pict.providers[tmpInputProviderList[i]].onEventTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex, pEvent);
-					}
-					else
-					{
-						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}] row ${pRowIndex} calling inputEvent ${pEvent}.`);
-					}
-				}
-			}
-			catch (pError)
-			{
-				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in calling inputEvent ${pEvent}: ${pError}`);
-			}
-		}
-		else
-		{
-			// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
-			this.marshalFromView();
-		}
-		// Run any dynamic input providers for the input hash.
-		this.pict.PictApplication.solve();
-		this.marshalToView();
+	getTabularRecordInput(pGroupIndex, pInputIndex)
+	{
+		return this.pict.providers.DynamicTabularData.getTabularRecordInput(this, pGroupIndex, pInputIndex);
+	}
+	getTabularRecordData(pGroupIndex, pRowIdentifier)
+	{
+		return this.pict.providers.DynamicTabularData.getTabularRecordData(this, pGroupIndex, pRowIdentifier);
+	}
+	getTabularRecordSet(pGroupIndex)
+	{
+		return this.pict.providers.DynamicTabularData.getTabularRecordSet(this, pGroupIndex);
+	}
+	createDynamicTableRow(pGroupIndex)
+	{
+		return this.pict.providers.DynamicTabularData.createDynamicTableRow(this, pGroupIndex);
+	}
+	setDynamicTableRowIndex(pGroupIndex, pRowIndex, pNewRowIndex)
+	{
+		return this.pict.providers.DynamicTabularData.setDynamicTableRowIndex(this, pGroupIndex, pRowIndex, pNewRowIndex);
+	}
+	moveDynamicTableRowDown(pGroupIndex, pRowIndex)
+	{
+		return this.pict.providers.DynamicTabularData.moveDynamicTableRowDown(this, pGroupIndex, pRowIndex);
+	}
+	moveDynamicTableRowUp(pGroupIndex, pRowIndex)
+	{
+		return this.pict.providers.DynamicTabularData.moveDynamicTableRowUp(this, pGroupIndex, pRowIndex);
+	}
+	deleteDynamicTableRow(pGroupIndex, pRowIndex)
+	{
+		return this.pict.providers.DynamicTabularData.deleteDynamicTableRow(this, pGroupIndex, pRowIndex);
 	}
 
 	get isPictSectionForm()

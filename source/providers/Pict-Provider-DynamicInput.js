@@ -16,7 +16,7 @@ const _DefaultProviderConfiguration = (
 class PictDynamicInput extends libPictProvider
 {
 	/**
-	 * Creates an instance of the PictDynamicLayout class.
+	 * Creates an instance of the PictDynamicInput class.
 	 * 
 	 * @param {object} pFable - The fable object.
 	 * @param {object} pOptions - The options object.

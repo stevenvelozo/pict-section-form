@@ -112,7 +112,6 @@ class ManifestFactory extends libFableServiceProviderBase
 		{
 			let tmpGroup = pView.sectionDefinition.Groups[i];
 			// Check if the group has a supporting manifest and load it.
-
 			if ('RecordManifest' in tmpGroup)
 			{
 				tmpGroup.supportingManifest = pView.fable.instantiateServiceProviderWithoutRegistration('Manifest', pView.options.Manifests.Section.ReferenceManifests[tmpGroup.RecordManifest]);
@@ -135,6 +134,31 @@ class ManifestFactory extends libFableServiceProviderBase
 						tmpInput.PictForm.InformaryContainerAddress = tmpGroup.RecordSetAddress;
 					}
 					tmpInput.RowIdentifierTemplateHash = '{~D:Record.RowID~}';
+				}
+			}
+
+			// Check if there is a record set address; initialize it if it doesn't exist
+			if (tmpGroup.RecordSetAddress)
+			{
+				let tmpMarshalDestinationObject = pView.getMarshalDestinationObject();
+				let tmpRecordSetDataObjectExists = pView.sectionManifest.checkAddressExistsByHash(tmpMarshalDestinationObject, tmpGroup.RecordSetAddress);
+				let tmpRecordSetDataObject = pView.sectionManifest.getValueAtAddress(tmpMarshalDestinationObject, tmpGroup.RecordSetAddress);
+				if (!tmpRecordSetDataObjectExists)
+				{
+					pView.log.warn(`Automatically setting an empty array at [${tmpGroup.RecordSetAddress}].`);
+					pView.sectionManifest.setValueByHash(tmpMarshalDestinationObject, tmpGroup.RecordSetAddress, []);
+				}
+				else if (Array.isArray(tmpRecordSetDataObject))
+				{
+					pView.log.trace(`RecordSetAddress is an Array for [${tmpGroup.Hash}]`);
+				}
+				else if (typeof(tmpRecordSetDataObject) === 'object')
+				{
+					pView.log.trace(`RecordSetAddress is an Object for [${tmpGroup.Hash}]`);
+				}
+				else
+				{
+					pView.log.error(`RecordSetAddress is not an Array or Object for [${tmpGroup.Hash}]; it is a [${typeof(tmpRecordSetDataObject)}] -- likely the data shape will cause erratic problems.`);
 				}
 			}
 		}
