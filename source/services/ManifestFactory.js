@@ -111,35 +111,13 @@ class ManifestFactory extends libFableServiceProviderBase
 		for (let i = 0; i < pView.sectionDefinition.Groups.length; i++)
 		{
 			let tmpGroup = pView.sectionDefinition.Groups[i];
-			// Check the Group type and get the manifest if it is a RECORDSET-based group.
-			// The three built-in set groups (Record, Tabular, Columnar) will do this or the
-			// developer can set a property on Group called "GroupType" to "RecordSet" for
-			// custom layouts.
-			if ((tmpGroup.Layout === 'Tabular') ||
-				(tmpGroup.GroupType === 'RecordSet'))
+			// Check if the group has a supporting manifest and load it.
+
+			if ('RecordManifest' in tmpGroup)
 			{
-				// Check for the supporting manifest
-				if (!('RecordManifest' in tmpGroup))
-				{
-					pView.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group but thee Group does not contain a RecordManifest property.`);
-					tmpGroup.supportingManifest  = pView.fable.instantiateServiceProviderWithoutRegistration('Manifest');
-				}
-				else if (!('ReferenceManifests' in pView.options.Manifests.Section))
-				{
-					pView.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group but there are no ReferenceManifests in the Section description Manifest.`);
-					tmpGroup.supportingManifest  = pView.fable.instantiateServiceProviderWithoutRegistration('Manifest');
-				}
-				else if (!(tmpGroup.RecordManifest in pView.options.Manifests.Section.ReferenceManifests))
-				{
-					pView.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} is classified as a RecordSet group and has a RecordManifest of [${tmpGroup.RecordManifest}] but the Section.ReferenceManifests object does not contain the referred to manifest.`);
-					tmpGroup.supportingManifest  = pView.fable.instantiateServiceProviderWithoutRegistration('Manifest');
-				}
-				else
-				{
-					tmpGroup.supportingManifest = pView.fable.instantiateServiceProviderWithoutRegistration('Manifest', pView.options.Manifests.Section.ReferenceManifests[tmpGroup.RecordManifest]);
-				}
+				tmpGroup.supportingManifest = pView.fable.instantiateServiceProviderWithoutRegistration('Manifest', pView.options.Manifests.Section.ReferenceManifests[tmpGroup.RecordManifest]);
 			}
-			if (tmpGroup.supportingManifest && (typeof(tmpGroup.RecordSetAddress) == 'string'))
+			if (tmpGroup.supportingManifest)
 			{
 				let tmpSupportingManifestDescriptorKeys = Object.keys(tmpGroup.supportingManifest.elementDescriptors);
 				for (let k = 0; k < tmpSupportingManifestDescriptorKeys.length; k++)
@@ -152,7 +130,10 @@ class ManifestFactory extends libFableServiceProviderBase
 					}
 
 					tmpInput.PictForm.InformaryDataAddress = tmpSupportingManifestDescriptorKeys[k];
-					tmpInput.PictForm.InformaryContainerAddress = tmpGroup.RecordSetAddress;
+					if (typeof(tmpGroup.RecordSetAddress) == 'string')
+					{
+						tmpInput.PictForm.InformaryContainerAddress = tmpGroup.RecordSetAddress;
+					}
 					tmpInput.RowIdentifierTemplateHash = '{~D:Record.RowID~}';
 				}
 			}
