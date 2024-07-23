@@ -2,7 +2,7 @@ const libPictProvider = require('pict-provider');
 
 const _DefaultProviderConfiguration = (
 {
-	"ProviderIdentifier": "Pict-Section-Form-Provider-MetatemplateGenerator",
+	"ProviderIdentifier": "Pict-DynamicForms-Provider-MetatemplateGenerator",
 
 	"AutoInitialize": true,
 	"AutoInitializeOrdinal": 0,
@@ -17,59 +17,6 @@ class PictMetatemplateGenerator extends libPictProvider
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
 		
 		super(pFable, tmpOptions, pServiceHash);
-	}
-
-	getMetatemplateAddressFromInput(pView, pDataType, pInputType)
-	{
-		// Input types are customizable -- there could be 30 different input types for the string data type with special handling and templates
-		let tmpTemplateBeginInputTypePostfix = `-TabularTemplate-Begin-Input-InputType-${pInputType}`;
-		let tmpTemplateMidInputTypePostfix = `-TabularTemplate-Mid-Input-InputType-${pInputType}`;
-		let tmpTemplateEndInputTypePostfix = `-TabularTemplate-End-Input-InputType-${pInputType}`;
-		// Data types are not customizable; they are a fixed list based on what is available in Manyfest
-		let tmpTemplateBeginDataTypePostfix = `-TabularTemplate-Begin-Input-DataType-${pDataType}`;
-		let tmpTemplateMidDataTypePostfix = `-TabularTemplate-Mid-Input-DataType-${pDataType}`;
-		let tmpTemplateEndDataTypePostfix = `-TabularTemplate-End-Input-DataType-${pDataType}`;
-
-		// Tabular inputs are done in three parts -- the "begin", the "address" of the data and the "end".
-
-		// This means it is easily extensible to work on JSON objects as well as arrays.
-		let tmpMidTemplate = this.getMetatemplateTemplateReference(pView, '-TabularTemplate-Mid-Input', pViewDataAddress, pGroupIndex, pRowIndex);
-		let tmpInformaryDataAddressTemplate = this.getMetatemplateTemplateReference(pView, '-TabularTemplate-InformaryAddress-Input', pViewDataAddress, pGroupIndex, pRowIndex);
-
-		// First check if there is an "input type" template available in either the section-specific configuration or in the general
-		if (pInputType)
-		{
-			let tmpBeginTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateBeginInputTypePostfix, pViewDataAddress);
-			let tmpEndTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateEndInputTypePostfix, pViewDataAddress);
-			if (tmpBeginTemplate && tmpEndTemplate)
-			{
-				return tmpBeginTemplate + tmpMidTemplate + tmpInformaryDataAddressTemplate + tmpEndTemplate;
-			}
-		}
-
-		// If we didn't find the template for the "input type", check for the "data type"
-		let tmpBeginTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateBeginDataTypePostfix, pViewDataAddress);
-		let tmpEndTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateEndDataTypePostfix, pViewDataAddress);
-		if (tmpBeginTemplate && tmpEndTemplate)
-		{
-			let tmpCustomMidTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateMidDataTypePostfix, pViewDataAddress, pGroupIndex, pRowIndex);
-			tmpMidTemplate = (tmpCustomMidTemplate) ? tmpCustomMidTemplate : tmpMidTemplate;
-			return tmpBeginTemplate + tmpMidTemplate + tmpInformaryDataAddressTemplate + tmpEndTemplate;
-		}
-	
-
-
-		// If we didn't find the template for the "input type", or the "data type", fall back to the default
-		tmpBeginTemplate = this.getMetatemplateTemplateReference(pView, 'TabularTemplate-Begin-Input', pViewDataAddress);
-		tmpEndTemplate = this.getMetatemplateTemplateReference(pView, 'TabularTemplate-End-Input', pViewDataAddress);
-		if (tmpBeginTemplate && tmpEndTemplate)
-		{
-			return tmpBeginTemplate + tmpMidTemplate + tmpInformaryDataAddressTemplate + tmpEndTemplate;
-		}
-	
-		// There was some kind of catastrophic failure -- the above templates should always be loaded.
-		this.log.error(`PICT Form [${pView.UUID}]::[${pView.Hash}] catastrophic error generating tabular metatemplate: missing input template for Data Type ${pDataType} and Input Type ${pInputType}, Data Address ${pViewDataAddress}, Group Index ${pGroupIndex} and Record Subaddress ${pRowIndex}.`)
-		return '';
 	}
 
 	getMetatemplateTemplateReferenceRaw(pView, pTemplatePostfix, pRawTemplateDataAddress)

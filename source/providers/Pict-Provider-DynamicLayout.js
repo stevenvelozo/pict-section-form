@@ -52,6 +52,11 @@ class PictDynamicLayout extends libPictProvider
 	{
 		return true;
 	}
+
+	onDataMarshalToForm(pView, pGroup)
+	{
+		return true;
+	}
 }
 
 module.exports = PictDynamicLayout;

@@ -5,6 +5,11 @@ pushd complex_table
 npm run build
 popd
 
+# Building complex_tuigrid
+pushd complex_tuigrid
+npm run build
+popd
+
 # Building gradebook
 pushd gradebook
 npm run build

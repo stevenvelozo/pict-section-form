@@ -22,6 +22,11 @@ class RecordLayout extends libPictSectionGroupLayout
 		let tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
 		let tmpTemplate = '';
 
+		if (!('Rows' in pGroup))
+		{
+			pGroup.Rows = [];
+		}
+
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-Group-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
 		for (let j = 0; j < pGroup.Rows.length; j++)
 		{

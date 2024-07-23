@@ -28,13 +28,8 @@
 			},
 			{
 				"Name": "Delivery Confirmation Contact Info",
-				"Hash": "Confirmation",
-				"Description": "The email address and phone number of the sender.",
-				"Groups": [{
-							"Name": "Delivery Confirmation Information",
-							"Hash": "DeliveryConfirmationInfo",
-							"Description": "How should we tell you that it got there safely."
-						}]
+				"Hash": "DeliveryConfirmationInfo",
+				"Description": "The email address and phone number of the sender."
 			}
 		],
 

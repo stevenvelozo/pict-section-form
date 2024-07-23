@@ -28,11 +28,14 @@
         {
             "from": "./node_modules/bulma/css/*",
             "to": "./dist/css/"
+        },
+        {
+            "from": "./node_modules/jsoneditor/dist/*",
+            "to": "./dist/jsoneditor/"
         }
     ],
     "dependencies": {
         "bulma": "^1.0.1",
-        "install": "^0.13.0",
         "jsoneditor": "^10.1.0",
         "navigo": "^8.11.1",
         "npm": "^10.8.2",

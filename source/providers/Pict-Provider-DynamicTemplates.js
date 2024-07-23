@@ -89,14 +89,9 @@ class PictDynamicFormsTemplates extends libPictProvider
 					Hash: tmpMetaTemplateHash,
 					Template: tmpMetaTemplate.Template
 				});
-			// If there is an array of default input extensions, add them to the DynamicInput provider as a default set
-			if ('DefaultInputExtensions' in tmpMetaTemplate)
+			if (tmpMetaTemplate.hasOwnProperty('DefaultInputExtensions'))
 			{
-				tmpTemplateSet[tmpMetaTemplateHash].DefaultInputExtensions = tmpMetaTemplate.DefaultInputExtensions;
-				for (let i = 0; i < tmpMetaTemplate.DefaultInputExtensions.length; i++)
-				{
-					this.pict.providers.DynamicInput.addDefaultInputProvider(tmpMetaTemplateHash, tmpMetaTemplate.DefaultInputExtensions[i]);
-				}
+				tmpTemplateSet[tmpMetaTemplateHash].DefaultInputExtensions = JSON.parse(JSON.stringify(tmpMetaTemplate.DefaultInputExtensions));
 			}
 		}
 
@@ -112,6 +107,10 @@ class PictDynamicFormsTemplates extends libPictProvider
 						Hash: tmpTemplateHash,
 						Template: tmpTemplate.Template
 					});
+				if (tmpTemplate.hasOwnProperty('DefaultInputExtensions'))
+				{
+					tmpTemplateSet[tmpTemplateHash].DefaultInputExtensions = JSON.parse(JSON.stringify(tmpTemplate.DefaultInputExtensions));
+				}
 			}
 		}
 
@@ -119,7 +118,15 @@ class PictDynamicFormsTemplates extends libPictProvider
 		this.log.info(`Pict Form Section Provider for [${tmpTemplatePrefix}] Loaded ${tmpTemplateList.length} templates.`);
 		for (let i = 0; i < tmpTemplateList.length; i++)
 		{
-			this.pict.TemplateProvider.addTemplate(tmpTemplateSet[tmpTemplateList[i]].Hash, tmpTemplateSet[tmpTemplateList[i]].Template);
+			let tmpMetaTemplate = tmpTemplateSet[tmpTemplateList[i]];
+			this.pict.TemplateProvider.addTemplate(tmpMetaTemplate.Hash, tmpMetaTemplate.Template);
+			if (tmpMetaTemplate.hasOwnProperty('DefaultInputExtensions'))
+			{
+				for (let i = 0; i < tmpMetaTemplate.DefaultInputExtensions.length; i++)
+				{
+					this.pict.providers.DynamicInput.addDefaultInputProvider(tmpMetaTemplate.Hash, tmpMetaTemplate.DefaultInputExtensions[i]);
+				}
+			}
 		}
 	}
 }

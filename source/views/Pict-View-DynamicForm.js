@@ -296,6 +296,7 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
 			this.pict.providers.Informary.marshalDataToForm(tmpMarshalDestinationObject, this.formID, this.sectionManifest);
+			this.runLayoutProviderFunctions('onDataMarshalToForm');
 			this.runInputProviderFunctions('onDataMarshalToForm');
 		}
 		catch (pError)

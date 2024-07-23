@@ -9,7 +9,9 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		super(pFable, pOptions, pServiceHash);
 
 		this.viewGridConfigurations = {};
+
 		this.viewTuiGrids = {};
+		this.viewGridState = {};
 	}
 
 	getViewUniqueIdentifier(pView, pGroup)
@@ -146,6 +148,20 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		// We do this at the last minute to avoid extraneous creation of these.
 		let tmpTuiGridView = this.createViewTuiGrid(pView, pGroup);
 		tmpTuiGridView.render();
+		return true;
+	}
+
+	onDataMarshalToForm(pView, pGroup)
+	{
+		let tmpTuiGridView = this.getViewGrid(pView, pGroup);
+		if (!tmpTuiGridView)
+		{
+			this.log.error(`PICT Form [${pView.UUID}]::[${pView.Hash}] error marshalling data to form: missing TuiGrid for group ${pGroup.GroupIndex}.`);
+			return false;
+		}
+
+		// Synthesize a fake array of data for the view grid
+		tmpTuiGridView.marshalDataToForm();
 		return true;
 	}
 }

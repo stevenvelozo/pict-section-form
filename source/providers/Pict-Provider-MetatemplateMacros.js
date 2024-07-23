@@ -2,7 +2,7 @@ const libPictProvider = require('pict-provider');
 
 const _DefaultProviderConfiguration = (
 {
-	"ProviderIdentifier": "Pict-Section-Form-Provider-MetatemplateMacros",
+	"ProviderIdentifier": "Pict-DynamicForms-MetatemplateMacros",
 
 	"AutoInitialize": true,
 	"AutoInitializeOrdinal": 0,
