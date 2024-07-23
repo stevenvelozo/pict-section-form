@@ -1,6 +1,8 @@
 export = PictMetatemplateMacros;
 declare class PictMetatemplateMacros {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
+    buildInputMacros(pView: any, pInput: any): void;
+    rebuildMacros(pView: any): boolean;
 }
 declare namespace PictMetatemplateMacros {
     export { _DefaultProviderConfiguration as default_configuration };

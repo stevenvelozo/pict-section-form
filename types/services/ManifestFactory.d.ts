@@ -4,6 +4,17 @@ declare class ManifestFactory {
     manifest: any;
     referenceManifestFactories: {};
     defaultHashCounter: number;
+    /**
+     * Initialize the form groups.
+     *
+     * This function will initialize the form groups of a view based on the manifest.
+     *
+     * TODO: Figure out if this is the best place for this.  It *is* pretty useful for
+     * inferring manifests, so has uses outside of the view lifecycle.
+     *
+     * @param {Object} pView - The view to initialize form groups for
+     */
+    initializeFormGroups(pView: any): void;
     addDescriptor(pManifestDescriptor: any): void;
     /**
      * Get a section from the manifest.
