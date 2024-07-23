@@ -9,7 +9,9 @@
     },
     "author": "steven",
     "license": "MIT",
-    "devDependencies": {},
+    "devDependencies": {
+        "tui-grid": "^4.21.22"
+    },
     "copyFilesSettings": {
         "whenFileExists": "overwrite"
     },
@@ -19,7 +21,7 @@
             "to": "./dist/"
         },
         {
-            "from": "./externals/*",
+            "from": "./node_modules/tui-grid/dist/*",
             "to": "./dist/"
         },
         {
