@@ -14,19 +14,19 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		this.viewGridState = {};
 	}
 
-	getViewUniqueIdentifier(pView, pGroup)
+	getGridHtmlID(pView, pGroup)
 	{
 		return `View-${pView.UUID}-GroupTuiGrid-${pGroup.GroupIndex}`;
 	}
 
 	getViewTuiHtmlID(pView, pGroup)
 	{
-		return `#${this.getViewUniqueIdentifier(pView, pGroup)}`;
+		return `#${this.getGridHtmlID(pView, pGroup)}`;
 	}
 
 	getViewGrid(pView, pGroup)
 	{
-		let tmpGridUUID = this.getViewUniqueIdentifier(pView, pGroup);
+		let tmpGridUUID = this.getGridHtmlID(pView, pGroup);
 		if (!this.viewTuiGrids.hasOwnProperty(tmpGridUUID))
 		{
 			return false;
@@ -36,7 +36,7 @@ class TuiGridLayout extends libPictSectionGroupLayout
 
 	createViewTuiGrid(pView, pGroup)
 	{
-		let tmpGridUUID = this.getViewUniqueIdentifier(pView, pGroup);
+		let tmpGridUUID = this.getGridHtmlID(pView, pGroup);
 		if (this.viewTuiGrids.hasOwnProperty(tmpGridUUID))
 		{
 			// Purely for information for now.
@@ -47,6 +47,13 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		let tmpGridConfiguration = this.getViewTuiConfiguration(pView, pGroup);
 		let tmpGridView = this.pict.addView(tmpGridUUID, tmpGridConfiguration, libPictSectionTuiGrid);
 		// Manually initialize the view
+		// Patch in a custom initialize function...
+		// TODO: Fix the TuiGrid to not need this.
+		tmpGridView.customConfigureGridSettings = () => 
+		{
+			tmpGridView.gridData = this.generateDataRepresentation(pView, pGroup);
+			tmpGridView.gridSettings.data = tmpGridView.gridData;
+		};
 		tmpGridView.initialize();
 		this.viewTuiGrids[tmpGridUUID] = tmpGridView;
 		return tmpGridView;
@@ -54,7 +61,7 @@ class TuiGridLayout extends libPictSectionGroupLayout
 
 	getViewTuiConfiguration(pView, pGroup)
 	{
-		let tmpGridUUID = this.getViewUniqueIdentifier(pView, pGroup);
+		let tmpGridUUID = this.getGridHtmlID(pView, pGroup);
 		// If there isn't yet a tui configuration, make a new one.
 		if (!this.viewGridConfigurations.hasOwnProperty(tmpGridUUID))
 		{
@@ -62,7 +69,6 @@ class TuiGridLayout extends libPictSectionGroupLayout
 			let tmpGroupTuiGridConfiguration = JSON.parse(JSON.stringify(libPictSectionTuiGrid.default_configuration));
 			this.viewGridConfigurations[tmpGridUUID] = tmpGroupTuiGridConfiguration;
 
-			tmpGroupTuiGridConfiguration.GridData = [];
 			tmpGroupTuiGridConfiguration.DefaultDestinationAddress = this.getViewTuiHtmlID(pView, pGroup);
 			tmpGroupTuiGridConfiguration.TargetElementAddress = this.getViewTuiHtmlID(pView, pGroup);
 			tmpGroupTuiGridConfiguration.TuiColumnSchema = [];
@@ -130,10 +136,37 @@ class TuiGridLayout extends libPictSectionGroupLayout
 
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-Group-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
 		// TODO: This feels dirty and out of pattern, but, aaaaagh the id generation is kinda messy because of the layer comms to this layout.  DISCUSS
-		tmpTemplate += `<div id="${this.getViewUniqueIdentifier(pView, pGroup)}"></div>`;
+		tmpTemplate += `<div id="${this.getGridHtmlID(pView, pGroup)}"></div>`;
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-Group-Postfix`, `getGroup("${pGroup.GroupIndex}")`);
 
 		return tmpTemplate;
+	}
+
+	generateDataRepresentation(pView, pGroup)
+	{
+		let tmpData = [];
+		this.viewGridState[this.getGridHtmlID(pView, pGroup)] = tmpData;
+
+		let tmpTabularRecordSet = pView.getTabularRecordSet(pGroup.GroupIndex);
+
+		if (Array.isArray(tmpTabularRecordSet))
+		{
+			for (let j = 0; j < tmpTabularRecordSet.length; j++)
+			{
+				let tmpTuiRowData = {RecordIndex:j};
+				let tmpTabularRecord = tmpTabularRecordSet[j];
+				for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
+				{
+					let tmpElementDescriptor = pGroup.supportingManifest.elementDescriptors[pGroup.supportingManifest.elementAddresses[k]];
+					if (tmpElementDescriptor)
+					{
+						pGroup.supportingManifest.setValueAtAddress(tmpTuiRowData, tmpElementDescriptor.Hash, pGroup.supportingManifest.getValueByHash(tmpTabularRecord, tmpElementDescriptor.Hash));
+					}
+				}
+				tmpData.push(tmpTuiRowData);
+			}
+		}
+		return tmpData;
 	}
 
 	/**
@@ -147,6 +180,8 @@ class TuiGridLayout extends libPictSectionGroupLayout
 	{
 		// We do this at the last minute to avoid extraneous creation of these.
 		let tmpTuiGridView = this.createViewTuiGrid(pView, pGroup);
+
+		// TODO: Guard?
 		tmpTuiGridView.render();
 		return true;
 	}
@@ -160,8 +195,6 @@ class TuiGridLayout extends libPictSectionGroupLayout
 			return false;
 		}
 
-		// Synthesize a fake array of data for the view grid
-		tmpTuiGridView.marshalDataToForm();
 		return true;
 	}
 }
