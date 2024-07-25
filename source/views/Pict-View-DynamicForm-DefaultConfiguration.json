@@ -2,6 +2,8 @@
 	"AutoRender": false,
 	"AutoSolveWithApp": false,
 
+	"ExecuteSolversWithoutMetacontroller": false,
+
 	"DefaultRenderable": "Form-Main",
 	"DefaultDestinationAddress": "#Pict-Form-Container",
 

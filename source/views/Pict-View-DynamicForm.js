@@ -396,7 +396,11 @@ class PictViewDynamicForm extends libPictViewClass
 
 	onSolve()
 	{
-		this.pict.providers.DynamicSolver.solveViews([this.Hash]);
+		// Usually the metacontroller runs this for the views
+		if (this.options.ExecuteSolversWithoutMetacontroller)
+		{
+			this.pict.providers.DynamicSolver.solveViews([this.Hash]);
+		}
 
 		if (this.options.AutoMarshalDataOnSolve)
 		{

@@ -204,6 +204,42 @@ class TuiGridLayout extends libPictSectionGroupLayout
 	onDataMarshalToForm(pView, pGroup)
 	{
 		let tmpTuiGridView = this.getViewGrid(pView, pGroup);
+		// painstakingly compare each value for now.
+		let tmpTabularRecordSet = pView.getTabularRecordSet(pGroup.GroupIndex);
+		let tmpBrowserRecordSet = tmpTuiGridView.tuiGrid.getData();
+		if (Array.isArray(tmpTabularRecordSet))
+		{
+			for (let j = 0; j < tmpTabularRecordSet.length; j++)
+			{
+				try
+				{
+					let tmpStoredRowData = tmpTabularRecordSet[j];
+					// Get the tuigrid row that represents AppData
+					let tmpBrowserRowData = tmpBrowserRecordSet[j];
+					// Enumerate each entry in the manifest and see if changes happened
+					for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
+					{
+						let tmpElementDescriptor = pGroup.supportingManifest.elementDescriptors[pGroup.supportingManifest.elementAddresses[k]];
+						if (tmpElementDescriptor)
+						{
+							let tmpBrowserValue = pGroup.supportingManifest.getValueAtAddress(tmpBrowserRowData, tmpElementDescriptor.Hash);
+							let tmpAppStateValue = pGroup.supportingManifest.getValueByHash(tmpStoredRowData, tmpElementDescriptor.Hash);
+							if (tmpBrowserValue !== tmpAppStateValue)
+							{
+								this.log.trace(`PICT Form TuiGrid Dynamic View [${pView.UUID}]::[${pView.Hash}] updating tabular record ${j} element ${tmpElementDescriptor.Hash} from [${tmpBrowserValue}] to [${tmpAppStateValue}].`);
+								tmpTuiGridView.tuiGrid.setValue(j, tmpElementDescriptor.Hash, tmpAppStateValue);
+								//pGroup.supportingManifest.setValueAtAddress(tmpTabularRecordSet[j], tmpElementDescriptor.Hash, tmpBrowserValue);
+							}
+						}
+					}
+				}
+				catch(pError)
+				{
+					this.log.error(`PICT Form TuiGrid [${pView.UUID}]::[${pView.Hash}] gross error marshalling data to form: ${pError}`);
+				}
+			}
+		}
+
 		if (!tmpTuiGridView)
 		{
 			this.log.error(`PICT Form [${pView.UUID}]::[${pView.Hash}] error marshalling data to form: missing TuiGrid for group ${pGroup.GroupIndex}.`);
