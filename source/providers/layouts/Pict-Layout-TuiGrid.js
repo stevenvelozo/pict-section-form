@@ -105,7 +105,13 @@ class TuiGridLayout extends libPictSectionGroupLayout
 						// TODO: Should these all trigger solves?  Seems pretty expensive?
 						"PictTriggerSolveOnChange": true,
 						"PictSectionFormInput": tmpInput
-					};
+					}; 
+					switch(tmpInput.DataType)
+					{
+						case 'String':
+							tmpTuiGridInput.editor = 'text';
+							break;
+					}
 					tmpGroupTuiGridConfiguration.TuiColumnSchema.push(tmpTuiGridInput);
 				}
 			}
