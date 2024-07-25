@@ -1,6 +1,6 @@
 const libPictSectionGroupLayout = require('../Pict-Provider-DynamicLayout.js');
 
-const libPictSectionTuiGrid = require('pict-section-tuigrid');
+const libPictSectionTuiGrid = require('./Pict-Layout-TuiGrid/Pict-Section-TuiGrid.js');
 
 class TuiGridLayout extends libPictSectionGroupLayout
 {
@@ -47,14 +47,10 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		let tmpGridConfiguration = this.getViewTuiConfiguration(pView, pGroup);
 		let tmpGridView = this.pict.addView(tmpGridUUID, tmpGridConfiguration, libPictSectionTuiGrid);
 		// Manually initialize the view
-		// Patch in a custom initialize function...
-		// TODO: Fix the TuiGrid to not need this.
-		tmpGridView.customConfigureGridSettings = () => 
-		{
-			tmpGridView.gridData = this.generateDataRepresentation(pView, pGroup);
-			tmpGridView.gridSettings.data = tmpGridView.gridData;
-		};
+		tmpGridView.cachedGridData = this.generateDataRepresentation(pView, pGroup);
+
 		tmpGridView.initialize();
+
 		this.viewTuiGrids[tmpGridUUID] = tmpGridView;
 		return tmpGridView;
 	}
@@ -108,6 +104,15 @@ class TuiGridLayout extends libPictSectionGroupLayout
 					}; 
 					switch(tmpInput.DataType)
 					{
+						case 'Number':
+						case 'PreciseNumber':
+							tmpTuiGridInput.editor = (
+								{
+									"type": "EditorNumber",
+									"options": {}
+								});
+							tmpTuiGridInput.editor.options.decimalPrecision = tmpInput?.PictForm?.DecimalPrecision ?? 10;
+							break;
 						case 'String':
 							tmpTuiGridInput.editor = 'text';
 							break;
@@ -189,6 +194,10 @@ class TuiGridLayout extends libPictSectionGroupLayout
 
 		// TODO: Guard?
 		tmpTuiGridView.render();
+
+		tmpTuiGridView.tuiGrid.View = pView;
+		tmpTuiGridView.tuiGrid.Group = pGroup;
+
 		return true;
 	}
 

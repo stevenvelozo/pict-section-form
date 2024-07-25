@@ -318,7 +318,7 @@ module.exports.default_configuration.pict_configuration = {
 						Name: "Calories",
 						Hash: "Calories",
 						DataType: "Number",
-						PictForm: { Section: "FruitGrid", Group: "FruitGrid"},
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid", DecimalPrecision: 2},
 					},
 					"nutritions.fat": {
 						Name: "Fat",
@@ -342,7 +342,7 @@ module.exports.default_configuration.pict_configuration = {
 						Name: "PercentTotalFat",
 						Hash: "PercentTotalFat",
 						DataType: "Number",
-						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid", DecimalPrecision: 5 },
 					},
 				},
 			},

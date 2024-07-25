@@ -242,6 +242,74 @@ class PictViewDynamicForm extends libPictViewClass
 		this.marshalToView();
 	}
 
+	setDataTabularByHash(pGroupIndex, pInputHash, pRowIndex, pValue)
+	{
+		// The neat thing about how the tabular groups work is that we can make it clever about whether it's an object or an array.
+		let tmpGroup = this.getGroup(pGroupIndex);
+
+		if (!tmpGroup)
+		{
+			this.log.warn(`PICT View Metatemplate Helper setDataTabularByHash ${pGroupIndex} was not a valid group.`);
+			return false;
+		}
+
+		let tmpInputIndex = -1;
+		let tmpElementDescriptorKeys = Object.keys(tmpGroup.supportingManifest.elementDescriptors);
+		for (let i = 0; i < tmpElementDescriptorKeys.length; i++)
+		{
+			if (tmpGroup.supportingManifest.elementDescriptors[tmpElementDescriptorKeys[i]].Hash === pInputHash)
+			{
+				tmpInputIndex = i;
+				break;
+			}
+		}
+		if (tmpInputIndex < 0)
+		{
+			this.log.warn(`PICT View Metatemplate Helper setDataTabularByHash Group ${pGroupIndex} did not have hash [${pInputHash}].`);
+			return false;
+		}
+
+		let tmpInput = this.getTabularRecordInput(pGroupIndex, tmpInputIndex);
+		if 	(
+				(typeof(pGroupIndex) != 'undefined')
+				&& (typeof(pRowIndex) != 'undefined')
+				&& (typeof(tmpInput) == 'object')
+			)
+		{
+			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
+			try
+			{
+				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
+				let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
+				console.log(tmpValueAddress);
+				this.sectionManifest.setValueByHash(tmpMarshalDestinationObject, tmpValueAddress, pValue)
+
+				// TODO: DRY TIME, excellent.
+				let tmpValue = pValue;
+				// Each row has a distinct address!
+				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
+				let tmpInputProviderList = this.getInputProviderList(tmpInput);
+				for (let i = 0; i < tmpInputProviderList.length; i++)
+				{
+					if (this.pict.providers[tmpInputProviderList[i]])
+					{
+						this.pict.providers[tmpInputProviderList[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
+					}
+					else
+					{
+						this.log.error(`Dynamic form setDataTabularByHash [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
+					}
+				}
+			}
+			catch (pError)
+			{
+				this.log.error(`Dynamic form setDataTabularByHash [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
+			}
+		}
+
+		return false;
+	}
+
 	getMarshalDestinationAddress()
 	{
 		if (this.viewMarshalDestination)
