@@ -3,6 +3,7 @@ declare const _exports: {
     default_configuration: {
         AutoRender: boolean;
         AutoSolveWithApp: boolean;
+        ExecuteSolversWithoutMetacontroller: boolean;
         DefaultRenderable: string;
         DefaultDestinationAddress: string;
         Renderables: any[];

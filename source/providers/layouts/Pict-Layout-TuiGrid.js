@@ -101,8 +101,8 @@ class TuiGridLayout extends libPictSectionGroupLayout
 						// TODO: Should these all trigger solves?  Seems pretty expensive?
 						"PictTriggerSolveOnChange": true,
 						"PictSectionFormInput": tmpInput
-					}; 
-					switch(tmpInput.DataType)
+					};
+					switch (tmpInput.DataType)
 					{
 						case 'Number':
 						case 'PreciseNumber':
@@ -115,6 +115,43 @@ class TuiGridLayout extends libPictSectionGroupLayout
 							break;
 						case 'String':
 							tmpTuiGridInput.editor = 'text';
+							break;
+						case 'DateTime':
+							tmpTuiGridInput.editor = {
+								type: 'datePicker',
+								options: {
+									format: 'yyyy-MM-dd'
+								}
+							};
+							break;
+					}
+					switch (tmpInput.PictForm.InputType)
+					{
+						case 'Option':
+							tmpTuiGridInput.editor = (
+								{
+									"type": "select",
+									"options": {
+										"listItems": []
+									}
+								});
+							let tmpDefaultData = tmpInput.PictForm.SelectOptions;
+							if (tmpInput.PictForm.SelectOptionsPickList && this.pict.providers.DynamicMetaLists.hasList(pView.Hash, tmpInput.PictForm.SelectOptionsPickList))
+							{
+								tmpDefaultData = this.pict.providers.DynamicMetaLists.getList(pView.Hash, tmpInput.PictForm.SelectOptionsPickList);
+							}
+							if (tmpDefaultData && Array.isArray(tmpDefaultData))
+							{
+								for (let i = 0; i < tmpDefaultData.length; i++)
+								{
+									let tmpOption = (
+										{
+											"value": tmpDefaultData[i].id,
+											"text": tmpDefaultData[i].text
+										});
+									tmpTuiGridInput.editor.options.listItems.push(tmpOption);
+								}
+							}
 							break;
 					}
 					tmpGroupTuiGridConfiguration.TuiColumnSchema.push(tmpTuiGridInput);
@@ -164,7 +201,7 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		{
 			for (let j = 0; j < tmpTabularRecordSet.length; j++)
 			{
-				let tmpTuiRowData = {RecordIndex:j};
+				let tmpTuiRowData = { RecordIndex: j };
 				let tmpTabularRecord = tmpTabularRecordSet[j];
 				for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
 				{
@@ -228,12 +265,11 @@ class TuiGridLayout extends libPictSectionGroupLayout
 							{
 								this.log.trace(`PICT Form TuiGrid Dynamic View [${pView.UUID}]::[${pView.Hash}] updating tabular record ${j} element ${tmpElementDescriptor.Hash} from [${tmpBrowserValue}] to [${tmpAppStateValue}].`);
 								tmpTuiGridView.tuiGrid.setValue(j, tmpElementDescriptor.Hash, tmpAppStateValue);
-								//pGroup.supportingManifest.setValueAtAddress(tmpTabularRecordSet[j], tmpElementDescriptor.Hash, tmpBrowserValue);
 							}
 						}
 					}
 				}
-				catch(pError)
+				catch (pError)
 				{
 					this.log.error(`PICT Form TuiGrid [${pView.UUID}]::[${pView.Hash}] gross error marshalling data to form: ${pError}`);
 				}

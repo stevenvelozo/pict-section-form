@@ -25,6 +25,10 @@
             "to": "./dist/"
         },
         {
+            "from": "./node_modules/tui-date-picker/dist/*",
+            "to": "./dist/"
+        },
+        {
             "from": "../../node_modules/pict/dist/*",
             "to": "./dist/"
         }

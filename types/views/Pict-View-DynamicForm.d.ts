@@ -11,6 +11,7 @@ declare class PictViewDynamicForm {
     get defaultTemplatePrefix(): any;
     dataChanged(pInputHash: any): void;
     dataChangedTabular(pGroupIndex: any, pInputIndex: any, pRowIndex: any): void;
+    setDataTabularByHash(pGroupIndex: any, pInputHash: any, pRowIndex: any, pValue: any): boolean;
     getMarshalDestinationAddress(): any;
     getMarshalDestinationObject(): boolean;
     onMarshalToView(): any;
