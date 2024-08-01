@@ -12,6 +12,7 @@
 	<!-- Simple purecss framework https://purecss.io/ -->
 	<link href="css/bulma.min.css" rel="stylesheet">
 	<link href="css/ManyfestEditor.css" rel="stylesheet">
+	<link href="jsoneditor/jsoneditor.min.css" rel="stylesheet" type="text/css">
 
 	<!-- PICT Dynamic View CSS Container -->
 	<style id="PICT-CSS"></style>
@@ -29,52 +30,7 @@
 </head>
 
 <body>
-	<nav class="navbar" role="navigation" aria-label="main navigation">
-		<div class="navbar-brand">
-			<a class="navbar-item" href="https://github.com/stevenvelozo/manyfest">
-				<!-- Bulma had a 112w x 28h image for their logo here -->
-				manyfest.<span id="Manyfest-LoadedManyfest-Header-Container"></span>
-			</a>
-
-			<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
-				data-target="navbarBasicExample">
-				<span aria-hidden="true"></span>
-				<span aria-hidden="true"></span>
-				<span aria-hidden="true"></span>
-			</a>
-		</div>
-
-		<div id="navbarBasicExample" class="navbar-menu">
-			<div class="navbar-start">
-				<a class="navbar-item"> Overview </a>
-				<a class="navbar-item" href="#/Manyfest/Code"> Code </a>
-				<a class="navbar-item" href="#/Manyfest/Editor"> Descriptors </a>
-				<a class="navbar-item"> Sections </a>
-				<a class="navbar-item"> Reference Manifests </a>
-			</div>
-
-			<div class="navbar-end">
-				<div class="navbar-item">
-					<div class="navbar-item has-dropdown is-hoverable">
-						<a class="navbar-link"> Load </a>
-						<div class="navbar-dropdown" id="Manyfest-LoadList-Container">
-						</div>
-					</div>
-				</div>
-
-				<div class="navbar-item">
-					<div class="navbar-item has-dropdown is-hoverable">
-						<a class="navbar-link"> Delete </a>
-						<div class="navbar-dropdown" id="Manyfest-DeleteList-Container">
-						</div>
-					</div>
-				</div>
-
-				<div class="buttons">
-					<a class="button is-primary" href="#/Manyfest/Save"> <strong>Save</strong> </a>
-				</div>
-			</div>
-		</div>
+	<nav class="navbar" role="navigation" aria-label="main navigation" id="NavigationContainer">
 	</nav>
 
 	<section class="section" id="Manyfest-Editor-MainApp-Container">
@@ -85,6 +41,7 @@
 		</div>
 	</section>
 
+    <script src="jsoneditor/jsoneditor.min.js" type="text/javascript"></script>
 	<script src="./manyfest_editor.min.js" type="text/javascript"></script>
 </body>
 

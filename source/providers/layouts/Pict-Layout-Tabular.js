@@ -37,28 +37,25 @@ class TabularLayout extends libPictSectionGroupLayout
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-RowHeader-ExtraPrefix`, `getGroup("${pGroup.GroupIndex}")`);
 
 
-		for (let j = 0; j < pGroup.Rows.length; j++)
+		for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
 		{
-
-			for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
+			let tmpSupportingManifestHash = pGroup.supportingManifest.elementAddresses[k];
+			let tmpInput = pGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
+			// Update the InputIndex to match the current render config
+			if (!('PictForm' in tmpInput))
 			{
-				let tmpSupportingManifestHash = pGroup.supportingManifest.elementAddresses[k];
-				let tmpInput = pGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
-				// Update the InputIndex to match the current render config
-				if (!('PictForm' in tmpInput))
-				{
-					tmpInput.PictForm = {};
-				}
-				tmpInput.PictForm.InputIndex = k;
+				tmpInput.PictForm = {};
 				tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
-
-				tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-HeaderCell`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
-
-				tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-Cell-Prefix`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
-				let tmpInputType = (('PictForm' in tmpInput) && tmpInput.PictForm.InputType) ? tmpInput.PictForm.InputType : 'Default';
-				tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getTabularInputMetatemplateTemplateReference(pView, tmpInput.DataType, tmpInputType, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`, pGroup.GroupIndex, k);
-				tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-Cell-Postfix`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
 			}
+			tmpInput.PictForm.InputIndex = k;
+			tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
+
+			tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-HeaderCell`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
+
+			tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-Cell-Prefix`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
+			let tmpInputType = (('PictForm' in tmpInput) && tmpInput.PictForm.InputType) ? tmpInput.PictForm.InputType : 'Default';
+			tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getTabularInputMetatemplateTemplateReference(pView, tmpInput.DataType, tmpInputType, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`, pGroup.GroupIndex, k);
+			tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-Cell-Postfix`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
 		}
 
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-RowHeader-ExtraPostfix`, `getGroup("${pGroup.GroupIndex}")`);

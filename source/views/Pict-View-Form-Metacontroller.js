@@ -93,23 +93,37 @@ class PictFormMetacontroller extends libPictViewClass
 		let tmpViewList = Object.keys(this.fable.views);
 		let tmpFilteredViewList = [];
 
-		for (let i = 0; i < tmpViewList.length; i++)
-		{
-			if (fFilterFunction && !fFilterFunction(this.fable.views[tmpViewList[i]]))
-			{
-				continue;
-			}
-			// If this doesn't only render dynamic sections, it will load
-			if (!this.options.OnlyRenderDynamicSections || this.fable.views[tmpViewList[i]].isPictSectionForm)
-			{
-				tmpFilteredViewList.push(this.fable.views[tmpViewList[i]]);
-			}
-		}
-
-		// This is to allow dynamic forms sections to have their own sorting criteria
+		// This is to allow dynamic forms sections to have their own sorting criteria before rendering.
 		if (typeof(fSortFunction) == 'function')
 		{
 			tmpFilteredViewList.sort(fSortFunction);
+		}
+
+		for (let i = 0; i < tmpViewList.length; i++)
+		{
+			let tmpView = this.fable.views[tmpViewList[i]];
+			if (fFilterFunction && !fFilterFunction(tmpView))
+			{
+				continue;
+			}
+			if (tmpView.isPictSectionForm)
+			{
+				if (
+					// If you pass in a filter we let that decide
+					(typeof(fFilterFunction) != 'function')
+					// Otherwise if the IncludeInDefaultDynamicRender is false, we skip it
+					&& (!tmpView.sectionDefinition.IncludeInDefaultDynamicRender))
+				{
+					continue;
+				}
+				tmpFilteredViewList.push(tmpView);
+			}
+			else if (!this.options.OnlyRenderDynamicSections)
+			{
+				// If the OnlyRenderDynamicSections option is false, we will render all views.
+				// This is great when the app is small and simple.  And DANGEROUS if it isn't.  Take care!
+				tmpFilteredViewList.push(tmpView);
+			}
 		}
 
 		return tmpFilteredViewList;

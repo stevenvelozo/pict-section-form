@@ -2,9 +2,9 @@
     "name": "manyfest_editor",
     "version": "1.0.0",
     "description": "Edit a manyfest fiesta.",
-    "main": "source/Manyfest-Editor.js",
+    "main": "application/Manyfest-Editor.js",
     "scripts": {
-        "start": "node source/Manyfest-Editor.js",
+        "start": "node application/Manyfest-Editor.js",
         "build": "npx quack build && npx quack copy"
     },
     "author": "steven",
@@ -30,7 +30,7 @@
             "to": "./dist/css/"
         },
         {
-            "from": "./node_modules/jsoneditor/dist/*",
+            "from": "./node_modules/jsoneditor/dist/**",
             "to": "./dist/jsoneditor/"
         }
     ],

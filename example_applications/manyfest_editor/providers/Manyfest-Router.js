@@ -6,7 +6,7 @@ const _DEFAULT_PROVIDER_CONFIGURATION =
 	ProviderIdentifier: 'Manyfest-Router',
 
 	AutoInitialize: true,
-	AutoInitializeOrdinal: 0,
+	AutoInitializeOrdinal: 0
 }
 
 class ManyfestRouter extends libPictProvider
@@ -18,35 +18,86 @@ class ManyfestRouter extends libPictProvider
 
 		// Initialize the navigo router and set the base path to '/'
 		this.router = new libNavigo('/', { hash: true });
+
+		// This is the route to render after load
+		this.afterPersistView = '/Manyfest/Overview';
+	}
+
+	get currentScope()
+	{
+		return this.AppData?.ManyfestRecord?.Scope ?? 'Default';
+	}
+
+	forwardToScopedRoute(pData)
+	{
+		this.navigate(`${pData.url}/${this.currentScope}`);
 	}
 
 	onInitializeAsync(fCallback)
 	{
-		// Define the routes for our application
-		this.router.on('/Manyfest/Editor',
+		this.router.on('/Manyfest/Overview', this.forwardToScopedRoute.bind(this));
+		this.router.on('/Manyfest/Overview/:Scope',
 			(pData) =>
 			{
-				this.pict.views.PictFormMetacontroller.render()
+				this.pict.views.ManyfestOverview.render();
 			});
-		this.router.on('/Manyfest/Code',
+
+		this.router.on('/Manyfest/Editor', this.forwardToScopedRoute.bind(this));
+		this.router.on('/Manyfest/Editor/:Scope',
 			(pData) =>
 			{
+				this.afterPersistView = '/Manyfest/Editor';
+				this.pict.views.PictFormMetacontroller.render();
+			});
+
+		this.router.on('/Manyfest/Code', this.forwardToScopedRoute.bind(this));
+		this.router.on('/Manyfest/Code/:Scope',
+			(pData) =>
+			{
+				this.afterPersistView = '/Manyfest/Code';
 				this.pict.views.ManyfestCodeView.render();
 			});
 
-		this.router.on('/Manyfest/Save',
+		this.router.on('/Manyfest/Save', this.forwardToScopedRoute.bind(this));
+		this.router.on('/Manyfest/Save/:Scope',
 			(pData) =>
 			{
-				this.pict.providers.DataProvider.saveManyfest()
+				this.pict.providers.DataProvider.saveManyfest();
 			});
 
 		this.router.on('/Manyfest/Load/:Scope',
 			(pData) =>
 			{
-				this.pict.providers.DataProvider.loadManyfest(pData.Scope)
+				this.pict.providers.DataProvider.loadManyfest(pData.data.Scope);
+			});
+
+		this.router.on('/Manyfest/Delete/:Scope',
+			(pData) =>
+			{
+				this.pict.providers.DataProvider.removeScopeFromManyfestList(pData.data.Scope);
+				this.pict.providers.DataProvider.loadManyfest();
 			});
 
 		return super.onInitializeAsync(fCallback);
+	}
+
+	/**
+	 * Navigate to a given route (set the browser URL string, add to history, trigger router)
+	 * 
+	 * @param {string} pRoute - The route to navigate to
+	 */
+	navigate(pRoute)
+	{
+		this.router.navigate(pRoute);
+	}
+
+	/**
+	 * Navigate to the current view type the user is in (the spreadsheet, or the overview, or whatever) automatically
+	 */
+	postPersistNavigate()
+	{
+		// TODO: Add some kind of guard for this string.
+		this.router.navigate(this.afterPersistView);
 	}
 }
 

@@ -23,97 +23,116 @@ class ManyfestDataProvider extends libPictProvider
 			this.storageProvider = window.localStorage;
 		}
 
+		this.defaultManyfestMeta = {"LastScope":"Default", "ManyfestList":[] };
+
+		this.lastScope = 'Default';
 		this.manyfestList = [];
-		this.loadManyfestList();
+
+		this.loadManyfestMeta();
+		this.saveManyfestMeta();
 	}
 
-	loadManyfest(pManifest)
+	onBeforeInitialize()
 	{
-		let tmpManyfestListJSON = this.storageProvider.getItem(`Manyfest_List`);
-
-		if (!tmpManyfestListJSON)
+		if (typeof(this.lastScope) !== 'string')
 		{
-			tmpManyfestListJSON = '[]';
-			this.storageProvider.setItem('Manyfest_List', tmpManyfestListJSON);
+			this.log.error(`Manyfest Data Provider tried to initialize with nothing in this.lastScope -- which should not be possible.  Things may get weird.`);
+			return super.onBeforeInitialize();
 		}
-
-		this.manyfestList = JSON.parse(tmpManyfestListJSON);
-
-		if (!Array.isArray(this.manyfestList))
-		{
-			this.manyfestList = [];
-			this.saveManyfestList()
-		}
-
-		if (this.pict.views.ManyfestLoadListView)
-		{
-			this.pict.views.ManyfestLoadListView.render()
-		}
-
-		return this.manyfestList;
+		this.loadManyfest(this.lastScope);
+		return super.onBeforeInitialize();
 	}
 
+	/**
+	 * List all available Manyfests (from the Manyfest Meta data)
+	 * 
+	 * @returns Array<Object> - a list of Manyfests as Index/Scope entries
+	 */
 	listManyfests()
 	{
-		return this.manyfestList.map((pValue, pIndex) => { return { Index: pIndex, Scope: pValue }; })
+		this.loadManyfestMeta();
+		let tmpManyfestList = this.manyfestList.map((pValue, pIndex) => { return { Index: pIndex, Scope: pValue }; });
+		return tmpManyfestList;
 	}
 
-	getManyfestKey(pScope)
+	/**
+	 * Resolve a key in the LocalStorage keyspace for the manyfest
+	 * 
+	 * @param {string} pScope - The scope to resolve a key for
+	 * @returns A string that points to the record for the scoped manyfest.
+	 */
+	getManyfestStorageKey(pScope)
 	{
+		this.loadManyfestMeta(false);
 		// Default to the loaded manyfest if nothing is passed in.
-		let tmpScope = (typeof(pScope) === 'string') ? pScope : this.pict.AppData.Scope;
+		let tmpScope = (typeof(pScope) === 'string') ? pScope : this.pict.AppData?.ManyfestRecord?.Scope ?? 'DEFAULT';
 		return `Manyfest_Scoped_As_${tmpScope}`;
 	}
 
-	loadManyfestList()
+	/**
+	 * Save the application metadata (list of Manyfests, last loaded Scope, etc.)
+	 * @param {boolean} pRender - Whether or not to also render the list of Manyfests in the UI automatically
+	 */
+	saveManyfestMeta(pRender)
 	{
-		let tmpManyfestListJSON = this.storageProvider.getItem(`Manyfest_List`);
-
-		if (!tmpManyfestListJSON)
-		{
-			tmpManyfestListJSON = '[]';
-			this.storageProvider.setItem('Manyfest_List', tmpManyfestListJSON);
-		}
-
-		this.manyfestList = JSON.parse(tmpManyfestListJSON);
-
-		if (!Array.isArray(this.manyfestList))
-		{
-			this.manyfestList = [];
-			this.saveManyfestList()
-		}
-
-		if (this.pict.views.ManyfestLoadListView)
-		{
-			this.pict.views.ManyfestLoadListView.render()
-		}
-
-		return this.manyfestList;
-	}
-
-	saveManyfestList(pManyfestList)
-	{
-		if (Array.isArray(pManyfestList))
-		{
-			this.manyfestList = pManyfestList;
-		}
+		let tmpRender = (typeof(pRender) === 'undefined') ? false : pRender;
 		if (!Array.isArray(this.manyfestList))
 		{
 			this.manyfestList = [];
 		}
-		this.storageProvider.setItem('Manyfest_List', JSON.stringify(this.manyfestList));
 
-		if (this.pict.views.ManyfestLoadListView)
+		// TODO: BUG: Gotta have a more complex merge happen here for multiple tabs
+		this.storageProvider.setItem('Manyfest_Meta', JSON.stringify({LastScope:this.lastScope, ManyfestList:this.manyfestList}));
+
+		if (tmpRender && this.pict.views.ManyfestPersistenceView)
 		{
-			this.pict.views.ManyfestLoadListView.render()
+			this.pict.views.ManyfestPersistenceView.render()
 		}
 
 		return true;
 	}
 
-	addScopeToManyfestList(pScope)
+	/**
+	 * Save the application metadata (list of Manyfests, last loaded Scope, etc.)
+	 * @param {boolean} pRender - Whether or not to also render the list of Manyfests in the UI automatically
+	 * @returns {Array<object>} The list of available Manyfests.
+	 */
+	loadManyfestMeta(pRender)
 	{
-		let tmpManyfestList = this.loadManyfestList();
+		let tmpRender = (typeof(pRender) === 'undefined') ? false : pRender;
+		// We get this every time in case the user has multiple tabs open
+		let tmpManyfestMetaJSON = this.storageProvider.getItem(`Manyfest_Meta`);
+		if (!tmpManyfestMetaJSON)
+		{
+			tmpManyfestMetaJSON = JSON.stringify(this.defaultManyfestMeta);
+			this.storageProvider.setItem('Manyfest_Meta', tmpManyfestMetaJSON);
+		}
+		let tmpManyfestMeta = JSON.parse(tmpManyfestMetaJSON)
+
+		this.manyfestList = tmpManyfestMeta.ManyfestList;
+		this.lastScope = tmpManyfestMeta.LastScope;
+
+		if (!Array.isArray(this.manyfestList))
+		{
+			this.manyfestList = [];
+			this.saveManyfestMeta()
+		}
+
+		if (tmpRender && this.pict.views.ManyfestPersistenceView)
+		{
+			this.pict.views.ManyfestPersistenceView.render()
+		}
+
+		return this.manyfestList;
+	}
+
+	addScopeToManyfestList(pScope, pRender)
+	{
+		let tmpRender = (typeof(pRender) === 'undefined') ? true : pRender;
+
+		this.loadManyfestMeta();
+
+		let tmpManyfestList = this.manyfestList;
 
 		let tmpManyfestScopeIndex = tmpManyfestList.indexOf(pScope);
 
@@ -124,12 +143,21 @@ class ManyfestDataProvider extends libPictProvider
 
 		this.manyfestList.push(pScope);
 
-		this.saveManyfestList();
+		this.saveManyfestMeta();
+
+		if (tmpRender && this.pict.views.ManyfestPersistenceView)
+		{
+			this.pict.views.ManyfestPersistenceView.render()
+		}
+
+		return true;
 	}
 
-	removeScopeFromManyfestList(pScope)
+	removeScopeFromManyfestList(pScope, pRender)
 	{
-		let tmpManyfestList = this.loadManyfestList();
+		let tmpRender = (typeof(pRender) === 'undefined') ? true : pRender;
+
+		let tmpManyfestList = this.loadManyfestMeta();
 
 		let tmpManyfestScopeIndex = tmpManyfestList.indexOf(pScope);
 
@@ -140,20 +168,22 @@ class ManyfestDataProvider extends libPictProvider
 
 			for (let i = 0; i < tmpManyfestList.length; i++)
 			{
-				if (tmpManyfestList[i]!= pScope)
+				if (tmpManyfestList[i] != pScope)
 				{
 					tmpNewManyfestList.push(tmpManyfestList[i]);
 				}
-
-				this.saveManyfestList(tmpNewManyfestList);
-
-				if (this.pict.views.ManyfestLoadListView)
-				{
-					this.pict.views.ManyfestLoadListView.render()
-				}
-
-				return true;
 			}
+
+			this.manyfestList = tmpNewManyfestList;
+
+			this.saveManyfestMeta(true);
+
+			if (tmpRender && this.pict.views.ManyfestPersistenceView)
+			{
+				this.pict.views.ManyfestPersistenceView.render()
+			}
+
+			return true;
 		}
 
 		return false;
@@ -161,21 +191,20 @@ class ManyfestDataProvider extends libPictProvider
 
 	saveManyfest()
 	{
-		let tmpManyfestScope = this.pict.AppData.Scope;
-
-		this.storageProvider.setItem(this.getManyfestKey(tmpManyfestScope), JSON.stringify(this.pict.AppData));
-
+		let tmpManyfestScope = this.pict.AppData.ManyfestRecord.Scope;
+		// TODO: Should this be a .... merge?  Yikes.  Multiple tabs is bonkers.
+		this.storageProvider.setItem(this.getManyfestStorageKey(tmpManyfestScope), JSON.stringify(this.pict.AppData.ManyfestRecord));
 		this.addScopeToManyfestList(tmpManyfestScope);
 	}
 
 	loadManyfest(pManyfestScope)
 	{
-		let tmpManyfestJSON = this.storageProvider.getItem(this.getManyfestKey(pManyfestScope));
-
+		let tmpManyfestJSON = this.storageProvider.getItem(this.getManyfestStorageKey(pManyfestScope));
 		if (tmpManyfestJSON)
 		{
-			this.pict.AppData = JSON.parse(tmpManyfestJSON);
+			this.pict.AppData.ManyfestRecord = JSON.parse(tmpManyfestJSON);
 		}
+		this.pict.providers.ManyfestRouter.postPersistNavigate();
 	}
 
 	getItem(pKey)
@@ -184,7 +213,6 @@ class ManyfestDataProvider extends libPictProvider
 		{
 			return this.keyCache[pKey];
 		}
-
 		return false;
 	}
 
@@ -201,7 +229,6 @@ class ManyfestDataProvider extends libPictProvider
 			delete this.keyCache[pKey];
 			return true;
 		}
-
 		return false;
 	}
 }
