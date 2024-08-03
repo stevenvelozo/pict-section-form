@@ -58,6 +58,23 @@ class ManyfestRouter extends libPictProvider
 				this.pict.views.ManyfestCodeView.render();
 			});
 
+		this.router.on('/Manyfest/Tabular',
+			(pData) =>
+			{
+				this.pict.views.PictFormMetacontroller.renderSpecificFormSection('PictSectionForm-ManyfestTabular');
+			});
+
+		this.router.on('/Manyfest/New',
+			(pData) =>
+			{
+				this.pict.providers.DataProvider.newManyfest();
+			});
+		this.router.on('/Manyfest/New/:Scope',
+			(pData) =>
+			{
+				this.pict.providers.DataProvider.newManyfest(pData.data.Scope);
+			});
+
 		this.router.on('/Manyfest/Save', this.forwardToScopedRoute.bind(this));
 		this.router.on('/Manyfest/Save/:Scope',
 			(pData) =>

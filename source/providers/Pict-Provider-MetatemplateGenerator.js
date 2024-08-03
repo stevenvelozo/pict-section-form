@@ -163,6 +163,7 @@ class PictMetatemplateGenerator extends libPictProvider
 				return this.pict.providers['Pict-Layout-Tabular'];
 			case 'Record':
 				return this.pict.providers['Pict-Layout-Record'];
+			case 'Default':
 			default:
 				// Try to load a custom layout, then fall back to the Record layout if it doesn't exist
 				if (`Pict-Layout-${tmpGroupLayout}` in this.pict.providers)
@@ -194,6 +195,10 @@ class PictMetatemplateGenerator extends libPictProvider
 
 			// Add pView to the group object for metatemplating
 			tmpGroup.GroupIndex = i;
+			// if (!tmpGroup.hasOwnProperty('Layout'))
+			// {
+			// 	tmpGroup.Layout = 'DefaultLayout';
+			// }
 			tmpGroup.SectionTabularRowVirtualTemplateHash = `Pict-Form-Template-TabularRow-Virtual-${pView.options.Hash}-G${tmpGroup.GroupIndex}`;
 			tmpGroup.SectionTabularRowTemplateHash = `Pict-Form-Template-TabularRow-${pView.options.Hash}-G${tmpGroup.GroupIndex}`;
 

@@ -49,7 +49,7 @@ Glug glug CUSTOMIZED glug Oo... -->
 				"HashPostfix": "-Template-Group-Prefix",
 				"Template": /*HTML*/`
         <legend>{~D:Record.Name~}</legend>
-        <div class="pure-g">
+        <div class="pure-g" {~D:Record.Macro.PictFormLayout~}>
 	`
 			},
 			{

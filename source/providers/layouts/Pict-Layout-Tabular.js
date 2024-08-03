@@ -45,7 +45,6 @@ class TabularLayout extends libPictSectionGroupLayout
 			if (!('PictForm' in tmpInput))
 			{
 				tmpInput.PictForm = {};
-				tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
 			}
 			tmpInput.PictForm.InputIndex = k;
 			tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;

@@ -6,6 +6,7 @@ const libDynamicSolver = require('../providers/Pict-Provider-DynamicSolver.js');
 const libDynamicInput = require('../providers/Pict-Provider-DynamicInput.js');
 const libDynamicInputEvents = require('../providers/Pict-Provider-DynamicInputEvents.js');
 const libDynamicTabularData = require('../providers/Pict-Provider-DynamicTabularData.js');
+const libDynamicRecordSet = require('../providers/Pict-Provider-DynamicRecordSet.js');
 
 const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
 
@@ -90,6 +91,7 @@ class PictViewDynamicForm extends libPictViewClass
 		this.pict.addProviderSingleton('DynamicInputEvents', libDynamicInputEvents.default_configuration, libDynamicInputEvents);
 		this.pict.addProviderSingleton('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
 		this.pict.addProviderSingleton('DynamicTabularData', libDynamicTabularData.default_configuration, libDynamicTabularData);
+		this.pict.addProviderSingleton('DynamicRecordSet', libDynamicRecordSet.default_configuration, libDynamicRecordSet);
 
 		this.pict.addProviderSingleton('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
 
@@ -415,6 +417,11 @@ class PictViewDynamicForm extends libPictViewClass
 		this.runInputProviderFunctions('onInputInitialize');
 	}
 
+//!!!
+	// TODO: This needs to happen based on markers in the DOM, since we don't know which layout providers are active for which groups.
+	// TODO: This is easy to make happen with a macro on groups that gives us the data.
+	// TODO: Otherwise layout providers only work when they are run with the "default" render everything.
+	// THIS IS SCOPED TO A PARTICULAR GROUP.  That is ... only one layout for a group at a time.
 	runLayoutProviderFunctions(pFunctionName)
 	{
 		// Check to see if there are any hooks set from the input templates

@@ -45,8 +45,12 @@ class ManyfestEditor extends libPictSectionForm.PictFormApplication
 	{
 		// Load the list of Manifests that have been saved.
 		this.pict.providers.DataProvider.loadManyfestMeta(true);
+
 		// TODO: Add a "let's remember the last page" thing to the router.
 		this.pict.providers.ManyfestRouter.navigate(`/#Manyfest/Overview`);
+
+		// Set the custom destination address for the dynamic views we are manually managing
+		//this.pict.views["PictSectionForm-ManyfestTabular"].options.DefaultDestinationAddress = "#Manyfest-Editor-MainApp-Container";
 
 		return super.onAfterInitialize();
 	}

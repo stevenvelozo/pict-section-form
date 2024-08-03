@@ -111,6 +111,11 @@ class ManifestFactory extends libFableServiceProviderBase
 		for (let i = 0; i < pView.sectionDefinition.Groups.length; i++)
 		{
 			let tmpGroup = pView.sectionDefinition.Groups[i];
+			tmpGroup.GroupIndex = i;
+			if (!tmpGroup.hasOwnProperty('Layout'))
+			{
+				tmpGroup.Layout = 'Record';
+			}
 			// Check if the group has a Rows array.
 			// TODO: Is no rows valid?  Maaaaaybe?  Layouts makes this compelling.
 			if (!tmpGroup.hasOwnProperty('Rows') || !Array.isArray(tmpGroup.Rows))

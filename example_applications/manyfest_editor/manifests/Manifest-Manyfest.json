@@ -45,9 +45,9 @@
 				{
 					"Hash": "ManyfestTabular",
 					"Name": "Manyfest Table",
-					"Layout": "Tabular",
+					"Layout": "TuiGrid",
 					"RecordSetAddress": "ManyfestRecord.Descriptors",
-					"RecordManifest": "ManyfestDescriptor"
+					"RecordManifest": "ManyfestTabular"
 				}
 			]
 		}
@@ -197,7 +197,7 @@
 						"ColumnSource": "Form"
 					}
 				},
-				"Form Name": {
+				"FormName": {
 					"Name": "Form Name",
 					"Hash": "FormName",
 					"DataType": "String",
@@ -213,7 +213,7 @@
 						"ColumnSource": "SubManifest"
 					}
 				},
-				"Section Name": {
+				"SectionName": {
 					"Name": "Section Name",
 					"Hash": "SectionName",
 					"DataType": "String",
@@ -221,7 +221,7 @@
 						"ColumnSource": "Section Name"
 					}
 				},
-				"Group Name": {
+				"GroupName": {
 					"Name": "Group Name",
 					"Hash": "GroupName",
 					"DataType": "String",
@@ -245,7 +245,7 @@
 						"ColumnSource": "Width"
 					}
 				},
-				"Input Address": {
+				"InputAddress": {
 					"Name": "Input Address",
 					"Hash": "InputAddress",
 					"DataType": "String",
@@ -253,7 +253,7 @@
 						"ColumnSource": "Input Address"
 					}
 				},
-				"Input Name": {
+				"InputName": {
 					"Name": "Input Name",
 					"Hash": "InputName",
 					"DataType": "String",
@@ -261,7 +261,7 @@
 						"ColumnSource": "Input Name"
 					}
 				},
-				"Input Hash": {
+				"InputHash": {
 					"Name": "Input Hash",
 					"Hash": "InputHash",
 					"DataType": "String",
@@ -269,7 +269,7 @@
 						"ColumnSource": "Input Hash"
 					}
 				},
-				"Input Extra": {
+				"InputExtra": {
 					"Name": "Input Extra",
 					"Hash": "InputExtra",
 					"DataType": "String",
@@ -333,7 +333,7 @@
 						"ColumnSource": "Tooltiup"
 					}
 				},
-				"Input Notes": {
+				"InputNotes": {
 					"Name": "Input Notes",
 					"Hash": "InputNotes",
 					"DataType": "String",

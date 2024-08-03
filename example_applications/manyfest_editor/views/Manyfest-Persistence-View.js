@@ -17,6 +17,12 @@ const _DEFAULT_VIEW_CONFIGURATION = (
 			"Template": /*html*/ `
 		<div class="navbar-item">
 			<div class="navbar-item has-dropdown is-hoverable">
+				<a class="navbar-item" href="#/Manyfest/New"> New </a>
+			</div>
+		</div>
+
+		<div class="navbar-item">
+			<div class="navbar-item has-dropdown is-hoverable">
 				<a class="navbar-link"> Load </a>
 				<div class="navbar-dropdown" id="Manyfest-LoadList-Container"></div>
 			</div>

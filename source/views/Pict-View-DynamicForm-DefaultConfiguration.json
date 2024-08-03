@@ -19,6 +19,8 @@
 		"Group": {
 			"HTMLID": " id=\"Group-{~D:Context[0].UUID~}\" ",
 
+			"PictFormLayout": " data-i-pictgroupindex=\"{~D:Record.GroupIndex~}\" data-i-pictlayout=\"{~D:Record.Layout~}\" ",
+
 			"TabularCreateRowFunctionCall": "{~P~}.views['{~D:Context[0].Hash~}'].createDynamicTableRow({~D:Record.GroupIndex~})"
 		},
 		"Input": {

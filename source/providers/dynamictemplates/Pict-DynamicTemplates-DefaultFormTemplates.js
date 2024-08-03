@@ -94,7 +94,7 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/`
 			<!-- Form Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 			<h3>Group: {~D:Record.Name~}</h3>
-			<div>
+			<div {~D:Record.Macro.PictFormLayout~}>
 `
 		},
 		// row(s) are useful when our form has multiple inputs on some lines and a single on another...
@@ -209,7 +209,7 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-Group-Prefix",
 			"Template": /*HTML*/`
-			<div>
+			<div {~D:Record.Macro.PictFormLayout~}>
 			<table>
 					<tbody>
 			<!-- Form Tabular Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->

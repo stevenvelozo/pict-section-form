@@ -6,6 +6,8 @@ const _DEFAULT_PROVIDER_CONFIGURATION =
 
 	AutoInitialize: true,
 	AutoInitializeOrdinal: 0,
+
+	DefaultManifest: require(`../manifests/Manifest-Default.json`)
 }
 
 class ManyfestDataProvider extends libPictProvider
@@ -53,6 +55,33 @@ class ManyfestDataProvider extends libPictProvider
 		this.loadManyfestMeta();
 		let tmpManyfestList = this.manyfestList.map((pValue, pIndex) => { return { Index: pIndex, Scope: pValue }; });
 		return tmpManyfestList;
+	}
+
+	/**
+	 * Check if a particular scope is in use.
+	 * @param {string} pScope - the manyfest scope to check the existence of
+	 * @returns 
+	 */
+	checkManyfestExists(pScope)
+	{
+		if (this.AppData.ManyfestRecord.Scope == pScope)
+		{
+			return true;
+		}
+		else
+		{
+			// Make sure other tabs didn't do something funny.
+			// Also.  This means users can do FUNNY BUSINESS and mess with the state if they have a 
+			// crapton of tabs open and delete a manyfest in one tab and later this check happens.
+			// Will not result in data loss but will result in flaky behavior.
+			this.loadManyfestMeta(false);
+			if (this.manyfestList.indexOf(pScope) >= 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -187,6 +216,57 @@ class ManyfestDataProvider extends libPictProvider
 		}
 
 		return false;
+	}
+
+	newManyfest(pScope)
+	{
+		let tmpScope = ((typeof(pScope) === 'string') && (pScope.length > 0)) ? pScope : false;
+
+		if (!tmpScope)
+		{
+			// Autogenerate a scope
+			let tmpProspectiveIndex = this.manyfestList.length;
+
+			// If a user has more than 10,000 manifests we need to talk.  In person.
+			for (let i = 0; i < 10000; i++)
+			{
+				let tmpManyfestScope = `New Manifest ${tmpProspectiveIndex}`;
+
+				if (!this.checkManyfestExists(tmpManyfestScope))
+				{
+					tmpScope = tmpManyfestScope;
+					break;
+				}
+			}
+		}
+		else
+		{
+			// Check to ensure the manyfest doesn't already exist.
+			if (this.checkManyfestExists(tmpScope))
+			{
+				this.log.warn(`Manyfest ${tmpScope} already exists but it was explicitly requested by the user.  Loading insted.`);
+				return this.loadManyfest(tmpScope);
+			}
+		}
+
+		// As far as I can tell this only happens if the user has more than 10,000 manifests
+		if (!tmpScope)
+		{
+			this.log.warn(`You have won the lottery.  Seriously.  Call us to learn more!  Please email steven@velozo.com for more details.`);
+			tmpScope = 'LotteryWinner';
+		}
+
+		// Now create the new manyfest
+		let tmpNewManifest = JSON.parse(JSON.stringify(this.options.DefaultManifest));
+		tmpNewManifest.Scope = tmpScope;
+
+		// Now save it.
+		this.storageProvider.setItem(this.getManyfestStorageKey(tmpScope), JSON.stringify(tmpNewManifest));
+		this.addScopeToManyfestList(tmpScope, true);
+
+		// TODO: Do we load it?  Maaaaaaaybe.  Figure out the "autosave before load" workflow.
+
+		this.loadManyfest(tmpScope);
 	}
 
 	saveManyfest()

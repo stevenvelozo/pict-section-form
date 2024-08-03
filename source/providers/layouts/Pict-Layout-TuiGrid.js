@@ -232,8 +232,11 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		// TODO: Guard?
 		tmpTuiGridView.render();
 
-		tmpTuiGridView.tuiGrid.View = pView;
-		tmpTuiGridView.tuiGrid.Group = pGroup;
+		if (tmpTuiGridView.tuiGrid)
+		{
+			tmpTuiGridView.tuiGrid.View = pView;
+			tmpTuiGridView.tuiGrid.Group = pGroup;
+		}
 
 		return true;
 	}
@@ -241,9 +244,17 @@ class TuiGridLayout extends libPictSectionGroupLayout
 	onDataMarshalToForm(pView, pGroup)
 	{
 		let tmpTuiGridView = this.getViewGrid(pView, pGroup);
+
+		if (!tmpTuiGridView)
+		{
+			this.log.error(`PICT Form TuiGrid [${pView.UUID}]::[${pView.Hash}] error marshalling data to form: missing TuiGrid for group ${pGroup.GroupIndex}; skipping marshal.`);
+			return false;
+		}
+
 		// painstakingly compare each value for now.
 		let tmpTabularRecordSet = pView.getTabularRecordSet(pGroup.GroupIndex);
 		let tmpBrowserRecordSet = tmpTuiGridView.tuiGrid.getData();
+
 		if (Array.isArray(tmpTabularRecordSet))
 		{
 			for (let j = 0; j < tmpTabularRecordSet.length; j++)

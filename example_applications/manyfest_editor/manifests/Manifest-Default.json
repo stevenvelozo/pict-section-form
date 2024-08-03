@@ -1,0 +1,33 @@
+{
+	"Scope": "DefaultManifest",
+
+	"Sections": [
+		{
+			"Hash": "Section1",
+
+			"Name": "Section 1",
+			"Description": "Default section for the default manifest.",
+
+			"Solvers": [],
+			"MetaTemplates": []
+		}
+	],
+
+	"Descriptors":
+		{
+			"Name":
+				{
+					"Name":"Name",
+					"Hash":"Name",
+					"DataType":"String",
+					"PictForm": { "Section":"Section1", "Row":1, "Width":1 }
+				},
+			"Value":
+				{
+					"Name":"The Value for the Name",
+					"Hash":"Value",
+					"DataType":"Number",
+					"PictForm": { "Section":"Area", "Row":1, "Width":1 }
+				}
+		}
+}
