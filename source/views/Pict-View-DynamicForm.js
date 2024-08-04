@@ -417,24 +417,47 @@ class PictViewDynamicForm extends libPictViewClass
 		this.runInputProviderFunctions('onInputInitialize');
 	}
 
-//!!!
+	// These TODO items are done but leaving them here until we use this to document the complexity of this method.
 	// TODO: This needs to happen based on markers in the DOM, since we don't know which layout providers are active for which groups.
 	// TODO: This is easy to make happen with a macro on groups that gives us the data.
 	// TODO: Otherwise layout providers only work when they are run with the "default" render everything.
 	// THIS IS SCOPED TO A PARTICULAR GROUP.  That is ... only one layout for a group at a time.
+	// The easiest way (and a speed up for other queries as such) is to scope it within the view container element
 	runLayoutProviderFunctions(pFunctionName)
 	{
 		// Check to see if there are any hooks set from the input templates
-		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
+		let tmpLayoutProviders = this.pict.ContentAssignment.getElement(`${this.sectionDefinition.DefaultDestinationAddress} [data-i-pictdynamiclayout="true"]`);
+
+		// Slightly more code for getting the active layout providers but provides TRUE DYNAMISM.
+		for (let i = 0; i < tmpLayoutProviders.length; i++)
 		{
-			let tmpGroup = this.sectionDefinition.Groups[i];
+			let tmpGroupIndex = tmpLayoutProviders[0].getAttribute('data-i-pictgroupindex');
+			let tmpLayout = tmpLayoutProviders[0].getAttribute('data-i-pictlayout');
+
+			if (isNaN(tmpGroupIndex) || (tmpGroupIndex < 0))
+			{
+				this.log.warn(`PICT View Metatemplate Helper runLayoutProviderFunctions ${tmpGroupIndex} was not a valid group index.`);
+				continue;
+			}
+			let tmpGroup = this.getGroup(tmpGroupIndex);
+			if (!tmpGroup)
+			{
+				this.log.warn(`PICT View Metatemplate Helper runLayoutProviderFunctions for group ${tmpGroupIndex} was not a valid group.`);
+				continue;
+			}
+			if (!tmpLayout || typeof(tmpLayout) !== 'string')
+			{
+				this.log.warn(`PICT View Metatemplate Helper runLayoutProviderFunctions for group ${tmpGroup} layout [${tmpLayout}] was not a valid layout.`);
+				continue;
+			}
+
 			let tmpLayoutProvider = this.pict.providers.MetatemplateGenerator.getGroupLayoutProvider(this, tmpGroup);
 			if (tmpLayoutProvider && (pFunctionName in tmpLayoutProvider))
 			{
 				let tmpFunction = tmpLayoutProvider[pFunctionName];
-				tmpFunction.call(tmpLayoutProvider, this, tmpGroup);
+				tmpFunction.call(tmpLayoutProvider, this, tmpGroupIndex);
 			}
-		}		
+		}
 	}
 
 	runInputProviderFunctions(pFunctionName)
