@@ -115,6 +115,7 @@ class ManyfestRouter extends libPictProvider
 	{
 		// TODO: Add some kind of guard for this string.
 		this.router.navigate(this.afterPersistView);
+		this.pict.views.ManyfestPersistenceView.basicRender('Manyfest-LoadedManyfest');
 	}
 }
 

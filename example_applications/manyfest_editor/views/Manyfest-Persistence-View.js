@@ -7,7 +7,7 @@ const _DEFAULT_VIEW_CONFIGURATION = (
 	DefaultRenderable: "Manyfest-Persistence-Container",
     DefaultDestinationAddress: "#navbar-persistcontrols",
 
-	CSS: `.Manyfest-Header-Scope: color: #ffaa00; font-weight: bolder;`,
+	CSS: `.Manyfest-Header-Scope { color: #ffaa00; font-weight: bolder; }`,
 
 	AutoRender: true,
 
@@ -59,7 +59,7 @@ const _DEFAULT_VIEW_CONFIGURATION = (
 		},
 		{
 			Hash: "Manyfest-LoadedManyfest-Header",
-			Template: /*html*/`[ scope <span class="Manyfest-Header-Scope">{~D:AppData.Scope~}</span> ]`
+			Template: /*html*/`[ scope <span class="Manyfest-Header-Scope">{~D:AppData.ManyfestRecord.Scope~}</span> ]`
 		}
 	],
 	Renderables: [
@@ -80,7 +80,7 @@ const _DEFAULT_VIEW_CONFIGURATION = (
 		{
 			RenderableHash: "Manyfest-LoadedManyfest",
 			TemplateHash: "Manyfest-LoadedManyfest-Header",
-			ContentDestinationAddress: "#Manyfest-LoadedManyfest-Header-Container"
+			ContentDestinationAddress: "#Manyfest-LoadedManyfest-Scope-Indicator"
 		}]
 });
 
@@ -93,10 +93,8 @@ class ManyfestPersistenceView extends libPictView
 
 	onAfterRender()
 	{
-		// Would be nice to have a "renderBasic" that just renders without the trimmings
-		this.pict.ContentAssignment.assignContent("#Manyfest-LoadedManyfest-Header-Container", this.pict.parseTemplateByHash("Manyfest-LoadedManyfest-Header", null, null, [this]))
-		this.pict.ContentAssignment.assignContent("#Manyfest-LoadList-Container", this.pict.parseTemplateByHash("Manyfest-LoadList-Template", null, null, [this]))
-		this.pict.ContentAssignment.assignContent("#Manyfest-DeleteList-Container", this.pict.parseTemplateByHash("Manyfest-DeleteList-Template", null, null, [this]))
+		this.basicRender('Manyfest-LoadList');
+		this.basicRender('Manyfest-DeleteList');
 		return super.onAfterRender();
 	}
 }

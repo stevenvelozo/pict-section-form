@@ -35,10 +35,8 @@
         }
     ],
     "dependencies": {
-        "bulma": "^1.0.1",
+        "bulma": "^1.0.2",
         "jsoneditor": "^10.1.0",
-        "navigo": "^8.11.1",
-        "npm": "^10.8.2",
-        "pict-section-tuigrid": "^1.0.24"
+        "navigo": "^8.11.1"
     }
 }
