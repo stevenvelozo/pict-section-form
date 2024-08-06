@@ -194,6 +194,18 @@ Glug glug glug Oo... -->
 		 * [ External Control Templates START ]
 		 *
 		 */
+		{
+			"HashPostfix": "-TuiGrid-Container",
+			"Template": /*HTML*/`
+			<div id="{~D:Record.TuiGridHTMLID~}"></div>
+`
+		},
+		{
+			"HashPostfix": "-TuiGrid-Controls",
+			"Template": /*HTML*/`
+			<div>[ <a href="#" onclick="{~P~}.providers['Pict-Layout-TuiGrid'].addRow('{~D:Context[0].Hash~}', {~D:Record.GroupIndex~})">create</a> ]</div>
+`
+		},
 		/*
 		 *
 		 * [ External Control Templates END ]

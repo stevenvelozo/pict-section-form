@@ -47,7 +47,7 @@ class ManyfestRouter extends libPictProvider
 			(pData) =>
 			{
 				this.afterPersistView = '/Manyfest/Editor';
-				this.pict.views.PictFormMetacontroller.render();
+				this.pict.views.PictFormMetacontroller.renderDefaultFormSections();
 			});
 
 		this.router.on('/Manyfest/Code', this.forwardToScopedRoute.bind(this));

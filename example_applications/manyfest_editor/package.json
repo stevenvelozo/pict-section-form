@@ -5,7 +5,8 @@
     "main": "application/Manyfest-Editor.js",
     "scripts": {
         "start": "node application/Manyfest-Editor.js",
-        "build": "npx quack build && npx quack copy"
+        "build": "npx quack build && npx quack copy",
+        "rebuild-html-views": "cd views && npx quack ajv ./basic-html/ -p \"Manyfest-Basic\""
     },
     "author": "steven",
     "license": "MIT",
@@ -26,6 +27,14 @@
             "to": "./dist/css/"
         },
         {
+            "from": "./node_modules/tui-grid/dist/*",
+            "to": "./dist/"
+        },
+        {
+            "from": "./node_modules/tui-date-picker/dist/*",
+            "to": "./dist/"
+        },
+        {
             "from": "./node_modules/bulma/css/*",
             "to": "./dist/css/"
         },
@@ -37,6 +46,7 @@
     "dependencies": {
         "bulma": "^1.0.2",
         "jsoneditor": "^10.1.0",
-        "navigo": "^8.11.1"
+        "navigo": "^8.11.1",
+        "tui-grid": "^4.21.22"
     }
 }

@@ -455,7 +455,7 @@ class PictViewDynamicForm extends libPictViewClass
 			if (tmpLayoutProvider && (pFunctionName in tmpLayoutProvider))
 			{
 				let tmpFunction = tmpLayoutProvider[pFunctionName];
-				tmpFunction.call(tmpLayoutProvider, this, tmpGroupIndex);
+				tmpFunction.call(tmpLayoutProvider, this, tmpGroup);
 			}
 		}
 	}

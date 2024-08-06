@@ -14,7 +14,7 @@ class ManyfestEditor extends libPictSectionForm.PictFormApplication
 		super(pFable, pOptions, pServiceHash);
 
 		// Trying this pattern -- it seems to make the most sense.
-		this.options.MainViewportViewIdentifier = 'ManyfestNavigation';
+		this.options.MainViewportViewIdentifier = 'Manyfest-Basic-NavigationHtml-View';
 		this.options.AutoRenderMainViewportViewAfterInitialize = true;
 
 		this.pict.addProvider('ManyfestRouter', {}, require('../providers/Manyfest-Router.js'));
@@ -23,7 +23,13 @@ class ManyfestEditor extends libPictSectionForm.PictFormApplication
 		this.pict.addView('ManyfestCodeView', libManyfestCodeView.default_configuration, libManyfestCodeView);
 
 		// Load the configuration-only views
-		this.pict.addView('ManyfestNavigation', libManyfestBasicViewConfigurations['Manyfest-Basic-NavigationHtml-View']);
+		let tmpTemplatedViewKeys = Object.keys(libManyfestBasicViewConfigurations);
+		for (let i = 0; i < tmpTemplatedViewKeys.length; i++)
+		{
+			let tmpViewKey = tmpTemplatedViewKeys[i];
+			this.pict.addView(tmpViewKey, libManyfestBasicViewConfigurations[tmpViewKey]);
+		}
+
 		this.pict.addView('ManyfestOverview', libManyfestOverviewView.default_configuration, libManyfestOverviewView);
 		this.pict.addView('ManyfestPersistenceView', libManyfestPersistenceView.default_configuration, libManyfestPersistenceView);
 	}

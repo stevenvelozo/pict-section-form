@@ -81,81 +81,78 @@ class TuiGridLayout extends libPictSectionGroupLayout
 				}
 			*/
 
-			for (let j = 0; j < pGroup.Rows.length; j++)
+			for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
 			{
-				for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
+				let tmpSupportingManifestHash = pGroup.supportingManifest.elementAddresses[k];
+				let tmpInput = pGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
+				// Update the InputIndex to match the current render config
+				if (!('PictForm' in tmpInput))
 				{
-					let tmpSupportingManifestHash = pGroup.supportingManifest.elementAddresses[k];
-					let tmpInput = pGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
-					// Update the InputIndex to match the current render config
-					if (!('PictForm' in tmpInput))
-					{
-						tmpInput.PictForm = {};
-					}
-					tmpInput.PictForm.InputIndex = k;
-					tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
-
-					let tmpTuiGridInput = {
-						"header": tmpInput.Name,
-						"name": tmpInput.Hash,
-						// TODO: Should these all trigger solves?  Seems pretty expensive?
-						"PictTriggerSolveOnChange": true,
-						"PictSectionFormInput": tmpInput
-					};
-					switch (tmpInput.DataType)
-					{
-						case 'Number':
-						case 'PreciseNumber':
-							tmpTuiGridInput.editor = (
-								{
-									"type": "EditorNumber",
-									"options": {}
-								});
-							tmpTuiGridInput.editor.options.decimalPrecision = tmpInput?.PictForm?.DecimalPrecision ?? 10;
-							break;
-						case 'String':
-							tmpTuiGridInput.editor = 'text';
-							break;
-						case 'DateTime':
-							tmpTuiGridInput.editor = {
-								type: 'datePicker',
-								options: {
-									format: 'yyyy-MM-dd'
-								}
-							};
-							break;
-					}
-					switch (tmpInput.PictForm.InputType)
-					{
-						case 'Option':
-							tmpTuiGridInput.editor = (
-								{
-									"type": "select",
-									"options": {
-										"listItems": []
-									}
-								});
-							let tmpDefaultData = tmpInput.PictForm.SelectOptions;
-							if (tmpInput.PictForm.SelectOptionsPickList && this.pict.providers.DynamicMetaLists.hasList(pView.Hash, tmpInput.PictForm.SelectOptionsPickList))
-							{
-								tmpDefaultData = this.pict.providers.DynamicMetaLists.getList(pView.Hash, tmpInput.PictForm.SelectOptionsPickList);
-							}
-							if (tmpDefaultData && Array.isArray(tmpDefaultData))
-							{
-								for (let i = 0; i < tmpDefaultData.length; i++)
-								{
-									let tmpOption = (
-										{
-											"value": tmpDefaultData[i].id,
-											"text": tmpDefaultData[i].text
-										});
-									tmpTuiGridInput.editor.options.listItems.push(tmpOption);
-								}
-							}
-							break;
-					}
-					tmpGroupTuiGridConfiguration.TuiColumnSchema.push(tmpTuiGridInput);
+					tmpInput.PictForm = {};
 				}
+				tmpInput.PictForm.InputIndex = k;
+				tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
+
+				let tmpTuiGridInput = {
+					"header": tmpInput.Name,
+					"name": tmpInput.Hash,
+					// TODO: Should these all trigger solves?  Seems pretty expensive?
+					"PictTriggerSolveOnChange": true,
+					"PictSectionFormInput": tmpInput
+				};
+				switch (tmpInput.DataType)
+				{
+					case 'Number':
+					case 'PreciseNumber':
+						tmpTuiGridInput.editor = (
+							{
+								"type": "EditorNumber",
+								"options": {}
+							});
+						tmpTuiGridInput.editor.options.decimalPrecision = tmpInput?.PictForm?.DecimalPrecision ?? 10;
+						break;
+					case 'String':
+						tmpTuiGridInput.editor = 'text';
+						break;
+					case 'DateTime':
+						tmpTuiGridInput.editor = {
+							type: 'datePicker',
+							options: {
+								format: 'yyyy-MM-dd'
+							}
+						};
+						break;
+				}
+				switch (tmpInput.PictForm.InputType)
+				{
+					case 'Option':
+						tmpTuiGridInput.editor = (
+							{
+								"type": "select",
+								"options": {
+									"listItems": []
+								}
+							});
+						let tmpDefaultData = tmpInput.PictForm.SelectOptions;
+						if (tmpInput.PictForm.SelectOptionsPickList && this.pict.providers.DynamicMetaLists.hasList(pView.Hash, tmpInput.PictForm.SelectOptionsPickList))
+						{
+							tmpDefaultData = this.pict.providers.DynamicMetaLists.getList(pView.Hash, tmpInput.PictForm.SelectOptionsPickList);
+						}
+						if (tmpDefaultData && Array.isArray(tmpDefaultData))
+						{
+							for (let i = 0; i < tmpDefaultData.length; i++)
+							{
+								let tmpOption = (
+									{
+										"value": tmpDefaultData[i].id,
+										"text": tmpDefaultData[i].text
+									});
+								tmpTuiGridInput.editor.options.listItems.push(tmpOption);
+							}
+						}
+						break;
+				}
+				tmpGroupTuiGridConfiguration.TuiColumnSchema.push(tmpTuiGridInput);
 			}
 		}
 
@@ -183,8 +180,10 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		let tmpTemplate = '';
 
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-Group-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
-		// TODO: This feels dirty and out of pattern, but, aaaaagh the id generation is kinda messy because of the layer comms to this layout.  DISCUSS
-		tmpTemplate += `<div id="${this.getGridHtmlID(pView, pGroup)}"></div>`;
+		pGroup.TuiGridHTMLID = this.getGridHtmlID(pView, pGroup);
+		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TuiGrid-Container`, `getGroup("${pGroup.GroupIndex}")`);
+		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TuiGrid-Controls`, `getGroup("${pGroup.GroupIndex}")`);
+		//tmpTemplate += `<div id="${this.getGridHtmlID(pView, pGroup)}"></div>`;
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-Group-Postfix`, `getGroup("${pGroup.GroupIndex}")`);
 
 		return tmpTemplate;
@@ -294,6 +293,42 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		}
 
 		return true;
+	}
+
+	addRow(pViewHash, pGroupIndex)
+	{
+		if (!(pViewHash in this.pict.views))
+		{
+			this.log.error(`PICT Form View [${pViewHash}] error adding row: no matching view found in pict.`);
+			return false;
+		}
+		let tmpView = this.pict.views[pViewHash];
+		let tmpGroup = tmpView.getGroup(pGroupIndex);
+		if (!tmpGroup)
+		{
+			this.log.error(`PICT Form View [${pViewHash}] error adding row: no matching group index ${pGroupIndex} found in view.`);
+			return false;
+		}
+
+		let tmpDestinationObject = tmpView.sectionManifest.getValueByHash(tmpView.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+		let tmpNewObject = tmpGroup.supportingManifest.populateDefaults({});
+
+		if (Array.isArray(tmpDestinationObject))
+		{
+			tmpDestinationObject.push(tmpNewObject);
+		}
+		else if (typeof(tmpDestinationObject) === 'object')
+		{
+			let tmpRowIndex = pView.fable.getUUID();
+			tmpDestinationObject[tmpRowIndex] = tmpNewObject;
+		}
+
+		// Add it to the TUIGrid
+		let tmpTuiGridView = this.getViewGrid(tmpView, tmpGroup);
+		if (tmpTuiGridView)
+		{
+			tmpTuiGridView.appendRow(JSON.parse(JSON.stringify(tmpNewObject)));
+		}
 	}
 }
 

@@ -7,7 +7,7 @@
         "Templates": [
             {
                 "Hash": "Manyfest-Basic-NavigationHtml-Content-Template",
-                "Template": "<!-- START source/views/basic-html/Navigation.html -->\n<div class=\"navbar-brand\">\n\t<a class=\"navbar-item\" href=\"https://github.com/stevenvelozo/manyfest\">\n\t\t<!-- Bulma had a 112w x 28h image for their logo here -->\n\t\tmanyfest &rarr;<span id=\"Manyfest-LoadedManyfest-Scope-Indicator\"></span>\n\t</a>\n\n\t<a role=\"button\" class=\"navbar-burger burger\" aria-label=\"menu\" aria-expanded=\"false\"\n\t\tdata-target=\"navbarManyfestEditor\">\n\t\t<span aria-hidden=\"true\"></span>\n\t\t<span aria-hidden=\"true\"></span>\n\t\t<span aria-hidden=\"true\"></span>\n\t</a>\n</div>\n\n<div id=\"navbarManyfestEditor\" class=\"navbar-menu\">\n\t<div class=\"navbar-start\">\n\t\t<a class=\"navbar-item\" href=\"#/Manyfest/Overview\"> Overview </a>\n\t\t<a class=\"navbar-item\" href=\"#/Manyfest/Tabular\"> Tabular </a>\n\t\t<a class=\"navbar-item\" href=\"#/Manyfest/Code\"> Code </a>\n\t\t<a class=\"navbar-item\" href=\"#/Manyfest/Editor\"> Editor </a>\n\t</div>\n\n\t<div class=\"navbar-end\" id=\"navbar-persistcontrols\">\n\t</div>\n</div>\n<!-- END source/views/basic-html/Navigation.html -->\n"
+                "Template": "<!-- START source/views/basic-html/Navigation.html -->\n<div class=\"navbar-brand\">\n\t\t<!-- Bulma had a 112w x 28h image for their logo here -->\n\t\tmanyfest &rarr;<span id=\"Manyfest-LoadedManyfest-Scope-Indicator\"></span>\n\n\t<a role=\"button\" class=\"navbar-burger burger\" aria-label=\"menu\" aria-expanded=\"false\"\n\t\tdata-target=\"navbarManyfestEditor\">\n\t\t<span aria-hidden=\"true\"></span>\n\t\t<span aria-hidden=\"true\"></span>\n\t\t<span aria-hidden=\"true\"></span>\n\t</a>\n</div>\n\n<div id=\"navbarManyfestEditor\" class=\"navbar-menu\">\n\t<div class=\"navbar-start\">\n\t\t<a class=\"navbar-item\" href=\"#/Manyfest/Overview\"> Overview </a>\n\t\t<a class=\"navbar-item\" href=\"#/Manyfest/Tabular\"> Tabular </a>\n\t\t<a class=\"navbar-item\" href=\"#/Manyfest/Code\"> Code </a>\n\t\t<a class=\"navbar-item\" href=\"#/Manyfest/Editor\"> Editor </a>\n\t</div>\n\n\t<div class=\"navbar-end\" id=\"navbar-persistcontrols\">\n\t</div>\n</div>\n<!-- END source/views/basic-html/Navigation.html -->\n"
             }
         ],
         "Renderables": [
@@ -16,7 +16,7 @@
                 "TemplateHash": "Manyfest-Basic-NavigationHtml-Content-Template"
             }
         ],
-        "CommentOriginalFilePath": "/Users/stevenvelozo/Code/retold/modules/pict/pict-section-form/example_applications/manyfest_editor/views/basic-html/Navigation.html",
-        "CommentOriginalRootPath": "/Users/stevenvelozo/Code/retold/modules/pict/pict-section-form/example_applications/manyfest_editor/views/basic-html"
+        "CommentOriginalFilePath": "/home/steven/Code/retold/modules/pict/pict-section-form/example_applications/manyfest_editor/views/basic-html/Navigation.html",
+        "CommentOriginalRootPath": "/home/steven/Code/retold/modules/pict/pict-section-form/example_applications/manyfest_editor/views/basic-html"
     }
 }

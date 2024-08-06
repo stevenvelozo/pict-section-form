@@ -24,3 +24,12 @@ There is a second file in this pattern:
 This is used to alter any of the defaults that are generated.  The most
 common change to default is the destination address (as is done in this
 example for the Navigation bar).
+
+For convenience, a package.json entry has been added that does this for you:
+
+```shell
+npm run rebuild-html-views
+```
+
+If you add more views to the `basic-html` folder, they will auto generate
+into a view that you can reference from the adjustments file.

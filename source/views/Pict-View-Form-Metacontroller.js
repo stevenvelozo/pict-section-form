@@ -21,6 +21,8 @@ class PictFormMetacontroller extends libPictViewClass
 
 		this.viewMarshalDestination = 'AppData';
 
+		this.lastRenderedViews = [];
+
 		this.formTemplatePrefix = 'Pict-Forms-Basic';
 	}
 
@@ -93,6 +95,11 @@ class PictFormMetacontroller extends libPictViewClass
 		let tmpViewList = Object.keys(this.fable.views);
 		let tmpFilteredViewList = [];
 
+		if ((typeof(fFilterFunction) != 'function') && (this.lastRenderedViews.length > 0))
+		{
+			return this.lastRenderedViews;
+		}
+
 		// This is to allow dynamic forms sections to have their own sorting criteria before rendering.
 		if (typeof(fSortFunction) == 'function')
 		{
@@ -140,7 +147,22 @@ class PictFormMetacontroller extends libPictViewClass
 	renderSpecificFormSection(pFormSectionHash)
 	{
 		let fViewFilter = (pView) => { return pView.Hash == pFormSectionHash; };
-		this.generateMetatemplate(fViewFilter);
+		this.lastRenderedViews = this.filterViews(fViewFilter);
+		this.regenerateFormSectionTemplates();
+		this.generateMetatemplate();
+		this.render();
+	}
+
+	/**
+	 * Renders the default dynamic form sections based on the provided form section hash.
+	 * 
+	 * @returns {void}
+	 */
+	renderDefaultFormSections()
+	{
+		this.lastRenderedViews = this.filterViews((pView) => { return pView?.sectionDefinition?.IncludeInDefaultDynamicRender ?? false; });
+		this.regenerateFormSectionTemplates();
+		this.generateMetatemplate();
 		this.render();
 	}
 
