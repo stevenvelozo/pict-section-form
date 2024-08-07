@@ -4,6 +4,7 @@ declare const _exports: {
         AutoRender: boolean;
         AutoSolveWithApp: boolean;
         ExecuteSolversWithoutMetacontroller: boolean;
+        IncludeInDefaultDynamicRender: boolean;
         DefaultRenderable: string;
         DefaultDestinationAddress: string;
         Renderables: any[];
@@ -14,6 +15,7 @@ declare const _exports: {
             };
             Group: {
                 HTMLID: string;
+                PictFormLayout: string;
                 TabularCreateRowFunctionCall: string;
             };
             Input: {

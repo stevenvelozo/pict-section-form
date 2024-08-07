@@ -1,5 +1,5 @@
 export = PictViewDynamicForm;
-declare class PictViewDynamicForm {
+declare class PictViewDynamicForm extends libPictViewClass {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     sectionDefinition: any;
     sectionManifest: any;
@@ -14,10 +14,7 @@ declare class PictViewDynamicForm {
     setDataTabularByHash(pGroupIndex: any, pInputHash: any, pRowIndex: any, pValue: any): boolean;
     getMarshalDestinationAddress(): any;
     getMarshalDestinationObject(): boolean;
-    onMarshalToView(): any;
-    onMarshalFromView(): any;
     onAfterMarshalToForm(): void;
-    onSolve(): any;
     onAfterRender(): void;
     runLayoutProviderFunctions(pFunctionName: any): void;
     runInputProviderFunctions(pFunctionName: any): void;
@@ -50,4 +47,5 @@ declare class PictViewDynamicForm {
     deleteDynamicTableRow(pGroupIndex: any, pRowIndex: any): any;
     get isPictSectionForm(): boolean;
 }
+import libPictViewClass = require("pict-view");
 //# sourceMappingURL=Pict-View-DynamicForm.d.ts.map

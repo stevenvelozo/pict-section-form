@@ -1,14 +1,11 @@
 export = PictFormMetacontroller;
-declare class PictFormMetacontroller {
+declare class PictFormMetacontroller extends libPictViewClass {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
-    serviceType: string;
     viewMarshalDestination: string;
+    lastRenderedViews: any[];
     formTemplatePrefix: string;
-    onMarshalFromView(): any;
-    onMarshalToView(): any;
-    onAfterInitializeAsync(fCallback: any): any;
-    onAfterRender(): any;
-    onSolve(): any;
+    onAfterInitializeAsync(fCallback: any): void;
+    onAfterRender(): boolean;
     /**
      * Filters the views based on the provided filter and sort functions.
      *
@@ -28,6 +25,12 @@ declare class PictFormMetacontroller {
      * @returns {void}
      */
     renderSpecificFormSection(pFormSectionHash: string): void;
+    /**
+     * Renders the default dynamic form sections based on the provided form section hash.
+     *
+     * @returns {void}
+     */
+    renderDefaultFormSections(): void;
     /**
      * Renders the form sections based on the provided filter and sort functions.
      *
@@ -71,6 +74,7 @@ declare class PictFormMetacontroller {
 declare namespace PictFormMetacontroller {
     export { default_configuration };
 }
+import libPictViewClass = require("pict-view");
 declare namespace default_configuration {
     let AutoRender: boolean;
     let AutoPopulateDefaultObject: boolean;

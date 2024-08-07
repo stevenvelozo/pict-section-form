@@ -12,6 +12,7 @@ declare class TuiGridLayout extends libPictSectionGroupLayout {
     generateDataRepresentation(pView: any, pGroup: any): {
         RecordIndex: number;
     }[];
+    addRow(pViewHash: any, pGroupIndex: any): boolean;
 }
 import libPictSectionGroupLayout = require("../Pict-Provider-DynamicLayout.js");
 //# sourceMappingURL=Pict-Layout-TuiGrid.d.ts.map
