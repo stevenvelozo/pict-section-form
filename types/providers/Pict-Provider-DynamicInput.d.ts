@@ -12,9 +12,29 @@ declare class PictDynamicInput {
      */
     constructor(pFable: object, pOptions: object, pServiceHash: object);
     templateProviderMap: {};
-    getInputTemplateHash(pView: any, pInput: any): any;
-    addDefaultInputProvider(pTemplateFullHash: any, pProvider: any): void;
-    getDefaultInputProviders(pView: any, pInput: any): any;
+    /**
+     * Retrieves the template hash for the input based on the provided view and input.
+     *
+     * @param {View} pView - The view object.
+     * @param {Input} pInput - The input object.
+     * @returns {string|boolean} - The template hash if found, otherwise false.
+     */
+    getInputTemplateHash(pView: View, pInput: Input): string | boolean;
+    /**
+     * Adds a default input provider for a given template full hash.
+     *
+     * @param {string} pTemplateFullHash - The full hash of the template.
+     * @param {any} pProvider - The provider to be added.
+     */
+    addDefaultInputProvider(pTemplateFullHash: string, pProvider: any): void;
+    /**
+     * Retrieves the default input providers based on the given view and input.
+     *
+     * @param {string} pView - The view to retrieve input providers for.
+     * @param {string} pInput - The input to retrieve input providers for.
+     * @returns {Array} An array of default input providers.
+     */
+    getDefaultInputProviders(pView: string, pInput: string): any[];
 }
 declare namespace PictDynamicInput {
     export { _DefaultProviderConfiguration as default_configuration };

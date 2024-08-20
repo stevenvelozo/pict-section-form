@@ -15,11 +15,46 @@ declare class PictRecordSet {
      */
     constructor(pFable: object, pOptions: object, pServiceHash: object);
     recordProviders: {};
-    count(pFilter: any, fCallback: any): any;
-    readRecordList(pFilter: any, fCallback: any): any;
-    readRecord(pFilter: any, fCallback: any): any;
-    writeRecord(pRecord: any, fCallback: any): any;
-    deleteRecord(pRecord: any, fCallback: any): any;
+    /**
+     * Returns the count for a specific dynamic record set.
+     *
+     * @param {Object} pFilter - The filter object.
+     * @param {Function} fCallback - The callback function to be called after the count is returned.
+     * @returns {any} - The result of the callback function.
+     */
+    count(pFilter: any, fCallback: Function): any;
+    /**
+     * Reads a record list.
+     *
+     * @param {Object} pFilter - The filter object.
+     * @param {Function} fCallback - The callback function to be called after the record list is read.
+     * @returns {any} - The result of the callback function.
+     */
+    readRecordList(pFilter: any, fCallback: Function): any;
+    /**
+     * Reads a record.
+     *
+     * @param {Object} pFilter - The filter object.
+     * @param {Function} fCallback - The callback function to be called after the record is read.
+     * @returns {any} - The result of the callback function.
+     */
+    readRecord(pFilter: any, fCallback: Function): any;
+    /**
+     * Writes a record.
+     *
+     * @param {Object} pRecord - The record to be written.
+     * @param {Function} fCallback - The callback function to be called after the record is written.
+     * @returns {any} - The result of the callback function.
+     */
+    writeRecord(pRecord: any, fCallback: Function): any;
+    /**
+     * Deletes a record.
+     *
+     * @param {Object} pRecord - The record to be deleted.
+     * @param {Function} fCallback - The callback function to be called after the record is deleted.
+     * @returns {any} - The result of the callback function.
+     */
+    deleteRecord(pRecord: any, fCallback: Function): any;
 }
 declare namespace PictRecordSet {
     export { _DefaultProviderConfiguration as default_configuration };

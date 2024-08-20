@@ -53,6 +53,17 @@ declare class ManifestFactory {
      */
     tabularRowAddDescriptor(pManifestFactory: any, pRecord: any): any;
     /**
+     * This fires whenever a Tabular Row is adding a Descriptor to the Manifest.
+     *
+     * If you want to extend how descriptors are built, the code belongs in here.
+     *
+     * @param {Object} pIncomingDescriptor - The record for the descriptor being added (from a CSV or other source)
+     * @param {Object} pSection - The section object
+     * @param {Object} pGroup - The group object
+     * @param {Object} pNewDescriptor - The descriptor object
+     */
+    onTabularRowAddDescriptor(pIncomingDescriptor: any, pSection: any, pGroup: any, pNewDescriptor: any): void;
+    /**
      * Create some manifests with a "factory" pattern.
      *
      * @param {any} pRecords - The records as an array of objects

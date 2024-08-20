@@ -13,9 +13,28 @@ declare class PictMetalist {
     constructor(pFable: object, pOptions: object, pServiceHash: object);
     computedLists: {};
     globalLists: {};
-    getList(pViewHash: any, pListHash: any): any;
-    hasList(pViewHash: any, pListHash: any): boolean;
-    buildLists(pViewHashes: any): void;
+    /**
+     * Retrieves a list based on the provided view hash and list hash.
+     *
+     * @param {string} pViewHash - The view hash.
+     * @param {string} pListHash - The list hash.
+     * @returns {Array} - The retrieved list.
+     */
+    getList(pViewHash: string, pListHash: string): any[];
+    /**
+     * Checks if a list exists in the Pict Provider MetaLists.
+     *
+     * @param {string} pViewHash - The hash of the view.
+     * @param {string} pListHash - The hash of the list.
+     * @returns {boolean} - Returns true if the list exists, otherwise false.
+     */
+    hasList(pViewHash: string, pListHash: string): boolean;
+    /**
+     * Builds meta lists for the Pict provider.
+     *
+     * @param {Array|string} pViewHashes - The view hashes to build meta lists for.
+     */
+    buildLists(pViewHashes: any[] | string): void;
 }
 declare namespace PictMetalist {
     export { _DefaultProviderConfiguration as default_configuration };

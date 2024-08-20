@@ -11,10 +11,40 @@ declare class PictDynamicInputEvents {
      * @param {object} pServiceHash - The service hash object.
      */
     constructor(pFable: object, pOptions: object, pServiceHash: object);
-    inputDataRequest(pView: any, pInputHash: any): void;
-    inputEvent(pView: any, pInputHash: any, pEvent: any): void;
-    inputDataRequestTabular(pView: any, pGroupIndex: any, pInputIndex: any, pRowIndex: any): void;
-    inputEventTabular(pView: any, pGroupIndex: any, pInputIndex: any, pRowIndex: any, pEvent: any): void;
+    /**
+     * Requests input data from the view based on the provided input hash.
+     *
+     * @param {Object} pView - The view object.
+     * @param {string} pInputHash - The input hash.
+     */
+    inputDataRequest(pView: any, pInputHash: string): void;
+    /**
+     * Handles the input event for a dynamic form.
+     *
+     * @param {Object} pView - The view object.
+     * @param {string} pInputHash - The input hash.
+     * @param {string} pEvent - The input event.
+     */
+    inputEvent(pView: any, pInputHash: string, pEvent: string): void;
+    /**
+     * Requests input data for a tabular record.
+     *
+     * @param {Object} pView - The view object.
+     * @param {number} pGroupIndex - The index of the group.
+     * @param {number} pInputIndex - The index of the input.
+     * @param {number} pRowIndex - The index of the row.
+     */
+    inputDataRequestTabular(pView: any, pGroupIndex: number, pInputIndex: number, pRowIndex: number): void;
+    /**
+     * Handles the tabular input event.
+     *
+     * @param {Object} pView - The view object.
+     * @param {number} pGroupIndex - The index of the group.
+     * @param {number} pInputIndex - The index of the input.
+     * @param {number} pRowIndex - The index of the row.
+     * @param {string} pEvent - The input event.
+     */
+    inputEventTabular(pView: any, pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: string): void;
 }
 declare namespace PictDynamicInputEvents {
     export { _DefaultProviderConfiguration as default_configuration };

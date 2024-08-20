@@ -1,11 +1,48 @@
 export = PictFormMetacontroller;
+/**
+ * Class representing a PictFormMetacontroller.
+ *
+ * The metacontroller creates, manages and runs dynamic views and their lifecycle events.
+ *
+ * @extends libPictViewClass
+ */
 declare class PictFormMetacontroller extends libPictViewClass {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     viewMarshalDestination: string;
     lastRenderedViews: any[];
     formTemplatePrefix: string;
-    onAfterInitializeAsync(fCallback: any): void;
-    onAfterRender(): boolean;
+    /**
+     * Marshals data from the view to the model, usually AppData (or configured data store).
+     *
+     * @returns {any} The result of the superclass's onMarshalFromView method.
+     */
+    onMarshalFromView(): any;
+    /**
+     * Marshals the data to the view from the model, usually AppData (or configured data store).
+     *
+     * @returns {any} The result of the super.onMarshalToView() method.
+     */
+    onMarshalToView(): any;
+    /**
+     * Executes after the initialization of the object.
+     *
+     * @param {Function} fCallback - The callback function to be executed after the initialization.
+     * @returns {Promise} A promise that resolves after the execution of the callback function.
+     */
+    onAfterInitializeAsync(fCallback: Function): Promise<any>;
+    /**
+     * Executes after the view is rendered.
+     * It regenerates the form section templates, renders the form sections,
+     * and optionally populates the form with data.
+     * @returns {any} The result of the super class's onAfterRender method.
+     */
+    onAfterRender(): any;
+    /**
+     * Executes the solve operation -- automatically solves all dynamic views that are present.
+     *
+     * @returns {any} The result of the solve operation.
+     */
+    onSolve(): any;
     /**
      * Filters the views based on the provided filter and sort functions.
      *
@@ -69,6 +106,11 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @returns {Array} - An array of section definitions.
      */
     bootstrapPictFormViewsFromManifest(pManifestDescription: any): any[];
+    /**
+     * Returns whether the object is a Pict Metacontroller.
+     *
+     * @returns {boolean} True if the object is a Pict Metacontroller, false otherwise.
+     */
     get isPictMetacontroller(): boolean;
 }
 declare namespace PictFormMetacontroller {

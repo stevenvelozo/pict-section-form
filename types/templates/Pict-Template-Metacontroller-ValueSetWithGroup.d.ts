@@ -11,7 +11,23 @@ declare class PictTemplateMetacontrollerValueSet {
      * @param {String} pServiceHash - The hash of the service
      */
     constructor(pFable: any, pOptions: any, pServiceHash: string);
-    render(pTemplateHash: any, pRecord: any, pContextArray: any): any;
-    renderAsync(pTemplateHash: any, pRecord: any, fCallback: any, pContextArray: any): any;
+    /**
+     * Renders the PICT Metacontroller Template.
+     *
+     * @param {string} pTemplateHash - The template hash.
+     * @param {object} pRecord - The record object.
+     * @param {array} pContextArray - The context array.
+     * @returns {string} - The rendered template.
+     */
+    render(pTemplateHash: string, pRecord: object, pContextArray: any[]): string;
+    /**
+     * Asynchronously renders a template with the provided template hash, record, callback, and context array.
+     *
+     * @param {string} pTemplateHash - The template hash to render.
+     * @param {object} pRecord - The record object to use for rendering the template.
+     * @param {function} fCallback - The callback function to invoke after rendering the template.
+     * @param {array} pContextArray - The context array to use for resolving the data.
+     */
+    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function, pContextArray: any[]): any;
 }
 //# sourceMappingURL=Pict-Template-Metacontroller-ValueSetWithGroup.d.ts.map

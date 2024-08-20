@@ -28,7 +28,14 @@ declare class PictDynamicLayout {
      * @returns
      */
     onGroupLayoutInitialize(pView: object, pGroup: object): boolean;
-    onDataMarshalToForm(pView: any, pGroup: any): boolean;
+    /**
+     * This fires after data has been marshaled to the form from the model.
+     *
+     * @param {object} pView  - The view to initialize the newly rendered control for
+     * @param {object} pGroup - The group to initialize the newly rendered control for
+     * @returns {boolean}
+     */
+    onDataMarshalToForm(pView: object, pGroup: object): boolean;
 }
 declare namespace PictDynamicLayout {
     export { _DefaultProviderConfiguration as default_configuration };
