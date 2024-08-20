@@ -15,6 +15,11 @@ declare class ManifestFactory {
      * @param {Object} pView - The view to initialize form groups for
      */
     initializeFormGroups(pView: any): void;
+    /**
+     * Adds a manifest descriptor to the manifest.
+     *
+     * @param {Object} pManifestDescriptor - The manifest descriptor to add.
+     */
     addDescriptor(pManifestDescriptor: any): void;
     /**
      * Get a section from the manifest.

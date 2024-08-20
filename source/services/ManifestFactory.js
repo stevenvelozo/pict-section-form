@@ -176,6 +176,11 @@ class ManifestFactory extends libFableServiceProviderBase
 		}
 	}
 
+	/**
+	 * Adds a manifest descriptor to the manifest.
+	 *
+	 * @param {Object} pManifestDescriptor - The manifest descriptor to add.
+	 */
 	addDescriptor(pManifestDescriptor)
 	{
 		if (pManifestDescriptor.DataAddress in this.manifest.Descriptors)
@@ -305,6 +310,14 @@ class ManifestFactory extends libFableServiceProviderBase
 		if (tmpRecord.Units)
 		{
 			tmpDescriptor.PictForm.Units = tmpRecord.Units;
+		}
+		if (tmpRecord['External Database ID'])
+		{
+			tmpDescriptor.PictForm.ExternalDatabaseID = tmpRecord['External Database ID'];
+		}
+		if (tmpRecord['New'])
+		{
+			tmpDescriptor.PictForm.New = tmpRecord['New'];
 		}
 
 		if (tmpRecord['Input Notes'])

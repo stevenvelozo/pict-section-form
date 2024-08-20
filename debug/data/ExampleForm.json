@@ -59,6 +59,7 @@
                 "Row": "3",
                 "Width": "1",
                 "Units": "planetary",
+                "New": "Y",
                 "SelectOptions": [
                     {
                         "id": "Earth",
@@ -89,6 +90,7 @@
             "PictForm": {
                 "Row": "1",
                 "Width": "1",
+                "ExternalDatabaseID": "A-001",
                 "Section": "Header",
                 "Group": "Address"
             }
@@ -125,6 +127,7 @@
             "PictForm": {
                 "Row": "2",
                 "Width": "1",
+                "ExternalDatabaseID": "A-003",
                 "Section": "Header",
                 "Group": "Address"
             }
@@ -162,6 +165,7 @@
                 "InputType": "TabularAddress",
                 "Row": "1",
                 "Width": "3",
+                "ExternalDatabaseID": "X-11",
                 "Section": "Package_Dimensions",
                 "Group": "Size"
             }
