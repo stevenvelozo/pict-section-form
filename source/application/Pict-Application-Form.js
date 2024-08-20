@@ -1,8 +1,15 @@
 const libPictApplication = require('pict-application');
-//const libPictApplication = require('../../../pict-application/source/Pict-Application.js');
 
 const libPictSectionForm = require('../Pict-Section-Form.js');
 
+/**
+ * Represents a PictSectionFormApplication.
+ * 
+ * This is the automagic controller for a dyncamic form application.
+ * 
+ * @class
+ * @extends libPictApplication
+ */
 class PictSectionFormApplication extends libPictApplication
 {
 	constructor(pFable, pOptions, pServiceHash)
@@ -16,11 +23,17 @@ class PictSectionFormApplication extends libPictApplication
 		this.pict.addView('PictFormMetacontroller', {}, libPictSectionForm.PictFormMetacontroller);
 	}
 
+	/**
+	 * Marshals data from any rendered dynamic views to application data.
+	 */
 	marshalDataFromDynamicViewsToAppData()
 	{
 		this.pict.views.PictFormMetacontroller.marshalFromView();
 	}
 
+	/**
+	 * Marshals data from the application data to any rendered dynamic views.
+	 */
 	marshalDataFromAppDataToDynamicViews()
 	{
 		this.pict.views.PictFormMetacontroller.marshalToView();

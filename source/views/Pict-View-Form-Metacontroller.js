@@ -9,6 +9,13 @@ const libDynamicSolver = require('../providers/Pict-Provider-DynamicSolver.js');
 // "What dependency injection in javascript?"
 //  -- Ned
 
+/**
+ * Class representing a PictFormMetacontroller.
+ * 
+ * The metacontroller creates, manages and runs dynamic views and their lifecycle events.
+ * 
+ * @extends libPictViewClass
+ */
 class PictFormMetacontroller extends libPictViewClass
 {
 	constructor(pFable, pOptions, pServiceHash)
@@ -26,6 +33,11 @@ class PictFormMetacontroller extends libPictViewClass
 		this.formTemplatePrefix = 'Pict-Forms-Basic';
 	}
 
+	/**
+	 * Marshals data from the view to the model, usually AppData (or configured data store).
+	 * 
+	 * @returns {any} The result of the superclass's onMarshalFromView method.
+	 */
 	onMarshalFromView()
 	{
 		let tmpViewList = Object.keys(this.fable.views);
@@ -39,6 +51,11 @@ class PictFormMetacontroller extends libPictViewClass
 		return super.onMarshalFromView();
 	}
 
+	/**
+	 * Marshals the data to the view from the model, usually AppData (or configured data store).
+	 * 
+	 * @returns {any} The result of the super.onMarshalToView() method.
+	 */
 	onMarshalToView()
 	{
 		let tmpViewList = Object.keys(this.fable.views);
@@ -52,6 +69,12 @@ class PictFormMetacontroller extends libPictViewClass
 		return super.onMarshalToView();
 	}
 
+	/**
+	 * Executes after the initialization of the object.
+	 * 
+	 * @param {Function} fCallback - The callback function to be executed after the initialization.
+	 * @returns {Promise} A promise that resolves after the execution of the callback function.
+	 */
 	onAfterInitializeAsync(fCallback)
 	{
 		// This is safe -- if there is no settings.DefaultFormManifest configuration, it just doesn't do anything
@@ -61,6 +84,12 @@ class PictFormMetacontroller extends libPictViewClass
 		return super.onAfterInitializeAsync(fCallback);
 	}
 
+	/**
+	 * Executes after the view is rendered.
+	 * It regenerates the form section templates, renders the form sections,
+	 * and optionally populates the form with data.
+	 * @returns {any} The result of the super class's onAfterRender method.
+	 */
 	onAfterRender()
 	{
 		this.regenerateFormSectionTemplates();
@@ -74,12 +103,16 @@ class PictFormMetacontroller extends libPictViewClass
 		return super.onAfterRender();
 	}
 
+	/**
+	 * Executes the solve operation -- automatically solves all dynamic views that are present.
+	 * 
+	 * @returns {any} The result of the solve operation.
+	 */
 	onSolve()
 	{
 		this.pict.providers.DynamicSolver.solveViews();
 		return super.onSolve();
 	}
-
 
 	/**
 	 * Filters the views based on the provided filter and sort functions.
@@ -395,6 +428,11 @@ class PictFormMetacontroller extends libPictViewClass
 		return tmpSectionList;
 	}
 
+	/**
+	 * Returns whether the object is a Pict Metacontroller.
+	 *
+	 * @returns {boolean} True if the object is a Pict Metacontroller, false otherwise.
+	 */
 	get isPictMetacontroller()
 	{
 		return true;

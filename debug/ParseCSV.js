@@ -43,7 +43,8 @@ class ImportCSVCommand extends libPictCommandLineUtility.ServiceCommandLineComma
 		}
 	
 		// The ManifestFactory gives us a programmatic way to manage Manifest config consistently
-		this.fable.addAndInstantiateServiceType('ManifestFactory', require('../source/services/ManifestFactory.js'));
+		this.fable.addAndInstantiateServiceType('ManifestFactory', require('./ParseCSV-CustomManifestCSVFactory.js'));
+		//this.fable.addAndInstantiateServiceType('ManifestFactory', require('../source/services/ManifestFactory.js'));
 		// Initialize the CSV parser
 		this.fable.instantiateServiceProvider('CSVParser');
 		this.fable.instantiateServiceProvider('FilePersistence');

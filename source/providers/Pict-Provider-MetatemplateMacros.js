@@ -10,6 +10,10 @@ const _DefaultProviderConfiguration = (
 	"AutoSolveWithApp": false
 })
 
+/**
+ * Class representing PictMetatemplateMacros.
+ * @extends libPictProvider
+ */
 class PictMetatemplateMacros extends libPictProvider
 {
 	constructor(pFable, pOptions, pServiceHash)
@@ -19,6 +23,12 @@ class PictMetatemplateMacros extends libPictProvider
 		super(pFable, tmpOptions, pServiceHash);
 	}
 
+	/**
+	 * Builds macros for the given input.
+	 * 
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 */
 	buildInputMacros(pView, pInput)
 	{
 		let tmpInputMacroKeys = Object.keys(pView.options.MacroTemplates.Input);
@@ -32,6 +42,12 @@ class PictMetatemplateMacros extends libPictProvider
 		}
 	}
 
+	/**
+	 * Rebuilds macros for the given view.
+	 * 
+	 * @param {Object} pView - The view object.
+	 * @returns {boolean} - Returns false if MacroTemplates is not present in pView.options.
+	 */
 	rebuildMacros(pView)
 	{
 		if (!('MacroTemplates' in pView.options))

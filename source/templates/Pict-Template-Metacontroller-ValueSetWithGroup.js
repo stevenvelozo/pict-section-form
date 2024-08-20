@@ -20,6 +20,14 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 		this.addPattern('{~MTVS:', '~}');
 	}
 
+	/**
+	 * Renders the PICT Metacontroller Template.
+	 * 
+	 * @param {string} pTemplateHash - The template hash.
+	 * @param {object} pRecord - The record object.
+	 * @param {array} pContextArray - The context array.
+	 * @returns {string} - The rendered template.
+	 */
 	render(pTemplateHash, pRecord, pContextArray)
 	{
 		let tmpHash = pTemplateHash.trim();
@@ -83,6 +91,15 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 			return this.pict.parseTemplateSetByHash(tmpTemplateHash, tmpData, null, pContextArray);
 		}
 	}
+	
+	/**
+	 * Asynchronously renders a template with the provided template hash, record, callback, and context array.
+	 *
+	 * @param {string} pTemplateHash - The template hash to render.
+	 * @param {object} pRecord - The record object to use for rendering the template.
+	 * @param {function} fCallback - The callback function to invoke after rendering the template.
+	 * @param {array} pContextArray - The context array to use for resolving the data.
+	 */
 	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
 	{
 		let tmpHash = pTemplateHash.trim();

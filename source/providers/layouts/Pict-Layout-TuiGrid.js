@@ -14,16 +14,37 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		this.viewGridState = {};
 	}
 
+	/**
+	 * Generates the HTML ID for a TuiGrid group within a specific view.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group object.
+	 * @returns {string} - The generated HTML ID.
+	 */
 	getGridHtmlID(pView, pGroup)
 	{
 		return `View-${pView.UUID}-GroupTuiGrid-${pGroup.GroupIndex}`;
 	}
 
+	/**
+	 * Returns the HTML ID of the Tui view in the specified group.
+	 *
+	 * @param {string} pView - The Tui view.
+	 * @param {string} pGroup - The group.
+	 * @returns {string} - The HTML ID of the Tui view.
+	 */
 	getViewTuiHtmlID(pView, pGroup)
 	{
 		return `#${this.getGridHtmlID(pView, pGroup)}`;
 	}
 
+	/**
+	 * Retrieves the TuiGrid view for a given view and group.
+	 *
+	 * @param {string} pView - The view name.
+	 * @param {string} pGroup - The group name.
+	 * @returns {boolean|TuiGrid} - The TuiGrid view if it exists, otherwise false.
+	 */
 	getViewGrid(pView, pGroup)
 	{
 		let tmpGridUUID = this.getGridHtmlID(pView, pGroup);
@@ -34,6 +55,13 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		return this.viewTuiGrids[tmpGridUUID];
 	}
 
+	/**
+	 * Creates a TuiGrid view for the specified view and group.
+	 * 
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group object.
+	 * @returns {Object} - The created TuiGrid view.
+	 */
 	createViewTuiGrid(pView, pGroup)
 	{
 		let tmpGridUUID = this.getGridHtmlID(pView, pGroup);
@@ -55,6 +83,13 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		return tmpGridView;
 	}
 
+	/**
+	 * Retrieves the TuiGrid configuration for a specific view and group.
+	 *
+	 * @param {string} pView - The view identifier.
+	 * @param {string} pGroup - The group identifier.
+	 * @returns {object} - The TuiGrid configuration for the specified view and group.
+	 */
 	getViewTuiConfiguration(pView, pGroup)
 	{
 		let tmpGridUUID = this.getGridHtmlID(pView, pGroup);
@@ -189,6 +224,13 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		return tmpTemplate;
 	}
 
+	/**
+	 * Generates a data representation for the given view and group.
+	 *
+	 * @param {pView} pView - The view object.
+	 * @param {pGroup} pGroup - The group object.
+	 * @returns {Array} - The generated data representation.
+	 */
 	generateDataRepresentation(pView, pGroup)
 	{
 		let tmpData = [];
@@ -221,7 +263,7 @@ class TuiGridLayout extends libPictSectionGroupLayout
 	 * 
 	 * @param {object} pView  - The view to initialize the newly rendered control for
 	 * @param {object} pGroup - The group to initialize the newly rendered control for
-	 * @returns 
+	 * @returns {boolean} - Returns true if the initialization is successful, false otherwise.
 	 */
 	onGroupLayoutInitialize(pView, pGroup)
 	{
@@ -240,6 +282,13 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		return true;
 	}
 
+	/**
+	 * Marshals data from a view to a form in the TuiGrid layout.
+	 * 
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group object.
+	 * @returns {boolean} - Returns true if the data marshaling is successful, false otherwise.
+	 */
 	onDataMarshalToForm(pView, pGroup)
 	{
 		let tmpTuiGridView = this.getViewGrid(pView, pGroup);
@@ -295,6 +344,13 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		return true;
 	}
 
+	/**
+	 * Adds a new row to the Pict-Layout-TuiGrid.
+	 * 
+	 * @param {string} pViewHash - The hash of the PICT form view.
+	 * @param {number} pGroupIndex - The index of the group in the view.
+	 * @returns {boolean} Returns false if there is an error adding the row, otherwise returns true.
+	 */
 	addRow(pViewHash, pGroupIndex)
 	{
 		if (!(pViewHash in this.pict.views))

@@ -20,7 +20,6 @@ const _DefaultProviderConfiguration = (
  */
 class PictDynamicFormsTemplates extends libPictProvider
 {
-
 	/**
 	 * Constructs a new instance of the PictProviderDynamicTemplates class.
 	 * @param {Object} pFable - The pFable object.

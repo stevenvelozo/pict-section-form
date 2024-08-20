@@ -307,19 +307,6 @@ class ManifestFactory extends libFableServiceProviderBase
 			tmpDescriptor.PictForm.Width = tmpRecord.Width;
 		}
 
-		if (tmpRecord.Units)
-		{
-			tmpDescriptor.PictForm.Units = tmpRecord.Units;
-		}
-		if (tmpRecord['External Database ID'])
-		{
-			tmpDescriptor.PictForm.ExternalDatabaseID = tmpRecord['External Database ID'];
-		}
-		if (tmpRecord['New'])
-		{
-			tmpDescriptor.PictForm.New = tmpRecord['New'];
-		}
-
 		if (tmpRecord['Input Notes'])
 		{
 			tmpDescriptor.PictForm.SpreadsheetNotes = tmpRecord['Input Notes'];
@@ -419,10 +406,12 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 		}
 
-		// if (tmpRecord.DataOnly)
-		// {
-		// 	delete tmpDescriptor.PictForm;
-		// }
+		this.onTabularRowAddDescriptor(tmpRecord, tmpSection, tmpGroup, tmpDescriptor);
+
+		if (tmpRecord.DataOnly && tmpDescriptor.PictForm)
+		{
+			delete tmpDescriptor.PictForm;
+		}
 
 		if (tmpRecord.InputType != 'TabularAddress')
 		{
@@ -434,6 +423,21 @@ class ManifestFactory extends libFableServiceProviderBase
 		}
 
 		return tmpDescriptor;
+	}
+
+	/**
+	 * This fires whenever a Tabular Row is adding a Descriptor to the Manifest.
+	 * 
+	 * If you want to extend how descriptors are built, the code belongs in here.
+	 * 
+	 * @param {Object} pIncomingDescriptor - The record for the descriptor being added (from a CSV or other source)
+	 * @param {Object} pSection - The section object
+	 * @param {Object} pGroup - The group object
+	 * @param {Object} pNewDescriptor - The descriptor object
+	 */
+	onTabularRowAddDescriptor(pIncomingDescriptor, pSection, pGroup, pNewDescriptor)
+	{
+		// This is meant to be overloaded by the parent class
 	}
 
 	/**

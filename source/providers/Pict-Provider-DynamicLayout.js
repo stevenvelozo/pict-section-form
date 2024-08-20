@@ -53,6 +53,13 @@ class PictDynamicLayout extends libPictProvider
 		return true;
 	}
 
+	/**
+	 * This fires after data has been marshaled to the form from the model.
+	 * 
+	 * @param {object} pView  - The view to initialize the newly rendered control for
+	 * @param {object} pGroup - The group to initialize the newly rendered control for
+	 * @returns {boolean}
+	 */
 	onDataMarshalToForm(pView, pGroup)
 	{
 		return true;

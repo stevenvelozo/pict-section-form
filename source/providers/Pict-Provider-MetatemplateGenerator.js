@@ -10,6 +10,10 @@ const _DefaultProviderConfiguration = (
 	"AutoSolveWithApp": false
 })
 
+/**
+ * Class representing a Pict Metatemplate Generator.
+ * @extends libPictProvider
+ */
 class PictMetatemplateGenerator extends libPictProvider
 {
 	constructor(pFable, pOptions, pServiceHash)
@@ -19,6 +23,14 @@ class PictMetatemplateGenerator extends libPictProvider
 		super(pFable, tmpOptions, pServiceHash);
 	}
 
+	/**
+	 * Retrieves the metatemplate template reference in raw format.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {string} pTemplatePostfix - The template postfix.
+	 * @param {string} pRawTemplateDataAddress - The raw template data address.
+	 * @returns {string|boolean} The metatemplate template reference in raw format, or false if it doesn't exist.
+	 */
 	getMetatemplateTemplateReferenceRaw(pView, pTemplatePostfix, pRawTemplateDataAddress)
 	{
 		// 1. Check if there is a section-specific template loaded
@@ -38,11 +50,27 @@ class PictMetatemplateGenerator extends libPictProvider
 		}
 	}
 
+	/**
+	 * Retrieves the metatemplate template reference.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {string} pTemplatePostfix - The template postfix.
+	 * @param {string} pViewDataAddress - The view data address.
+	 * @returns {string} The metatemplate template reference.
+	 */
 	getMetatemplateTemplateReference(pView, pTemplatePostfix, pViewDataAddress)
 	{
 		return this.getMetatemplateTemplateReferenceRaw(pView, pTemplatePostfix, `Pict.views["${pView.Hash}"].${pViewDataAddress}`);
 	}
 
+	/**
+	 * Checks if there is a metatemplate reference for the given view, data type, and input type.
+	 * 
+	 * @param {Object} pView - The view object.
+	 * @param {string} pDataType - The data type.
+	 * @param {string} pInputType - The input type.
+	 * @returns {string|boolean} - The metatemplate reference if found, otherwise false.
+	 */
 	checkMetatemplateReference(pView, pDataType, pInputType)
 	{
 		// Input types are customizable -- there could be 30 different input types for the string data type with special handling and templates
@@ -67,6 +95,15 @@ class PictMetatemplateGenerator extends libPictProvider
 		}
 	}
 
+	/**
+	 * Retrieves the metatemplate template reference for the given input view, data type, input type, and view data address.
+	 *
+	 * @param {Object} pView - The input view.
+	 * @param {string} pDataType - The data type.
+	 * @param {string} pInputType - The input type.
+	 * @param {string} pViewDataAddress - The view data address.
+	 * @returns {string} The metatemplate template reference.
+	 */
 	getInputMetatemplateTemplateReference(pView, pDataType, pInputType, pViewDataAddress)
 	{
 		// Input types are customizable -- there could be 30 different input types for the string data type with special handling and templates
@@ -95,6 +132,17 @@ class PictMetatemplateGenerator extends libPictProvider
 		return this.getMetatemplateTemplateReference(pView, '-Template-Input', pViewDataAddress);
 	}
 
+	/**
+	 * Generates a tabular input metatemplate template reference.
+	 *
+	 * @param {Object} pView - The view.
+	 * @param {string} pDataType - The data type.
+	 * @param {string} pInputType - The input type.
+	 * @param {string} pViewDataAddress - The view data address.
+	 * @param {number} pGroupIndex - The group index.
+	 * @param {number} pRowIndex - The row index.
+	 * @returns {string} The tabular input metatemplate template reference.
+	 */
 	getTabularInputMetatemplateTemplateReference(pView, pDataType, pInputType, pViewDataAddress, pGroupIndex, pRowIndex)
 	{
 		// Input types are customizable -- there could be 30 different input types for the string data type with special handling and templates
@@ -150,6 +198,13 @@ class PictMetatemplateGenerator extends libPictProvider
 		return '';
 	}
 
+	/**
+	 * Retrieves the group layout provider based on the given view and group.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group object.
+	 * @returns {Object} The group layout provider.
+	 */
 	getGroupLayoutProvider(pView, pGroup)
 	{
 		let tmpGroupLayout = (typeof(pGroup.Layout) === 'string') ? pGroup.Layout :
@@ -177,6 +232,13 @@ class PictMetatemplateGenerator extends libPictProvider
 		}
 	}
 
+	/**
+	 * Rebuilds the custom template for the given view.
+	 * 
+	 * This uses the layout providers for each group.
+	 *
+	 * @param {Object} pView - The view object.
+	 */
 	rebuildCustomTemplate(pView)
 	{
 		let tmpTemplate = ``;
@@ -193,12 +255,8 @@ class PictMetatemplateGenerator extends libPictProvider
 		{
 			let tmpGroup = pView.sectionDefinition.Groups[i];
 
-			// Add pView to the group object for metatemplating
 			tmpGroup.GroupIndex = i;
-			// if (!tmpGroup.hasOwnProperty('Layout'))
-			// {
-			// 	tmpGroup.Layout = 'DefaultLayout';
-			// }
+
 			tmpGroup.SectionTabularRowVirtualTemplateHash = `Pict-Form-Template-TabularRow-Virtual-${pView.options.Hash}-G${tmpGroup.GroupIndex}`;
 			tmpGroup.SectionTabularRowTemplateHash = `Pict-Form-Template-TabularRow-${pView.options.Hash}-G${tmpGroup.GroupIndex}`;
 

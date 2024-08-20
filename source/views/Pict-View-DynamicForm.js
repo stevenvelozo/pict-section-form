@@ -21,6 +21,14 @@ const libPictLayoutTuiGrid = require('../providers/layouts/Pict-Layout-TuiGrid.j
 
 const libInformary = require('../providers/Pict-Provider-Informary.js');
 
+/**
+ * Represents a dynamic form view for the Pict application.
+ * 
+ * This is the code that maintains the lifecycle with the Pict application and
+ * the data handling methods for a dynamic forms view (or set of views).
+ * 
+ * @extends libPictViewClass
+ */
 class PictViewDynamicForm extends libPictViewClass
 {
 	constructor(pFable, pOptions, pServiceHash)
@@ -67,7 +75,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 		// Pull in the section definition
 		this.sectionDefinition = this.options;
-	
+
 		// Initialize the section manifest -- instantiated to live only the lifecycle of this view
 		this.sectionManifest = this.fable.instantiateServiceProviderWithoutRegistration('Manifest', this.options.Manifests.Section);
 
@@ -78,7 +86,7 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			for (let i = 0; i < this.options.Solvers.length; i++)
 			{
-				if (typeof(this.options.Solvers[i]) === 'string')
+				if (typeof (this.options.Solvers[i]) === 'string')
 				{
 					this.sectionSolvers.push(this.options.Solvers[i]);
 				}
@@ -135,6 +143,11 @@ class PictViewDynamicForm extends libPictViewClass
 		this.fable.ManifestFactory.initializeFormGroups(this);
 	}
 
+	/**
+	 * Returns the default template prefix.
+	 * 
+	 * @returns {string} The default template prefix.
+	 */
 	get defaultTemplatePrefix()
 	{
 		if (this.customDefaultTemplatePrefix)
@@ -151,10 +164,19 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 	}
 
+	/**
+	 * This method is called whenever data is changed within an input. 
+	 * 
+	 * It handles the data marshaling from the view to the data model,
+	 * runs any providers connected to the input, solves the Pict application, 
+	 * then marshals data back to the view.
+	 *
+	 * @param {string} pInputHash - The hash of the input that triggered the data change.
+	 */
 	dataChanged(pInputHash)
 	{
 		let tmpInput = this.getInputFromHash(pInputHash);
- 		// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
+		// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
 		// TODO: Make this more specific to the input hash.  Should be trivial with new informary.
 		if (pInputHash)
 		{
@@ -194,15 +216,23 @@ class PictViewDynamicForm extends libPictViewClass
 		this.marshalToView();
 	}
 
+
+	/**
+	 * Called whenever tabular data is changed.
+	 *
+	 * @param {number} pGroupIndex - the index of the group
+	 * @param {number} pInputIndex - the index of the input
+	 * @param {number} pRowIndex - the index of the row where the data was changed
+	 */
 	dataChangedTabular(pGroupIndex, pInputIndex, pRowIndex)
 	{
 		let tmpInput = this.getTabularRecordInput(pGroupIndex, pInputIndex);
-		if 	(
-				(typeof(pGroupIndex) != 'undefined')
-				&& (typeof(pInputIndex) != 'undefined')
-				&& (typeof(pRowIndex) != 'undefined')
-				&& (typeof(tmpInput) == 'object')
-			)
+		if (
+			(typeof (pGroupIndex) != 'undefined')
+			&& (typeof (pInputIndex) != 'undefined')
+			&& (typeof (pRowIndex) != 'undefined')
+			&& (typeof (tmpInput) == 'object')
+		)
 		{
 			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
 			let tmpHashAddress = tmpInput.Address;
@@ -215,7 +245,7 @@ class PictViewDynamicForm extends libPictViewClass
 				let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
 				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
 				// Each row has a distinct address!
-				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
+				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular + `[data-i-index="${pRowIndex}"]`;
 				let tmpInputProviderList = this.getInputProviderList(tmpInput);
 				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
@@ -244,6 +274,15 @@ class PictViewDynamicForm extends libPictViewClass
 		this.marshalToView();
 	}
 
+	/**
+	 * Sets the data in a specific tabular form input based on the provided hash, group and row.
+	 *
+	 * @param {number} pGroupIndex - The index of the group.
+	 * @param {string} pInputHash - The hash of the input.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @param {any} pValue - The value to set.
+	 * @returns {boolean} Returns true if the data was set successfully, false otherwise.
+	 */
 	setDataTabularByHash(pGroupIndex, pInputHash, pRowIndex, pValue)
 	{
 		// The neat thing about how the tabular groups work is that we can make it clever about whether it's an object or an array.
@@ -272,11 +311,11 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 
 		let tmpInput = this.getTabularRecordInput(pGroupIndex, tmpInputIndex);
-		if 	(
-				(typeof(pGroupIndex) != 'undefined')
-				&& (typeof(pRowIndex) != 'undefined')
-				&& (typeof(tmpInput) == 'object')
-			)
+		if (
+			(typeof (pGroupIndex) != 'undefined')
+			&& (typeof (pRowIndex) != 'undefined')
+			&& (typeof (tmpInput) == 'object')
+		)
 		{
 			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
 			try
@@ -289,7 +328,7 @@ class PictViewDynamicForm extends libPictViewClass
 				// TODO: DRY TIME, excellent.
 				let tmpValue = pValue;
 				// Each row has a distinct address!
-				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular+`[data-i-index="${pRowIndex}"]`;
+				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular + `[data-i-index="${pRowIndex}"]`;
 				let tmpInputProviderList = this.getInputProviderList(tmpInput);
 				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
@@ -312,6 +351,11 @@ class PictViewDynamicForm extends libPictViewClass
 		return false;
 	}
 
+	/**
+	 * Retrieves the marshal destination address.
+	 * 
+	 * @returns {string} The marshal destination address.
+	 */
 	getMarshalDestinationAddress()
 	{
 		if (this.viewMarshalDestination)
@@ -328,6 +372,11 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 	}
 
+	/**
+	 * Retrieves the marshal destination object.  This is where the model data is stored.
+	 * 
+	 * @returns {Object} The marshal destination object.
+	 */
 	getMarshalDestinationObject()
 	{
 		let tmpMarshalDestinationObject = false;
@@ -350,7 +399,7 @@ class PictViewDynamicForm extends libPictViewClass
 			}
 		}
 
-		if (typeof(tmpMarshalDestinationObject) != 'object')
+		if (typeof (tmpMarshalDestinationObject) != 'object')
 		{
 			this.log.error(`Marshal destination object is not an object; if you initialize the view yourself you must set the viewMarshalDestination property to a valid address within the view.  Falling back to AppData.`);
 			tmpMarshalDestinationObject = this.pict.AppData;
@@ -359,6 +408,11 @@ class PictViewDynamicForm extends libPictViewClass
 		return tmpMarshalDestinationObject;
 	}
 
+	/**
+	 * Marshals data to the view.
+	 * 
+	 * @returns {any} The result of calling the superclass's onMarshalToView method.
+	 */
 	onMarshalToView()
 	{
 		// TODO: Only marshal data that has changed since the last marshal.  Thought experiment: who decides what changes happened?
@@ -376,6 +430,10 @@ class PictViewDynamicForm extends libPictViewClass
 		return super.onMarshalToView();
 	}
 
+	/**
+	 * Marshals data from the view to the destination object.
+	 * @returns {any} The result of calling the superclass's onMarshalFromView method.
+	 */
 	onMarshalFromView()
 	{
 		try
@@ -390,12 +448,21 @@ class PictViewDynamicForm extends libPictViewClass
 		return super.onMarshalFromView();
 	}
 
+	/**
+	 * Executes after marshaling the data to the form.
+	 * Checks if there are any hooks set from the input providers (from custom InputType handler hooks) and runs them.
+	 */
 	onAfterMarshalToForm()
 	{
 		// Check to see if there are any hooks set from the input templates
 		this.runInputProviderFunctions('onAfterMarshalToForm');
 	}
 
+	/**
+	 * Executes the solve operation for the dynamic views, then auto marshals data if options.AutoMarshalDataOnSolve is set to true.
+	 * 
+	 * @returns {any} The result of the solve operation.
+	 */
 	onSolve()
 	{
 		// Usually the metacontroller runs this for the views
@@ -411,18 +478,30 @@ class PictViewDynamicForm extends libPictViewClass
 		return super.onSolve();
 	}
 
+	/**
+	 * Executes after the view is rendered.
+	 */
 	onAfterRender()
 	{
 		this.runLayoutProviderFunctions('onGroupLayoutInitialize')
 		this.runInputProviderFunctions('onInputInitialize');
 	}
 
-	// These TODO items are done but leaving them here until we use this to document the complexity of this method.
-	// TODO: This needs to happen based on markers in the DOM, since we don't know which layout providers are active for which groups.
-	// TODO: This is easy to make happen with a macro on groups that gives us the data.
-	// TODO: Otherwise layout providers only work when they are run with the "default" render everything.
-	// THIS IS SCOPED TO A PARTICULAR GROUP.  That is ... only one layout for a group at a time.
-	// The easiest way (and a speed up for other queries as such) is to scope it within the view container element
+	/**
+	 * Executes layout provider functions based on the given function name.
+	 * 
+	 * These were TODO items that are now done but..  leaving them here to document complexity of why it works this way.
+	 * 
+	 * --> This happens based on markers in the DOM, since we don't know which layout providers are active for which groups.
+	 * 
+	 * --> This is easy to make happen with a macro on groups that gives us the data.
+	 * 
+	 * --> THIS IS NOW SCOPED TO A PARTICULAR GROUP.  That is ... only one layout for a group at a time.
+	 * 
+	 * The easiest way (and a speed up for other queries as such) is to scope it within the view container element
+	 * 
+	 * @param {string} pFunctionName - The name of the function to execute.
+	 */
 	runLayoutProviderFunctions(pFunctionName)
 	{
 		// Check to see if there are any hooks set from the input templates
@@ -445,7 +524,7 @@ class PictViewDynamicForm extends libPictViewClass
 				this.log.warn(`PICT View Metatemplate Helper runLayoutProviderFunctions for group ${tmpGroupIndex} was not a valid group.`);
 				continue;
 			}
-			if (!tmpLayout || typeof(tmpLayout) !== 'string')
+			if (!tmpLayout || typeof (tmpLayout) !== 'string')
 			{
 				this.log.warn(`PICT View Metatemplate Helper runLayoutProviderFunctions for group ${tmpGroup} layout [${tmpLayout}] was not a valid layout.`);
 				continue;
@@ -460,6 +539,11 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 	}
 
+	/**
+	 * Runs the input provider functions.
+	 *
+	 * @param {string} pFunctionName - The name of the function to run for each input provider.
+	 */
 	runInputProviderFunctions(pFunctionName)
 	{
 		// Check to see if there are any hooks set from the input templates
@@ -526,7 +610,7 @@ class PictViewDynamicForm extends libPictViewClass
 										// There is a provider, we have an input and it is supposed to be run through for a record
 										let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, r, tmpInput.PictForm.InformaryDataAddress);
 										let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
-										this.pict.providers[tmpInputProviderList[i]][pFunctionName+'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r);
+										this.pict.providers[tmpInputProviderList[i]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r);
 									}
 									else
 									{
@@ -536,7 +620,7 @@ class PictViewDynamicForm extends libPictViewClass
 							}
 						}
 					}
-					else if (typeof(tmpTabularRecordSet) === 'object')
+					else if (typeof (tmpTabularRecordSet) === 'object')
 					{
 						let tmpRecordSetKeys = Object.keys(tmpTabularRecordSet);
 						let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];
@@ -551,7 +635,7 @@ class PictViewDynamicForm extends libPictViewClass
 									// There is a provider, we have an input and it is supposed to be run through for a record
 									let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, tmpRecordSetKeys[r], tmpInput.PictForm.InformaryDataAddress);
 									let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
-									this.pict.providers[tmpInputProviderList[i]][pFunctionName+'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, tmpRecordSetKeys[r]);
+									this.pict.providers[tmpInputProviderList[i]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, tmpRecordSetKeys[r]);
 								}
 								else
 								{
@@ -563,35 +647,69 @@ class PictViewDynamicForm extends libPictViewClass
 
 				}
 			}
-		}		
+		}
 	}
 
+	/**
+	 * Checks if a view-specific template exists based on the given template postfix.
+	 * @param {string} pTemplatePostfix - The postfix of the template to check.
+	 * @returns {boolean} - Returns true if the view-specific template exists, otherwise false.
+	 */
 	checkViewSpecificTemplate(pTemplatePostfix)
 	{
 		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
 		return (this.getViewSpecificTemplateHash(pTemplatePostfix) in this.pict.TemplateProvider.templates);
 	}
+
+	/**
+	 * Returns the template hash for the view specific template.
+	 *
+	 * @param {string} pTemplatePostfix - The postfix for the template.
+	 * @returns {string} The template hash for the view specific template.
+	 */
 	getViewSpecificTemplateHash(pTemplatePostfix)
 	{
-		return `${this.formsTemplateSetPrefix}${pTemplatePostfix}`;	
+		return `${this.formsTemplateSetPrefix}${pTemplatePostfix}`;
 	}
 
+	/**
+	 * Checks if a theme-specific template exists.
+	 *
+	 * @param {string} pTemplatePostfix - The postfix of the template.
+	 * @returns {boolean} - Returns true if the theme-specific template exists, otherwise false.
+	 */
 	checkThemeSpecificTemplate(pTemplatePostfix)
 	{
 		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
 		return (this.getThemeSpecificTemplateHash(pTemplatePostfix) in this.pict.TemplateProvider.templates);
 	}
+
+	/**
+	 * Returns the theme-specific template hash based on the given template postfix.
+	 *
+	 * @param {string} pTemplatePostfix - The postfix to be appended to the default template prefix.
+	 * @returns {string} The theme-specific template hash.
+	 */
 	getThemeSpecificTemplateHash(pTemplatePostfix)
 	{
 		// This is here to cut down on complex guards, and, so we can optimize/extend it later if we need to.
 		return `${this.defaultTemplatePrefix}${pTemplatePostfix}`;
 	}
 
+	/**
+	 * Rebuilds the custom template fore the dynamic form..
+	 */
 	rebuildCustomTemplate()
 	{
 		this.pict.providers.MetatemplateGenerator.rebuildCustomTemplate(this);
 	}
 
+	/**
+	 * Retrieves a group from the PICT View Metatemplate Helper based on the provided group index.
+	 * 
+	 * @param {number} pGroupIndex - The index of the group to retrieve.
+	 * @returns {object|boolean} - The group object if found, or false if the group index is invalid.
+	 */
 	getGroup(pGroupIndex)
 	{
 		if (isNaN(pGroupIndex))
@@ -608,6 +726,15 @@ class PictViewDynamicForm extends libPictViewClass
 		return this.sectionDefinition.Groups[pGroupIndex];
 	}
 
+	/**
+	 * Get a row for an input form group.
+	 * 
+	 * Rows are a horizontal collection of inputs.
+	 * 
+	 * @param {number} pGroupIndex 
+	 * @param {number} pRowIndex 
+	 * @returns 
+	 */
 	getRow(pGroupIndex, pRowIndex)
 	{
 		let tmpGroup = this.getGroup(pGroupIndex);
@@ -617,7 +744,7 @@ class PictViewDynamicForm extends libPictViewClass
 			if (isNaN(pRowIndex))
 			{
 				this.log.warn(`PICT View Metatemplate Helper getRow ${pRowIndex} was expecting a number.`);
-				return false;	
+				return false;
 			}
 			if (pRowIndex > tmpGroup.Rows.length)
 			{
@@ -632,11 +759,25 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 	}
 
+	/**
+	 * Get a customized key value pair object for a specific row.
+	 * 
+	 * @param {number} pGroupIndex - The index of the group.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @returns {Object} a key value pair for a specific row, used in metatemplating.
+	 */
 	getRowKeyValuePair(pGroupIndex, pRowIndex)
 	{
-		return { Key:pGroupIndex, Value:this.getRow(pGroupIndex, pRowIndex), Group:this.getGroup(pGroupIndex) };
+		return { Key: pGroupIndex, Value: this.getRow(pGroupIndex, pRowIndex), Group: this.getGroup(pGroupIndex) };
 	}
 
+	/**
+	 * 
+	 * @param {number} pGroupIndex - The index of the group.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @param {number} pInputIndex - The index of the input.
+	 * @returns {Object|boolean} The input object if found, or false if the input index is invalid.
+	 */
 	getInput(pGroupIndex, pRowIndex, pInputIndex)
 	{
 		let tmpRow = this.getRow(pGroupIndex, pRowIndex);
@@ -646,7 +787,7 @@ class PictViewDynamicForm extends libPictViewClass
 			if (isNaN(pInputIndex))
 			{
 				this.log.warn(`PICT View Metatemplate Helper getInput ${pInputIndex} was expecting a number.`);
-				return false;	
+				return false;
 			}
 			if (pInputIndex > tmpRow.Inputs.length)
 			{
@@ -660,11 +801,13 @@ class PictViewDynamicForm extends libPictViewClass
 			return false;
 		}
 	}
-	getInputFromHash(pInputHash)
-	{
-		return this.sectionManifest.getDescriptorByHash(pInputHash);
-	}
 
+	/**
+	 * Retrieves the input provider list for the given input object.
+	 *
+	 * @param {Object} pInput - The input object.
+	 * @returns {Array} The input provider list.
+	 */
 	getInputProviderList(pInput)
 	{
 		if (('Providers' in pInput.PictForm) && Array.isArray(pInput.PictForm.Providers))
@@ -677,57 +820,167 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 	}
 
+	/**
+	 * Retrieves the input object for a specific hash.
+	 * 
+	 * @param {string} pInputHash - The string hash for an input (not the address).
+	 * @returns {Object} The input Object for the given hash. 
+	 */
+	getInputFromHash(pInputHash)
+	{
+		return this.sectionManifest.getDescriptorByHash(pInputHash);
+	}
+
+	/**
+	 * Triggers a DataRequest event for an Input Provider
+	 *
+	 * @param {String} pInputHash - The input hash.
+	 * @returns {boolean} Whether or not the data request was successful.
+	 */
 	inputDataRequest(pInputHash)
 	{
 		return this.pict.providers.DynamicInputEvents.inputDataRequest(this, pInputHash);
 	}
+
+	/**
+	 * Handles the generic Input Event for an Input Provider
+	 *
+	 * @param {String} pInputHash - The input hash object.
+	 * @param {Event} pEvent - The input event object.
+	 * @returns {any} - The result of the input event handling.
+	 */
 	inputEvent(pInputHash, pEvent)
 	{
 		return this.pict.providers.DynamicInputEvents.inputEvent(this, pInputHash, pEvent);
 	}
 
+	/**
+	 * Triggers a DataRequest event for an Input Provider
+	 *
+	 * @returns {Promise} A promise that resolves with the input data.
+	 */
 	inputDataRequestTabular(pGroupIndex, pInputIndex, pRowIndex)
 	{
 		return this.pict.providers.DynamicInputEvents.inputDataRequestTabular(this, pGroupIndex, pInputIndex, pRowIndex);
 	}
+
+	/**
+	 * Handles the generic Tabular Input Event for an Input Provider
+	 *
+	 * @param {number} pGroupIndex - The index of the group.
+	 * @param {number} pInputIndex - The index of the input.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @param {Event} pEvent - The input event object.
+	 * @returns {any} - The result of the input event handling.
+	 */
 	inputEventTabular(pGroupIndex, pInputIndex, pRowIndex, pEvent)
 	{
 		return this.pict.providers.DynamicInputEvents.inputEventTabular(this, pGroupIndex, pInputIndex, pRowIndex, pEvent);
 	}
 
+	/**
+	 * Get the input object for a specific tabular record group and index.
+	 * 
+	 * Input objects are not distinct among rows.
+	 * 
+	 * @param {number} pGroupIndex - The index of the group.
+	 * @param {number} pInputIndex - The index of the input.
+	 * @returns 
+	 */
 	getTabularRecordInput(pGroupIndex, pInputIndex)
 	{
 		return this.pict.providers.DynamicTabularData.getTabularRecordInput(this, pGroupIndex, pInputIndex);
 	}
+
+	/**
+	 * Get the tabular record object for a particular row in a group.
+	 * 
+	 * @param {number} pGroupIndex 
+	 * @param {number} pRowIdentifier - The row number
+	 * @returns {Object} The record for the particular row
+	 */
 	getTabularRecordData(pGroupIndex, pRowIdentifier)
 	{
 		return this.pict.providers.DynamicTabularData.getTabularRecordData(this, pGroupIndex, pRowIdentifier);
 	}
+
+	/**
+	 * Get the tabular record set for a particular group.
+	 * 
+	 * @param {number} pGroupIndex
+	 * @returns {Array} The record set for the group.
+	 */
 	getTabularRecordSet(pGroupIndex)
 	{
 		return this.pict.providers.DynamicTabularData.getTabularRecordSet(this, pGroupIndex);
 	}
+
+	/**
+	 * Add a new data row to the end of a dynamic tabular group.
+	 * 
+	 * This will generate any defaults in the SubManifest.
+	 * 
+	 * @param {number} pGroupIndex 
+	 * @returns 
+	 */
 	createDynamicTableRow(pGroupIndex)
 	{
 		return this.pict.providers.DynamicTabularData.createDynamicTableRow(this, pGroupIndex);
 	}
+
+	/**
+	 * Move a dynamic table row to an arbitrary position in the array.
+	 * 
+	 * @param {number} pGroupIndex - The group to manage the dynamic table row for 
+	 * @param {number} pRowIndex - The row to move
+	 * @param {number} pNewRowIndex - The new position for the row
+	 * @returns {boolean} True if the move was successful, or false if it wasn't.
+	 */
 	setDynamicTableRowIndex(pGroupIndex, pRowIndex, pNewRowIndex)
 	{
 		return this.pict.providers.DynamicTabularData.setDynamicTableRowIndex(this, pGroupIndex, pRowIndex, pNewRowIndex);
 	}
+
+	/**
+	 * Move a dynamic table row down
+	 * 
+	 * @param {number} pGroupIndex - The group to manage the dynamic table row for 
+	 * @param {number} pRowIndex - The row to move down
+	 * @returns {boolean} True if the move was successful, or false if it wasn't.
+	 */
 	moveDynamicTableRowDown(pGroupIndex, pRowIndex)
 	{
 		return this.pict.providers.DynamicTabularData.moveDynamicTableRowDown(this, pGroupIndex, pRowIndex);
 	}
+
+	/**
+	 * Move a dynamic table row up
+	 * 
+	 * @param {number} pGroupIndex - The group to manage the dynamic table row for 
+	 * @param {number} pRowIndex - The row to move up
+	 * @returns {boolean} True if the move was successful, or false if it wasn't.
+	 */
 	moveDynamicTableRowUp(pGroupIndex, pRowIndex)
 	{
 		return this.pict.providers.DynamicTabularData.moveDynamicTableRowUp(this, pGroupIndex, pRowIndex);
 	}
+
+	/**
+	 * Deletes a dynamic table row.
+	 *
+	 * @param {number} pGroupIndex - The index of the group.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @returns {Promise} A promise that resolves when the row is deleted.
+	 */
 	deleteDynamicTableRow(pGroupIndex, pRowIndex)
 	{
 		return this.pict.providers.DynamicTabularData.deleteDynamicTableRow(this, pGroupIndex, pRowIndex);
 	}
 
+	/**
+	 * Returns whether the current form is a Pict Section form.
+	 * @returns {boolean} True if the form is a Pict Section form, false otherwise.
+	 */
 	get isPictSectionForm()
 	{
 		return true;

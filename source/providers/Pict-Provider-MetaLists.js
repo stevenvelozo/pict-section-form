@@ -31,6 +31,13 @@ class PictMetalist extends libPictProvider
 		this.globalLists = {};
 	}
 
+	/**
+	 * Retrieves a list based on the provided view hash and list hash.
+	 * 
+	 * @param {string} pViewHash - The view hash.
+	 * @param {string} pListHash - The list hash.
+	 * @returns {Array} - The retrieved list.
+	 */
 	getList(pViewHash, pListHash)
 	{
 		if ((pViewHash in this.computedLists) && (pListHash in this.computedLists[pViewHash]))
@@ -44,11 +51,23 @@ class PictMetalist extends libPictProvider
 		return [];
 	}
 
+	/**
+	 * Checks if a list exists in the Pict Provider MetaLists.
+	 * 
+	 * @param {string} pViewHash - The hash of the view.
+	 * @param {string} pListHash - The hash of the list.
+	 * @returns {boolean} - Returns true if the list exists, otherwise false.
+	 */
 	hasList(pViewHash, pListHash)
 	{
 		return ((pViewHash in this.computedLists) && (pListHash in this.computedLists[pViewHash])) || (pListHash in this.globalLists);
 	}
 
+	/**
+	 * Builds meta lists for the Pict provider.
+	 * 
+	 * @param {Array|string} pViewHashes - The view hashes to build meta lists for.
+	 */
 	buildLists(pViewHashes)
 	{
 		// this.log.trace(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] pulling Metalists.`);

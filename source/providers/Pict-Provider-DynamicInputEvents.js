@@ -28,6 +28,12 @@ class PictDynamicInputEvents extends libPictProvider
 		super(pFable, tmpOptions, pServiceHash);
 	}
 
+	/**
+	 * Requests input data from the view based on the provided input hash.
+	 * 
+	 * @param {Object} pView - The view object.
+	 * @param {string} pInputHash - The input hash.
+	 */
 	inputDataRequest(pView, pInputHash)
 	{
 		let tmpInput = pView.getInputFromHash(pInputHash);
@@ -62,6 +68,13 @@ class PictDynamicInputEvents extends libPictProvider
 		}
 	}
 
+	/**
+	 * Handles the input event for a dynamic form.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {string} pInputHash - The input hash.
+	 * @param {string} pEvent - The input event.
+	 */
 	inputEvent(pView, pInputHash, pEvent)
 	{
 		let tmpInput = pView.getInputFromHash(pInputHash);
@@ -96,6 +109,14 @@ class PictDynamicInputEvents extends libPictProvider
 		}
 	}
 
+	/**
+	 * Requests input data for a tabular record.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {number} pGroupIndex - The index of the group.
+	 * @param {number} pInputIndex - The index of the input.
+	 * @param {number} pRowIndex - The index of the row.
+	 */
 	inputDataRequestTabular(pView, pGroupIndex, pInputIndex, pRowIndex)
 	{
 		let tmpInput = pView.getTabularRecordInput(pGroupIndex, pInputIndex);
@@ -137,6 +158,15 @@ class PictDynamicInputEvents extends libPictProvider
 		pView.marshalToView();
 	}
 
+	/**
+	 * Handles the tabular input event.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {number} pGroupIndex - The index of the group.
+	 * @param {number} pInputIndex - The index of the input.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @param {string} pEvent - The input event.
+	 */
 	inputEventTabular(pView, pGroupIndex, pInputIndex, pRowIndex, pEvent)
 	{
 		let tmpInput = pView.getTabularRecordInput(pGroupIndex, pInputIndex);

@@ -59,8 +59,6 @@
                     "InputType": "Option",
                     "Row": "3",
                     "Width": "1",
-                    "Units": "planetary",
-                    "New": "Y",
                     "SelectOptions": [
                         {
                             "id": "Earth",
@@ -80,7 +78,9 @@
                         }
                     ],
                     "Section": "Header",
-                    "Group": "General_Info"
+                    "Group": "General_Info",
+                    "Units": "planetary",
+                    "New": "Y"
                 }
             },
             "Header.Location.Address": {
@@ -91,9 +91,9 @@
                 "PictForm": {
                     "Row": "1",
                     "Width": "1",
-                    "ExternalDatabaseID": "A-001",
                     "Section": "Header",
-                    "Group": "Address"
+                    "Group": "Address",
+                    "ExternalDatabaseID": "A-001"
                 }
             },
             "Header.Location.City": {
@@ -128,9 +128,9 @@
                 "PictForm": {
                     "Row": "2",
                     "Width": "1",
-                    "ExternalDatabaseID": "A-003",
                     "Section": "Header",
-                    "Group": "Address"
+                    "Group": "Address",
+                    "ExternalDatabaseID": "A-003"
                 }
             },
             "Header.Location.Country": {
@@ -161,15 +161,7 @@
                 "Hash": "PackageAddress",
                 "Name": "PackageAddress",
                 "DataAddress": "Inventory.Packages",
-                "DataType": "Array",
-                "PictForm": {
-                    "InputType": "TabularAddress",
-                    "Row": "1",
-                    "Width": "3",
-                    "ExternalDatabaseID": "X-11",
-                    "Section": "Package_Dimensions",
-                    "Group": "Size"
-                }
+                "DataType": "Array"
             },
             "Packages[].Area": {
                 "Hash": "AreaSet",
@@ -287,9 +279,9 @@
                         "PictForm": {
                             "Row": "2",
                             "Width": "1",
-                            "Units": "inches",
                             "Section": "Package_Dimensions",
-                            "Group": "Size"
+                            "Group": "Size",
+                            "Units": "inches"
                         },
                         "IsTabular": true
                     },
@@ -301,9 +293,9 @@
                         "PictForm": {
                             "Row": "2",
                             "Width": "1",
-                            "Units": "inches",
                             "Section": "Package_Dimensions",
-                            "Group": "Size"
+                            "Group": "Size",
+                            "Units": "inches"
                         },
                         "IsTabular": true
                     },
@@ -315,9 +307,9 @@
                         "PictForm": {
                             "Row": "3",
                             "Width": "2",
-                            "Units": "square inches",
                             "Section": "Package_Dimensions",
-                            "Group": "Size"
+                            "Group": "Size",
+                            "Units": "square inches"
                         },
                         "IsTabular": true
                     }
