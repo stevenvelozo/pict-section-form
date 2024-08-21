@@ -185,6 +185,23 @@ Glug glug glug Oo... -->
 		 */
 		/*
 		 *
+		 * [ External Control Templates START ]
+		 *
+		 */
+		{
+			"HashPostfix": "-Template-Input-InputType-Tab",
+			"DefaultInputExtensions": ["Pict-Input-Tab"],
+			"Template": /*HTML*/`
+					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span> <select id="TAB-SELECT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}"></select>
+`
+		},
+		/*
+		 * END View Management Templates (default)
+		 */
+		/*
+		 *
 		 * [ Basic Form Templates END ]
 		 *
 		 */

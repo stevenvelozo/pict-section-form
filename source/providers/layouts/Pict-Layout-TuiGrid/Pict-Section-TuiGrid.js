@@ -16,7 +16,7 @@ class TuiGridLayout extends libPictSectionTuiGrid
 	}
 
 	/**
-	 * Custom configuration for the grid settings.
+	 * Custom configuration for the grid settings -- fires when 
 	 * 
 	 * Sets the grid data to the cached grid data for the tuigrid.
 	 * 
@@ -29,6 +29,14 @@ class TuiGridLayout extends libPictSectionTuiGrid
 		return super.customConfigureGridSettings();
 	}
 
+	/**
+	 * Handles the change event in the Pict-Section-TuiGrid component.
+	 * 
+	 * Updates the state in the model based on the grid changes.  This is 
+	 * 
+	 * @param {Object} pChangeData - The change data object.
+	 * @returns {any} - The result of the super changeHandler method.
+	 */
 	changeHandler(pChangeData)
 	{
 		// Update the state in our model based on the grid

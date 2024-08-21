@@ -268,8 +268,7 @@ module.exports.default_configuration.pict_configuration = {
 				Name: "Fruits of the Earth",
 				Hash: "FruitGrid",
 				DataType: "Array",
-				Default: [],
-				PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
+				Default: []
 			},
 
 			"FruitData.FruityVice[].nutritions.calories": {

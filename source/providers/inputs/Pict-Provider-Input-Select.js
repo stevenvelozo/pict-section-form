@@ -1,5 +1,12 @@
 const libPictSectionInputExtension = require('../Pict-Provider-InputExtension.js');
 
+/**
+ * CustomInputHandler class.
+ * 
+ * @class
+ * @extends libPictSectionInputExtension
+ * @memberof providers.inputs
+ */
 class CustomInputHandler extends libPictSectionInputExtension
 {
 	constructor(pFable, pOptions, pServiceHash)
@@ -7,26 +14,57 @@ class CustomInputHandler extends libPictSectionInputExtension
 		super(pFable, pOptions, pServiceHash);
 	}
 
+	/**
+	 * Generates the HTML ID for a select input element.
+	 *
+	 * @param {string} pInputHTMLID - The HTML ID of the input element.
+	 * @returns {string} - The generated HTML ID for the select input element.
+	 */
 	getSelectInputHTMLID(pInputHTMLID)
 	{
 		return `#SELECT-FOR-${pInputHTMLID}`;
 	}
 
+	/**
+	 * Generates a tabular select input ID based on the provided input HTML ID and row index.
+	 *
+	 * @param {string} pInputHTMLID - The input HTML ID.
+	 * @param {number} pRowIndex - The row index.
+	 * @returns {string} - The generated tabular select input ID.
+	 */
 	getTabularSelectInputID(pInputHTMLID, pRowIndex)
 	{
 		return `#SELECT-TABULAR-DATA-${pInputHTMLID}-${pRowIndex}`;
 	}
 
+	/**
+	 * Generates a tabular select dropdown ID based on the input HTML ID and row index.
+	 *
+	 * @param {string} pInputHTMLID - The HTML ID of the input.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @returns {string} - The generated tabular select dropdown ID.
+	 */
 	getTabularSelectDropdownID(pInputHTMLID, pRowIndex)
 	{
 		return `#SELECT-TABULAR-DROPDOWN-${pInputHTMLID}-${pRowIndex}`;
 	}
 
+	/**
+	 * Initializes the input element for the Pict provider select input.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group object.
+	 * @param {Object} pRow - The row object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The input value.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @returns {boolean} - Returns true if the input element is successfully initialized, false otherwise.
+	 */
 	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
 	{
 		// Try to get the input element
 		let tmpInputSelectElement = this.pict.ContentAssignment.getElement(this.getSelectInputHTMLID(pInput.Macro.RawHTMLID));
-		let tmpDefaultData = pInput.PictForm.SelectOptions;
+		let tmpDefaultData = pInput.PictForm?.SelectOptions;
 
 		if (pInput.PictForm.SelectOptionsPickList && this.pict.providers.DynamicMetaLists.hasList(pView.Hash, pInput.PictForm.SelectOptionsPickList))
 		{
@@ -57,6 +95,17 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
 	}
 
+	/**
+	 * Initializes a tabular input element.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The input value.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @returns {any} - The result of the initialization.
+	 */
 	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
 		// Try to get the input element
@@ -92,16 +141,46 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
 	}
 
+	/**
+	 * Handles the change event for the data in the select input.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The new value of the input.
+	 * @param {string} pHTMLSelector - The HTML selector of the input.
+	 * @returns {any} - The result of the super.onDataChange method.
+	 */
 	onDataChange(pView, pInput, pValue, pHTMLSelector)
 	{
 		return super.onDataChange(pView, pInput, pValue, pHTMLSelector);
 	}
 
+	/**
+	 * Handles the change event for tabular data.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The new value.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @returns {any} - The result of the super method.
+	 */
 	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
 		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex);
 	}
 
+	/**
+	 * Marshals data to the form for the given input.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group object.
+	 * @param {Object} pRow - The row object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value to be marshaled.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @returns {boolean} - Returns true if the value is successfully marshaled to the form, otherwise false.
+	 */
 	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
 	{
 		let tmpInputSelectElement = this.pict.ContentAssignment.getElement(this.getSelectInputHTMLID(pInput.Macro.RawHTMLID));
@@ -135,6 +214,17 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
 	}
 
+	/**
+	 * Marshals data to a form in tabular format.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value parameter.
+	 * @param {string} pHTMLSelector - The HTML selector parameter.
+	 * @param {number} pRowIndex - The row index parameter.
+	 * @returns {any} - The result of the data marshaling.
+	 */
 	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
 		let tmpInputSelectElement = this.pict.ContentAssignment.getElement(this.getTabularSelectDropdownID(pInput.Macro.RawHTMLID, pRowIndex));
@@ -169,6 +259,15 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
 	}
 
+	/**
+	 * Handles the data request event for a select input in the PictProviderInputSelect class.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value object.
+	 * @param {string} pHTMLSelector - The HTML selector object.
+	 * @returns {any} - The result of the onDataRequest method.
+	 */
 	onDataRequest(pView, pInput, pValue, pHTMLSelector)
 	{
 		let tmpInputSelectValue = this.pict.ContentAssignment.readContent(this.getSelectInputHTMLID(pInput.Macro.RawHTMLID));
@@ -177,6 +276,16 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return super.onDataRequest(pView, pInput, tmpInputSelectValue, pHTMLSelector);
 	}
 
+	/**
+	 * Handles the data request event for a tabular input.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value object.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {number} pRowIndex - The row index.
+	 * @returns {any} - The result of the data request.
+	 */
 	onDataRequestTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
 		let tmpInputSelectValue = this.pict.ContentAssignment.readContent(this.getTabularSelectDropdownID(pInput.Macro.RawHTMLID, pRowIndex));
