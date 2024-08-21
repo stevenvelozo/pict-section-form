@@ -1,5 +1,9 @@
 const libPictSectionTuiGrid = require('pict-section-tuigrid');
 
+/**
+ * TuiGridLayout class represents a layout for TuiGrid in the Pict-Layout-TuiGrid module.
+ * @extends libPictSectionTuiGrid
+ */
 class TuiGridLayout extends libPictSectionTuiGrid
 {
 	constructor(pFable, pOptions, pServiceHash)
@@ -11,6 +15,13 @@ class TuiGridLayout extends libPictSectionTuiGrid
 		this.cachedGridData = [];
 	}
 
+	/**
+	 * Custom configuration for the grid settings.
+	 * 
+	 * Sets the grid data to the cached grid data for the tuigrid.
+	 * 
+	 * @returns {any} The result of the super.customConfigureGridSettings() method.
+	 */
 	customConfigureGridSettings()
 	{
 		// Set the grid data to the cached grid data
