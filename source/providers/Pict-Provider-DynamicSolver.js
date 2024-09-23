@@ -4,6 +4,7 @@ const libDynamicMetaLists = require('./Pict-Provider-MetaLists.js');
 
 const libInputSelect = require('./inputs/Pict-Provider-Input-Select.js');
 const libInputDateTime = require('./inputs/Pict-Provider-Input-DateTime.js');
+const libInputTabSelector = require('./inputs/Pict-Provider-Input-TabSelector.js');
 
 const _DefaultProviderConfiguration = (
 {
@@ -46,6 +47,10 @@ class PictDynamicSolver extends libPictProvider
 		if (!this.pict.providers['Pict-Input-DateTime']);
 		{
 			this.pict.addProvider('Pict-Input-DateTime', libInputDateTime.default_configuration, libInputDateTime);
+		}
+		if (!this.pict.providers['Pict-Input-TabSelector']);
+		{
+			this.pict.addProvider('Pict-Input-TabSelector', libInputTabSelector.default_configuration, libInputTabSelector);
 		}
 	}
 
@@ -121,7 +126,7 @@ class PictDynamicSolver extends libPictProvider
 				tmpView.log.trace(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] solving RecordSet ordinal ${tmpSolver.Ordinal} [${tmpSolver.Expression}]`);
 			}
 
-			let tmpRecordSet = tmpView.getTabularRecordSet(j);
+			let tmpRecordSet = tmpView.getTabularRecordSet(tmpGroup.GroupIndex);
 
 			if (typeof(tmpRecordSet) == 'object')
 			{

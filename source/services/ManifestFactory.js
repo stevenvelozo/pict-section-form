@@ -11,7 +11,6 @@ class ManifestFactory extends libFableServiceProviderBase
 	{
 		// Intersect default options, parent constructor, service information
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultManifestSettings)), pOptions);
-
 		super(pFable, pOptions, pServiceHash);
 
 		this.manifest = tmpOptions.Manifest;
@@ -396,6 +395,7 @@ class ManifestFactory extends libFableServiceProviderBase
 
 		if (tmpRecord['Equation'])
 		{
+			this.log.trace(`Adding solver to ${tmpRecord.Form} --> ${tmpGroup.Name} for ${tmpRecord['Input Hash']}: ${tmpRecord['Equation']}`);
 			if (tmpGroup.Layout == 'Tabular')
 			{
 				tmpGroup.RecordSetSolvers.push(tmpRecord['Equation']);
