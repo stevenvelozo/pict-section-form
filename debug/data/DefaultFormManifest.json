@@ -1,0 +1,624 @@
+{
+    "Form": "DefaultFormManifest",
+    "Descriptors": {
+        "Header.FirstName": {
+            "Hash": "HeaderFirstName",
+            "Name": "First Name",
+            "DataAddress": "Header.FirstName",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "1",
+                "Width": "3",
+                "Section": "Header",
+                "Group": "General_Info"
+            }
+        },
+        "Header.LastName": {
+            "Hash": "HeaderLastName",
+            "Name": "Last Name",
+            "DataAddress": "Header.LastName",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "1",
+                "Width": "3",
+                "Section": "Header",
+                "Group": "General_Info"
+            }
+        },
+        "Header.JobTitle": {
+            "Hash": "JobTitle",
+            "Name": "Job Title",
+            "DataAddress": "Header.JobTitle",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "1",
+                "Width": "6",
+                "Section": "Header",
+                "Group": "General_Info"
+            }
+        },
+        "Header.Description": {
+            "Hash": "Description",
+            "Name": "Description",
+            "DataAddress": "Header.Description",
+            "DataType": "String",
+            "PictForm": {
+                "Row": "2",
+                "Width": "12",
+                "Section": "Header",
+                "Group": "General_Info"
+            }
+        },
+        "Header.Planet": {
+            "Hash": "Planet",
+            "Name": "Planet",
+            "DataAddress": "Header.Planet",
+            "DataType": "String",
+            "PictForm": {
+                "InputType": "Option",
+                "Row": "3",
+                "Width": "12",
+                "SelectOptions": [
+                    {
+                        "id": "Earth",
+                        "text": "Earth"
+                    },
+                    {
+                        "id": "Mars",
+                        "text": "Mars"
+                    },
+                    {
+                        "id": "Saturn",
+                        "text": "Saturn"
+                    },
+                    {
+                        "id": "Jupiter",
+                        "text": "Jupiter"
+                    }
+                ],
+                "Section": "Header",
+                "Group": "General_Info",
+                "Units": "planetary"
+            }
+        },
+        "Geometry.Rectangle.Width": {
+            "Hash": "RectangleWidth",
+            "Name": "Width",
+            "DataAddress": "Geometry.Rectangle.Width",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "1",
+                "Width": "6",
+                "Section": "Basic_Geometry",
+                "Group": "Rectangle"
+            },
+            "Default": "7.25"
+        },
+        "Geometry.Rectangle.Height": {
+            "Hash": "RectangleHeight",
+            "Name": "Height",
+            "DataAddress": "Geometry.Rectangle.Height",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "1",
+                "Width": "6",
+                "Section": "Basic_Geometry",
+                "Group": "Rectangle"
+            },
+            "Default": "10.3571"
+        },
+        "Geometry.Rectangle.Area": {
+            "Hash": "RectangleArea",
+            "Name": "Area",
+            "DataAddress": "Geometry.Rectangle.Area",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "3",
+                "Section": "Basic_Geometry",
+                "Group": "Rectangle",
+                "Units": "unrounded"
+            }
+        },
+        "Geometry.Rectangle.AreaRoundedDefault": {
+            "Hash": "RectangleAreaRoundedDefault",
+            "Name": "Area Rounded",
+            "DataAddress": "Geometry.Rectangle.AreaRoundedDefault",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "3",
+                "Section": "Basic_Geometry",
+                "Group": "Rectangle",
+                "Units": "default"
+            }
+        },
+        "Geometry.Rectangle.AreaRoundedThree": {
+            "Hash": "RectangleAreaRoundedThree",
+            "Name": "Area Rounded 3",
+            "DataAddress": "Geometry.Rectangle.AreaRoundedThree",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "3",
+                "Section": "Basic_Geometry",
+                "Group": "Rectangle",
+                "Units": "3"
+            }
+        },
+        "Geometry.Rectangle.AreaRoundedFour": {
+            "Hash": "RectangleAreaRoundedFive",
+            "Name": "Area Rounded 5",
+            "DataAddress": "Geometry.Rectangle.AreaRoundedFour",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "3",
+                "Section": "Basic_Geometry",
+                "Group": "Rectangle",
+                "Units": "5"
+            }
+        },
+        "Geometry.Circle.Radius": {
+            "Hash": "CircleRadius",
+            "Name": "Radius",
+            "DataAddress": "Geometry.Circle.Radius",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "1",
+                "Width": "12",
+                "Section": "Basic_Geometry",
+                "Group": "Circle"
+            },
+            "Default": "85.523"
+        },
+        "Geometry.Circle.Area": {
+            "Hash": "CircleArea",
+            "Name": "Area",
+            "DataAddress": "Geometry.Circle.Area",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "3",
+                "Section": "Basic_Geometry",
+                "Group": "Circle",
+                "Units": "unrounded"
+            }
+        },
+        "Geometry.Circle.AreaRoundedDefault": {
+            "Hash": "CircleAreaRoundedDefault",
+            "Name": "Area Rounded",
+            "DataAddress": "Geometry.Circle.AreaRoundedDefault",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "3",
+                "Section": "Basic_Geometry",
+                "Group": "Circle",
+                "Units": "default"
+            }
+        },
+        "Geometry.Circle.AreaRoundedThree": {
+            "Hash": "CircleAreaRoundedFour",
+            "Name": "Area Rounded 4",
+            "DataAddress": "Geometry.Circle.AreaRoundedThree",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "3",
+                "Section": "Basic_Geometry",
+                "Group": "Circle",
+                "Units": "4"
+            }
+        },
+        "Geometry.Circle.AreaRoundedFour": {
+            "Hash": "CircleAreaRoundedSix",
+            "Name": "Area Rounded 6",
+            "DataAddress": "Geometry.Circle.AreaRoundedFour",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "3",
+                "Section": "Basic_Geometry",
+                "Group": "Circle",
+                "Units": "6"
+            }
+        },
+        "Boxes": {
+            "Hash": "Boxes",
+            "Name": "Boxes",
+            "DataAddress": "Boxes",
+            "DataType": "Array"
+        },
+        "Boxes[].Floorspace": {
+            "Hash": "BoxesFloorspaceSet",
+            "Name": "BoxesFloorspaceSet",
+            "DataAddress": "Boxes[].Floorspace",
+            "DataType": "Number"
+        },
+        "Boxes[].Volume": {
+            "Hash": "BoxesVolumeSet",
+            "Name": "BoxesVolumeSet",
+            "DataAddress": "Boxes[].Volume",
+            "DataType": "Number"
+        },
+        "Boxes[].Depth": {
+            "Hash": "BoxesDepthSet",
+            "Name": "BoxesDepthSet",
+            "DataAddress": "Boxes[].Depth",
+            "DataType": "Number"
+        },
+        "BoxAggregate.Count": {
+            "Hash": "BoxesCount",
+            "Name": "Box Count",
+            "DataAddress": "BoxAggregate.Count",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "1",
+                "Width": "12",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data"
+            }
+        },
+        "BoxAggregate.AverageFloorspace": {
+            "Hash": "BoxesAverageFloorspace",
+            "Name": "Average Floorspace",
+            "DataAddress": "BoxAggregate.AverageFloorspace",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "6",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data"
+            }
+        },
+        "BoxAggregate.TotalFloorspace": {
+            "Hash": "BoxesTotalFloorspace",
+            "Name": "Total Floorspace",
+            "DataAddress": "BoxAggregate.TotalFloorspace",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "6",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data"
+            }
+        },
+        "BoxAggregate.AverageVolume": {
+            "Hash": "BoxesAverageVolume",
+            "Name": "Average Volume",
+            "DataAddress": "BoxAggregate.AverageVolume",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "3",
+                "Width": "4",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data"
+            }
+        },
+        "BoxAggregate.TotalVolume": {
+            "Hash": "BoxesTotalVolume",
+            "Name": "Total Volume",
+            "DataAddress": "BoxAggregate.TotalVolume",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "3",
+                "Width": "4",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data"
+            }
+        },
+        "BoxAggregate.TotalVolumeRounded": {
+            "Hash": "BoxesTotalVolumeRounded",
+            "Name": "Total Volume Rounded",
+            "DataAddress": "BoxAggregate.TotalVolumeRounded",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "3",
+                "Width": "4",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data"
+            }
+        },
+        "BoxAggregate.MinDepth": {
+            "Hash": "BoxesMinDepth",
+            "Name": "Minimum Depth",
+            "DataAddress": "BoxAggregate.MinDepth",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "4",
+                "Width": "3",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data"
+            }
+        },
+        "BoxAggregate.MeanDepth": {
+            "Hash": "BoxesMeanDepth",
+            "Name": "Mean Depth",
+            "DataAddress": "BoxAggregate.MeanDepth",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "4",
+                "Width": "3",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data"
+            }
+        },
+        "BoxAggregate.MedianDepth": {
+            "Hash": "BoxesMedianDepth",
+            "Name": "Median Depth",
+            "DataAddress": "BoxAggregate.MedianDepth",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "4",
+                "Width": "3",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data"
+            }
+        },
+        "BoxAggregate.MaxDepth": {
+            "Hash": "BoxesMaxDepth",
+            "Name": "Max Depth",
+            "DataAddress": "BoxAggregate.MaxDepth",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "4",
+                "Width": "3",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data"
+            }
+        },
+        "ComplexEquation.PR": {
+            "Hash": "CePR",
+            "Name": "PR",
+            "DataAddress": "ComplexEquation.PR",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "1",
+                "Width": "4",
+                "Section": "Complex_Equation",
+                "Group": "Complex_Equation"
+            },
+            "Default": "4.5"
+        },
+        "ComplexEquation.Z": {
+            "Hash": "CeZ",
+            "Name": "Z",
+            "DataAddress": "ComplexEquation.Z",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "1",
+                "Width": "4",
+                "Section": "Complex_Equation",
+                "Group": "Complex_Equation"
+            },
+            "Default": "1.5"
+        },
+        "ComplexEquation.C": {
+            "Hash": "CeC",
+            "Name": "C",
+            "DataAddress": "ComplexEquation.C",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "1",
+                "Width": "4",
+                "Section": "Complex_Equation",
+                "Group": "Complex_Equation"
+            },
+            "Default": "8.75"
+        },
+        "ComplexEquation.Result": {
+            "Hash": "CeResult",
+            "Name": "(160 * PR * Z) / (C / 100) * PR * Z + (160 * (1 - C / 100))",
+            "DataAddress": "ComplexEquation.Result",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "6",
+                "Section": "Complex_Equation",
+                "Group": "Complex_Equation"
+            }
+        },
+        "ComplexEquation.ResultRounded": {
+            "Hash": "CeResultRounded",
+            "Name": "Rounded 3",
+            "DataAddress": "ComplexEquation.ResultRounded",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "2",
+                "Width": "6",
+                "Section": "Complex_Equation",
+                "Group": "Complex_Equation"
+            }
+        }
+    },
+    "Sections": [
+        {
+            "Name": "Header",
+            "Hash": "Header",
+            "Solvers": [],
+            "Groups": [
+                {
+                    "Name": "General Info",
+                    "Hash": "General_Info",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                }
+            ]
+        },
+        {
+            "Name": "Basic Geometry",
+            "Hash": "Basic_Geometry",
+            "Solvers": [
+                "RectangleArea = RectangleWidth * RectangleHeight",
+                "RectangleAreaRoundedDefault = ROUND(RectangleWidth * RectangleHeight)",
+                "RectangleAreaRoundedThree = ROUND((RectangleWidth * RectangleHeight), 3)",
+                "RectangleAreaRoundedFive = ROUND(RectangleArea, 5)",
+                "CircleArea = PI() * CircleRadius^2",
+                "CircleAreaRoundedDefault = ROUND(PI() * CircleRadius^2)",
+                "CircleAreaRoundedFour = ROUND(CircleArea,4)",
+                "CircleAreaRoundedSix = ROUND(PI() * CircleRadius^2,6)"
+            ],
+            "Groups": [
+                {
+                    "Name": "Rectangle",
+                    "Hash": "Rectangle",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                },
+                {
+                    "Name": "Circle",
+                    "Hash": "Circle",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                }
+            ]
+        },
+        {
+            "Name": "Box Collection",
+            "Hash": "Box_Collection",
+            "Solvers": [],
+            "Groups": [
+                {
+                    "Name": "Boxes",
+                    "Hash": "Boxes",
+                    "Rows": [],
+                    "RecordSetSolvers": [
+                        "BoxFloorspace = BoxWidth * BoxDepth",
+                        "BoxVolume = BoxFloorspace * BoxHeight"
+                    ],
+                    "Layout": "Tabular",
+                    "RecordSetAddress": "Boxes",
+                    "RecordManifest": "Boxes"
+                }
+            ]
+        },
+        {
+            "Name": "Box Summary Data",
+            "Hash": "Box_Summary_Data",
+            "Solvers": [
+                "BoxesCount = COUNT(BoxesFloorspaceSet)",
+                "BoxesAverageFloorspace = AVG(BoxesFloorspaceSet)",
+                "BoxesTotalFloorspace = SUM(BoxesFloorspaceSet)",
+                "BoxesAverageVolume = AVG(BoxesVolumeSet)",
+                "BoxesTotalVolume = COUNT(BoxesVolumeSet)",
+                "BoxesTotalVolumeRounded = ROUND(SUM(BoxesVolumeSet))",
+                "BoxesMinDepth = MIN(BoxesDepthSet)",
+                "BoxesMeanDepth = MEAN(BoxesDepthSet)",
+                "BoxesMedianDepth = MEDIAN(BoxesDepthSet)",
+                "BoxesMaxDepth = MAX(BoxesDepthSet)"
+            ],
+            "Groups": [
+                {
+                    "Name": "Box Summary Data",
+                    "Hash": "Box_Summary_Data",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                }
+            ]
+        },
+        {
+            "Name": "Complex Equation",
+            "Hash": "Complex_Equation",
+            "Solvers": [
+                "CeResult = (160 * CePR * CeZ) / (CeC / 100) * CePR * CeZ + (160 * (1 - CeC / 100))",
+                "CeResultRounded = ROUND(CeResult,3)"
+            ],
+            "Groups": [
+                {
+                    "Name": "Complex Equation",
+                    "Hash": "Complex_Equation",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                }
+            ]
+        }
+    ],
+    "ReferenceManifests": {
+        "Boxes": {
+            "Scope": "Boxes",
+            "Descriptors": {
+                "Identifier": {
+                    "Hash": "BoxIdentifier",
+                    "Name": "Identifier",
+                    "DataAddress": "Identifier",
+                    "DataType": "String",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Section": "Box_Collection",
+                        "Group": "Boxes"
+                    },
+                    "IsTabular": true
+                },
+                "Width": {
+                    "Hash": "BoxWidth",
+                    "Name": "Width",
+                    "DataAddress": "Width",
+                    "DataType": "Number",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Section": "Box_Collection",
+                        "Group": "Boxes"
+                    },
+                    "IsTabular": true
+                },
+                "Height": {
+                    "Hash": "BoxHeight",
+                    "Name": "Height",
+                    "DataAddress": "Height",
+                    "DataType": "Number",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Section": "Box_Collection",
+                        "Group": "Boxes"
+                    },
+                    "IsTabular": true
+                },
+                "Depth": {
+                    "Hash": "BoxDepth",
+                    "Name": "Depth",
+                    "DataAddress": "Depth",
+                    "DataType": "Number",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Section": "Box_Collection",
+                        "Group": "Boxes"
+                    },
+                    "IsTabular": true
+                },
+                "Floorspace": {
+                    "Hash": "BoxFloorspace",
+                    "Name": "Floorspace",
+                    "DataAddress": "Floorspace",
+                    "DataType": "Number",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Section": "Box_Collection",
+                        "Group": "Boxes"
+                    },
+                    "IsTabular": true
+                },
+                "Volume": {
+                    "Hash": "BoxVolume",
+                    "Name": "Volume",
+                    "DataAddress": "Volume",
+                    "DataType": "Number",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Section": "Box_Collection",
+                        "Group": "Boxes"
+                    },
+                    "IsTabular": true
+                }
+            },
+            "Sections": [],
+            "ReferenceManifests": {}
+        }
+    }
+}

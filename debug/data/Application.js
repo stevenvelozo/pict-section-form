@@ -1,7 +1,9 @@
 const libPictSectionForm = require('../../source/Pict-Section-Form.js');
+const packageJSON = require('./package.json');
 module.exports = libPictSectionForm.PictFormApplication;
 module.exports.default_configuration.pict_configuration = (
 		{
 			"Product": "Debug",
-			"DefaultFormManifest": require("./ExampleForm.json")
+			"DefaultAppData": require('./DefaultAppData.json'),
+			"DefaultFormManifest": require('./DefaultFormManifest.json')
 		});
