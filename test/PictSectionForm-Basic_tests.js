@@ -81,6 +81,15 @@ suite
 								let _PictSectionForm = _Pict.addView(tmpViewHash, tmpViewConfiguration, libPictSectionForm);
 
 								Expect(_PictSectionForm).to.be.an('object');
+
+								// Test package anthropology
+								Expect(_PictSectionForm._PackageFableServiceProvider).to.be.an('object', 'Fable should have a _PackageFableServiceProvider object.');
+								Expect(_PictSectionForm._PackageFableServiceProvider.name).equal('fable-serviceproviderbase', 'Fable _PackageFableServiceProvider.package.name should be set.');
+								Expect(_PictSectionForm._PackagePictView).to.be.an('object', 'Should have a _PackagePictView object.');
+								Expect(_PictSectionForm._PackagePictView.name).to.equal('pict-view', '_PackagePictView.package.name should be set.');
+								Expect(_PictSectionForm._Package).to.be.an('object', 'Should have a _Package object.');
+								Expect(_PictSectionForm._Package.name).to.equal('pict-section-form', '_Package.package.name should be set.');
+
 								return fDone();
 							}
 						);

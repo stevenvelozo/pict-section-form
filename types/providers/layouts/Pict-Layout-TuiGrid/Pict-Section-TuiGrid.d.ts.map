@@ -1,1 +1,1 @@
-{"version":3,"file":"Pict-Section-TuiGrid.d.ts","sourceRoot":"","sources":["../../../../source/providers/layouts/Pict-Layout-TuiGrid/Pict-Section-TuiGrid.js"],"names":[],"mappings":";AAEA;IAEC,2DAOC;IAHA,2BAAgC;IAEhC,sBAAwB;IAGzB,mCAKC;IAED,qCAaC;CACD"}
+{"version":3,"file":"Pict-Section-TuiGrid.d.ts","sourceRoot":"","sources":["../../../../source/providers/layouts/Pict-Layout-TuiGrid/Pict-Section-TuiGrid.js"],"names":[],"mappings":";AAEA;;;GAGG;AACH;IAEC,2DAOC;IAHA,2BAAgC;IAEhC,sBAAwB;IAGzB;;;;;;OAMG;IACH,+BAFa,GAAG,CAOf;IAED;;;;;;;OAOG;IACH,iCAFa,GAAG,CAef;CACD"}

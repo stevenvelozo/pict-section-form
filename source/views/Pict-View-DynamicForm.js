@@ -21,6 +21,8 @@ const libPictLayoutTuiGrid = require('../providers/layouts/Pict-Layout-TuiGrid.j
 
 const libInformary = require('../providers/Pict-Provider-Informary.js');
 
+const libPackage = require('../../package.json');
+
 /**
  * Represents a dynamic form view for the Pict application.
  * 
@@ -72,6 +74,9 @@ class PictViewDynamicForm extends libPictViewClass
 
 		// Now construct the view.
 		super(pFable, tmpOptions, pServiceHash);
+		/** @type {Object} */
+		this._PackagePictView = this._Package;
+		this._Package = libPackage;
 
 		// Pull in the section definition
 		this.sectionDefinition = this.options;

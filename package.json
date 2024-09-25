@@ -1,6 +1,6 @@
 {
     "name": "pict-section-form",
-    "version": "1.0.34",
+    "version": "1.0.35",
     "description": "Pict dynamic form sections",
     "main": "source/Pict-Section-Form.js",
     "directories": {
@@ -27,22 +27,22 @@
     "author": "steven velozo <steven@velozo.com>",
     "license": "MIT",
     "devDependencies": {
-        "@eslint/js": "^9.9.0",
+        "@eslint/js": "^9.11.1",
         "browser-env": "^3.3.0",
-        "eslint": "^9.9.0",
+        "eslint": "^9.11.1",
         "jquery": "^3.7.1",
-        "pict": "^1.0.215",
-        "pict-application": "^1.0.20",
+        "pict": "^1.0.216",
+        "pict-application": "^1.0.22",
         "pict-service-commandlineutility": "^1.0.15",
         "quackage": "^1.0.33",
-        "typescript": "^5.5.4"
+        "typescript": "^5.6.2"
     },
     "dependencies": {
-        "fable-serviceproviderbase": "^3.0.13",
-        "pict-provider": "^1.0.2",
+        "fable-serviceproviderbase": "^3.0.15",
+        "pict-provider": "^1.0.3",
         "pict-section-tuigrid": "^1.0.26",
-        "pict-template": "^1.0.6",
-        "pict-view": "^1.0.53"
+        "pict-template": "^1.0.7",
+        "pict-view": "^1.0.54"
     },
     "mocha": {
         "diff": true,
