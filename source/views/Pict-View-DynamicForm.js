@@ -1,27 +1,8 @@
 const libPictViewClass = require('pict-view');
 
-const libManifestFactory = require('../services/ManifestFactory.js');
-
-const libDynamicSolver = require('../providers/Pict-Provider-DynamicSolver.js');
-const libDynamicInput = require('../providers/Pict-Provider-DynamicInput.js');
-const libDynamicInputEvents = require('../providers/Pict-Provider-DynamicInputEvents.js');
-const libDynamicTabularData = require('../providers/Pict-Provider-DynamicTabularData.js');
-const libDynamicRecordSet = require('../providers/Pict-Provider-DynamicRecordSet.js');
-
-const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
-
-const libMetatemplateGenerator = require('../providers/Pict-Provider-MetatemplateGenerator.js');
-const libMetatemplateMacros = require('../providers/Pict-Provider-MetatemplateMacros.js');
-
-const libPictLayoutRecord = require('../providers/layouts/Pict-Layout-Record.js');
-const libPictLayoutTabular = require('../providers/layouts/Pict-Layout-Tabular.js');
-const libPictLayoutRecordSet = require('../providers/layouts/Pict-Layout-RecordSet.js');
-const libPictLayoutChart = require('../providers/layouts/Pict-Layout-Chart.js');
-const libPictLayoutTuiGrid = require('../providers/layouts/Pict-Layout-TuiGrid.js');
-
-const libInformary = require('../providers/Pict-Provider-Informary.js');
-
 const libPackage = require('../../package.json');
+
+const libPictDynamicApplication = require(`../services/Pict-Service-DynamicApplication.js`);
 
 /**
  * Represents a dynamic form view for the Pict application.
@@ -74,6 +55,10 @@ class PictViewDynamicForm extends libPictViewClass
 
 		// Now construct the view.
 		super(pFable, tmpOptions, pServiceHash);
+
+		// Load the dynamic application dependencies if they don't exist
+		this.fable.addAndInstantiateSingletonService('PictDynamicApplication', libPictDynamicApplication.default_configuration, libPictDynamicApplication);
+
 		/** @type {Object} */
 		this._PackagePictView = this._Package;
 		this._Package = libPackage;
@@ -97,27 +82,6 @@ class PictViewDynamicForm extends libPictViewClass
 				}
 			}
 		}
-
-		this.fable.addAndInstantiateSingletonService('ManifestFactory', libManifestFactory.default_configuration, libManifestFactory);
-
-		this.pict.addProviderSingleton('DynamicInput', libDynamicInput.default_configuration, libDynamicInput);
-		this.pict.addProviderSingleton('DynamicInputEvents', libDynamicInputEvents.default_configuration, libDynamicInputEvents);
-		this.pict.addProviderSingleton('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
-		this.pict.addProviderSingleton('DynamicTabularData', libDynamicTabularData.default_configuration, libDynamicTabularData);
-		this.pict.addProviderSingleton('DynamicRecordSet', libDynamicRecordSet.default_configuration, libDynamicRecordSet);
-
-		this.pict.addProviderSingleton('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
-
-		this.pict.addProviderSingleton('MetatemplateGenerator', libMetatemplateGenerator.default_configuration, libMetatemplateGenerator);
-		this.pict.addProviderSingleton('MetatemplateMacros', libMetatemplateMacros.default_configuration, libMetatemplateMacros);
-
-		this.pict.addProviderSingleton('Pict-Layout-Record', libPictLayoutRecord.default_configuration, libPictLayoutRecord);
-		this.pict.addProviderSingleton('Pict-Layout-Tabular', libPictLayoutTabular.default_configuration, libPictLayoutTabular);
-		this.pict.addProviderSingleton('Pict-Layout-RecordSet', libPictLayoutRecordSet.default_configuration, libPictLayoutRecordSet);
-		this.pict.addProviderSingleton('Pict-Layout-Chart', libPictLayoutChart.default_configuration, libPictLayoutChart);
-		this.pict.addProviderSingleton('Pict-Layout-TuiGrid', libPictLayoutTuiGrid.default_configuration, libPictLayoutTuiGrid);
-
-		this.pict.addProviderSingleton('Informary', libInformary.default_configuration, libInformary);
 
 		// Load any view section-specific templates
 		this.formsTemplateSetPrefix = `PFT-${this.Hash}-${this.UUID}`;

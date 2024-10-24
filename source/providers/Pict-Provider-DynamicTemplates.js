@@ -3,6 +3,7 @@ const libPictProvider = require('pict-provider');
 const libDynamicInput = require('../providers/Pict-Provider-DynamicInput.js');
 
 const templateSetDefaultFormTemplates = require('./dynamictemplates/Pict-DynamicTemplates-DefaultFormTemplates.js');
+const templateSetReadOnlyTemplates = require('./dynamictemplates/Pict-DynamicTemplates-DefaultFormTemplates-ReadOnly.js');
 
 const _DefaultProviderConfiguration = (
 {
@@ -44,7 +45,7 @@ class PictDynamicFormsTemplates extends libPictProvider
 		{
 			this.injectTemplateSet(templateSetDefaultFormTemplates);
 		}
-		this.injectTemplateSet(require('./dynamictemplates/Pict-DynamicTemplates-DefaultFormTemplates-ReadOnly.js'));
+		this.injectTemplateSet(templateSetReadOnlyTemplates);
 	}
 
 	/**

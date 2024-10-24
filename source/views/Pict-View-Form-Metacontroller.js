@@ -1,24 +1,6 @@
 const libPictViewClass = require('pict-view');
 
-
-const libDynamicSolver = require('../providers/Pict-Provider-DynamicSolver.js');
-const libDynamicInput = require('../providers/Pict-Provider-DynamicInput.js');
-const libDynamicInputEvents = require('../providers/Pict-Provider-DynamicInputEvents.js');
-const libDynamicTabularData = require('../providers/Pict-Provider-DynamicTabularData.js');
-const libDynamicRecordSet = require('../providers/Pict-Provider-DynamicRecordSet.js');
-
-const libFormsTemplateProvider = require('../providers/Pict-Provider-DynamicTemplates.js');
-
-const libMetatemplateGenerator = require('../providers/Pict-Provider-MetatemplateGenerator.js');
-const libMetatemplateMacros = require('../providers/Pict-Provider-MetatemplateMacros.js');
-
-const libPictLayoutRecord = require('../providers/layouts/Pict-Layout-Record.js');
-const libPictLayoutTabular = require('../providers/layouts/Pict-Layout-Tabular.js');
-const libPictLayoutRecordSet = require('../providers/layouts/Pict-Layout-RecordSet.js');
-const libPictLayoutChart = require('../providers/layouts/Pict-Layout-Chart.js');
-const libPictLayoutTuiGrid = require('../providers/layouts/Pict-Layout-TuiGrid.js');
-
-const libInformary = require('../providers/Pict-Provider-Informary.js');
+const libPictDynamicApplication = require(`../services/Pict-Service-DynamicApplication.js`);
 
 // TODO: Potentially create an internalized list of views for this to manage, separate from the pict.views object
 // TODO: Manage view lifecycle internally, including destruction of views if they are flagged to not be needed.
@@ -36,29 +18,10 @@ class PictFormMetacontroller extends libPictViewClass
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
-
 		this.serviceType = 'PictFormMetacontroller';
 
-		// TODO: These singletons are loaded both in the metacontroller and the form.  This is so the forms can be used stand-alone.
-
-		this.pict.addProviderSingleton('DynamicInput', libDynamicInput.default_configuration, libDynamicInput);
-		this.pict.addProviderSingleton('DynamicInputEvents', libDynamicInputEvents.default_configuration, libDynamicInputEvents);
-		this.pict.addProviderSingleton('DynamicSolver', libDynamicSolver.default_configuration, libDynamicSolver);
-		this.pict.addProviderSingleton('DynamicTabularData', libDynamicTabularData.default_configuration, libDynamicTabularData);
-		this.pict.addProviderSingleton('DynamicRecordSet', libDynamicRecordSet.default_configuration, libDynamicRecordSet);
-
-		this.pict.addProviderSingleton('PictFormSectionDefaultTemplateProvider', libFormsTemplateProvider.default_configuration, libFormsTemplateProvider);
-
-		this.pict.addProviderSingleton('MetatemplateGenerator', libMetatemplateGenerator.default_configuration, libMetatemplateGenerator);
-		this.pict.addProviderSingleton('MetatemplateMacros', libMetatemplateMacros.default_configuration, libMetatemplateMacros);
-
-		this.pict.addProviderSingleton('Pict-Layout-Record', libPictLayoutRecord.default_configuration, libPictLayoutRecord);
-		this.pict.addProviderSingleton('Pict-Layout-Tabular', libPictLayoutTabular.default_configuration, libPictLayoutTabular);
-		this.pict.addProviderSingleton('Pict-Layout-RecordSet', libPictLayoutRecordSet.default_configuration, libPictLayoutRecordSet);
-		this.pict.addProviderSingleton('Pict-Layout-Chart', libPictLayoutChart.default_configuration, libPictLayoutChart);
-		this.pict.addProviderSingleton('Pict-Layout-TuiGrid', libPictLayoutTuiGrid.default_configuration, libPictLayoutTuiGrid);
-
-		this.pict.addProviderSingleton('Informary', libInformary.default_configuration, libInformary);
+		// Load the dynamic application dependencies if they don't exist
+		this.fable.addAndInstantiateSingletonService('PictDynamicApplication', libPictDynamicApplication.default_configuration, libPictDynamicApplication);
 
 		this.viewMarshalDestination = 'AppData';
 

@@ -2,625 +2,512 @@
     "DefaultFormManifest": {
         "Form": "DefaultFormManifest",
         "Descriptors": {
-            "Header.FirstName": {
-                "Hash": "HeaderFirstName",
-                "Name": "First Name",
-                "DataAddress": "Header.FirstName",
+            "General.SampleName": {
+                "Hash": "GeneralSampleName",
+                "Name": "Sample Name",
+                "DataAddress": "General.SampleName",
                 "DataType": "String",
                 "PictForm": {
                     "Row": "1",
-                    "Width": "3",
-                    "Section": "Header",
-                    "Group": "General_Info"
+                    "Section": "General_Information",
+                    "Group": ""
                 }
             },
-            "Header.LastName": {
-                "Hash": "HeaderLastName",
-                "Name": "Last Name",
-                "DataAddress": "Header.LastName",
-                "DataType": "String",
+            "General.DocumentDate": {
+                "Hash": "GeneralDocumentDate",
+                "Name": "Document Date",
+                "DataAddress": "General.DocumentDate",
+                "DataType": "Date",
                 "PictForm": {
                     "Row": "1",
-                    "Width": "3",
-                    "Section": "Header",
-                    "Group": "General_Info"
+                    "Section": "General_Information",
+                    "Group": ""
                 }
             },
-            "Header.JobTitle": {
-                "Hash": "JobTitle",
-                "Name": "Job Title",
-                "DataAddress": "Header.JobTitle",
-                "DataType": "String",
+            "General.SampleID": {
+                "Hash": "GeneralSampleID",
+                "Name": "Sample ID",
+                "DataAddress": "General.SampleID",
+                "DataType": "Select",
                 "PictForm": {
                     "Row": "1",
-                    "Width": "6",
-                    "Section": "Header",
-                    "Group": "General_Info"
+                    "Section": "General_Information",
+                    "Group": ""
                 }
             },
-            "Header.Description": {
-                "Hash": "Description",
-                "Name": "Description",
-                "DataAddress": "Header.Description",
-                "DataType": "String",
+            "General.ProjectName": {
+                "Hash": "GeneralProjectName",
+                "Name": "Project Name",
+                "DataAddress": "General.ProjectName",
+                "DataType": "Select",
                 "PictForm": {
+                    "InputType": "ProjectSelector",
                     "Row": "2",
-                    "Width": "12",
-                    "Section": "Header",
-                    "Group": "General_Info"
+                    "Section": "General_Information",
+                    "Group": ""
                 }
             },
-            "Header.Planet": {
-                "Hash": "Planet",
-                "Name": "Planet",
-                "DataAddress": "Header.Planet",
+            "General.MaterialName": {
+                "Hash": "GeneralMaterialName",
+                "Name": "Material Name",
+                "DataAddress": "General.MaterialName",
                 "DataType": "String",
+                "PictForm": {
+                    "Row": "3",
+                    "Section": "General_Information",
+                    "Group": ""
+                }
+            },
+            "General.Producer": {
+                "Hash": "GeneralProducer",
+                "Name": "Producer",
+                "DataAddress": "General.Producer",
+                "DataType": "Select",
+                "PictForm": {
+                    "Row": "3",
+                    "Section": "General_Information",
+                    "Group": ""
+                }
+            },
+            "General.Product": {
+                "Hash": "GeneralProduct",
+                "Name": "Product",
+                "DataAddress": "General.Product",
+                "DataType": "Select",
+                "PictForm": {
+                    "Row": "4",
+                    "Section": "General_Information",
+                    "Group": ""
+                }
+            },
+            "General.RepresentativeQuantity": {
+                "Hash": "GeneralRepresentativeQuantity",
+                "Name": "Representative Quantity",
+                "DataAddress": "General.RepresentativeQuantity",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "4",
+                    "Section": "General_Information",
+                    "Group": ""
+                }
+            },
+            "General.Units": {
+                "Hash": "GeneralUnits",
+                "Name": "Units",
+                "DataAddress": "General.Units",
+                "DataType": "String",
+                "PictForm": {
+                    "Row": "4",
+                    "Section": "General_Information",
+                    "Group": ""
+                }
+            },
+            "General.LineItemNo": {
+                "Hash": "GeneralLineItemNo",
+                "Name": "Line Item No",
+                "DataAddress": "General.LineItemNo",
+                "DataType": "Select",
+                "PictForm": {
+                    "Row": "5",
+                    "Section": "General_Information",
+                    "Group": ""
+                }
+            },
+            "General.MixSpecification": {
+                "Hash": "GeneralMixSpecification",
+                "Name": "Mix Specification",
+                "DataAddress": "General.MixSpecification",
+                "DataType": "Select",
+                "PictForm": {
+                    "Row": "5",
+                    "Section": "General_Information",
+                    "Group": ""
+                }
+            },
+            "General.Plant": {
+                "Hash": "GeneralPlant",
+                "Name": "Plant",
+                "DataAddress": "General.Plant",
+                "DataType": "Select",
+                "PictForm": {
+                    "Row": "6",
+                    "Section": "General_Information",
+                    "Group": ""
+                }
+            },
+            "General.DestinationLab": {
+                "Hash": "GeneralDestinationLab",
+                "Name": "Destination Lab",
+                "DataAddress": "General.DestinationLab",
+                "DataType": "Select",
+                "PictForm": {
+                    "Row": "6",
+                    "Section": "General_Information",
+                    "Group": ""
+                }
+            },
+            "General.DateSampled": {
+                "Hash": "GeneralDateSampled",
+                "Name": "Date Sampled",
+                "DataAddress": "General.DateSampled",
+                "DataType": "Date",
+                "PictForm": {
+                    "Row": "6",
+                    "Section": "General_Information",
+                    "Group": ""
+                }
+            },
+            "DeterOne.BindOneAggOne": {
+                "Hash": "DeterOneBindOneAggOne",
+                "Name": "Binder 1 - Aggregate 1",
+                "DataAddress": "DeterOne.BindOneAggOne",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "7",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterOne.BindOneAggTwo": {
+                "Hash": "DeterOneBindOneAggTwo",
+                "Name": "Binder 1 - Aggregate 2",
+                "DataAddress": "DeterOne.BindOneAggTwo",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "7",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterOne.BindOneAggThree": {
+                "Hash": "DeterOneBindOneAggThree",
+                "Name": "Binder 1 - Aggregate 3",
+                "DataAddress": "DeterOne.BindOneAggThree",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "7",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterOne.BindTwoAggOne": {
+                "Hash": "DeterOneBindTwoAggOne",
+                "Name": "Binder 2 - Aggregate 1",
+                "DataAddress": "DeterOne.BindTwoAggOne",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "8",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterOne.BindTwoAggTwo": {
+                "Hash": "DeterOneBindTwoAggTwo",
+                "Name": "Binder 2 - Aggregate 2",
+                "DataAddress": "DeterOne.BindTwoAggTwo",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "8",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterOne.BindTwoAggThree": {
+                "Hash": "DeterOneBindTwoAggThree",
+                "Name": "Binder 2 - Aggregate 3",
+                "DataAddress": "DeterOne.BindTwoAggThree",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "8",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterTwo.BindOneAggOne": {
+                "Hash": "DeterTwoBindOneAggOne",
+                "Name": "Binder 1 - Aggregate 1",
+                "DataAddress": "DeterTwo.BindOneAggOne",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "9",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterTwo.BindOneAggTwo": {
+                "Hash": "DeterTwoBindOneAggTwo",
+                "Name": "Binder 1 - Aggregate 2",
+                "DataAddress": "DeterTwo.BindOneAggTwo",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "9",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterTwo.BindOneAggThree": {
+                "Hash": "DeterTwoBindOneAggThree",
+                "Name": "Binder 1 - Aggregate 3",
+                "DataAddress": "DeterTwo.BindOneAggThree",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "9",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterTwo.BindTwoAggOne": {
+                "Hash": "DeterTwoBindTwoAggOne",
+                "Name": "Binder 2 - Aggregate 1",
+                "DataAddress": "DeterTwo.BindTwoAggOne",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "10",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterTwo.BindTwoAggTwo": {
+                "Hash": "DeterTwoBindTwoAggTwo",
+                "Name": "Binder 2 - Aggregate 2",
+                "DataAddress": "DeterTwo.BindTwoAggTwo",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "10",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterTwo.BindTwoAggThree": {
+                "Hash": "DeterTwoBindTwoAggThree",
+                "Name": "Binder 2 - Aggregate 3",
+                "DataAddress": "DeterTwo.BindTwoAggThree",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "10",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterThree.BindOneAggOne": {
+                "Hash": "DeterThreeBindOneAggOne",
+                "Name": "Binder 1 - Aggregate 1",
+                "DataAddress": "DeterThree.BindOneAggOne",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "11",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterThree.BindOneAggTwo": {
+                "Hash": "DeterThreeBindOneAggTwo",
+                "Name": "Binder 1 - Aggregate 2",
+                "DataAddress": "DeterThree.BindOneAggTwo",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "11",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterThree.BindOneAggThree": {
+                "Hash": "DeterThreeBindOneAggThree",
+                "Name": "Binder 1 - Aggregate 3",
+                "DataAddress": "DeterThree.BindOneAggThree",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "11",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterThree.BindTwoAggOne": {
+                "Hash": "DeterThreeBindTwoAggOne",
+                "Name": "Binder 2 - Aggregate 1",
+                "DataAddress": "DeterThree.BindTwoAggOne",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "12",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterThree.BindTwoAggTwo": {
+                "Hash": "DeterThreeBindTwoAggTwo",
+                "Name": "Binder 2 - Aggregate 2",
+                "DataAddress": "DeterThree.BindTwoAggTwo",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "12",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "DeterThree.BindTwoAggThree": {
+                "Hash": "DeterThreeBindTwoAggThree",
+                "Name": "Binder 2 - Aggregate 3",
+                "DataAddress": "DeterThree.BindTwoAggThree",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "12",
+                    "Section": "Determinations",
+                    "Group": "Determination__"
+                }
+            },
+            "Average.BindOneAggOne": {
+                "Hash": "AverageBindOneAggOne",
+                "Name": "Average - Binder 1 - Aggregate 1",
+                "DataAddress": "Average.BindOneAggOne",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "13",
+                    "Section": "Averages",
+                    "Group": ""
+                }
+            },
+            "Average.BindOneAggTwo": {
+                "Hash": "AverageBindOneAggTwo",
+                "Name": "Average - Binder 1 - Aggregate 2",
+                "DataAddress": "Average.BindOneAggTwo",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "13",
+                    "Section": "Averages",
+                    "Group": ""
+                }
+            },
+            "Average.BindOneAggThree": {
+                "Hash": "AverageBindOneAggThree",
+                "Name": "Average - Binder 1 - Aggregate 3",
+                "DataAddress": "Average.BindOneAggThree",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "13",
+                    "Section": "Averages",
+                    "Group": ""
+                }
+            },
+            "Average.BindTwoAggOne": {
+                "Hash": "AverageBindTwoAggOne",
+                "Name": "Average - Binder 2 - Aggregate 1",
+                "DataAddress": "Average.BindTwoAggOne",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "14",
+                    "Section": "Averages",
+                    "Group": ""
+                }
+            },
+            "Average.BindTwoAggTwo": {
+                "Hash": "AverageBindTwoAggTwo",
+                "Name": "Average - Binder 2 - Aggregate 2",
+                "DataAddress": "Average.BindTwoAggTwo",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "14",
+                    "Section": "Averages",
+                    "Group": ""
+                }
+            },
+            "Average.BindTwoAggThree": {
+                "Hash": "AverageBindTwoAggThree",
+                "Name": "Average - Binder 2 - Aggregate 3",
+                "DataAddress": "Average.BindTwoAggThree",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "14",
+                    "Section": "Averages",
+                    "Group": ""
+                }
+            },
+            "Average.Retained": {
+                "Hash": "AverageRetained",
+                "Name": "Retained Asphalt Coating",
+                "DataAddress": "Average.Retained",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "15",
+                    "Section": "Averages",
+                    "Group": ""
+                }
+            },
+            "Average.Results": {
+                "Hash": "AverageResults",
+                "Name": "Results",
+                "DataAddress": "Average.Results",
+                "DataType": "Select",
                 "PictForm": {
                     "InputType": "Option",
-                    "Row": "3",
-                    "Width": "12",
+                    "Row": "15",
                     "SelectOptions": [
                         {
-                            "id": "Earth",
-                            "text": "Earth"
+                            "id": "Pass",
+                            "text": "Pass"
                         },
                         {
-                            "id": "Mars",
-                            "text": "Mars"
+                            "id": "Fail",
+                            "text": "Fail"
                         },
                         {
-                            "id": "Saturn",
-                            "text": "Saturn"
-                        },
-                        {
-                            "id": "Jupiter",
-                            "text": "Jupiter"
+                            "id": "N/A",
+                            "text": "N/A"
                         }
                     ],
-                    "Section": "Header",
-                    "Group": "General_Info",
-                    "Units": "planetary"
-                }
-            },
-            "Geometry.Rectangle.Width": {
-                "Hash": "RectangleWidth",
-                "Name": "Width",
-                "DataAddress": "Geometry.Rectangle.Width",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "1",
-                    "Width": "6",
-                    "Section": "Basic_Geometry",
-                    "Group": "Rectangle"
-                },
-                "Default": "7.25"
-            },
-            "Geometry.Rectangle.Height": {
-                "Hash": "RectangleHeight",
-                "Name": "Height",
-                "DataAddress": "Geometry.Rectangle.Height",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "1",
-                    "Width": "6",
-                    "Section": "Basic_Geometry",
-                    "Group": "Rectangle"
-                },
-                "Default": "10.3571"
-            },
-            "Geometry.Rectangle.Area": {
-                "Hash": "RectangleArea",
-                "Name": "Area",
-                "DataAddress": "Geometry.Rectangle.Area",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "3",
-                    "Section": "Basic_Geometry",
-                    "Group": "Rectangle",
-                    "Units": "unrounded"
-                }
-            },
-            "Geometry.Rectangle.AreaRoundedDefault": {
-                "Hash": "RectangleAreaRoundedDefault",
-                "Name": "Area Rounded",
-                "DataAddress": "Geometry.Rectangle.AreaRoundedDefault",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "3",
-                    "Section": "Basic_Geometry",
-                    "Group": "Rectangle",
-                    "Units": "default"
-                }
-            },
-            "Geometry.Rectangle.AreaRoundedThree": {
-                "Hash": "RectangleAreaRoundedThree",
-                "Name": "Area Rounded 3",
-                "DataAddress": "Geometry.Rectangle.AreaRoundedThree",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "3",
-                    "Section": "Basic_Geometry",
-                    "Group": "Rectangle",
-                    "Units": "3"
-                }
-            },
-            "Geometry.Rectangle.AreaRoundedFour": {
-                "Hash": "RectangleAreaRoundedFive",
-                "Name": "Area Rounded 5",
-                "DataAddress": "Geometry.Rectangle.AreaRoundedFour",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "3",
-                    "Section": "Basic_Geometry",
-                    "Group": "Rectangle",
-                    "Units": "5"
-                }
-            },
-            "Geometry.Circle.Radius": {
-                "Hash": "CircleRadius",
-                "Name": "Radius",
-                "DataAddress": "Geometry.Circle.Radius",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "1",
-                    "Width": "12",
-                    "Section": "Basic_Geometry",
-                    "Group": "Circle"
-                },
-                "Default": "85.523"
-            },
-            "Geometry.Circle.Area": {
-                "Hash": "CircleArea",
-                "Name": "Area",
-                "DataAddress": "Geometry.Circle.Area",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "3",
-                    "Section": "Basic_Geometry",
-                    "Group": "Circle",
-                    "Units": "unrounded"
-                }
-            },
-            "Geometry.Circle.AreaRoundedDefault": {
-                "Hash": "CircleAreaRoundedDefault",
-                "Name": "Area Rounded",
-                "DataAddress": "Geometry.Circle.AreaRoundedDefault",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "3",
-                    "Section": "Basic_Geometry",
-                    "Group": "Circle",
-                    "Units": "default"
-                }
-            },
-            "Geometry.Circle.AreaRoundedThree": {
-                "Hash": "CircleAreaRoundedFour",
-                "Name": "Area Rounded 4",
-                "DataAddress": "Geometry.Circle.AreaRoundedThree",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "3",
-                    "Section": "Basic_Geometry",
-                    "Group": "Circle",
-                    "Units": "4"
-                }
-            },
-            "Geometry.Circle.AreaRoundedFour": {
-                "Hash": "CircleAreaRoundedSix",
-                "Name": "Area Rounded 6",
-                "DataAddress": "Geometry.Circle.AreaRoundedFour",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "3",
-                    "Section": "Basic_Geometry",
-                    "Group": "Circle",
-                    "Units": "6"
-                }
-            },
-            "Boxes": {
-                "Hash": "Boxes",
-                "Name": "Boxes",
-                "DataAddress": "Boxes",
-                "DataType": "Array"
-            },
-            "Boxes[].Floorspace": {
-                "Hash": "BoxesFloorspaceSet",
-                "Name": "BoxesFloorspaceSet",
-                "DataAddress": "Boxes[].Floorspace",
-                "DataType": "Number"
-            },
-            "Boxes[].Volume": {
-                "Hash": "BoxesVolumeSet",
-                "Name": "BoxesVolumeSet",
-                "DataAddress": "Boxes[].Volume",
-                "DataType": "Number"
-            },
-            "Boxes[].Depth": {
-                "Hash": "BoxesDepthSet",
-                "Name": "BoxesDepthSet",
-                "DataAddress": "Boxes[].Depth",
-                "DataType": "Number"
-            },
-            "BoxAggregate.Count": {
-                "Hash": "BoxesCount",
-                "Name": "Box Count",
-                "DataAddress": "BoxAggregate.Count",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "1",
-                    "Width": "12",
-                    "Section": "Box_Summary_Data",
-                    "Group": "Box_Summary_Data"
-                }
-            },
-            "BoxAggregate.AverageFloorspace": {
-                "Hash": "BoxesAverageFloorspace",
-                "Name": "Average Floorspace",
-                "DataAddress": "BoxAggregate.AverageFloorspace",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "6",
-                    "Section": "Box_Summary_Data",
-                    "Group": "Box_Summary_Data"
-                }
-            },
-            "BoxAggregate.TotalFloorspace": {
-                "Hash": "BoxesTotalFloorspace",
-                "Name": "Total Floorspace",
-                "DataAddress": "BoxAggregate.TotalFloorspace",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "6",
-                    "Section": "Box_Summary_Data",
-                    "Group": "Box_Summary_Data"
-                }
-            },
-            "BoxAggregate.AverageVolume": {
-                "Hash": "BoxesAverageVolume",
-                "Name": "Average Volume",
-                "DataAddress": "BoxAggregate.AverageVolume",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "3",
-                    "Width": "4",
-                    "Section": "Box_Summary_Data",
-                    "Group": "Box_Summary_Data"
-                }
-            },
-            "BoxAggregate.TotalVolume": {
-                "Hash": "BoxesTotalVolume",
-                "Name": "Total Volume",
-                "DataAddress": "BoxAggregate.TotalVolume",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "3",
-                    "Width": "4",
-                    "Section": "Box_Summary_Data",
-                    "Group": "Box_Summary_Data"
-                }
-            },
-            "BoxAggregate.TotalVolumeRounded": {
-                "Hash": "BoxesTotalVolumeRounded",
-                "Name": "Total Volume Rounded",
-                "DataAddress": "BoxAggregate.TotalVolumeRounded",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "3",
-                    "Width": "4",
-                    "Section": "Box_Summary_Data",
-                    "Group": "Box_Summary_Data"
-                }
-            },
-            "BoxAggregate.MinDepth": {
-                "Hash": "BoxesMinDepth",
-                "Name": "Minimum Depth",
-                "DataAddress": "BoxAggregate.MinDepth",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "4",
-                    "Width": "3",
-                    "Section": "Box_Summary_Data",
-                    "Group": "Box_Summary_Data"
-                }
-            },
-            "BoxAggregate.MeanDepth": {
-                "Hash": "BoxesMeanDepth",
-                "Name": "Mean Depth",
-                "DataAddress": "BoxAggregate.MeanDepth",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "4",
-                    "Width": "3",
-                    "Section": "Box_Summary_Data",
-                    "Group": "Box_Summary_Data"
-                }
-            },
-            "BoxAggregate.MedianDepth": {
-                "Hash": "BoxesMedianDepth",
-                "Name": "Median Depth",
-                "DataAddress": "BoxAggregate.MedianDepth",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "4",
-                    "Width": "3",
-                    "Section": "Box_Summary_Data",
-                    "Group": "Box_Summary_Data"
-                }
-            },
-            "BoxAggregate.MaxDepth": {
-                "Hash": "BoxesMaxDepth",
-                "Name": "Max Depth",
-                "DataAddress": "BoxAggregate.MaxDepth",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "4",
-                    "Width": "3",
-                    "Section": "Box_Summary_Data",
-                    "Group": "Box_Summary_Data"
-                }
-            },
-            "ComplexEquation.PR": {
-                "Hash": "CePR",
-                "Name": "PR",
-                "DataAddress": "ComplexEquation.PR",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "1",
-                    "Width": "4",
-                    "Section": "Complex_Equation",
-                    "Group": "Complex_Equation"
-                },
-                "Default": "4.5"
-            },
-            "ComplexEquation.Z": {
-                "Hash": "CeZ",
-                "Name": "Z",
-                "DataAddress": "ComplexEquation.Z",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "1",
-                    "Width": "4",
-                    "Section": "Complex_Equation",
-                    "Group": "Complex_Equation"
-                },
-                "Default": "1.5"
-            },
-            "ComplexEquation.C": {
-                "Hash": "CeC",
-                "Name": "C",
-                "DataAddress": "ComplexEquation.C",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "1",
-                    "Width": "4",
-                    "Section": "Complex_Equation",
-                    "Group": "Complex_Equation"
-                },
-                "Default": "8.75"
-            },
-            "ComplexEquation.Result": {
-                "Hash": "CeResult",
-                "Name": "(160 * PR * Z) / (C / 100) * PR * Z + (160 * (1 - C / 100))",
-                "DataAddress": "ComplexEquation.Result",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "6",
-                    "Section": "Complex_Equation",
-                    "Group": "Complex_Equation"
-                }
-            },
-            "ComplexEquation.ResultRounded": {
-                "Hash": "CeResultRounded",
-                "Name": "Rounded 3",
-                "DataAddress": "ComplexEquation.ResultRounded",
-                "DataType": "Number",
-                "PictForm": {
-                    "Row": "2",
-                    "Width": "6",
-                    "Section": "Complex_Equation",
-                    "Group": "Complex_Equation"
+                    "Section": "Averages",
+                    "Group": ""
                 }
             }
         },
         "Sections": [
             {
-                "Name": "Header",
-                "Hash": "Header",
+                "Name": "General Information",
+                "Hash": "General_Information",
                 "Solvers": [],
                 "Groups": [
                     {
-                        "Name": "General Info",
-                        "Hash": "General_Info",
+                        "Name": "",
+                        "Hash": "",
                         "Rows": [],
                         "RecordSetSolvers": []
                     }
                 ]
             },
             {
-                "Name": "Basic Geometry",
-                "Hash": "Basic_Geometry",
-                "Solvers": [
-                    "RectangleArea = RectangleWidth * RectangleHeight",
-                    "RectangleAreaRoundedDefault = ROUND(RectangleWidth * RectangleHeight)",
-                    "RectangleAreaRoundedThree = ROUND((RectangleWidth * RectangleHeight), 3)",
-                    "RectangleAreaRoundedFive = ROUND(RectangleArea, 5)",
-                    "CircleArea = PI() * CircleRadius^2",
-                    "CircleAreaRoundedDefault = ROUND(PI() * CircleRadius^2)",
-                    "CircleAreaRoundedFour = ROUND(CircleArea,4)",
-                    "CircleAreaRoundedSix = ROUND(PI() * CircleRadius^2,6)"
-                ],
-                "Groups": [
-                    {
-                        "Name": "Rectangle",
-                        "Hash": "Rectangle",
-                        "Rows": [],
-                        "RecordSetSolvers": []
-                    },
-                    {
-                        "Name": "Circle",
-                        "Hash": "Circle",
-                        "Rows": [],
-                        "RecordSetSolvers": []
-                    }
-                ]
-            },
-            {
-                "Name": "Box Collection",
-                "Hash": "Box_Collection",
+                "Name": "Determinations",
+                "Hash": "Determinations",
                 "Solvers": [],
                 "Groups": [
                     {
-                        "Name": "Boxes",
-                        "Hash": "Boxes",
-                        "Rows": [],
-                        "RecordSetSolvers": [
-                            "BoxFloorspace = BoxWidth * BoxDepth",
-                            "BoxVolume = BoxFloorspace * BoxHeight"
-                        ],
-                        "Layout": "Tabular",
-                        "RecordSetAddress": "Boxes",
-                        "RecordManifest": "Boxes"
-                    }
-                ]
-            },
-            {
-                "Name": "Box Summary Data",
-                "Hash": "Box_Summary_Data",
-                "Solvers": [
-                    "BoxesCount = COUNT(BoxesFloorspaceSet)",
-                    "BoxesAverageFloorspace = AVG(BoxesFloorspaceSet)",
-                    "BoxesTotalFloorspace = SUM(BoxesFloorspaceSet)",
-                    "BoxesAverageVolume = AVG(BoxesVolumeSet)",
-                    "BoxesTotalVolume = COUNT(BoxesVolumeSet)",
-                    "BoxesTotalVolumeRounded = ROUND(SUM(BoxesVolumeSet))",
-                    "BoxesMinDepth = MIN(BoxesDepthSet)",
-                    "BoxesMeanDepth = MEAN(BoxesDepthSet)",
-                    "BoxesMedianDepth = MEDIAN(BoxesDepthSet)",
-                    "BoxesMaxDepth = MAX(BoxesDepthSet)"
-                ],
-                "Groups": [
-                    {
-                        "Name": "Box Summary Data",
-                        "Hash": "Box_Summary_Data",
+                        "Name": "Determination 3",
+                        "Hash": "Determination__",
                         "Rows": [],
                         "RecordSetSolvers": []
                     }
                 ]
             },
             {
-                "Name": "Complex Equation",
-                "Hash": "Complex_Equation",
+                "Name": "Averages",
+                "Hash": "Averages",
                 "Solvers": [
-                    "CeResult = (160 * CePR * CeZ) / (CeC / 100) * CePR * CeZ + (160 * (1 - CeC / 100))",
-                    "CeResultRounded = ROUND(CeResult,3)"
+                    "AverageBindOneAggOne=(DeterOneBindOneAggOne+DeterTwoBindOneAggOne+DeterThreeBindOneAggOne)/3",
+                    "AverageBindOneAggTwo=(DeterOneBindOneAggTwo+DeterTwoBindOneAggTwo+DeterThreeBindOneAggTwo)/3",
+                    "AverageBindOneAggThree=(DeterOneBindOneAggThree+DeterTwoBindOneAggThree+DeterThreeBindOneAggThree)/3",
+                    "AverageBindTwoAggOne=(DeterOneBindTwoAggOne+DeterTwoBindTwoAggOne+DeterThreeBindTwoAggOne)/3",
+                    "AverageBindTwoAggTwo=(DeterOneBindTwoAggTwo+DeterTwoBindTwoAggTwo+DeterThreeBindTwoAggTwo)/3",
+                    "AverageBindTwoAggThree=(DeterOneBindTwoAggThree+DeterTwoBindTwoAggThree+DeterThreeBindTwoAggThree)/3",
+                    "AverageRetained=(AverageBindOneAggOne+AverageBindOneAggTwo+AverageBindOneAggThree+AverageBindTwoAggOne+AverageBindTwoAggTwo+AverageBindTwoAggThree)/6"
                 ],
                 "Groups": [
                     {
-                        "Name": "Complex Equation",
-                        "Hash": "Complex_Equation",
+                        "Name": "",
+                        "Hash": "",
                         "Rows": [],
                         "RecordSetSolvers": []
                     }
                 ]
             }
         ],
-        "ReferenceManifests": {
-            "Boxes": {
-                "Scope": "Boxes",
-                "Descriptors": {
-                    "Identifier": {
-                        "Hash": "BoxIdentifier",
-                        "Name": "Identifier",
-                        "DataAddress": "Identifier",
-                        "DataType": "String",
-                        "PictForm": {
-                            "Row": "1",
-                            "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
-                        },
-                        "IsTabular": true
-                    },
-                    "Width": {
-                        "Hash": "BoxWidth",
-                        "Name": "Width",
-                        "DataAddress": "Width",
-                        "DataType": "Number",
-                        "PictForm": {
-                            "Row": "1",
-                            "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
-                        },
-                        "IsTabular": true
-                    },
-                    "Height": {
-                        "Hash": "BoxHeight",
-                        "Name": "Height",
-                        "DataAddress": "Height",
-                        "DataType": "Number",
-                        "PictForm": {
-                            "Row": "1",
-                            "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
-                        },
-                        "IsTabular": true
-                    },
-                    "Depth": {
-                        "Hash": "BoxDepth",
-                        "Name": "Depth",
-                        "DataAddress": "Depth",
-                        "DataType": "Number",
-                        "PictForm": {
-                            "Row": "1",
-                            "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
-                        },
-                        "IsTabular": true
-                    },
-                    "Floorspace": {
-                        "Hash": "BoxFloorspace",
-                        "Name": "Floorspace",
-                        "DataAddress": "Floorspace",
-                        "DataType": "Number",
-                        "PictForm": {
-                            "Row": "1",
-                            "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
-                        },
-                        "IsTabular": true
-                    },
-                    "Volume": {
-                        "Hash": "BoxVolume",
-                        "Name": "Volume",
-                        "DataAddress": "Volume",
-                        "DataType": "Number",
-                        "PictForm": {
-                            "Row": "1",
-                            "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
-                        },
-                        "IsTabular": true
-                    }
-                },
-                "Sections": [],
-                "ReferenceManifests": {}
-            }
-        }
+        "ReferenceManifests": {}
     }
 }
