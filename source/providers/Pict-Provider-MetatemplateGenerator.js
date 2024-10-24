@@ -21,6 +21,8 @@ class PictMetatemplateGenerator extends libPictProvider
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
 		
 		super(pFable, tmpOptions, pServiceHash);
+
+		this.baseTemplatePrefix = "Pict-MT-Base";
 	}
 
 	/**

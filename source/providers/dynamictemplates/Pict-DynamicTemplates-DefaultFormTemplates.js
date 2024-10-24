@@ -1,6 +1,6 @@
 module.exports = (
 {
-	"TemplatePrefix": "Pict-Forms-Basic",
+	"TemplatePrefix": "Pict-MT-Base",
 	"Templates":
 	[
 		/*

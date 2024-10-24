@@ -35,7 +35,7 @@ class PostcardApplication extends libPictApplication
 
 	changeToDefaultTheme()
 	{
-		this.pict.views.PictFormMetacontroller.formTemplatePrefix = 'Pict-Forms-Basic';
+		this.pict.views.PictFormMetacontroller.formTemplatePrefix = this.pict.providers.BaseTemplatePrefix;
 		// This generates the container metatemplates after we switch themes.
 		this.pict.views.PictFormMetacontroller.generateMetatemplate();
 		// This generates the view templates for each dynamic view generated from config.

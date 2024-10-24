@@ -165,7 +165,7 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 		else
 		{
-			return 'Pict-Forms-Basic';
+			return this.pict.providers.MetatemplateGenerator.baseTemplatePrefix;
 		}
 	}
 
