@@ -5,6 +5,10 @@ export = PictMetatemplateMacros;
  */
 declare class PictMetatemplateMacros {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
+    additionalInputMacros: any;
+    AdditionalInputMacros: any;
+    additionalGroupMacros: any;
+    additionalSectionMacros: any;
     /**
      * Builds macros for the given input.
      *

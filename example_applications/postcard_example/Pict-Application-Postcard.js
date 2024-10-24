@@ -65,6 +65,9 @@ class PostcardApplication extends libPictApplication
 
 	onAfterInitializeAsync(fCallback)
 	{
+		// DOC: This is how you do a direct assignment macro
+		this.pict.providers.MetatemplateMacros.additionalInputMacros['DirectAssignment'] = 'data-i-directassignmentstyle="display: inline-block; width: 100%;"';
+
 		// Default to the Pure theme
 		this.pict.views.PictFormMetacontroller.formTemplatePrefix = this.pict.providers['Postcard-Default-Theme-Provider'].formsTemplateSetPrefix;
 

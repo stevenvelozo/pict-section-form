@@ -6,6 +6,7 @@
 
 	"pict_configuration":
 		{
-			"Product": "Postkard-Pict-Application"
+			"Product": "Postkard-Pict-Application",
+			"CustomInputMacros": {"CustomPictSettingsProperty": "ThisCustomProperty=\"CustomValue\""}
 		}
 }

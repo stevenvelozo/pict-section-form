@@ -39,6 +39,7 @@ declare const _exports: {
     PictInputExtensionProvider: typeof import("./providers/Pict-Provider-InputExtension.js");
     PictFormMetacontroller: typeof import("./views/Pict-View-Form-Metacontroller.js");
     PictFormApplication: typeof import("./application/Pict-Application-Form.js");
+    PictDynamicLayoutProvider: typeof import("./providers/Pict-Provider-DynamicLayout.js");
     ManifestFactory: typeof import("./services/ManifestFactory.js");
 };
 export = _exports;
