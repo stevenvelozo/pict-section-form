@@ -35,6 +35,9 @@ const _DynamicInputViewSection = (
 							"Name": "DynamicInputPlaceholder",
 							"Hash": "DynamicInputPlaceholder",
 							"DataType": "String",
+							"Macro": {
+								"HTMLSelector": ""
+							},
 							"PictForm": {
 								"Section": "DynamicInputs"
 							}
