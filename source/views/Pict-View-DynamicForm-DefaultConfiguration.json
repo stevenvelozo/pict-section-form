@@ -3,6 +3,7 @@
 	"AutoSolveWithApp": false,
 
 	"ExecuteSolversWithoutMetacontroller": false,
+	"IncludeInMetatemplateSectionGeneration": true,
 	"IncludeInDefaultDynamicRender": true,
 
 	"DefaultRenderable": "Form-Main",

@@ -1,6 +1,7 @@
 const libPictViewClass = require('pict-view');
 
 const libPictDynamicApplication = require(`../services/Pict-Service-DynamicApplication.js`);
+const libPictViewDynamicForm = require('./Pict-View-DynamicForm.js');
 
 // TODO: Potentially create an internalized list of views for this to manage, separate from the pict.views object
 // TODO: Manage view lifecycle internally, including destruction of views if they are flagged to not be needed.
@@ -254,9 +255,12 @@ class PictFormMetacontroller extends libPictViewClass
 		for (let i = 0; i < tmpViewList.length; i++)
 		{
 			let tmpFormView = tmpViewList[i];
-			tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Prefix:Pict.views["${tmpFormView.Hash}"]~}`;
-			tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container:Pict.views["${tmpFormView.Hash}"]~}`;
-			tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Postfix:Pict.views["${tmpFormView.Hash}"]~}`;
+			if (tmpFormView.options.IncludeInMetatemplateSectionGeneration)
+			{
+				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Prefix:Pict.views["${tmpFormView.Hash}"]~}`;
+				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container:Pict.views["${tmpFormView.Hash}"]~}`;
+				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Postfix:Pict.views["${tmpFormView.Hash}"]~}`;
+			}
 		}
 		tmpTemplate += `{~T:${this.formTemplatePrefix}-Template-Form-Container-Footer:Pict.views["${this.Hash}"]~}`;
 
@@ -419,7 +423,7 @@ class PictFormMetacontroller extends libPictViewClass
 			}
 			tmpViewConfiguration.Manifests.Section = tmpManifestDescription;
 			tmpViewConfiguration.AutoMarshalDataOnSolve = this.options.AutoMarshalDataOnSolve;
-			this.fable.addView(tmpViewHash, tmpViewConfiguration, require('./Pict-View-DynamicForm.js'));
+			this.fable.addView(tmpViewHash, tmpViewConfiguration, libPictViewDynamicForm);
 		}
 
 		return tmpSectionList;

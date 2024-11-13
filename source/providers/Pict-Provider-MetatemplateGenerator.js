@@ -1,5 +1,7 @@
 const libPictProvider = require('pict-provider');
 
+const libPictViewDynamicForm = require('../views/Pict-View-DynamicForm.js');
+
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-Provider-MetatemplateGenerator",
@@ -8,7 +10,39 @@ const _DefaultProviderConfiguration = (
 	"AutoInitializeOrdinal": 0,
 
 	"AutoSolveWithApp": false
-})
+});
+
+const _DynamicInputViewSection = (
+		{
+	"Hash": "DynamicInputs",
+	"Name": "Dynamic Inputs",
+	"ViewHash": "PictFormMetacontroller-DynamicInputs",
+
+	"AutoMarshalDataOnSolve": true,
+	"IncludeInMetatemplateSectionGeneration": false,
+
+	"Manifests": {
+		"Section": {
+			"Scope": "MetaTemplate",
+			"Sections": [
+				{
+					"Hash": "DynamicInputs",
+					"Name": "Dynamic Inputs"
+				}
+			],
+			"Descriptors": {
+				"MetaTemplate.DynamicInputPlaceholder": {
+					"Name": "Rectangular Object's Name",
+					"Hash": "Name",
+					"DataType": "String",
+					"PictForm": {
+						"Section": "DynamicInputs"
+					}
+				}
+			}
+		}
+	}
+});
 
 /**
  * Class representing a Pict Metatemplate Generator.
@@ -22,7 +56,30 @@ class PictMetatemplateGenerator extends libPictProvider
 		
 		super(pFable, tmpOptions, pServiceHash);
 
+		this.dynamicInputView = false;
+
 		this.baseTemplatePrefix = "Pict-MT-Base";
+	}
+
+	onInitializeAsync(fCallback)
+	{
+		this.createOnDemandMetatemplateView();
+		return super.onInitializeAsync(fCallback);
+	}
+
+	createOnDemandMetatemplateView()
+	{
+		let tmpViewConfiguration = JSON.parse(JSON.stringify(_DynamicInputViewSection));
+		let tmpViewHash = tmpViewConfiguration.ViewHash;
+
+		// If the view is already initialized, guard against reinitialization.
+		if (tmpViewConfiguration.ViewHash in this.fable.views)
+		{
+			this.log.info(`getSectionList() found an existing Dynamic Inputs view for section [${tmpViewHash}] so constructing another will be skipped.`);
+			return;
+		}
+
+		this.dynamicInputView = this.fable.addView(tmpViewConfiguration.ViewHash, tmpViewConfiguration, libPictViewDynamicForm);
 	}
 
 	/**
