@@ -73,13 +73,14 @@ class PictMetatemplateGenerator extends libPictProvider
 		let tmpViewHash = tmpViewConfiguration.ViewHash;
 
 		// If the view is already initialized, guard against reinitialization.
-		if (tmpViewConfiguration.ViewHash in this.fable.views)
+		if (tmpViewConfiguration.ViewHash in this.pict.views)
 		{
 			this.log.info(`getSectionList() found an existing Dynamic Inputs view for section [${tmpViewHash}] so constructing another will be skipped.`);
 			return;
 		}
 
-		this.dynamicInputView = this.fable.addView(tmpViewConfiguration.ViewHash, tmpViewConfiguration, libPictViewDynamicForm);
+		this.dynamicInputView = this.pict.addView(tmpViewConfiguration.ViewHash, tmpViewConfiguration, libPictViewDynamicForm);
+		//this.dynamicInputView = this.pict.addView(tmpViewConfiguration.ViewHash, tmpViewConfiguration, require('../views/Pict-View-DynamicForm.js'));
 	}
 
 	/**

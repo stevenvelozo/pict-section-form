@@ -5,6 +5,9 @@ const libDynamicInput = require('../providers/Pict-Provider-DynamicInput.js');
 const templateSetDefaultFormTemplates = require('./dynamictemplates/Pict-DynamicTemplates-DefaultFormTemplates.js');
 const templateSetReadOnlyTemplates = require('./dynamictemplates/Pict-DynamicTemplates-DefaultFormTemplates-ReadOnly.js');
 
+const libTemplateValueSetWithGroup = require('../templates/Pict-Template-Metacontroller-ValueSetWithGroup.js');
+const libTemplateDynamicInput = require('../templates/Pict-Template-Metatemplate-Input.js')
+
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-MetaTemplates-Basic",
@@ -35,7 +38,8 @@ class PictDynamicFormsTemplates extends libPictProvider
 
 		this.pict.addProviderSingleton('DynamicInput', libDynamicInput.default_configuration, libDynamicInput);
 
-		this.pict.addTemplate(require('../templates/Pict-Template-Metacontroller-ValueSetWithGroup.js'));
+		this.pict.addTemplate(libTemplateValueSetWithGroup);
+		this.pict.addTemplate(libTemplateDynamicInput);
 
 		if (this.options?.MetaTemplateSet && typeof(this.options.MetaTemplateSet) === 'object')
 		{
