@@ -2,7 +2,7 @@
 
 // The main dynamic view class
 module.exports = require('./views/Pict-View-DynamicForm.js');
-module.exports.default_configuration = require('./views/Pict-View-DynamicForm-DefaultConfiguration.json');
+//module.exports.default_configuration = require('./views/Pict-View-DynamicForm-DefaultConfiguration.json');
 
 // The dynamic application dependencies
 module.exports.PictDynamicApplicationService = require('./services/Pict-Service-DynamicApplication.js');

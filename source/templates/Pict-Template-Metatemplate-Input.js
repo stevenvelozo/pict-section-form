@@ -3,7 +3,7 @@ const libPictTemplate = require('pict-template');
 /**
  * This is a template that will generate a Metatemplate input, for manual use of metatemplates.
  */
-class PictTemplateMetatemplateInput extends libPictTemplate
+class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 {
 	/**
 	 * @param {Object} pFable - The Fable Framework instance
@@ -16,6 +16,8 @@ class PictTemplateMetatemplateInput extends libPictTemplate
 
 		this.addPattern('{~MetaTemplateInput:', '~}');
 		this.addPattern('{~MTI:', '~}');
+
+		this.currentInputIndex = 0;
 	}
 
 	/**
@@ -27,6 +29,78 @@ class PictTemplateMetatemplateInput extends libPictTemplate
 	 * @returns {string} - The rendered template.
 	 */
 	render(pTemplateHash, pRecord, pContextArray)
+	{
+		let tmpHash = pTemplateHash.trim();
+		let tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
+
+		if (this.pict.LogNoisiness > 0)
+		{
+			this.log.trace(`PICT Metacontroller Template [MetaTemplateInput]::[${tmpHash}]`);
+		}
+
+		let tmpInputAddress = false;
+		let tmpDataType = false;
+		let tmpInputType = false;
+
+		// This is just a simple 2 part hash (the entity and the ID)
+		let tmpHashTemplateSeparator = tmpHash.split(':');
+		if (tmpHashTemplateSeparator.length < 2)
+		{
+			this.log.warn(`MetaTemplateInput template requires at least parameters (Address and DataType) [${tmpHash}]`);
+			return '';
+		}
+		tmpInputAddress = tmpHashTemplateSeparator[0];
+		tmpDataType = tmpHashTemplateSeparator[1];
+		if (tmpHashTemplateSeparator.length > 2)
+		{
+			tmpInputType = tmpHashTemplateSeparator[2];
+		}
+		// Construct a fake input object
+		let tmpInput = {
+			Address: tmpInputAddress,
+			Hash: this.fable.DataFormat.cleanNonAlphaCharacters(tmpInputAddress),
+			DataType: tmpDataType,
+			PictForm: {
+				InformaryDataAddress: tmpInputAddress,
+				GroupIndex: 0,
+				Row: 0
+			}
+		};
+
+		this.currentInputIndex++;
+
+		if (tmpInputType)
+		{
+			tmpInput.PictForm.InputType = tmpInputType;
+		}
+
+		// Check to see if the input is already in the manifest
+		let tmpRow = tmpMetatemplateGenerator.dynamicInputView.getRow(0, 0);
+
+		for (let i = 0; i < tmpRow.Inputs.length; i++)
+		{
+			if (tmpRow.Inputs[i].Hash === tmpInput.Hash)
+			{
+				let tmpInput = tmpRow.Inputs[i];
+				return this.pict.parseTemplate(tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`), tmpInput, null, [tmpMetatemplateGenerator.dynamicInputView]);
+			}
+		}
+
+		// It isn't already in the manifest, so add it.
+		tmpInput.PictForm.InputIndex = tmpRow.Inputs.length;
+		tmpMetatemplateGenerator.dynamicInputView.sectionManifest.addDescriptor(tmpInput.Address, tmpInput);
+		tmpRow.Inputs.push(tmpInput);
+
+		this.pict.providers.MetatemplateMacros.buildInputMacros(tmpMetatemplateGenerator.dynamicInputView, tmpInput);
+
+		// Now generate the metatemplate
+		let tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`);
+
+		// Now parse it and return it.
+		return this.pict.parseTemplate(tmpTemplate, tmpInput, null, [tmpMetatemplateGenerator.dynamicInputView]);
+	}
+
+	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
 	{
 		let tmpHash = pTemplateHash.trim();
 		let tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
@@ -68,9 +142,12 @@ class PictTemplateMetatemplateInput extends libPictTemplate
 		}
 
 		tmpMetatemplateGenerator.dynamicInputView.sectionManifest.addDescriptor(tmpInput.Address, tmpInput);
+		this.pict.providers.MetatemplateMacros.buildInputMacros(tmpMetatemplateGenerator.dynamicInputView, tmpInput);
 
-		return tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInputByHash("${tmpInput.Hash}")`);
+		let tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInputFromHash("${tmpInput.Hash}")`);
+
+		return this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpMetatemplateGenerator.dynamicInputView]);
 	}
 }
 
-module.exports = PictTemplateMetatemplateInput;
+module.exports = PictTemplateMetatemplateInputTemplate;

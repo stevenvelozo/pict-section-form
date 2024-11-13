@@ -74,6 +74,11 @@ class ManifestFactory extends libFableServiceProviderBase
 				tmpDescriptor.PictForm.InformaryDataAddress = tmpDescriptorKeys[i];
 
 				let tmpGroupHash = (typeof(tmpDescriptor.PictForm.Group) == 'string') ? tmpDescriptor.PictForm.Group : 'Default';
+
+				if (!('Groups' in pView.sectionDefinition))
+				{
+					pView.sectionDefinition.Groups = [];
+				}
 				let tmpGroup = pView.sectionDefinition.Groups.find((pGroup) => { return pGroup.Hash == tmpGroupHash; });
 				if (!tmpGroup)
 				{

@@ -1,6 +1,6 @@
 const libPictProvider = require('pict-provider');
 
-const libPictViewDynamicForm = require('../views/Pict-View-DynamicForm.js');
+//const libPictViewDynamicForm = require('../views/Pict-View-DynamicForm.js');
 
 const _DefaultProviderConfiguration = (
 {
@@ -14,35 +14,35 @@ const _DefaultProviderConfiguration = (
 
 const _DynamicInputViewSection = (
 		{
-	"Hash": "DynamicInputs",
-	"Name": "Dynamic Inputs",
-	"ViewHash": "PictFormMetacontroller-DynamicInputs",
+			"Hash": "DynamicInputs",
+			"Name": "Dynamic Inputs",
+			"ViewHash": "PictFormMetacontroller-DynamicInputs",
 
-	"AutoMarshalDataOnSolve": true,
-	"IncludeInMetatemplateSectionGeneration": false,
+			"AutoMarshalDataOnSolve": true,
+			"IncludeInMetatemplateSectionGeneration": false,
 
-	"Manifests": {
-		"Section": {
-			"Scope": "MetaTemplate",
-			"Sections": [
-				{
-					"Hash": "DynamicInputs",
-					"Name": "Dynamic Inputs"
-				}
-			],
-			"Descriptors": {
-				"MetaTemplate.DynamicInputPlaceholder": {
-					"Name": "Rectangular Object's Name",
-					"Hash": "Name",
-					"DataType": "String",
-					"PictForm": {
-						"Section": "DynamicInputs"
+			"Manifests": {
+				"Section": {
+					"Scope": "MetaTemplate",
+					"Sections": [
+						{
+							"Hash": "DynamicInputs",
+							"Name": "Dynamic Inputs"
+						}
+					],
+					"Descriptors": {
+						"MetaTemplate.DynamicInputPlaceholder": {
+							"Name": "DynamicInputPlaceholder",
+							"Hash": "DynamicInputPlaceholder",
+							"DataType": "String",
+							"PictForm": {
+								"Section": "DynamicInputs"
+							}
+						}
 					}
 				}
 			}
-		}
-	}
-});
+		});
 
 /**
  * Class representing a Pict Metatemplate Generator.
@@ -70,17 +70,11 @@ class PictMetatemplateGenerator extends libPictProvider
 	createOnDemandMetatemplateView()
 	{
 		let tmpViewConfiguration = JSON.parse(JSON.stringify(_DynamicInputViewSection));
-		let tmpViewHash = tmpViewConfiguration.ViewHash;
 
-		// If the view is already initialized, guard against reinitialization.
-		if (tmpViewConfiguration.ViewHash in this.pict.views)
-		{
-			this.log.info(`getSectionList() found an existing Dynamic Inputs view for section [${tmpViewHash}] so constructing another will be skipped.`);
-			return;
-		}
-
-		this.dynamicInputView = this.pict.addView(tmpViewConfiguration.ViewHash, tmpViewConfiguration, libPictViewDynamicForm);
+		// TODO: Go back and learn what require is doing oddly here.
+		//this.dynamicInputView = this.pict.addView(tmpViewConfiguration.ViewHash, tmpViewConfiguration, libPictViewDynamicForm);
 		//this.dynamicInputView = this.pict.addView(tmpViewConfiguration.ViewHash, tmpViewConfiguration, require('../views/Pict-View-DynamicForm.js'));
+		this.dynamicInputView = this.pict.views.PictFormMetacontroller.addDynamicView(tmpViewConfiguration.ViewHash, tmpViewConfiguration);
 	}
 
 	/**

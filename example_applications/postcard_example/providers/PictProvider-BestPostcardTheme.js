@@ -116,7 +116,6 @@ Glug glug CUSTOMIZED glug Oo... -->
 				<input type="text" {~D:Record.Macro.CustomPictSettingsProperty~} {~D:Record.Macro.DirectAssignment~} {~D:Record.Macro.HTMLID~} {~D:Record.Macro.InputFullProperties~} class="pure-u-23-24" />
 				<a href="#" onclick="{~P~}.views['{~D:Context[0].Hash~}'].inputEvent('{~D:Record.Hash~}', 'BestEventEvarrrr')" class="pure-button">Sign</a>
             </div>
-
 	`
 			}
 		]});

@@ -423,10 +423,27 @@ class PictFormMetacontroller extends libPictViewClass
 			}
 			tmpViewConfiguration.Manifests.Section = tmpManifestDescription;
 			tmpViewConfiguration.AutoMarshalDataOnSolve = this.options.AutoMarshalDataOnSolve;
-			this.fable.addView(tmpViewHash, tmpViewConfiguration, libPictViewDynamicForm);
+			this.pict.addView(tmpViewHash, tmpViewConfiguration, libPictViewDynamicForm);
 		}
 
 		return tmpSectionList;
+	}
+
+	/**
+	 * Add a dynamic view to the metacontroller.
+	 * @param {string} pViewHash 
+	 * @param {Object} pViewConfiguration 
+	 * @returns 
+	 */
+	addDynamicView(pViewHash, pViewConfiguration)
+	{
+		if (pViewHash in this.pict.views)
+		{
+			this.log.error(`addDynamicView() called with a view hash that already exists [${pViewHash}].`);
+			return false;
+		}
+
+		return this.pict.addView(pViewHash, pViewConfiguration, libPictViewDynamicForm);
 	}
 
 	/**

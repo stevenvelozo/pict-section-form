@@ -4,6 +4,8 @@ const libPackage = require('../../package.json');
 
 const libPictDynamicApplication = require(`../services/Pict-Service-DynamicApplication.js`);
 
+const _DefaultConfiguration = require('./Pict-View-DynamicForm-DefaultConfiguration.json');
+
 /**
  * Represents a dynamic form view for the Pict application.
  * 
@@ -16,7 +18,7 @@ class PictViewDynamicForm extends libPictViewClass
 {
 	constructor(pFable, pOptions, pServiceHash)
 	{
-		let tmpOptions = Object.assign({}, require('./Pict-View-DynamicForm-DefaultConfiguration.json'), pOptions);
+		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultConfiguration)), pOptions);
 
 		if (!tmpOptions.Manifests)
 		{
@@ -957,3 +959,5 @@ class PictViewDynamicForm extends libPictViewClass
 }
 
 module.exports = PictViewDynamicForm;
+
+module.exports.default_configuration = _DefaultConfiguration;
