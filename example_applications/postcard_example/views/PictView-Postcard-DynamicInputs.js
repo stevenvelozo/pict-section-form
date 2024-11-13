@@ -19,11 +19,11 @@ const _ViewConfiguration = (
 	<h2>This postcard example is getting silly.</h2>
 </div>
 <div class="content">
-{~MTI:DynamoData.SomeFunnyPlaceForTheData:String~}
+{~MTI:First:DynamoData.SomeFunnyPlaceForTheData:String~}
 
 and
 
-{~MTI:DynamoData.SomeFunnyPlaceForTheDataAsASignatureInputType:String:PostKardSignature~}
+{~MTI:Second funny place for the data's storage, yo...:DynamoData.SomeFunnyPlaceForTheDataAsASignatureInputType:String:PostKardSignature~}
 </div>
 `
 		}

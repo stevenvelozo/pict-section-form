@@ -38,6 +38,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			this.log.trace(`PICT Metacontroller Template [MetaTemplateInput]::[${tmpHash}]`);
 		}
 
+		let tmpInputName = false;
 		let tmpInputAddress = false;
 		let tmpDataType = false;
 		let tmpInputType = false;
@@ -49,15 +50,17 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			this.log.warn(`MetaTemplateInput template requires at least parameters (Address and DataType) [${tmpHash}]`);
 			return '';
 		}
-		tmpInputAddress = tmpHashTemplateSeparator[0];
-		tmpDataType = tmpHashTemplateSeparator[1];
-		if (tmpHashTemplateSeparator.length > 2)
+		tmpInputName = tmpHashTemplateSeparator[0];
+		tmpInputAddress = tmpHashTemplateSeparator[1];
+		tmpDataType = tmpHashTemplateSeparator[2];
+		if (tmpHashTemplateSeparator.length > 3)
 		{
-			tmpInputType = tmpHashTemplateSeparator[2];
+			tmpInputType = tmpHashTemplateSeparator[3];
 		}
 		// Construct a fake input object
 		let tmpInput = {
 			Address: tmpInputAddress,
+			Name: tmpInputName,
 			Hash: this.fable.DataFormat.cleanNonAlphaCharacters(tmpInputAddress),
 			DataType: tmpDataType,
 			PictForm: {
