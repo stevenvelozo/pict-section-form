@@ -113,6 +113,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			this.log.trace(`PICT Metacontroller Template [MetaTemplateInput]::[${tmpHash}]`);
 		}
 
+		let tmpInputName = false;
 		let tmpInputAddress = false;
 		let tmpDataType = false;
 		let tmpInputType = false;
@@ -124,30 +125,55 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			this.log.warn(`MetaTemplateInput template requires at least parameters (Address and DataType) [${tmpHash}]`);
 			return '';
 		}
-		tmpInputAddress = tmpHashTemplateSeparator[0];
-		tmpDataType = tmpHashTemplateSeparator[1];
-		if (tmpHashTemplateSeparator.length > 2)
+		tmpInputName = tmpHashTemplateSeparator[0];
+		tmpInputAddress = tmpHashTemplateSeparator[1];
+		tmpDataType = tmpHashTemplateSeparator[2];
+		if (tmpHashTemplateSeparator.length > 3)
 		{
-			tmpInputType = tmpHashTemplateSeparator[2];
+			tmpInputType = tmpHashTemplateSeparator[3];
 		}
-
 		// Construct a fake input object
 		let tmpInput = {
 			Address: tmpInputAddress,
-			Hash: tmpInputAddress,
+			Name: tmpInputName,
+			Hash: this.fable.DataFormat.cleanNonAlphaCharacters(tmpInputAddress),
 			DataType: tmpDataType,
-			PictForm: {}
+			PictForm: {
+				InformaryDataAddress: tmpInputAddress,
+				GroupIndex: 0,
+				Row: 0
+			}
 		};
+
+		this.currentInputIndex++;
 
 		if (tmpInputType)
 		{
 			tmpInput.PictForm.InputType = tmpInputType;
 		}
 
+		// Check to see if the input is already in the manifest
+		let tmpRow = tmpMetatemplateGenerator.dynamicInputView.getRow(0, 0);
+
+		for (let i = 0; i < tmpRow.Inputs.length; i++)
+		{
+			if (tmpRow.Inputs[i].Hash === tmpInput.Hash)
+			{
+				let tmpInput = tmpRow.Inputs[i];
+				let tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`);
+				return this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpMetatemplateGenerator.dynamicInputView]);
+			}
+		}
+
+		// It isn't already in the manifest, so add it.
+		tmpInput.PictForm.InputIndex = tmpRow.Inputs.length;
 		tmpMetatemplateGenerator.dynamicInputView.sectionManifest.addDescriptor(tmpInput.Address, tmpInput);
+		tmpRow.Inputs.push(tmpInput);
+
 		this.pict.providers.MetatemplateMacros.buildInputMacros(tmpMetatemplateGenerator.dynamicInputView, tmpInput);
 
-		let tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInputFromHash("${tmpInput.Hash}")`);
+		// Now generate the metatemplate
+		let tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`);
 
 		return this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpMetatemplateGenerator.dynamicInputView]);
 	}
