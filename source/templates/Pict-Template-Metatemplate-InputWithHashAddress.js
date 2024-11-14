@@ -66,6 +66,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 		// Construct a fake input object
 		let tmpInput = {
 			Address: tmpInputAddress,
+			DataAddress: tmpInputAddress,
 			Name: tmpInputName,
 			Hash: this.fable.DataFormat.cleanNonAlphaCharacters(tmpInputAddress),
 			DataType: tmpDataType,
@@ -147,6 +148,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 		// Construct a fake input object
 		let tmpInput = {
 			Address: tmpInputAddress,
+			DataAddress: tmpInputAddress,
 			Name: tmpInputName,
 			Hash: this.fable.DataFormat.cleanNonAlphaCharacters(tmpInputAddress),
 			DataType: tmpDataType,
