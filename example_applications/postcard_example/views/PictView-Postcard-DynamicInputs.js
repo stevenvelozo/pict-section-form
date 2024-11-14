@@ -1,4 +1,5 @@
 const libPictView = require('pict-view');
+const { isTemplateSpan } = require('typescript');
 
 const _ViewConfiguration = (
 {
@@ -24,6 +25,13 @@ const _ViewConfiguration = (
 and
 
 {~MTI:Second funny place for the data's storage, yo...:DynamoData.SomeFunnyPlaceForTheDataAsASignatureInputType:String:PostKardSignature~}
+
+<br />
+
+<a href="#" onclick="_Pict.views.PostcardDynamicInputs.makeMoreInputs();" class="button">Add More Inputs</a>
+
+<div id="DynamicInputContainer">
+</div>
 </div>
 `
 		}
@@ -40,6 +48,22 @@ class PostcardMainApplicationView extends libPictView
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
+
+		this.inputCounter = 0;
+	}
+
+	makeMoreInputs()
+	{
+		let tmpDefectInput = {
+			SpecificDefectHash: this.fable.getUUID(),
+			InputCounter: this.inputCounter++
+		};
+
+		this.pict.parseTemplate('<p>Input Numero {~D:Record.InputCounter~}: {~MTIWHA:Nombre:Record.SpecificDefectHash:String~}</p>', tmpDefectInput, 
+			function (pError, pParsedTemplate)
+			{
+				this.pict.ContentAssignment.appendContent('#DynamicInputContainer', pParsedTemplate);
+			}.bind(this));
 	}
 }
 
