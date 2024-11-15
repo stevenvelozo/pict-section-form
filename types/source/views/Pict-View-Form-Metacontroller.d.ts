@@ -10,7 +10,7 @@ declare class PictFormMetacontroller extends libPictViewClass {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     viewMarshalDestination: string;
     lastRenderedViews: any[];
-    formTemplatePrefix: string;
+    formTemplatePrefix: any;
     /**
      * Marshals data from the view to the model, usually AppData (or configured data store).
      *
@@ -43,6 +43,8 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @returns {any} The result of the solve operation.
      */
     onSolve(): any;
+    onBeforeFilterViews(pViewFilterState: any): any;
+    onAfterFilterViews(pViewFilterState: any): any;
     /**
      * Filters the views based on the provided filter and sort functions.
      *
@@ -106,6 +108,13 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @returns {Array} - An array of section definitions.
      */
     bootstrapPictFormViewsFromManifest(pManifestDescription: any): any[];
+    /**
+     * Add a dynamic view to the metacontroller.
+     * @param {string} pViewHash
+     * @param {Object} pViewConfiguration
+     * @returns
+     */
+    addDynamicView(pViewHash: string, pViewConfiguration: any): any;
     /**
      * Returns whether the object is a Pict Metacontroller.
      *
