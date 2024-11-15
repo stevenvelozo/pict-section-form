@@ -38,6 +38,13 @@ Glug glug glug Oo... -->
 	<!-- Pict Form View Container [{~D:Record.UUID~}]::[{~D:Record.Hash~}] -->
 	<div id="Pict-Form-Container-{~D:Record.options.Hash~}" class="pict-form-view"></div>`
 		},
+		{
+			"HashPostfix": "-Template-Form-Container-Custom",
+			"Template": /*HTML*/`
+
+	<!-- Pict Form View Container [{~D:Record.UUID~}]::[{~D:Record.Hash~}] -->
+	<div id="{~D:Record.options.CustomTargetID~}" class="pict-form-view"></div>`
+		},
 
 		// -Form-Container-Wrap-Postfix
 		{
