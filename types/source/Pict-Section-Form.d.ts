@@ -4,6 +4,7 @@ declare const _exports: {
         AutoRender: boolean;
         AutoSolveWithApp: boolean;
         ExecuteSolversWithoutMetacontroller: boolean;
+        IncludeInMetatemplateSectionGeneration: boolean;
         IncludeInDefaultDynamicRender: boolean;
         DefaultRenderable: string;
         DefaultDestinationAddress: string;
@@ -35,6 +36,7 @@ declare const _exports: {
         };
         TargetElementAddress: string;
     };
+    PictDynamicApplicationService: typeof import("./services/Pict-Service-DynamicApplication.js");
     PictFormTemplateProvider: typeof import("./providers/Pict-Provider-DynamicTemplates.js");
     PictInputExtensionProvider: typeof import("./providers/Pict-Provider-InputExtension.js");
     PictFormMetacontroller: typeof import("./views/Pict-View-Form-Metacontroller.js");

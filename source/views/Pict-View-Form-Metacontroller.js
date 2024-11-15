@@ -157,7 +157,7 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			let tmpView = this.fable.views[tmpViewFilterState.ViewHashList[i]];
 			// If the filter function returns false, skip this view.
-			if (tmpViewFilterState.FilterFunction && !fFilterFunction(tmpView))
+			if (tmpViewFilterState.FilterFunction && !tmpViewFilterState.FilterFunction(tmpView))
 			{
 				continue;
 			}
@@ -172,11 +172,63 @@ class PictFormMetacontroller extends libPictViewClass
 				}
 				tmpViewFilterState.FilteredViewList.push(tmpView);
 			}
-			else if (!this.options.OnlyRenderDynamicSections)
+			else if (!this.options.OnlyRenderDynamicSections || tmpView.options.IncludeInMetacontrollerOperations)
 			{
 				// If the OnlyRenderDynamicSections option is false, we will render all views in the array..
 				// This is great when the app is small and simple.  And DANGEROUS if it isn't.  Take care!
 				tmpViewFilterState.FilteredViewList.push(tmpView);
+			}
+		}
+
+		// Auto-position any views marked with DynamicPlacementMode or DynamicAnchor - this is to assist with mixing configuration driven forms with
+		// custom views.
+		const tmpViewsToAutoPosition = tmpViewFilterState.FilteredViewList.filter((v) => v.options.DynamicPlacementMode || v.options.DynamicAnchor);
+		for (const tmpView of tmpViewsToAutoPosition)
+		{
+			const tmpMode = tmpView.options.DynamicPlacementMode || 'After';
+			const tmpAnchor = tmpView.options.DynamicAnchor;
+			let tmpMovingViewIndex = tmpViewFilterState.FilteredViewList.findIndex((v) => v === tmpView);
+			let tmpAnchorViewIndex;
+
+			switch (tmpMode)
+			{
+			case 'First':
+				tmpViewFilterState.FilteredViewList.splice(tmpMovingViewIndex, 1);
+				tmpViewFilterState.FilteredViewList.unshift(tmpView);
+				break;
+			case 'Last':
+				tmpViewFilterState.FilteredViewList.splice(tmpMovingViewIndex, 1);
+				tmpViewFilterState.FilteredViewList.push(tmpView);
+				break;
+			case 'Before':
+			case 'After':
+				tmpAnchorViewIndex = tmpViewFilterState.FilteredViewList.findIndex((v) => v.Hash == tmpAnchor);
+				if (tmpAnchorViewIndex < 0)
+				{
+					// for convenience, also check for dynamic prefixed views if an exact match is not found
+					const tmpDynamicAnchor = `PictSectionForm-${tmpAnchor}`;
+					tmpAnchorViewIndex = tmpViewFilterState.FilteredViewList.findIndex((v) => v.Hash == tmpDynamicAnchor);
+				}
+				if (tmpAnchorViewIndex < 0)
+				{
+					this.log.error(`No anchor view [${tmpAnchor}] found to position view [${tmpView.Hash}] [${tmpMode}].`);
+					break;
+				}
+				tmpViewFilterState.FilteredViewList.splice(tmpMovingViewIndex, 1);
+				if (tmpMovingViewIndex < tmpAnchorViewIndex)
+				{
+					// we just removed the element before the target, so we need to adjust
+					--tmpAnchorViewIndex;
+				}
+				if (tmpMode === 'After')
+				{
+					// this lets us share most of the code for Before and After
+					++tmpAnchorViewIndex;
+				}
+				tmpViewFilterState.FilteredViewList.splice(tmpAnchorViewIndex, 0, tmpView);
+				break;
+			default:
+				this.log.error(`Not auto-positioning view with unknown DynamicPlacementMode: ${tmpMode}`);
 			}
 		}
 
@@ -236,6 +288,10 @@ class PictFormMetacontroller extends libPictViewClass
 		let tmpViewList = this.filterViews(fFilterFunction, fSortFunction);
 		for (let i = 0; i < tmpViewList.length; i++)
 		{
+			if (tmpViewList[i] === this)
+			{
+				continue;
+			}
 			tmpViewList[i].render();
 		}
 	}
@@ -251,7 +307,15 @@ class PictFormMetacontroller extends libPictViewClass
 		let tmpViewList = this.filterViews(fFormSectionFilter, fSortFunction);
 		for (let i = 0; i < tmpViewList.length; i++)
 		{
-			tmpViewList[i].rebuildCustomTemplate();
+			const tmpView = tmpViewList[i];
+			if (tmpView === this)
+			{
+				continue;
+			}
+			if (tmpView.isPictSectionForm)
+			{
+				tmpView.rebuildCustomTemplate();
+			}
 		}
 		// Make sure any form-specific CSS is injected properly.
 		this.pict.CSSMap.injectCSS();
@@ -281,10 +345,31 @@ class PictFormMetacontroller extends libPictViewClass
 		for (let i = 0; i < tmpViewList.length; i++)
 		{
 			let tmpFormView = tmpViewList[i];
+			if (tmpFormView === this)
+			{
+				continue;
+			}
 			if (tmpFormView.options.IncludeInMetatemplateSectionGeneration)
 			{
 				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Prefix:Pict.views["${tmpFormView.Hash}"]~}`;
-				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container:Pict.views["${tmpFormView.Hash}"]~}`;
+				if (tmpFormView.isPictSectionForm)
+				{
+					tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container:Pict.views["${tmpFormView.Hash}"]~}`;
+				}
+				else
+				{
+					//NOTE: For now, requiring the destination address to be an ID for this case
+					tmpFormView.options.CustomTargetID = tmpFormView.options.DefaultDestinationAddress.replace(/#/, '');
+					tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Custom:Pict.views["${tmpFormView.Hash}"]~}`;
+				}
+				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Postfix:Pict.views["${tmpFormView.Hash}"]~}`;
+			}
+			else if (!tmpFormView.isPictSectionForm)
+			{
+				//NOTE: For now, requiring the destination address to be an ID for this case
+				tmpFormView.options.CustomTargetID = tmpFormView.options.DefaultDestinationAddress.replace(/#/, '');
+				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Prefix:Pict.views["${tmpFormView.Hash}"]~}`;
+				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Custom:Pict.views["${tmpFormView.Hash}"]~}`;
 				tmpTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Postfix:Pict.views["${tmpFormView.Hash}"]~}`;
 			}
 		}

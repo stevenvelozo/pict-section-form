@@ -352,5 +352,44 @@ declare class PictViewDynamicForm extends libPictViewClass {
      */
     get isPictSectionForm(): boolean;
 }
+declare namespace PictViewDynamicForm {
+    export { _DefaultConfiguration as default_configuration };
+}
 import libPictViewClass = require("pict-view");
+declare const _DefaultConfiguration: {
+    AutoRender: boolean;
+    AutoSolveWithApp: boolean;
+    ExecuteSolversWithoutMetacontroller: boolean;
+    IncludeInMetatemplateSectionGeneration: boolean;
+    IncludeInDefaultDynamicRender: boolean;
+    DefaultRenderable: string;
+    DefaultDestinationAddress: string;
+    Renderables: any[];
+    Templates: any[];
+    MacroTemplates: {
+        Section: {
+            HTMLID: string;
+        };
+        Group: {
+            HTMLID: string;
+            PictFormLayout: string;
+            TabularCreateRowFunctionCall: string;
+        };
+        Input: {
+            Informary: string;
+            InformaryTabular: string;
+            HTMLSelector: string;
+            HTMLSelectorTabular: string;
+            RawHTMLID: string;
+            HTMLName: string;
+            HTMLIDAddress: string;
+            HTMLID: string;
+            HTMLForID: string;
+            InputFullProperties: string;
+            InputChangeHandler: string;
+            DataRequestFunction: string;
+        };
+    };
+    TargetElementAddress: string;
+};
 //# sourceMappingURL=Pict-View-DynamicForm.d.ts.map

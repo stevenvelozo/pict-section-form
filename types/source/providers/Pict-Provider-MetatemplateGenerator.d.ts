@@ -5,6 +5,10 @@ export = PictMetatemplateGenerator;
  */
 declare class PictMetatemplateGenerator {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
+    dynamicInputView: boolean;
+    baseTemplatePrefix: string;
+    onInitializeAsync(fCallback: any): any;
+    createOnDemandMetatemplateView(): void;
     /**
      * Retrieves the metatemplate template reference in raw format.
      *
