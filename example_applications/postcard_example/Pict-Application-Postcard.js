@@ -6,8 +6,10 @@ const libProviderDynamicSection = require('./providers/PictProvider-Dynamic-Sect
 
 const libProviderInputExtension = require('./providers/PictProvider-PostKardInputExtension.js');
 
-const libMainApplicationView = require('./views/PictView-Postcard-MainApplication.js')
-const libDynamicInputsView = require('./views/PictView-Postcard-DynamicInputs.js')
+const libMainApplicationView = require('./views/PictView-Postcard-MainApplication.js');
+const libDynamicInputsView = require('./views/PictView-Postcard-DynamicInputs.js');
+
+const libPictSectionFormsMetacontroller = require('./pict_section_form_capability_override/Pict-Form-Metacontroller.js');
 
 class PostcardApplication extends libPictApplication
 {
@@ -28,7 +30,7 @@ class PostcardApplication extends libPictApplication
 		this.pict.addServiceType('PictSectionForm', libPictSectionForm);
 
 		// Add the pict form metacontroller service, which provides programmaatic view construction from manifests and render/marshal methods.
-		this.pict.addView('PictFormMetacontroller', {}, libPictSectionForm.PictFormMetacontroller);
+		this.pict.addView('PictFormMetacontroller', {}, libPictSectionFormsMetacontroller);
 
 		this.pict.addView('PostcardMainApplication', libMainApplicationView.default_configuration, libMainApplicationView);
 		this.pict.addView('PostcardDynamicInputs', libDynamicInputsView.default_configuration, libDynamicInputsView);

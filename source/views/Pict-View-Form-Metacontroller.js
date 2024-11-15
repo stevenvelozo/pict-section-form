@@ -112,6 +112,16 @@ class PictFormMetacontroller extends libPictViewClass
 		return super.onSolve();
 	}
 
+	onBeforeFilterViews(pViewFilterState)
+	{
+		return pViewFilterState;
+	}
+
+	onAfterFilterViews(pViewFilterState)
+	{
+		return pViewFilterState;
+	}
+
 	/**
 	 * Filters the views based on the provided filter and sort functions.
 	 * 
@@ -123,48 +133,64 @@ class PictFormMetacontroller extends libPictViewClass
 	 */
 	filterViews(fFilterFunction, fSortFunction)
 	{
-		let tmpViewList = Object.keys(this.fable.views);
-		let tmpFilteredViewList = [];
+		// Generate the filter state object
+		let tmpViewFilterState = (
+			{
+				ViewHashList: Object.keys(this.pict.views),
+				// If there is no customization to the filter or sort, just render the last set.
+				RenderLastRenderedViewsWithoutCustomization: true,
+				// The last rendered views that were rendered
+				LastRenderedViews: this.lastRenderedViews,
+				// True or false, if the view should be included in the render.
+				FilterFunction: fFilterFunction,
+				// The sort function to apply to the views (it is sorting OBJECTS, not strings)
+				SortFunction: fSortFunction,
+				// The final outcome view list
+				FilteredViewList: []
+			});
+		
+		// Execute the customization function
+		tmpViewFilterState = this.onBeforeFilterViews(tmpViewFilterState);
 
-		if ((typeof(fFilterFunction) != 'function') && (this.lastRenderedViews.length > 0))
+		// Filter the views based on the filter function and type
+		for (let i = 0; i < tmpViewFilterState.ViewHashList.length; i++)
 		{
-			return this.lastRenderedViews;
-		}
-
-		// This is to allow dynamic forms sections to have their own sorting criteria before rendering.
-		if (typeof(fSortFunction) == 'function')
-		{
-			tmpFilteredViewList.sort(fSortFunction);
-		}
-
-		for (let i = 0; i < tmpViewList.length; i++)
-		{
-			let tmpView = this.fable.views[tmpViewList[i]];
-			if (fFilterFunction && !fFilterFunction(tmpView))
+			let tmpView = this.fable.views[tmpViewFilterState.ViewHashList[i]];
+			// If the filter function returns false, skip this view.
+			if (tmpViewFilterState.FilterFunction && !fFilterFunction(tmpView))
 			{
 				continue;
 			}
 			if (tmpView.isPictSectionForm)
 			{
 				if (
-					// If you pass in a filter we let that decide
-					(typeof(fFilterFunction) != 'function')
-					// Otherwise if the IncludeInDefaultDynamicRender is false, we skip it
+					// If you don't pass in a filter and it's a dynamic section but set to not be included in the dynamic render, skip it
+					(typeof(tmpViewFilterState.FilterFunction) != 'function')
 					&& (!tmpView.sectionDefinition.IncludeInDefaultDynamicRender))
 				{
 					continue;
 				}
-				tmpFilteredViewList.push(tmpView);
+				tmpViewFilterState.FilteredViewList.push(tmpView);
 			}
 			else if (!this.options.OnlyRenderDynamicSections)
 			{
-				// If the OnlyRenderDynamicSections option is false, we will render all views.
+				// If the OnlyRenderDynamicSections option is false, we will render all views in the array..
 				// This is great when the app is small and simple.  And DANGEROUS if it isn't.  Take care!
-				tmpFilteredViewList.push(tmpView);
+				tmpViewFilterState.FilteredViewList.push(tmpView);
 			}
 		}
 
-		return tmpFilteredViewList;
+		// Sort the views based on the sort function
+		// This is to allow dynamic forms sections to have their own sorting criteria before rendering.
+		if (typeof(tmpViewFilterState.SortFunction) == 'function')
+		{
+			tmpViewFilterState.FilteredViewList.sort(tmpViewFilterState.SortFunction);
+		}
+
+		// Execute the after filter customization function
+		tmpViewFilterState = this.onAfterFilterViews(tmpViewFilterState);
+
+		return tmpViewFilterState.FilteredViewList;
 	}
 
 	/**
