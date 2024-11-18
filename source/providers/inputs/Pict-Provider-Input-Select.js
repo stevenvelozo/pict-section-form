@@ -124,7 +124,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		}
 		else
 		{
-			return super.onInputInitializeTabular(pView, pGroup, pInput, pHTMLSelector);
+			return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
 		}
 
 		if (tmpInputSelectElement && tmpDefaultData && Array.isArray(tmpDefaultData))

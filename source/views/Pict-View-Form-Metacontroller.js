@@ -541,6 +541,25 @@ class PictFormMetacontroller extends libPictViewClass
 	}
 
 	/**
+	 * Trigger an event on all inputs on all views.
+	 * @param {string} pEvent - The event to trigger
+	 */
+	triggerGlobalInputEvent(pEvent)
+	{
+		let tmpViewHashes = Object.keys(this.pict.views);
+		let tmpCompletedHashes = {};
+		// Filter the views based on the filter function and type
+		for (let i = 0; i < tmpViewHashes.length; i++)
+		{
+			let tmpView = this.pict.views[tmpViewHashes[i]];
+			if (tmpView.isPictSectionForm)
+			{
+				tmpView.globalInputEvent(pEvent, tmpCompletedHashes);
+			}
+		}
+	}
+
+	/**
 	 * Add a dynamic view to the metacontroller.
 	 * @param {string} pViewHash 
 	 * @param {Object} pViewConfiguration 

@@ -343,6 +343,45 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 		}
 
+		// Verbose obtuse data validation.
+		if ((`TriggerGroup` in tmpRecord) && (typeof(tmpRecord.TriggerGroup) === 'string') && (tmpRecord.TriggerGroup != '')
+			&& (`TriggerAddress` in tmpRecord) && (typeof(tmpRecord.TriggerAddress) === 'string') && (tmpRecord.TriggerAddress != ''))
+		{
+			if (!Array.isArray(tmpDescriptor.PictForm.Providers))
+			{
+				tmpDescriptor.PictForm.Providers = [];
+			}
+
+			tmpDescriptor.PictForm.Providers.push('AutofillTriggerGroup')
+			tmpDescriptor.PictForm.AutofillTriggerGroup = (
+				{
+					TriggerGroup: tmpRecord.TriggerGroup,
+					TriggerAddress: tmpRecord.TriggerAddress,
+					MarshalEmptyValues: tmpRecord.MarshalEmptyValues ? true : false
+				});
+		}
+
+		if ((`Entity` in tmpRecord) && (typeof(tmpRecord.Entity) === 'string') && (tmpRecord.Entity != '') 
+			&& (`EntityColumnFilter` in tmpRecord) && (typeof(tmpRecord.EntityColumnFilter) === 'string') && (tmpRecord.EntityColumnFilter != '') 
+			&& (`EntityDestination` in tmpRecord) && (typeof(tmpRecord.EntityDestination) === 'string') && (tmpRecord.EntityDestination != ''))
+		{
+			if (!Array.isArray(tmpDescriptor.PictForm.Providers))
+			{
+				tmpDescriptor.PictForm.Providers = [];
+			}
+
+			tmpDescriptor.PictForm.Providers.push('AutofillTriggerGroup')
+			tmpDescriptor.PictForm.EntitiesBundle = [
+				{
+					"Entity": tmpRecord.Entity,
+					"Filter": `FBV~${tmpRecord.EntityColumnFilter}~EQ~{~D:Record.Value~}`,
+					"Destination": tmpRecord.EntityDestination,
+					// This marshals a single record
+					"SingleRecord": tmpRecord.EntitySingleRecord ? true : false
+				}
+			]
+		}
+
 		// This is used for Section and Group, regardless of where the Descriptor goes.
 		let tmpCoreManifestFactory = pManifestFactory;
 		if ((`SubManifest` in tmpRecord) && (tmpRecord.SubManifest) && (tmpRecord.InputType != 'TabularAddress'))

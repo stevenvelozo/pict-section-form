@@ -5,6 +5,8 @@ const libDynamicMetaLists = require('./Pict-Provider-MetaLists.js');
 const libInputSelect = require('./inputs/Pict-Provider-Input-Select.js');
 const libInputDateTime = require('./inputs/Pict-Provider-Input-DateTime.js');
 const libInputTabSelector = require('./inputs/Pict-Provider-Input-TabSelector.js');
+const libInputEntityBundleRequest = require('./inputs/Pict-Provider-Input-EntityBundleRequest.js');
+const libInputAutofillTriggerGroup = require('./inputs/Pict-Provider-Input-AutofillTriggerGroup.js');
 
 const _DefaultProviderConfiguration = (
 {
@@ -51,6 +53,14 @@ class PictDynamicSolver extends libPictProvider
 		if (!this.pict.providers['Pict-Input-TabSelector']);
 		{
 			this.pict.addProvider('Pict-Input-TabSelector', libInputTabSelector.default_configuration, libInputTabSelector);
+		}
+		if (!this.pict.providers['Pict-Input-EntityBundleRequest'])
+		{
+			this.pict.addProvider('Pict-Input-EntityBundleRequest', libInputEntityBundleRequest.default_configuration, libInputEntityBundleRequest);
+		}
+		if (!this.pict.providers['Pict-Input-AutofillTriggerGroup'])
+		{
+			this.pict.addProvider('Pict-Input-AutofillTriggerGroup', libInputAutofillTriggerGroup.default_configuration, libInputAutofillTriggerGroup);
 		}
 	}
 

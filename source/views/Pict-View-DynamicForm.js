@@ -781,6 +781,10 @@ class PictViewDynamicForm extends libPictViewClass
 	 */
 	getInputProviderList(pInput)
 	{
+		if (!('PictForm' in pInput))
+		{
+			return [];
+		}
 		if (('Providers' in pInput.PictForm) && Array.isArray(pInput.PictForm.Providers))
 		{
 			return pInput.PictForm.Providers;
@@ -817,12 +821,32 @@ class PictViewDynamicForm extends libPictViewClass
 	 * Handles the generic Input Event for an Input Provider
 	 *
 	 * @param {String} pInputHash - The input hash object.
-	 * @param {Event} pEvent - The input event object.
+	 * @param {string} pEvent - The input event string.
 	 * @returns {any} - The result of the input event handling.
 	 */
 	inputEvent(pInputHash, pEvent)
 	{
 		return this.pict.providers.DynamicInputEvents.inputEvent(this, pInputHash, pEvent);
+	}
+
+	/**
+	 * 
+	 * @param {string} pEvent - The input event string.
+	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 */
+	globalInputEvent(pEvent, pCompletedHashes)
+	{
+		const tmpInputHashes = Object.keys(this.sectionManifest.elementHashes);
+
+		for (let i = 0; i < tmpInputHashes.length; i++)
+		{
+			console.log(tmpInputHashes[i])
+			if (!(tmpInputHashes[i] in pCompletedHashes))
+			{
+				pCompletedHashes[tmpInputHashes[i]] = true;
+				this.inputEvent(tmpInputHashes[i], pEvent);
+			}
+		}
 	}
 
 	/**
