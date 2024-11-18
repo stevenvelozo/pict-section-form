@@ -203,20 +203,20 @@ module.exports.default_configuration.pict_configuration = {
 					Providers: ["Pict-Input-EntityBundleRequest", "Pict-Input-AutofillTriggerGroup"],
 					EntitiesBundle: [
 							{
-								"Entity": "Author",
-								"Filter": "FBV~IDAuthor~EQ~{~D:Record.Value~}",
+								"Entity": "Bridge",
+								"Filter": "FBV~IDBridge~EQ~{~D:Record.Value~}",
 								"Destination": "AppData.CurrentAuthor",
 								// This marshals a single record
 								"SingleRecord": true
 							},
 							{
-								"Entity": "BookAuthorJoin",
-								"Filter": "FBV~IDAuthor~EQ~{~D:Appdata.CurrentAuthor.IDAuthor~}",
+								"Entity": "BridgeElementCondition",
+								"Filter": "FBV~IDBridge~EQ~{~D:AppData.CurrentAuthor.IDBridge~}",
 								"Destination": "AppData.BookAuthorJoins"
 							},
 							{
-								"Entity": "Book",
-								"Filter": "FBL~IDBook~LK~{PJU~:,^IDBook^Appdata.BookAuthorJoins~}",
+								"Entity": "Element",
+								"Filter": "FBL~IDElement~INN~{~PJU:,^IDElement^AppData.BookAuthorJoins~}",
 								"Destination": "AppData.BookAuthorJoins"
 							}
 						],

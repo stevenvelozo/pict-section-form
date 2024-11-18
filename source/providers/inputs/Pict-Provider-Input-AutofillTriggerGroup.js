@@ -82,7 +82,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);
 		}
 		let tmpTriggerGroupName = pEvent.substring(tmpSeparatorIndex+1);
-		console.log(`Event ${pEvent} triggered for ${pInput.Hash} with the group ${tmpTriggerGroupName}...`);
+		//console.log(`Event ${pEvent} triggered for ${pInput.Hash} with the group ${tmpTriggerGroupName}...`);
 		this.autoFillFromAddressList(pView, pInput, tmpTriggerGroupName, pHTMLSelector);
 		return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);
 	}

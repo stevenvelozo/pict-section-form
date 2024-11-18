@@ -840,7 +840,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 		for (let i = 0; i < tmpInputHashes.length; i++)
 		{
-			console.log(tmpInputHashes[i])
+//			console.log(tmpInputHashes[i])
 			if (!(tmpInputHashes[i] in pCompletedHashes))
 			{
 				pCompletedHashes[tmpInputHashes[i]] = true;
