@@ -4,6 +4,15 @@ declare class ManifestFactory {
     manifest: any;
     referenceManifestFactories: {};
     defaultHashCounter: number;
+    _SanitizeObjectKeyRegex: RegExp;
+    _SanitizeObjectKeyReplacement: string;
+    /**
+     * Clean a string of any characters to create a consistent object key.
+     *
+     * @param {string} pString = The string to clean.
+     * @return {string} the cleaned string, or an empty string if the input is invalid
+     */
+    sanitizeObjectKey(pString: string): string;
     /**
      * Initialize the form groups.
      *

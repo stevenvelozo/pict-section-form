@@ -109,6 +109,11 @@ declare class PictFormMetacontroller extends libPictViewClass {
      */
     bootstrapPictFormViewsFromManifest(pManifestDescription: any): any[];
     /**
+     * Trigger an event on all inputs on all views.
+     * @param {string} pEvent - The event to trigger
+     */
+    triggerGlobalInputEvent(pEvent: string): void;
+    /**
      * Add a dynamic view to the metacontroller.
      * @param {string} pViewHash
      * @param {Object} pViewConfiguration

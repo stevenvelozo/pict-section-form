@@ -259,10 +259,16 @@ declare class PictViewDynamicForm extends libPictViewClass {
      * Handles the generic Input Event for an Input Provider
      *
      * @param {String} pInputHash - The input hash object.
-     * @param {Event} pEvent - The input event object.
+     * @param {string} pEvent - The input event string.
      * @returns {any} - The result of the input event handling.
      */
-    inputEvent(pInputHash: string, pEvent: Event): any;
+    inputEvent(pInputHash: string, pEvent: string): any;
+    /**
+     *
+     * @param {string} pEvent - The input event string.
+     * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     */
+    globalInputEvent(pEvent: string, pCompletedHashes: any): void;
     /**
      * Triggers a DataRequest event for an Input Provider
      *

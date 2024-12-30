@@ -37,6 +37,26 @@ class ManifestFactory extends libFableServiceProviderBase
 
 		// Keep track of a numeric index that's unique to this form, for autogenerating identifiers.
 		this.defaultHashCounter = 0;
+
+		this._SanitizeObjectKeyRegex = /[^a-zA-Z0-9_]/gi;
+		this._SanitizeObjectKeyReplacement = '_';
+		this._SanitizeObjectKeyInvalid = 'INVALID';
+	}
+
+	/**
+	 * Clean a string of any characters to create a consistent object key.
+	 *
+	 * @param {string} pString = The string to clean.
+	 * @return {string} the cleaned string, or a placeholder if the input is invalid
+	 */
+	sanitizeObjectKey(pString)
+	{
+		console.info('HELLOOOOO');
+		if (typeof pString !== 'string' || pString.length < 1)
+		{
+			return this._SanitizeObjectKeyInvalid;
+		}
+		return pString.replace(this._SanitizeObjectKeyRegex, this._SanitizeObjectKeyReplacement);
 	}
 
 	/**
@@ -399,7 +419,7 @@ class ManifestFactory extends libFableServiceProviderBase
 
 		// Setup the Section and the Group
 		const tmpSectionName = tmpRecord['Section Name'] ?? 'Default_Section';
-		const tmpSectionHash = this.fable.DataFormat.cleanNonAlphaCharacters(tmpSectionName);
+		const tmpSectionHash = this.sanitizeObjectKey(tmpSectionName);
 		tmpDescriptor.PictForm.Section = tmpSectionHash;
 		const tmpSection = tmpCoreManifestFactory.getManifestSection(tmpSectionHash);
 		if (tmpRecord['Section Name'])
@@ -408,7 +428,7 @@ class ManifestFactory extends libFableServiceProviderBase
 		}
 
 		const tmpGroupName = tmpRecord['Group Name'] ?? 'Default_Group';
-		const tmpGroupHash = this.fable.DataFormat.cleanNonAlphaCharacters(tmpGroupName);
+		const tmpGroupHash = this.sanitizeObjectKey(tmpGroupName);
 		tmpDescriptor.PictForm.Group = tmpGroupHash;
 		const tmpGroup = tmpCoreManifestFactory.getManifestGroup(tmpSection, tmpGroupHash);
 		if (tmpRecord['Group Name'])

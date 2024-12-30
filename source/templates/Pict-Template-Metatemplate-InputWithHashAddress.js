@@ -68,7 +68,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			Address: tmpInputAddress,
 			DataAddress: tmpInputAddress,
 			Name: tmpInputName,
-			Hash: this.fable.DataFormat.cleanNonAlphaCharacters(tmpInputAddress),
+			Hash: this.fable.ManifestFactory.sanitizeObjectKey(tmpInputAddress),
 			DataType: tmpDataType,
 			PictForm: {
 				InformaryDataAddress: tmpInputAddress,
@@ -150,7 +150,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			Address: tmpInputAddress,
 			DataAddress: tmpInputAddress,
 			Name: tmpInputName,
-			Hash: this.fable.DataFormat.cleanNonAlphaCharacters(tmpInputAddress),
+			Hash: this.fable.ManifestFactory.sanitizeObjectKey(tmpInputAddress),
 			DataType: tmpDataType,
 			PictForm: {
 				InformaryDataAddress: tmpInputAddress,
