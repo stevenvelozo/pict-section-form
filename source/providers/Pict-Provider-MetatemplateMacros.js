@@ -19,8 +19,21 @@ class PictMetatemplateMacros extends libPictProvider
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
-		
+
 		super(pFable, tmpOptions, pServiceHash);
+
+		/** @type {any} */
+		this.options;
+		/** @type {import('pict') & { settings: any }} */
+		this.pict;
+		/** @type {import('pict')} */
+		this.fable;
+		/** @type {any} */
+		this.log;
+		/** @type {string} */
+		this.UUID;
+		/** @type {string} */
+		this.Hash;
 
 		this.additionalInputMacros = {};
 		if ('AdditionalInputMacros' in this.options)
@@ -55,7 +68,7 @@ class PictMetatemplateMacros extends libPictProvider
 
 	/**
 	 * Builds macros for the given input.
-	 * 
+	 *
 	 * @param {Object} pView - The view object.
 	 * @param {Object} pInput - The input object.
 	 */
@@ -79,7 +92,7 @@ class PictMetatemplateMacros extends libPictProvider
 
 	/**
 	 * Rebuilds macros for the given view.
-	 * 
+	 *
 	 * @param {Object} pView - The view object.
 	 * @returns {boolean} - Returns false if MacroTemplates is not present in pView.options.
 	 */

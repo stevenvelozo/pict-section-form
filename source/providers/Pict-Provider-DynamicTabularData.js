@@ -11,13 +11,18 @@ const _DefaultProviderConfiguration = (
 });
 
 /**
+ * @typedef {Object} ElementDescriptor
+ * @property {string} Hash - The hash of the element.
+ */
+
+/**
  * The DynamicTabularData class is a provider that translates simple list entries into arrays of entries ready to use in drop-down lists and such
  */
 class DynamicTabularData extends libPictProvider
 {
 	/**
 	 * Creates an instance of the DynamicTabularData class.
-	 * 
+	 *
 	 * @param {object} pFable - The fable object.
 	 * @param {object} pOptions - The options object.
 	 * @param {object} pServiceHash - The service hash object.
@@ -26,6 +31,13 @@ class DynamicTabularData extends libPictProvider
 	{
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
 		super(pFable, tmpOptions, pServiceHash);
+
+		/** @type {any} */
+		this.options;
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {any} */
+		this.log;
 	}
 
 	/**
@@ -99,7 +111,7 @@ class DynamicTabularData extends libPictProvider
 			// Try the address
 			tmpRowSourceRecord = pView.sectionManifest.getValueAtAddress(pView.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
 		}
-		
+
 		if (!tmpRowSourceRecord)
 		{
 			this.log.warn(`PICT View Metatemplate Helper getTabularRowData ${pGroupIndex} could not find the record set for ${tmpGroup.RecordSetAddress}.`);
@@ -132,7 +144,7 @@ class DynamicTabularData extends libPictProvider
 
 	/**
 	 * Creates a dynamic table row for the given view and group index.
-	 * 
+	 *
 	 * @param {Object} pView - The view object.
 	 * @param {number} pGroupIndex - The index of the group.
 	 */
@@ -165,7 +177,7 @@ class DynamicTabularData extends libPictProvider
 	 *
 	 * @param {Object} pView - The view object.
 	 * @param {number} pGroupIndex - The index of the group.
-	 * @param {number} pRowIndex - The current index of the row.
+	 * @param {number|string} pRowIndex - The current index of the row.
 	 * @param {number} pNewRowIndex - The new index to move the row to.
 	 * @returns {boolean} - Returns false if the index is out of bounds, otherwise returns undefined.
 	 */
@@ -179,11 +191,11 @@ class DynamicTabularData extends libPictProvider
 
 			if (Array.isArray(tmpDestinationObject))
 			{
-				let tmpRowIndex = parseInt(pRowIndex, 10);
-				let tmpNewRowIndex = parseInt(pNewRowIndex, 10);
+				let tmpRowIndex = parseInt(String(pRowIndex), 10);
+				let tmpNewRowIndex = parseInt(String(pNewRowIndex), 10);
 				if ((tmpDestinationObject.length <= tmpRowIndex) || (tmpRowIndex < 0))
 				{
-					this.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] to [${pNewRowIndex}] but the index is out of bounds.`);
+					this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] to [${pNewRowIndex}] but the index is out of bounds.`);
 					return false;
 				}
 				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
@@ -193,7 +205,7 @@ class DynamicTabularData extends libPictProvider
 			}
 			else if (typeof(tmpDestinationObject) === 'object')
 			{
-				this.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] to [${pNewRowIndex}] but it's an object not an array; order isn't controllable.`);
+				this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] to [${pNewRowIndex}] but it's an object not an array; order isn't controllable.`);
 			}
 		}
 	}
@@ -203,7 +215,7 @@ class DynamicTabularData extends libPictProvider
 	 *
 	 * @param {Object} pView - The view containing the dynamic table.
 	 * @param {number} pGroupIndex - The index of the group containing the row.
-	 * @param {number} pRowIndex - The index of the row to be moved.
+	 * @param {number|string} pRowIndex - The index of the row to be moved.
 	 * @returns {boolean} - Returns true if the row was successfully moved, false otherwise.
 	 */
 	moveDynamicTableRowDown(pView, pGroupIndex, pRowIndex)
@@ -216,10 +228,10 @@ class DynamicTabularData extends libPictProvider
 
 			if (Array.isArray(tmpDestinationObject))
 			{
-				let tmpRowIndex = parseInt(pRowIndex, 10);
+				let tmpRowIndex = parseInt(String(pRowIndex), 10);
 				if (tmpDestinationObject.length <= tmpRowIndex)
 				{
-					this.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] down but it's already at the bottom.`);
+					this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] down but it's already at the bottom.`);
 					return false;
 				}
 				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
@@ -229,7 +241,7 @@ class DynamicTabularData extends libPictProvider
 			}
 			else if (typeof(tmpDestinationObject) === 'object')
 			{
-				this.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but it's an object not an array; order isn't controllable.`);
+				this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but it's an object not an array; order isn't controllable.`);
 			}
 		}
 	}
@@ -239,7 +251,7 @@ class DynamicTabularData extends libPictProvider
 	 *
 	 * @param {Object} pView - The view object.
 	 * @param {number} pGroupIndex - The index of the group.
-	 * @param {number} pRowIndex - The index of the row to be moved.
+	 * @param {number|string} pRowIndex - The index of the row to be moved.
 	 * @returns {boolean} Returns true if the row was moved successfully, false otherwise.
 	 */
 	moveDynamicTableRowUp(pView, pGroupIndex, pRowIndex)
@@ -252,15 +264,15 @@ class DynamicTabularData extends libPictProvider
 
 			if (Array.isArray(tmpDestinationObject))
 			{
-				let tmpRowIndex = parseInt(pRowIndex, 10);
+				let tmpRowIndex = parseInt(String(pRowIndex), 10);
 				if (tmpRowIndex == 0)
 				{
-					this.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] up but it's already at the top.`);
+					this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] up but it's already at the top.`);
 					return false;
 				}
 				if (tmpDestinationObject.length <= tmpRowIndex)
 				{
-					this.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but the index is out of bounds.`);
+					this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but the index is out of bounds.`);
 					return false;
 				}
 				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
@@ -270,7 +282,7 @@ class DynamicTabularData extends libPictProvider
 			}
 			else if (typeof(tmpDestinationObject) === 'object')
 			{
-				this.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but it's an object not an array; order isn't controllable.`);
+				this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but it's an object not an array; order isn't controllable.`);
 			}
 		}
 	}
@@ -294,10 +306,10 @@ class DynamicTabularData extends libPictProvider
 
 			if (Array.isArray(tmpDestinationObject))
 			{
-				let tmpRowIndex = parseInt(pRowIndex, 10);
+				let tmpRowIndex = parseInt(String(pRowIndex), 10);
 				if (tmpDestinationObject.length <= tmpRowIndex)
 				{
-					this.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to delete row [${pRowIndex}] but the index is out of bounds.`);
+					this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to delete row [${pRowIndex}] but the index is out of bounds.`);
 					return false;
 				}
 				tmpDestinationObject.splice(tmpRowIndex, 1);
@@ -309,7 +321,7 @@ class DynamicTabularData extends libPictProvider
 				let tmpRowIndex = pRowIndex.toString();
 				if (!(tmpRowIndex in tmpDestinationObject))
 				{
-					this.pict.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to delete row [${pRowIndex}] but the object does not contain pView entry.`);
+					this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to delete row [${pRowIndex}] but the object does not contain pView entry.`);
 					return false;
 				}
 				delete tmpDestinationObject[tmpRowIndex]

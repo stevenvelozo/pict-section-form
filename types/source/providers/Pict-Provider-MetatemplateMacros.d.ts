@@ -5,6 +5,20 @@ export = PictMetatemplateMacros;
  */
 declare class PictMetatemplateMacros {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
+    /** @type {any} */
+    options: any;
+    /** @type {import('pict') & { settings: any }} */
+    pict: import("pict") & {
+        settings: any;
+    };
+    /** @type {import('pict')} */
+    fable: import("pict");
+    /** @type {any} */
+    log: any;
+    /** @type {string} */
+    UUID: string;
+    /** @type {string} */
+    Hash: string;
     additionalInputMacros: any;
     AdditionalInputMacros: any;
     additionalGroupMacros: any;

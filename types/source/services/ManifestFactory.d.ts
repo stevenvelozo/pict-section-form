@@ -1,16 +1,25 @@
 export = ManifestFactory;
 declare class ManifestFactory {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
+    /** @type {import('pict') & { instantiateServiceProviderWithoutRegistration: (hash: string, options?: any, uuid?: string) => any }} */
+    fable: import("pict") & {
+        instantiateServiceProviderWithoutRegistration: (hash: string, options?: any, uuid?: string) => any;
+    };
+    /** @type {any} */
+    log: any;
+    /** @type {string} */
+    UUID: string;
     manifest: any;
     referenceManifestFactories: {};
     defaultHashCounter: number;
     _SanitizeObjectKeyRegex: RegExp;
     _SanitizeObjectKeyReplacement: string;
+    _SanitizeObjectKeyInvalid: string;
     /**
      * Clean a string of any characters to create a consistent object key.
      *
      * @param {string} pString = The string to clean.
-     * @return {string} the cleaned string, or an empty string if the input is invalid
+     * @return {string} the cleaned string, or a placeholder if the input is invalid
      */
     sanitizeObjectKey(pString: string): string;
     /**
@@ -56,7 +65,8 @@ declare class ManifestFactory {
     /**
      * Add a manifest descriptor from a tabular row.
      *
-     * @param {Object} tmpRecord - The tabular row record -- expected to have at least a 'Form'
+     * @param {Object} pManifestFactory - The manifest factory
+     * @param {Object} pRecord - The tabular row record -- expected to have at least a 'Form'
      *
      * @return {Object} the descriptor
      */
@@ -80,5 +90,8 @@ declare class ManifestFactory {
      * @return {any} the manifests
      */
     createManifestsFromTabularArray(pRecords: any): any;
+}
+declare namespace ManifestFactory {
+    let default_configuration: {};
 }
 //# sourceMappingURL=ManifestFactory.d.ts.map

@@ -13,6 +13,13 @@ class ManifestFactory extends libFableServiceProviderBase
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultManifestSettings)), pOptions);
 		super(pFable, pOptions, pServiceHash);
 
+		/** @type {import('pict') & { instantiateServiceProviderWithoutRegistration: (hash: string, options?: any, uuid?: string) => any }} */
+		this.fable;
+		/** @type {any} */
+		this.log;
+		/** @type {string} */
+		this.UUID;
+
 		this.manifest = tmpOptions.Manifest;
 
 		if (!('Descriptors' in this.manifest))
@@ -61,12 +68,12 @@ class ManifestFactory extends libFableServiceProviderBase
 
 	/**
 	 * Initialize the form groups.
-	 * 
+	 *
 	 * This function will initialize the form groups of a view based on the manifest.
-	 * 
+	 *
 	 * TODO: Figure out if this is the best place for this.  It *is* pretty useful for
 	 * inferring manifests, so has uses outside of the view lifecycle.
-	 * 
+	 *
 	 * @param {Object} pView - The view to initialize form groups for
 	 */
 	initializeFormGroups(pView)
@@ -269,12 +276,12 @@ class ManifestFactory extends libFableServiceProviderBase
 	{
 		if (!pRecord)
 		{
-			this.fable.log.error('Record is missing from record:', pRecord);
+			this.log.error('Record is missing from record:', pRecord);
 			return false;
 		}
 		if (!pRecord.Form)
 		{
-			this.fable.log.error('Form is missing from record:', pRecord);
+			this.log.error('Form is missing from record:', pRecord);
 			return false;
 		}
 		return true;
@@ -283,7 +290,8 @@ class ManifestFactory extends libFableServiceProviderBase
 	/**
 	 * Add a manifest descriptor from a tabular row.
 	 *
-	 * @param {Object} tmpRecord - The tabular row record -- expected to have at least a 'Form'
+	 * @param {Object} pManifestFactory - The manifest factory
+	 * @param {Object} pRecord - The tabular row record -- expected to have at least a 'Form'
 	 *
 	 * @return {Object} the descriptor
 	 */
@@ -381,8 +389,8 @@ class ManifestFactory extends libFableServiceProviderBase
 				});
 		}
 
-		if ((`Entity` in tmpRecord) && (typeof(tmpRecord.Entity) === 'string') && (tmpRecord.Entity != '') 
-			&& (`EntityColumnFilter` in tmpRecord) && (typeof(tmpRecord.EntityColumnFilter) === 'string') && (tmpRecord.EntityColumnFilter != '') 
+		if ((`Entity` in tmpRecord) && (typeof(tmpRecord.Entity) === 'string') && (tmpRecord.Entity != '')
+			&& (`EntityColumnFilter` in tmpRecord) && (typeof(tmpRecord.EntityColumnFilter) === 'string') && (tmpRecord.EntityColumnFilter != '')
 			&& (`EntityDestination` in tmpRecord) && (typeof(tmpRecord.EntityDestination) === 'string') && (tmpRecord.EntityDestination != ''))
 		{
 			if (!Array.isArray(tmpDescriptor.PictForm.Providers))
@@ -491,9 +499,9 @@ class ManifestFactory extends libFableServiceProviderBase
 
 	/**
 	 * This fires whenever a Tabular Row is adding a Descriptor to the Manifest.
-	 * 
+	 *
 	 * If you want to extend how descriptors are built, the code belongs in here.
-	 * 
+	 *
 	 * @param {Object} pIncomingDescriptor - The record for the descriptor being added (from a CSV or other source)
 	 * @param {Object} pSection - The section object
 	 * @param {Object} pGroup - The group object
@@ -515,7 +523,7 @@ class ManifestFactory extends libFableServiceProviderBase
 	{
 		if (!pRecords || !Array.isArray(pRecords))
 		{
-			this.fable.log.info('Invalid records passed to generateManifests.');
+			this.log.info('Invalid records passed to generateManifests.');
 			return {};
 		}
 
@@ -536,7 +544,7 @@ class ManifestFactory extends libFableServiceProviderBase
 				// Create the manifest if one doesn't exist
 				tmpManifests[tmpRecord.Form] = this.fable.instantiateServiceProviderWithoutRegistration('ManifestFactory',
 					{
-						Manifest: 
+						Manifest:
 							{
 								Form:tmpRecord.Form
 							}
@@ -556,7 +564,7 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 		}
 
-		this.fable.log.info(`Generated ${Object.keys(tmpManifests).length} manifests.`);
+		this.log.info(`Generated ${Object.keys(tmpManifests).length} manifests.`);
 
 		let tmpManifestKeys = Object.keys(tmpManifests);
 		let tmpOutputManifests = {};
@@ -569,3 +577,4 @@ class ManifestFactory extends libFableServiceProviderBase
 }
 
 module.exports = ManifestFactory;
+ManifestFactory.default_configuration = { };

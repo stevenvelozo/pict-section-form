@@ -28,6 +28,10 @@ export = CustomInputHandler;
  */
 declare class CustomInputHandler extends libPictSectionInputExtension {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
+    /** @type {import('pict')} */
+    pict: import("pict");
+    /** @type {any} */
+    log: any;
     autoFillFromAddressList(pView: any, pInput: any, pValue: any, pHTMLSelector: any): boolean;
     onEvent(pView: any, pInput: any, pValue: any, pHTMLSelector: any, pEvent: any): boolean;
     onEventTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: any, pRowIndex: any, pEvent: any): boolean;

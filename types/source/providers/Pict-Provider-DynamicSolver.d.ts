@@ -11,17 +11,29 @@ declare class PictDynamicSolver {
      * @param {object} pServiceHash - The service hash object.
      */
     constructor(pFable: object, pOptions: object, pServiceHash: object);
+    /** @type {import('pict')} */
+    pict: import("pict");
+    /** @type {import('pict') & { instantiateServiceProviderIfNotExists: (hash: string) => any }} */
+    fable: import("pict") & {
+        instantiateServiceProviderIfNotExists: (hash: string) => any;
+    };
+    /** @type {any} */
+    log: any;
+    /** @type {string} */
+    UUID: string;
+    /** @type {string} */
+    Hash: string;
     /**
      * Checks the solver and returns the solver object if it passes the checks.
      *
      * Automatically converts string solvers to have an Ordinal of 1.
      *
      * @param {string|object} pSolver - The solver to be checked. It can be either a string or an object.
-     * @param {boolean} pFiltered - Indicates whether the solvers should be filtered.
-     * @param {number} pOrdinal - The ordinal value to compare with the solver's ordinal value when filtered.
+     * @param {boolean} [pFiltered=false] - Indicates whether the solvers should be filtered.
+     * @param {number} [pOrdinal] - The ordinal value to compare with the solver's ordinal value when filtered.
      * @returns {object|undefined} - The solver object if it passes the checks, otherwise undefined.
      */
-    checkSolver(pSolver: string | object, pFiltered: boolean, pOrdinal: number): object | undefined;
+    checkSolver(pSolver: string | object, pFiltered?: boolean, pOrdinal?: number): object | undefined;
     /**
      * Runs each RecordSet solver formulae for a dynamic view group at a given ordinal.
      *

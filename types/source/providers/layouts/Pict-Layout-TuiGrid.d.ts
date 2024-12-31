@@ -1,6 +1,17 @@
 export = TuiGridLayout;
 declare class TuiGridLayout extends libPictSectionGroupLayout {
-    constructor(pFable: any, pOptions: any, pServiceHash: any);
+    /**
+     * @param {import('pict')} pFable - The Fable instance.
+     * @param {any} [pOptions={}] - The options for the TuiGrid layout.
+     * @param {string} [pServiceHash] - The service hash.
+     */
+    constructor(pFable: import("pict"), pOptions?: any, pServiceHash?: string);
+    /** @type {any} */
+    options: any;
+    /** @type {import('pict')} */
+    pict: import("pict");
+    /** @type {any} */
+    log: any;
     viewGridConfigurations: {};
     viewTuiGrids: {};
     viewGridState: {};
@@ -25,33 +36,33 @@ declare class TuiGridLayout extends libPictSectionGroupLayout {
      *
      * @param {string} pView - The view name.
      * @param {string} pGroup - The group name.
-     * @returns {boolean|TuiGrid} - The TuiGrid view if it exists, otherwise false.
+     * @returns {libPictSectionTuiGridLayout} - The TuiGrid view if it exists, otherwise false.
      */
-    getViewGrid(pView: string, pGroup: string): boolean | TuiGrid;
+    getViewGrid(pView: string, pGroup: string): libPictSectionTuiGridLayout;
     /**
      * Creates a TuiGrid view for the specified view and group.
      *
-     * @param {Object} pView - The view object.
-     * @param {Object} pGroup - The group object.
-     * @returns {Object} - The created TuiGrid view.
+     * @param {any} pView - The view object.
+     * @param {any} pGroup - The group object.
+     * @return {libPictSectionTuiGridLayout} - The created TuiGrid view.
      */
-    createViewTuiGrid(pView: any, pGroup: any): any;
+    createViewTuiGrid(pView: any, pGroup: any): libPictSectionTuiGridLayout;
     /**
      * Retrieves the TuiGrid configuration for a specific view and group.
      *
-     * @param {string} pView - The view identifier.
-     * @param {string} pGroup - The group identifier.
+     * @param {any} pView - The view identifier.
+     * @param {any} pGroup - The group identifier.
      * @returns {object} - The TuiGrid configuration for the specified view and group.
      */
-    getViewTuiConfiguration(pView: string, pGroup: string): object;
+    getViewTuiConfiguration(pView: any, pGroup: any): object;
     /**
      * Generates a data representation for the given view and group.
      *
-     * @param {pView} pView - The view object.
-     * @param {pGroup} pGroup - The group object.
-     * @returns {Array} - The generated data representation.
+     * @param {any} pView - The view object.
+     * @param {any} pGroup - The group object.
+     * @returns {Array<any>} - The generated data representation.
      */
-    generateDataRepresentation(pView: any, pGroup: any): any[];
+    generateDataRepresentation(pView: any, pGroup: any): Array<any>;
     /**
      * Adds a new row to the Pict-Layout-TuiGrid.
      *
@@ -62,4 +73,5 @@ declare class TuiGridLayout extends libPictSectionGroupLayout {
     addRow(pViewHash: string, pGroupIndex: number): boolean;
 }
 import libPictSectionGroupLayout = require("../Pict-Provider-DynamicLayout.js");
+import libPictSectionTuiGridLayout = require("./Pict-Layout-TuiGrid/Pict-Section-TuiGrid.js");
 //# sourceMappingURL=Pict-Layout-TuiGrid.d.ts.map

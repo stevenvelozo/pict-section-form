@@ -10,6 +10,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
+
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {any} */
+		this.log;
 	}
 
 	/**
@@ -49,7 +54,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 
 	/**
 	 * Fires after data has been marshaled to the form.
-	 * 
+	 *
 	 * This is important because the DateTime has a "shadow" hidden input that stores the value for the date control.
 	 *
 	 * @param {Object} pView - The view object.
@@ -68,10 +73,9 @@ class CustomInputHandler extends libPictSectionInputExtension
 
 	/**
 	 * Marshals data to the form in a tabular format.
-	 * 
+	 *
 	 * @param {Object} pView - The view object.
 	 * @param {Object} pGroup - The group object.
-	 * @param {Object} pRow - The row object.
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The value to be assigned.
 	 * @param {string} pHTMLSelector - The HTML selector.
@@ -107,15 +111,16 @@ class CustomInputHandler extends libPictSectionInputExtension
 		// }
 		//let tmpDateValue = this.fable.Dates.dayJS(tmpDateTimeElement.value);
 
+		let tmpInputSelectValue;
 		try
 		{
-			let tmpInputSelectValue = this.pict.ContentAssignment.readContent(this.getDateTimeInputHTMLID(pInput.Macro.RawHTMLID));
+			tmpInputSelectValue = this.pict.ContentAssignment.readContent(this.getDateTimeInputHTMLID(pInput.Macro.RawHTMLID));
 			this.pict.ContentAssignment.assignContent(pHTMLSelector, tmpInputSelectValue);
 			pView.dataChanged(pInput.Hash);
 		}
 		catch
 		{
-			this.pict.log.error(`The value [${tmpDateTimeElement.value}] is not a valid date; skipping parsing for [#${pInput.Macro.RawHTMLID}].`);
+			this.log.error(`The value [${tmpInputSelectValue}] is not a valid date; skipping parsing for [#${pInput.Macro.RawHTMLID}].`);
 		}
 
 		return super.onDataRequest(pView, pInput, pValue, pHTMLSelector);
@@ -134,15 +139,16 @@ class CustomInputHandler extends libPictSectionInputExtension
 	onDataRequestTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
 		// TODO: If we decide to be opinionated about time zone, use the above here as well
+		let tmpInputSelectValue;
 		try
 		{
-			let tmpInputSelectValue = this.pict.ContentAssignment.readContent(this.getTabularDateTimeInputHTMLID(pInput.Macro.RawHTMLID, pRowIndex));
+			tmpInputSelectValue = this.pict.ContentAssignment.readContent(this.getTabularDateTimeInputHTMLID(pInput.Macro.RawHTMLID, pRowIndex));
 			this.pict.ContentAssignment.assignContent(this.getTabularDateTimeHiddenInputHTMLID(pInput.Macro.RawHTMLID, pRowIndex), tmpInputSelectValue);
 			pView.dataChangedTabular(pInput.PictForm.GroupIndex, pInput.PictForm.InputIndex, pRowIndex);
 		}
 		catch
 		{
-			this.pict.log.error(`The value [${tmpDateTimeElement.value}] is not a valid date; skipping parsing for [#${pInput.Macro.RawHTMLID}].`);
+			this.log.error(`The value [${tmpInputSelectValue}] is not a valid date; skipping parsing for [#${pInput.Macro.RawHTMLID}].`);
 		}
 
 		return super.onDataRequestTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex);

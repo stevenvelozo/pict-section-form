@@ -29,6 +29,13 @@ class PictDynamicApplication extends libFableServiceProviderBase
 		//let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultManifestSettings)), pOptions);
 		super(pFable, pOptions, pServiceHash);
 
+		/** @type {import('pict') & { addAndInstantiateSingletonService: (hash: string, options: any, prototype: any) => any }} */
+		this.fable;
+		/** @type {any} */
+		this.log;
+		/** @type {string} */
+		this.UUID;
+
 		this.fable.addAndInstantiateSingletonService('ManifestFactory', libManifestFactory.default_configuration, libManifestFactory);
 
 		this.fable.addProviderSingleton('DynamicInput', libDynamicInput.default_configuration, libDynamicInput);
@@ -53,3 +60,5 @@ class PictDynamicApplication extends libFableServiceProviderBase
 }
 
 module.exports = PictDynamicApplication;
+
+PictDynamicApplication.default_configuration = { };

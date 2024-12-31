@@ -25,7 +25,7 @@ class PictDynamicSolver extends libPictProvider
 {
 	/**
 	 * Creates an instance of the PictDynamicSolver class.
-	 * 
+	 *
 	 * @param {object} pFable - The fable object.
 	 * @param {object} pOptions - The options object.
 	 * @param {object} pServiceHash - The service hash object.
@@ -35,6 +35,17 @@ class PictDynamicSolver extends libPictProvider
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
 		super(pFable, tmpOptions, pServiceHash);
 
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {import('pict') & { instantiateServiceProviderIfNotExists: (hash: string) => any }} */
+		this.fable;
+		/** @type {any} */
+		this.log;
+		/** @type {string} */
+		this.UUID;
+		/** @type {string} */
+		this.Hash;
+
 		// Initialize the solver service if it isn't up
 		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
 
@@ -42,15 +53,15 @@ class PictDynamicSolver extends libPictProvider
 		{
 			this.pict.addProvider('DynamicMetaLists', libDynamicMetaLists.default_configuration, libDynamicMetaLists);
 		}
-		if (!this.pict.providers['Pict-Input-Select']);
+		if (!this.pict.providers['Pict-Input-Select'])
 		{
 			this.pict.addProvider('Pict-Input-Select', libInputSelect.default_configuration, libInputSelect);
 		}
-		if (!this.pict.providers['Pict-Input-DateTime']);
+		if (!this.pict.providers['Pict-Input-DateTime'])
 		{
 			this.pict.addProvider('Pict-Input-DateTime', libInputDateTime.default_configuration, libInputDateTime);
 		}
-		if (!this.pict.providers['Pict-Input-TabSelector']);
+		if (!this.pict.providers['Pict-Input-TabSelector'])
 		{
 			this.pict.addProvider('Pict-Input-TabSelector', libInputTabSelector.default_configuration, libInputTabSelector);
 		}
@@ -66,12 +77,12 @@ class PictDynamicSolver extends libPictProvider
 
 	/**
 	 * Checks the solver and returns the solver object if it passes the checks.
-	 * 
+	 *
 	 * Automatically converts string solvers to have an Ordinal of 1.
-	 * 
+	 *
 	 * @param {string|object} pSolver - The solver to be checked. It can be either a string or an object.
-	 * @param {boolean} pFiltered - Indicates whether the solvers should be filtered.
-	 * @param {number} pOrdinal - The ordinal value to compare with the solver's ordinal value when filtered.
+	 * @param {boolean} [pFiltered=false] - Indicates whether the solvers should be filtered.
+	 * @param {number} [pOrdinal] - The ordinal value to compare with the solver's ordinal value when filtered.
 	 * @returns {object|undefined} - The solver object if it passes the checks, otherwise undefined.
 	 */
 	checkSolver(pSolver, pFiltered, pOrdinal)
@@ -87,7 +98,7 @@ class PictDynamicSolver extends libPictProvider
 		}
 		if (!('Expression' in tmpSolver))
 		{
-			this.pict.log.error(`Dynamic View solver ${pOrdinal} is missing the Expression property.`, { Solver: pSolver });
+			this.log.error(`Dynamic View solver ${pOrdinal} is missing the Expression property.`, { Solver: pSolver });
 			return;
 		}
 		if (!(`Ordinal` in tmpSolver))
@@ -106,7 +117,7 @@ class PictDynamicSolver extends libPictProvider
 
 	/**
 	 * Runs each RecordSet solver formulae for a dynamic view group at a given ordinal.
-	 * 
+	 *
 	 * Or for all ordinals if no ordinal is passed.
 	 *
 	 * @param {array} pGroupSolverArray - An array of Solvers from the groups to solve.
@@ -116,7 +127,7 @@ class PictDynamicSolver extends libPictProvider
 	{
 		// This is purely for readability of the code below ... uglify optimizes it out.
 		let tmpFiltered = (typeof(pOrdinal) === 'undefined') ? false : true;
-		
+
 		// Solve the group RecordSet solvers first
 		for (let j = 0; j < pGroupSolverArray.length; j++)
 		{
@@ -178,7 +189,7 @@ class PictDynamicSolver extends libPictProvider
 	executeSectionSolvers(pViewSectionSolverArray, pOrdinal)
 	{
 		let tmpFiltered = (typeof(pOrdinal) === 'undefined') ? false : true;
-		
+
 		for (let i = 0; i < pViewSectionSolverArray.length; i++)
 		{
 			let tmpView = this.pict.views[pViewSectionSolverArray[i].ViewHash];
@@ -215,7 +226,7 @@ class PictDynamicSolver extends libPictProvider
 	executeViewSolvers(pViewSolverArray, pOrdinal)
 	{
 		let tmpFiltered = (typeof(pOrdinal) === 'undefined') ? false : true;
-		
+
 		for (let i = 0; i < pViewSolverArray.length; i++)
 		{
 			let tmpSolver = this.checkSolver(pViewSolverArray[i].Solver, tmpFiltered, pOrdinal);
@@ -225,22 +236,22 @@ class PictDynamicSolver extends libPictProvider
 			}
 			tmpSolver.Hash = `${pViewSolverArray[i].ViewHash}-ViewSolve-${i}`;
 			tmpSolver.StartTimeStamp = +new Date();
+			let tmpView = this.pict.views[pViewSolverArray[i].ViewHash];
 			if (this.pict.LogNoisiness > 1)
 			{
 				tmpView.log.trace(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] running solve() on view [${pViewSolverArray[i].ViewHash}`);
 			}
 			// Solve with the normal view solve() pipeline
-			let tmpView = this.pict.views[pViewSolverArray[i].ViewHash];
 			tmpView.solve();
 			tmpSolver.EndTimeStamp = +new Date();
 		}
 	}
 
 	/**
-	 * Checks if the given ordinal exists in the provided ordinal set. 
-	 * 
+	 * Checks if the given ordinal exists in the provided ordinal set.
+	 *
 	 * If not, it adds the ordinal to the set.
-	 * 
+	 *
 	 * @param {number} pOrdinal - The ordinal to check.
 	 * @param {Object} pOrdinalSet - The ordinal set to check against.
 	 * @returns {Object} - The ordinal object from the ordinal set.
@@ -258,18 +269,18 @@ class PictDynamicSolver extends libPictProvider
 	 * Solves the views based on the provided view hashes or all views in pict.
 	 *
 	 * If non-dynamic views are also passed in, they are solved as well.
-	 * 
-	 * This algorithm is particularly complex because it solves views in 
+	 *
+	 * This algorithm is particularly complex because it solves views in
 	 * order across two dimensions:
-	 * 
+	 *
 	 * 1. The order of the views in the view hash array.
 	 * 2. Precedence order (based on Ordinal)
-	 * 
-	 * The way it manages the precedence order solving is by enumerating the 
+	 *
+	 * The way it manages the precedence order solving is by enumerating the
 	 * view hash array multiple times until it exhausts the solution set.
-	 * 
-	 * In dynamic views, when there are collisions in precedence order between 
-	 * Section Solvers and Group RecordSet Solvers, it prefers the RecordSet 
+	 *
+	 * In dynamic views, when there are collisions in precedence order between
+	 * Section Solvers and Group RecordSet Solvers, it prefers the RecordSet
 	 * solvers first.  The thinking behind this is that a RecordSet solver is
 	 * a "tier down" from the core Section it resides within.  These are
 	 * leaves on the tree.
@@ -343,9 +354,9 @@ class PictDynamicSolver extends libPictProvider
 				this.log.trace(`DynamicSolver [${this.UUID}]::[${this.Hash}] Solving ordinal ${tmpOrdinalKeys[i]}`);
 			}
 			let tmpOrdinalContainer = tmpOrdinalsToSolve[tmpOrdinalKeys[i]];
-			this.executeGroupSolvers(tmpOrdinalContainer.GroupSolvers, tmpOrdinalKeys[i]);
-			this.executeSectionSolvers(tmpOrdinalContainer.SectionSolvers, tmpOrdinalKeys[i]);
-			this.executeViewSolvers(tmpOrdinalContainer.ViewSolvers, tmpOrdinalKeys[i]);
+			this.executeGroupSolvers(tmpOrdinalContainer.GroupSolvers, Number(tmpOrdinalKeys[i]));
+			this.executeSectionSolvers(tmpOrdinalContainer.SectionSolvers, Number(tmpOrdinalKeys[i]));
+			this.executeViewSolvers(tmpOrdinalContainer.ViewSolvers, Number(tmpOrdinalKeys[i]));
 		}
 
 		// Now regenerate the metalists .. after the solve has happened.

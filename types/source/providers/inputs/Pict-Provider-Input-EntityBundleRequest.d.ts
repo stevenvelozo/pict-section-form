@@ -37,6 +37,14 @@ Providers: ["Pict-Input-EntityBundleRequest", "Pict-Input-TriggerGroup"],
  */
 declare class CustomInputHandler extends libPictSectionInputExtension {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
+    /** @type {import('pict')} */
+    pict: import("pict");
+    /** @type {import('pict') & { newAnticipate: () => any }} */
+    fable: import("pict") & {
+        newAnticipate: () => any;
+    };
+    /** @type {any} */
+    log: any;
     gatherEntitySet(fCallback: any, pEntityInformation: any, pView: any, pInput: any, pValue: any): any;
     gatherDataFromServer(pView: any, pInput: any, pValue: any, pHTMLSelector: any): boolean;
     /**

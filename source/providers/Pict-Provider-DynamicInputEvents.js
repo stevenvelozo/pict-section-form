@@ -17,7 +17,7 @@ class PictDynamicInputEvents extends libPictProvider
 {
 	/**
 	 * Creates an instance of the PictDynamicInputEvents class.
-	 * 
+	 *
 	 * @param {object} pFable - The fable object.
 	 * @param {object} pOptions - The options object.
 	 * @param {object} pServiceHash - The service hash object.
@@ -30,7 +30,7 @@ class PictDynamicInputEvents extends libPictProvider
 
 	/**
 	 * Requests input data from the view based on the provided input hash.
-	 * 
+	 *
 	 * @param {Object} pView - The view object.
 	 * @param {string} pInputHash - The input hash.
 	 */
@@ -112,7 +112,7 @@ class PictDynamicInputEvents extends libPictProvider
 	/**
 	 * Requests input data for a tabular record.
 	 *
-	 * @param {Object} pView - The view object.
+	 * @param {import('../views/Pict-View-DynamicForm')} pView - The view object.
 	 * @param {number} pGroupIndex - The index of the group.
 	 * @param {number} pInputIndex - The index of the input.
 	 * @param {number} pRowIndex - The index of the row.
@@ -145,7 +145,7 @@ class PictDynamicInputEvents extends libPictProvider
 			}
 			catch (pError)
 			{
-				pView.log.error(`Dynamic form [${pView.Hash}]::[${pView.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
+				pView.log.error(`Dynamic form [${pView.Hash}]::[${pView.UUID}] gross error marshaling specific (${pGroupIndex} | ${pInputIndex} | ${pRowIndex}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
 			}
 		}
 		else
@@ -175,7 +175,7 @@ class PictDynamicInputEvents extends libPictProvider
 			try
 			{
 				let tmpMarshalDestinationObject = pView.getMarshalDestinationObject();
-				
+
 				// TODO: Can we simplify pView?
 				let tmpValueAddress = pView.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
 				let tmpValue = pView.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpValueAddress);
@@ -196,7 +196,7 @@ class PictDynamicInputEvents extends libPictProvider
 			}
 			catch (pError)
 			{
-				pView.log.error(`Dynamic form [${pView.Hash}]::[${pView.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in calling inputEvent ${pEvent}: ${pError}`);
+				pView.log.error(`Dynamic form [${pView.Hash}]::[${pView.UUID}] gross error marshaling specific (${pGroupIndex} | ${pInputIndex} | ${pRowIndex}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in calling inputEvent ${pEvent}: ${pError}`);
 			}
 		}
 		else

@@ -2,11 +2,11 @@ const libPictSectionInputExtension = require('../Pict-Provider-InputExtension.js
 
 /**
  * CustomInputHandler class for Entity Bundle Requests.
- * 
- * When an input is flagged as an EntityBundleRequest entity, it will go pull a 
+ *
+ * When an input is flagged as an EntityBundleRequest entity, it will go pull a
  * sequential list of records on data selection.
- * 
- * Paired with the AutofillTriggerGroup, this allows other values to be filled 
+ *
+ * Paired with the AutofillTriggerGroup, this allows other values to be filled
  * when a record is selected and fetched.
 
 Providers: ["Pict-Input-EntityBundleRequest", "Pict-Input-TriggerGroup"],
@@ -31,7 +31,7 @@ Providers: ["Pict-Input-EntityBundleRequest", "Pict-Input-TriggerGroup"],
 	],
 	EntityBundleTriggerGroup: "BookTriggerGroup"
 
- * 
+ *
  * @class
  * @extends libPictSectionInputExtension
  * @memberof providers.inputs
@@ -41,22 +41,29 @@ class CustomInputHandler extends libPictSectionInputExtension
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
+
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {import('pict') & { newAnticipate: () => any }} */
+		this.fable;
+		/** @type {any} */
+		this.log;
 	}
 
 	gatherEntitySet(fCallback, pEntityInformation, pView, pInput, pValue)
 	{
 		// First sanity check the pEntityInformation
-		if ((!'Entity' in pEntityInformation) || (typeof(pEntityInformation.Entity) != 'string'))
+		if (!('Entity' in pEntityInformation) || (typeof(pEntityInformation.Entity) != 'string'))
 		{
 			this.log.warn(`EntityBundleRequest failed to parse entity request because the entity stanza did not contain an Entity string.`);
 			return fCallback();
 		}
-		if ((!'Filter' in pEntityInformation) || (typeof(pEntityInformation.Filter) != 'string'))
+		if (!('Filter' in pEntityInformation) || (typeof(pEntityInformation.Filter) != 'string'))
 		{
 			this.log.warn(`EntityBundleRequest failed to parse entity request because the entity stanza did not contain a Filter string.`);
 			return fCallback();
 		}
-		if ((!'Destination' in pEntityInformation) || (typeof(pEntityInformation.Destination) != 'string'))
+		if (!('Destination' in pEntityInformation) || (typeof(pEntityInformation.Destination) != 'string'))
 		{
 			this.log.warn(`EntityBundleRequest failed to parse entity request because the entity stanza did not contain a Destination string.`);
 			return fCallback();
@@ -111,7 +118,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		// These have to date not been asyncronous.  Now they will be...
 		if ((typeof(pInput) !== 'object') || !('PictForm' in pInput) || !('EntitiesBundle' in pInput.PictForm) || !Array.isArray(pInput.PictForm.EntitiesBundle))
 		{
-			this.pict.log.warn(`Input at ${pHTMLSelector} is set as an EntityBundleRequest input but no array of entity requests was found`);
+			this.log.warn(`Input at ${pHTMLSelector} is set as an EntityBundleRequest input but no array of entity requests was found`);
 			return false;
 		}
 

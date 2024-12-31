@@ -11,6 +11,18 @@ declare class PictMetalist {
      * @param {object} pServiceHash - The service hash object.
      */
     constructor(pFable: object, pOptions: object, pServiceHash: object);
+    /** @type {any} */
+    options: any;
+    /** @type {import('pict')} */
+    pict: import("pict");
+    /** @type {import('pict')} */
+    fable: import("pict");
+    /** @type {any} */
+    log: any;
+    /** @type {string} */
+    UUID: string;
+    /** @type {string} */
+    Hash: string;
     computedLists: {};
     globalLists: {};
     /**

@@ -5,14 +5,21 @@ class RecordSetLayout extends libPictSectionGroupLayout
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
+
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {import('pict')} */
+		this.fable;
+		/** @type {any} */
+		this.log;
 	}
 
 	/**
 	 * Generate a group layout template for a complex multi-record repeated form view.
-	 * 
+	 *
 	 * This is the standard name / field entry form that you're used to filling out for addresses
 	 * and such, only, it will render itself once for each element in a set.
-	 * 
+	 *
 	 * @param {object} pView - The view to generate the dynamic group layout for
 	 * @param {object} pGroup - The group to generate and inject dynamic layout templates
 	 * @returns {string} - The template for the group

@@ -3,7 +3,7 @@ export = TuiGridLayout;
  * TuiGridLayout class represents a layout for TuiGrid in the Pict-Layout-TuiGrid module.
  * @extends libPictSectionTuiGrid
  */
-declare class TuiGridLayout {
+declare class TuiGridLayout extends libPictSectionTuiGrid {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     viewGridConfigurations: {};
     cachedGridData: any[];
@@ -25,4 +25,5 @@ declare class TuiGridLayout {
      */
     changeHandler(pChangeData: any): any;
 }
+import libPictSectionTuiGrid = require("pict-section-tuigrid");
 //# sourceMappingURL=Pict-Section-TuiGrid.d.ts.map

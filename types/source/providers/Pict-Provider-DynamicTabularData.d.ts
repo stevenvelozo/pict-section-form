@@ -1,5 +1,9 @@
 export = DynamicTabularData;
 /**
+ * @typedef {Object} ElementDescriptor
+ * @property {string} Hash - The hash of the element.
+ */
+/**
  * The DynamicTabularData class is a provider that translates simple list entries into arrays of entries ready to use in drop-down lists and such
  */
 declare class DynamicTabularData {
@@ -11,6 +15,12 @@ declare class DynamicTabularData {
      * @param {object} pServiceHash - The service hash object.
      */
     constructor(pFable: object, pOptions: object, pServiceHash: object);
+    /** @type {any} */
+    options: any;
+    /** @type {import('pict')} */
+    pict: import("pict");
+    /** @type {any} */
+    log: any;
     /**
      * Retrieves the tabular record set from the specified view and group index.
      *
@@ -49,29 +59,29 @@ declare class DynamicTabularData {
      *
      * @param {Object} pView - The view object.
      * @param {number} pGroupIndex - The index of the group.
-     * @param {number} pRowIndex - The current index of the row.
+     * @param {number|string} pRowIndex - The current index of the row.
      * @param {number} pNewRowIndex - The new index to move the row to.
      * @returns {boolean} - Returns false if the index is out of bounds, otherwise returns undefined.
      */
-    setDynamicTableRowIndex(pView: any, pGroupIndex: number, pRowIndex: number, pNewRowIndex: number): boolean;
+    setDynamicTableRowIndex(pView: any, pGroupIndex: number, pRowIndex: number | string, pNewRowIndex: number): boolean;
     /**
      * Moves a dynamic table row down within a view.
      *
      * @param {Object} pView - The view containing the dynamic table.
      * @param {number} pGroupIndex - The index of the group containing the row.
-     * @param {number} pRowIndex - The index of the row to be moved.
+     * @param {number|string} pRowIndex - The index of the row to be moved.
      * @returns {boolean} - Returns true if the row was successfully moved, false otherwise.
      */
-    moveDynamicTableRowDown(pView: any, pGroupIndex: number, pRowIndex: number): boolean;
+    moveDynamicTableRowDown(pView: any, pGroupIndex: number, pRowIndex: number | string): boolean;
     /**
      * Moves a dynamic table row up.
      *
      * @param {Object} pView - The view object.
      * @param {number} pGroupIndex - The index of the group.
-     * @param {number} pRowIndex - The index of the row to be moved.
+     * @param {number|string} pRowIndex - The index of the row to be moved.
      * @returns {boolean} Returns true if the row was moved successfully, false otherwise.
      */
-    moveDynamicTableRowUp(pView: any, pGroupIndex: number, pRowIndex: number): boolean;
+    moveDynamicTableRowUp(pView: any, pGroupIndex: number, pRowIndex: number | string): boolean;
     /**
      * Deletes a dynamic table row from the specified view.
      *
@@ -83,7 +93,7 @@ declare class DynamicTabularData {
     deleteDynamicTableRow(pView: any, pGroupIndex: number, pRowIndex: number | string): boolean;
 }
 declare namespace DynamicTabularData {
-    export { _DefaultProviderConfiguration as default_configuration };
+    export { _DefaultProviderConfiguration as default_configuration, ElementDescriptor };
 }
 declare namespace _DefaultProviderConfiguration {
     let ProviderIdentifier: string;
@@ -91,4 +101,10 @@ declare namespace _DefaultProviderConfiguration {
     let AutoInitializeOrdinal: number;
     let AutoSolveWithApp: boolean;
 }
+type ElementDescriptor = {
+    /**
+     * - The hash of the element.
+     */
+    Hash: string;
+};
 //# sourceMappingURL=Pict-Provider-DynamicTabularData.d.ts.map

@@ -5,6 +5,10 @@ export = PictMetatemplateGenerator;
  */
 declare class PictMetatemplateGenerator {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
+    /** @type {import('pict')} */
+    pict: import("pict");
+    /** @type {any} */
+    log: any;
     dynamicInputView: boolean;
     baseTemplatePrefix: string;
     onInitializeAsync(fCallback: any): any;
@@ -15,9 +19,9 @@ declare class PictMetatemplateGenerator {
      * @param {Object} pView - The view object.
      * @param {string} pTemplatePostfix - The template postfix.
      * @param {string} pRawTemplateDataAddress - The raw template data address.
-     * @returns {string|boolean} The metatemplate template reference in raw format, or false if it doesn't exist.
+     * @returns {string} The metatemplate template reference in raw format, or false if it doesn't exist.
      */
-    getMetatemplateTemplateReferenceRaw(pView: any, pTemplatePostfix: string, pRawTemplateDataAddress: string): string | boolean;
+    getMetatemplateTemplateReferenceRaw(pView: any, pTemplatePostfix: string, pRawTemplateDataAddress: string): string;
     /**
      * Retrieves the metatemplate template reference.
      *
@@ -27,15 +31,6 @@ declare class PictMetatemplateGenerator {
      * @returns {string} The metatemplate template reference.
      */
     getMetatemplateTemplateReference(pView: any, pTemplatePostfix: string, pViewDataAddress: string): string;
-    /**
-     * Checks if there is a metatemplate reference for the given view, data type, and input type.
-     *
-     * @param {Object} pView - The view object.
-     * @param {string} pDataType - The data type.
-     * @param {string} pInputType - The input type.
-     * @returns {string|boolean} - The metatemplate reference if found, otherwise false.
-     */
-    checkMetatemplateReference(pView: any, pDataType: string, pInputType: string): string | boolean;
     /**
      * Retrieves the metatemplate template reference for the given input view, data type, input type, and view data address.
      *

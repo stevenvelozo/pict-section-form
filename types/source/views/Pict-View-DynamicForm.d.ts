@@ -9,6 +9,12 @@ export = PictViewDynamicForm;
  */
 declare class PictViewDynamicForm extends libPictViewClass {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
+    /** @type {import('pict') & { PictApplication: import('pict-application'), log: any; instantiateServiceProviderWithoutRegistration: (hash: string) => any; }} */
+    pict: import("pict") & {
+        PictApplication: any;
+        log: any;
+        instantiateServiceProviderWithoutRegistration: (hash: string) => any;
+    };
     /** @type {Object} */
     _PackagePictView: any;
     _Package: {
@@ -48,6 +54,7 @@ declare class PictViewDynamicForm extends libPictViewClass {
             "pict-application": string;
             "pict-service-commandlineutility": string;
             quackage: string;
+            "tui-grid": string;
             typescript: string;
         };
         dependencies: {
@@ -73,9 +80,9 @@ declare class PictViewDynamicForm extends libPictViewClass {
     sectionManifest: any;
     sectionSolvers: any[];
     formsTemplateSetPrefix: string;
-    customDefaultTemplatePrefix: boolean;
+    customDefaultTemplatePrefix: any;
     formID: string;
-    viewMarshalDestination: boolean;
+    viewMarshalDestination: any;
     /**
      * Returns the default template prefix.
      *
@@ -147,7 +154,7 @@ declare class PictViewDynamicForm extends libPictViewClass {
     /**
      * Executes after the view is rendered.
      */
-    onAfterRender(): void;
+    onAfterRender(): boolean;
     /**
      * Executes layout provider functions based on the given function name.
      *
@@ -272,19 +279,22 @@ declare class PictViewDynamicForm extends libPictViewClass {
     /**
      * Triggers a DataRequest event for an Input Provider
      *
-     * @returns {Promise} A promise that resolves with the input data.
+     * @param {number} pGroupIndex - The index of the group.
+     * @param {number} pInputIndex - The index of the input.
+     * @param {number} pRowIndex - The index of the row.
+     * @returns {Promise<any>} A promise that resolves with the input data.
      */
-    inputDataRequestTabular(pGroupIndex: any, pInputIndex: any, pRowIndex: any): Promise<any>;
+    inputDataRequestTabular(pGroupIndex: number, pInputIndex: number, pRowIndex: number): Promise<any>;
     /**
      * Handles the generic Tabular Input Event for an Input Provider
      *
      * @param {number} pGroupIndex - The index of the group.
      * @param {number} pInputIndex - The index of the input.
      * @param {number} pRowIndex - The index of the row.
-     * @param {Event} pEvent - The input event object.
+     * @param {string} pEvent - The input event object.
      * @returns {any} - The result of the input event handling.
      */
-    inputEventTabular(pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: Event): any;
+    inputEventTabular(pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: string): any;
     /**
      * Get the input object for a specific tabular record group and index.
      *
