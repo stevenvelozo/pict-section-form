@@ -152,10 +152,6 @@ declare class PictViewDynamicForm extends libPictViewClass {
      */
     onSolve(): any;
     /**
-     * Executes after the view is rendered.
-     */
-    onAfterRender(): boolean;
-    /**
      * Executes layout provider functions based on the given function name.
      *
      * These were TODO items that are now done but..  leaving them here to document complexity of why it works this way.
