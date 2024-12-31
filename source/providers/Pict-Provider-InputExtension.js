@@ -12,14 +12,14 @@ const _DefaultProviderConfiguration = (
 
 /**
  * The PictInputExtensionProvider class is a provider that allows extensions to the input fields of a form.
- * 
+ *
  * Can be mapped in via the PictForm property of a descriptor.
  */
 class PictInputExtensionProvider extends libPictProvider
 {
 	/**
 	 * Creates an instance of the PictInputExtensionProvider class.
-	 * 
+	 *
 	 * @param {object} pFable - The fable object.
 	 * @param {object} pOptions - The options object.
 	 * @param {object} pServiceHash - The service hash object.
@@ -32,7 +32,7 @@ class PictInputExtensionProvider extends libPictProvider
 
 	/**
 	 * An input has been initialized (rendered into the DOM)
-	 * 
+	 *
 	 * Called when an input has this Provider hash in its 'Providers' array.
 	 *
 	 * @param {Object} pView - The view object.
@@ -49,7 +49,7 @@ class PictInputExtensionProvider extends libPictProvider
 
 	/**
 	 * A tabular input has been initialized (rendered into the DOM)
-	 * 
+	 *
 	 * Called when an input has this Provider hash in its 'Providers' array.
 	 *
 	 * @param {Object} pView - The view object.
@@ -57,6 +57,7 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {Object} pInput - The input object.
 	 * @param {string} pValue - The value of the input object
 	 * @param {string} pHTMLSelector - The HTML selector for the input object (it will return an array).
+	 * @param {number} pRowIndex - The row index of the tabular data
 	 */
 	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
@@ -65,7 +66,7 @@ class PictInputExtensionProvider extends libPictProvider
 
 	/**
 	 * Called when the data change function is called
-	 * 
+	 *
 	 * Called when an input has this Provider hash in its 'Providers' array.
 	 *
 	 * @param {Object} pView - The view object.

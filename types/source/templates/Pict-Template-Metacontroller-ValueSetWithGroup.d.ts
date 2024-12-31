@@ -4,22 +4,19 @@ export = PictTemplateMetacontrollerValueSet;
  *
  * It passes along additional context (the metacontroller group) for dynamic programming tables.
  */
-declare class PictTemplateMetacontrollerValueSet {
+declare class PictTemplateMetacontrollerValueSet extends libPictTemplate {
     /**
      * @param {Object} pFable - The Fable Framework instance
      * @param {Object} pOptions - The options for the service
      * @param {String} pServiceHash - The hash of the service
      */
     constructor(pFable: any, pOptions: any, pServiceHash: string);
-    /**
-     * Renders the PICT Metacontroller Template.
-     *
-     * @param {string} pTemplateHash - The template hash.
-     * @param {object} pRecord - The record object.
-     * @param {array} pContextArray - The context array.
-     * @returns {string} - The rendered template.
-     */
-    render(pTemplateHash: string, pRecord: object, pContextArray: any[]): string;
+    /** @type {import('pict')} */
+    pict: import("pict");
+    /** @type {import('pict')} */
+    fable: import("pict");
+    /** @type {any} */
+    log: any;
     /**
      * Asynchronously renders a template with the provided template hash, record, callback, and context array.
      *
@@ -30,4 +27,5 @@ declare class PictTemplateMetacontrollerValueSet {
      */
     renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function, pContextArray: any[]): any;
 }
+import libPictTemplate = require("pict-template");
 //# sourceMappingURL=Pict-Template-Metacontroller-ValueSetWithGroup.d.ts.map

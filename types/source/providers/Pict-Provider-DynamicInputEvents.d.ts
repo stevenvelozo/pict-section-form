@@ -29,12 +29,12 @@ declare class PictDynamicInputEvents {
     /**
      * Requests input data for a tabular record.
      *
-     * @param {Object} pView - The view object.
+     * @param {import('../views/Pict-View-DynamicForm')} pView - The view object.
      * @param {number} pGroupIndex - The index of the group.
      * @param {number} pInputIndex - The index of the input.
      * @param {number} pRowIndex - The index of the row.
      */
-    inputDataRequestTabular(pView: any, pGroupIndex: number, pInputIndex: number, pRowIndex: number): void;
+    inputDataRequestTabular(pView: import("../views/Pict-View-DynamicForm"), pGroupIndex: number, pInputIndex: number, pRowIndex: number): void;
     /**
      * Handles the tabular input event.
      *

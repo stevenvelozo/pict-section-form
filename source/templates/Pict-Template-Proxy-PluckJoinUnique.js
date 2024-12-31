@@ -11,10 +11,25 @@ class PictTemplateProviderPluckJoinUnique extends libPictTemplate
 	{
 		super(pFable, pOptions, pServiceHash);
 
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {import('pict')} */
+		this.fable;
+		/** @type {any} */
+		this.log;
+
 		this.addPattern('{~PluckJoinUnique:', '~}');
 		this.addPattern('{~PJU:', '~}');
 	}
 
+	/**
+	 * Renders the PICT Metacontroller Template.
+	 *
+	 * @param {string} pTemplateHash - The template hash.
+	 * @param {object} pRecord - The record object.
+	 * @param {array} pContextArray - The context array.
+	 * @returns {string} - The rendered template.
+	 */
 	render(pTemplateHash, pRecord, pContextArray)
 	{
 		let tmpHash = pTemplateHash;

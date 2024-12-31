@@ -17,10 +17,10 @@ class PictDynamicInput extends libPictProvider
 {
 	/**
 	 * Creates an instance of the PictDynamicInput class.
-	 * 
-	 * @param {object} pFable - The fable object.
-	 * @param {object} pOptions - The options object.
-	 * @param {object} pServiceHash - The service hash object.
+	 *
+	 * @param {import('pict')} pFable - The fable object.
+	 * @param {any} [pOptions={}] - The options object.
+	 * @param {string} [pServiceHash] - The service hash object.
 	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{
@@ -33,8 +33,8 @@ class PictDynamicInput extends libPictProvider
 	/**
 	 * Retrieves the template hash for the input based on the provided view and input.
 	 *
-	 * @param {View} pView - The view object.
-	 * @param {Input} pInput - The input object.
+	 * @param {import('../views/Pict-View-DynamicForm')} pView - The view object.
+	 * @param {any} pInput - The input object.
 	 * @returns {string|boolean} - The template hash if found, otherwise false.
 	 */
 	getInputTemplateHash(pView, pInput)
@@ -89,7 +89,7 @@ class PictDynamicInput extends libPictProvider
 
 	/**
 	 * Adds a default input provider for a given template full hash.
-	 * 
+	 *
 	 * @param {string} pTemplateFullHash - The full hash of the template.
 	 * @param {any} pProvider - The provider to be added.
 	 */
@@ -108,7 +108,7 @@ class PictDynamicInput extends libPictProvider
 	/**
 	 * Retrieves the default input providers based on the given view and input.
 	 *
-	 * @param {string} pView - The view to retrieve input providers for.
+	 * @param {import('../views/Pict-View-DynamicForm')} pView - The view object.
 	 * @param {string} pInput - The input to retrieve input providers for.
 	 * @returns {Array} An array of default input providers.
 	 */

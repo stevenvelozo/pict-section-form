@@ -9,6 +9,8 @@ export = PictSectionFormApplication;
  */
 declare class PictSectionFormApplication {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
+    /** @type {import('pict') & import('fable')} */
+    pict: import("pict") & any;
     /**
      * Marshals data from any rendered dynamic views to application data.
      */

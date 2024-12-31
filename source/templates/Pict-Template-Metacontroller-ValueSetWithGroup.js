@@ -2,7 +2,7 @@ const libPictTemplate = require('pict-template');
 
 /**
  * This is a template that will take a value set and render a template for each value in the set.
- * 
+ *
  * It passes along additional context (the metacontroller group) for dynamic programming tables.
  */
 class PictTemplateMetacontrollerValueSet extends libPictTemplate
@@ -16,13 +16,20 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 	{
 		super(pFable, pOptions, pServiceHash);
 
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {import('pict')} */
+		this.fable;
+		/** @type {any} */
+		this.log;
+
 		this.addPattern('{~MetacontrollerTemplateValueSet:', '~}');
 		this.addPattern('{~MTVS:', '~}');
 	}
 
 	/**
 	 * Renders the PICT Metacontroller Template.
-	 * 
+	 *
 	 * @param {string} pTemplateHash - The template hash.
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
@@ -42,9 +49,9 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 			this.log.trace(`PICT Metacontroller Template [MetacontrollerTemplateValueSet]::[${tmpHash}]`);
 		}
 
-		let tmpGroupIndex = false;
-		let tmpTemplateHash = false;
-		let tmpAddressOfData = false;
+		let tmpGroupIndex;
+		let tmpTemplateHash;
+		let tmpAddressOfData;
 
 		// This is just a simple 2 part hash (the entity and the ID)
 		let tmpHashTemplateSeparator = tmpHash.split(':');
@@ -91,7 +98,7 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 			return this.pict.parseTemplateSetByHash(tmpTemplateHash, tmpData, null, pContextArray);
 		}
 	}
-	
+
 	/**
 	 * Asynchronously renders a template with the provided template hash, record, callback, and context array.
 	 *
@@ -115,8 +122,8 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 			this.log.trace(`PICT Template [fTemplateValueSetRenderAsync]::[${tmpHash}]`);
 		}
 
-		let tmpTemplateFromMapHash = false;
-		let tmpAddressOfData = false;
+		let tmpTemplateFromMapHash;
+		let tmpAddressOfData;
 
 		// This is a 3 part hash with the map address and the key address both
 		let tmpTemplateHashPart = tmpHash.split(':');

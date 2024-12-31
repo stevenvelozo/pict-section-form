@@ -11,6 +11,14 @@ declare class PictDynamicFormsInformary {
      * @param {object} pServiceHash - The service hash object.
      */
     constructor(pFable: object, pOptions: object, pServiceHash: object);
+    /** @type {any} */
+    options: any;
+    /** @type {import('pict') & { newManyfest: (options: any) => import('manyfest') }} */
+    pict: import("pict") & {
+        newManyfest: (options: any) => any;
+    };
+    /** @type {any} */
+    log: any;
     genericManifest: any;
     /**
      * Retrieves all form elements for a given form hash.

@@ -1,6 +1,35 @@
 export = CustomInputHandler;
 /**
- * CustomInputHandler class.
+ * CustomInputHandler class for Entity Bundle Requests.
+ *
+ * When an input is flagged as an EntityBundleRequest entity, it will go pull a
+ * sequential list of records on data selection.
+ *
+ * Paired with the AutofillTriggerGroup, this allows other values to be filled
+ * when a record is selected and fetched.
+
+Providers: ["Pict-Input-EntityBundleRequest", "Pict-Input-TriggerGroup"],
+        EntitiesBundle: [
+        {
+            "Entity": "Author",
+            "Filter": "FBV~IDAuthor~EQ~{~D:Record.Value~}",
+            "Destination": "AppData.CurrentAuthor",
+            // This marshals a single record
+            "SingleRecord": true
+        },
+        {
+            "Entity": "BookAuthorJoin",
+            "Filter": "FBV~IDAuthor~EQ~{~D:Appdata.CurrentAuthor.IDAuthor~}",
+            "Destination": "AppData.BookAuthorJoins"
+        },
+        {
+            "Entity": "Book",
+            "Filter": "FBL~IDBook~LK~{PJU~:,^IDBook^Appdata.BookAuthorJoins~}",
+            "Destination": "AppData.BookAuthorJoins"
+        }
+    ],
+    EntityBundleTriggerGroup: "BookTriggerGroup"
+
  *
  * @class
  * @extends libPictSectionInputExtension
@@ -10,33 +39,14 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
-    /** @type {import('pict')} */
-    fable: import("pict");
+    /** @type {import('pict') & { newAnticipate: () => any }} */
+    fable: import("pict") & {
+        newAnticipate: () => any;
+    };
     /** @type {any} */
     log: any;
-    /**
-     * Generates the HTML ID for a select input element.
-     *
-     * @param {string} pInputHTMLID - The HTML ID of the input element.
-     * @returns {string} - The generated HTML ID for the select input element.
-     */
-    getSelectInputHTMLID(pInputHTMLID: string): string;
-    /**
-     * Generates a tabular select input ID based on the provided input HTML ID and row index.
-     *
-     * @param {string} pInputHTMLID - The input HTML ID.
-     * @param {number} pRowIndex - The row index.
-     * @returns {string} - The generated tabular select input ID.
-     */
-    getTabularSelectInputID(pInputHTMLID: string, pRowIndex: number): string;
-    /**
-     * Generates a tabular select dropdown ID based on the input HTML ID and row index.
-     *
-     * @param {string} pInputHTMLID - The HTML ID of the input.
-     * @param {number} pRowIndex - The index of the row.
-     * @returns {string} - The generated tabular select dropdown ID.
-     */
-    getTabularSelectDropdownID(pInputHTMLID: string, pRowIndex: number): string;
+    gatherEntitySet(fCallback: any, pEntityInformation: any, pView: any, pInput: any, pValue: any): any;
+    gatherDataFromServer(pView: any, pInput: any, pValue: any, pHTMLSelector: any): boolean;
     /**
      * Initializes the input element for the Pict provider select input.
      *
@@ -106,27 +116,6 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @returns {any} - The result of the data marshaling.
      */
     onDataMarshalToFormTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): any;
-    /**
-     * Handles the data request event for a select input in the PictProviderInputSelect class.
-     *
-     * @param {Object} pView - The view object.
-     * @param {Object} pInput - The input object.
-     * @param {any} pValue - The value object.
-     * @param {string} pHTMLSelector - The HTML selector object.
-     * @returns {any} - The result of the onDataRequest method.
-     */
-    onDataRequest(pView: any, pInput: any, pValue: any, pHTMLSelector: string): any;
-    /**
-     * Handles the data request event for a tabular input.
-     *
-     * @param {Object} pView - The view object.
-     * @param {Object} pInput - The input object.
-     * @param {any} pValue - The value object.
-     * @param {string} pHTMLSelector - The HTML selector.
-     * @param {number} pRowIndex - The row index.
-     * @returns {any} - The result of the data request.
-     */
-    onDataRequestTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): any;
 }
 import libPictSectionInputExtension = require("../Pict-Provider-InputExtension.js");
-//# sourceMappingURL=Pict-Provider-Input-Select.d.ts.map
+//# sourceMappingURL=Pict-Provider-Input-EntityBundleRequest.d.ts.map

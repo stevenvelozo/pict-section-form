@@ -14,6 +14,13 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 	{
 		super(pFable, pOptions, pServiceHash);
 
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {import('pict') & { ManifestFactory: import('../services/ManifestFactory.js') }} */
+		this.fable;
+		/** @type {any} */
+		this.log;
+
 		this.addPattern('{~MetaTemplateInputWithHashAddress:', '~}');
 		this.addPattern('{~MTIWHA:', '~}');
 
@@ -22,7 +29,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 
 	/**
 	 * Renders the PICT Metacontroller Template.  The Record reference is ignored in this template.
-	 * 
+	 *
 	 * @param {string} pTemplateHash - The template hash.
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
@@ -38,10 +45,10 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			this.log.trace(`PICT Metacontroller Template [MetaTemplateInput]::[${tmpHash}]`);
 		}
 
-		let tmpInputName = false;
-		let tmpInputAddress = false;
-		let tmpDataType = false;
-		let tmpInputType = false;
+		let tmpInputName;
+		let tmpInputAddress;
+		let tmpDataType;
+		let tmpInputType;
 
 		// This is just a simple 2 part hash (the entity and the ID)
 		let tmpHashTemplateSeparator = tmpHash.split(':');
@@ -68,7 +75,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			Address: tmpInputAddress,
 			DataAddress: tmpInputAddress,
 			Name: tmpInputName,
-			Hash: this.fable.DataFormat.cleanNonAlphaCharacters(tmpInputAddress),
+			Hash: this.fable.ManifestFactory.sanitizeObjectKey(tmpInputAddress),
 			DataType: tmpDataType,
 			PictForm: {
 				InformaryDataAddress: tmpInputAddress,
@@ -120,10 +127,10 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			this.log.trace(`PICT Metacontroller Template [MetaTemplateInput]::[${tmpHash}]`);
 		}
 
-		let tmpInputName = false;
-		let tmpInputAddress = false;
-		let tmpDataType = false;
-		let tmpInputType = false;
+		let tmpInputName;
+		let tmpInputAddress;
+		let tmpDataType;
+		let tmpInputType;
 
 		// This is just a simple 2 part hash (the entity and the ID)
 		let tmpHashTemplateSeparator = tmpHash.split(':');
@@ -150,7 +157,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			Address: tmpInputAddress,
 			DataAddress: tmpInputAddress,
 			Name: tmpInputName,
-			Hash: this.fable.DataFormat.cleanNonAlphaCharacters(tmpInputAddress),
+			Hash: this.fable.ManifestFactory.sanitizeObjectKey(tmpInputAddress),
 			DataType: tmpDataType,
 			PictForm: {
 				InformaryDataAddress: tmpInputAddress,

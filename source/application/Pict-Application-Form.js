@@ -4,9 +4,9 @@ const libPictSectionForm = require('../Pict-Section-Form.js');
 
 /**
  * Represents a PictSectionFormApplication.
- * 
+ *
  * This is the automagic controller for a dyncamic form application.
- * 
+ *
  * @class
  * @extends libPictApplication
  */
@@ -16,6 +16,8 @@ class PictSectionFormApplication extends libPictApplication
 	{
 		super(pFable, pOptions, pServiceHash);
 
+		/** @type {import('pict') & import('fable')} */
+		this.pict;
 		// Add the pict form service
 		this.pict.addServiceType('PictSectionForm', libPictSectionForm);
 

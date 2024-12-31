@@ -8,10 +8,10 @@ const _DefaultConfiguration = require('./Pict-View-DynamicForm-DefaultConfigurat
 
 /**
  * Represents a dynamic form view for the Pict application.
- * 
+ *
  * This is the code that maintains the lifecycle with the Pict application and
  * the data handling methods for a dynamic forms view (or set of views).
- * 
+ *
  * @extends libPictViewClass
  */
 class PictViewDynamicForm extends libPictViewClass
@@ -57,6 +57,9 @@ class PictViewDynamicForm extends libPictViewClass
 
 		// Now construct the view.
 		super(pFable, tmpOptions, pServiceHash);
+
+		/** @type {import('pict') & { PictApplication: import('pict-application'), log: any; instantiateServiceProviderWithoutRegistration: (hash: string) => any; }} */
+		this.pict;
 
 		// Load the dynamic application dependencies if they don't exist
 		this.fable.addAndInstantiateSingletonService('PictDynamicApplication', libPictDynamicApplication.default_configuration, libPictDynamicApplication);
@@ -105,18 +108,18 @@ class PictViewDynamicForm extends libPictViewClass
 			}
 		}
 		// The default template prefix
-		this.customDefaultTemplatePrefix = false;
+		this.customDefaultTemplatePrefix = null;
 
 		this.formID = `Pict-Form-${this.Hash}-${this.UUID}`;
 
-		this.viewMarshalDestination = false;
+		this.viewMarshalDestination = null;
 
 		this.fable.ManifestFactory.initializeFormGroups(this);
 	}
 
 	/**
 	 * Returns the default template prefix.
-	 * 
+	 *
 	 * @returns {string} The default template prefix.
 	 */
 	get defaultTemplatePrefix()
@@ -136,10 +139,10 @@ class PictViewDynamicForm extends libPictViewClass
 	}
 
 	/**
-	 * This method is called whenever data is changed within an input. 
-	 * 
+	 * This method is called whenever data is changed within an input.
+	 *
 	 * It handles the data marshaling from the view to the data model,
-	 * runs any providers connected to the input, solves the Pict application, 
+	 * runs any providers connected to the input, solves the Pict application,
 	 * then marshals data back to the view.
 	 *
 	 * @param {string} pInputHash - The hash of the input that triggered the data change.
@@ -232,7 +235,7 @@ class PictViewDynamicForm extends libPictViewClass
 			}
 			catch (pError)
 			{
-				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
+				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${tmpInput.Hash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
 			}
 		}
 		else
@@ -324,7 +327,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Retrieves the marshal destination address.
-	 * 
+	 *
 	 * @returns {string} The marshal destination address.
 	 */
 	getMarshalDestinationAddress()
@@ -345,7 +348,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Retrieves the marshal destination object.  This is where the model data is stored.
-	 * 
+	 *
 	 * @returns {Object} The marshal destination object.
 	 */
 	getMarshalDestinationObject()
@@ -381,7 +384,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Marshals data to the view.
-	 * 
+	 *
 	 * @returns {any} The result of calling the superclass's onMarshalToView method.
 	 */
 	onMarshalToView()
@@ -431,7 +434,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Executes the solve operation for the dynamic views, then auto marshals data if options.AutoMarshalDataOnSolve is set to true.
-	 * 
+	 *
 	 * @returns {any} The result of the solve operation.
 	 */
 	onSolve()
@@ -456,21 +459,22 @@ class PictViewDynamicForm extends libPictViewClass
 	{
 		this.runLayoutProviderFunctions('onGroupLayoutInitialize')
 		this.runInputProviderFunctions('onInputInitialize');
+		return super.onAfterRender();
 	}
 
 	/**
 	 * Executes layout provider functions based on the given function name.
-	 * 
+	 *
 	 * These were TODO items that are now done but..  leaving them here to document complexity of why it works this way.
-	 * 
+	 *
 	 * --> This happens based on markers in the DOM, since we don't know which layout providers are active for which groups.
-	 * 
+	 *
 	 * --> This is easy to make happen with a macro on groups that gives us the data.
-	 * 
+	 *
 	 * --> THIS IS NOW SCOPED TO A PARTICULAR GROUP.  That is ... only one layout for a group at a time.
-	 * 
+	 *
 	 * The easiest way (and a speed up for other queries as such) is to scope it within the view container element
-	 * 
+	 *
 	 * @param {string} pFunctionName - The name of the function to execute.
 	 */
 	runLayoutProviderFunctions(pFunctionName)
@@ -677,7 +681,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Retrieves a group from the PICT View Metatemplate Helper based on the provided group index.
-	 * 
+	 *
 	 * @param {number} pGroupIndex - The index of the group to retrieve.
 	 * @returns {object|boolean} - The group object if found, or false if the group index is invalid.
 	 */
@@ -699,12 +703,12 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Get a row for an input form group.
-	 * 
+	 *
 	 * Rows are a horizontal collection of inputs.
-	 * 
-	 * @param {number} pGroupIndex 
-	 * @param {number} pRowIndex 
-	 * @returns 
+	 *
+	 * @param {number} pGroupIndex
+	 * @param {number} pRowIndex
+	 * @returns
 	 */
 	getRow(pGroupIndex, pRowIndex)
 	{
@@ -732,7 +736,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Get a customized key value pair object for a specific row.
-	 * 
+	 *
 	 * @param {number} pGroupIndex - The index of the group.
 	 * @param {number} pRowIndex - The index of the row.
 	 * @returns {Object} a key value pair for a specific row, used in metatemplating.
@@ -743,7 +747,7 @@ class PictViewDynamicForm extends libPictViewClass
 	}
 
 	/**
-	 * 
+	 *
 	 * @param {number} pGroupIndex - The index of the group.
 	 * @param {number} pRowIndex - The index of the row.
 	 * @param {number} pInputIndex - The index of the input.
@@ -797,9 +801,9 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Retrieves the input object for a specific hash.
-	 * 
+	 *
 	 * @param {string} pInputHash - The string hash for an input (not the address).
-	 * @returns {Object} The input Object for the given hash. 
+	 * @returns {Object} The input Object for the given hash.
 	 */
 	getInputFromHash(pInputHash)
 	{
@@ -830,7 +834,7 @@ class PictViewDynamicForm extends libPictViewClass
 	}
 
 	/**
-	 * 
+	 *
 	 * @param {string} pEvent - The input event string.
 	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
 	 */
@@ -852,7 +856,10 @@ class PictViewDynamicForm extends libPictViewClass
 	/**
 	 * Triggers a DataRequest event for an Input Provider
 	 *
-	 * @returns {Promise} A promise that resolves with the input data.
+	 * @param {number} pGroupIndex - The index of the group.
+	 * @param {number} pInputIndex - The index of the input.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @returns {Promise<any>} A promise that resolves with the input data.
 	 */
 	inputDataRequestTabular(pGroupIndex, pInputIndex, pRowIndex)
 	{
@@ -865,7 +872,7 @@ class PictViewDynamicForm extends libPictViewClass
 	 * @param {number} pGroupIndex - The index of the group.
 	 * @param {number} pInputIndex - The index of the input.
 	 * @param {number} pRowIndex - The index of the row.
-	 * @param {Event} pEvent - The input event object.
+	 * @param {string} pEvent - The input event object.
 	 * @returns {any} - The result of the input event handling.
 	 */
 	inputEventTabular(pGroupIndex, pInputIndex, pRowIndex, pEvent)
@@ -875,12 +882,12 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Get the input object for a specific tabular record group and index.
-	 * 
+	 *
 	 * Input objects are not distinct among rows.
-	 * 
+	 *
 	 * @param {number} pGroupIndex - The index of the group.
 	 * @param {number} pInputIndex - The index of the input.
-	 * @returns 
+	 * @returns
 	 */
 	getTabularRecordInput(pGroupIndex, pInputIndex)
 	{
@@ -889,8 +896,8 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Get the tabular record object for a particular row in a group.
-	 * 
-	 * @param {number} pGroupIndex 
+	 *
+	 * @param {number} pGroupIndex
 	 * @param {number} pRowIdentifier - The row number
 	 * @returns {Object} The record for the particular row
 	 */
@@ -901,7 +908,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Get the tabular record set for a particular group.
-	 * 
+	 *
 	 * @param {number} pGroupIndex
 	 * @returns {Array} The record set for the group.
 	 */
@@ -912,11 +919,11 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Add a new data row to the end of a dynamic tabular group.
-	 * 
+	 *
 	 * This will generate any defaults in the SubManifest.
-	 * 
-	 * @param {number} pGroupIndex 
-	 * @returns 
+	 *
+	 * @param {number} pGroupIndex
+	 * @returns
 	 */
 	createDynamicTableRow(pGroupIndex)
 	{
@@ -925,8 +932,8 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Move a dynamic table row to an arbitrary position in the array.
-	 * 
-	 * @param {number} pGroupIndex - The group to manage the dynamic table row for 
+	 *
+	 * @param {number} pGroupIndex - The group to manage the dynamic table row for
 	 * @param {number} pRowIndex - The row to move
 	 * @param {number} pNewRowIndex - The new position for the row
 	 * @returns {boolean} True if the move was successful, or false if it wasn't.
@@ -938,8 +945,8 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Move a dynamic table row down
-	 * 
-	 * @param {number} pGroupIndex - The group to manage the dynamic table row for 
+	 *
+	 * @param {number} pGroupIndex - The group to manage the dynamic table row for
 	 * @param {number} pRowIndex - The row to move down
 	 * @returns {boolean} True if the move was successful, or false if it wasn't.
 	 */
@@ -950,8 +957,8 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Move a dynamic table row up
-	 * 
-	 * @param {number} pGroupIndex - The group to manage the dynamic table row for 
+	 *
+	 * @param {number} pGroupIndex - The group to manage the dynamic table row for
 	 * @param {number} pRowIndex - The row to move up
 	 * @returns {boolean} True if the move was successful, or false if it wasn't.
 	 */

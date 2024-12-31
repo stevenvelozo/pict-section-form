@@ -36,8 +36,9 @@ declare class PictInputExtensionProvider {
      * @param {Object} pInput - The input object.
      * @param {string} pValue - The value of the input object
      * @param {string} pHTMLSelector - The HTML selector for the input object (it will return an array).
+     * @param {number} pRowIndex - The row index of the tabular data
      */
-    onInputInitializeTabular(pView: any, pGroup: any, pInput: any, pValue: string, pHTMLSelector: string, pRowIndex: any): boolean;
+    onInputInitializeTabular(pView: any, pGroup: any, pInput: any, pValue: string, pHTMLSelector: string, pRowIndex: number): boolean;
     /**
      * Called when the data change function is called
      *

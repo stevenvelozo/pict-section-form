@@ -2,16 +2,16 @@ const libPictSectionInputExtension = require('../Pict-Provider-InputExtension.js
 
 /**
  * CustomInputHandler class for the Autofill Trigger Group
- * 
+ *
  * Autofill Trigger Groups have three parameters:
  *  - the group hash
  *  - a boolean defining whether the input triggers all inputs on the group
  *    to autofill themselves
  *  - an address (either in Pict or AppData) to pull data from
  *  - whether or not to marshal values if the result is empty/null/undefined
- * 
+ *
  * In practice this looks like this:
- * 
+ *
 	Providers: ["Pict-Input-AutofillTriggerGroup"],
 	AutofillTriggerGroup:
 		{
@@ -20,9 +20,9 @@ const libPictSectionInputExtension = require('../Pict-Provider-InputExtension.js
 			MarshalEmptyValues: true
 		}
  *
- * 
- * The group is cavalier about clearing data when 
- * 
+ *
+ * The group is cavalier about clearing data when
+ *
  * @class
  * @extends libPictSectionInputExtension
  * @memberof providers.inputs
@@ -32,6 +32,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
+
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {any} */
+		this.log;
 	}
 
 	autoFillFromAddressList(pView, pInput, pValue, pHTMLSelector)

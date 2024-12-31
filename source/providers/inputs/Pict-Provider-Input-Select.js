@@ -2,7 +2,7 @@ const libPictSectionInputExtension = require('../Pict-Provider-InputExtension.js
 
 /**
  * CustomInputHandler class.
- * 
+ *
  * @class
  * @extends libPictSectionInputExtension
  * @memberof providers.inputs
@@ -12,6 +12,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
+
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {import('pict')} */
+		this.fable;
+		/** @type {any} */
+		this.log;
 	}
 
 	/**
@@ -63,6 +70,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
 	{
 		// Try to get the input element
+		/** @type {Array<HTMLElement>|HTMLElement} */
 		let tmpInputSelectElement = this.pict.ContentAssignment.getElement(this.getSelectInputHTMLID(pInput.Macro.RawHTMLID));
 		let tmpDefaultData = pInput.PictForm?.SelectOptions;
 
@@ -72,14 +80,12 @@ class CustomInputHandler extends libPictSectionInputExtension
 		}
 
 		// TODO: Determine later if this should ever be an array.
-		if (tmpInputSelectElement && tmpInputSelectElement.length > 0)
-		{
-			tmpInputSelectElement = tmpInputSelectElement[0];
-		}
-		else
+		if (!tmpInputSelectElement || tmpInputSelectElement.length < 1)
 		{
 			return false;
 		}
+
+		tmpInputSelectElement = tmpInputSelectElement[0];
 
 		if (tmpInputSelectElement && tmpDefaultData && Array.isArray(tmpDefaultData))
 		{
@@ -109,6 +115,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
 		// Try to get the input element
+		/** @type {Array<HTMLElement>|HTMLElement} */
 		let tmpInputSelectElement = this.pict.ContentAssignment.getElement(this.getTabularSelectDropdownID(pInput.Macro.RawHTMLID, pRowIndex));
 		let tmpDefaultData = pInput.PictForm.SelectOptions;
 
@@ -183,12 +190,14 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
 	{
-		let tmpInputSelectElement = this.pict.ContentAssignment.getElement(this.getSelectInputHTMLID(pInput.Macro.RawHTMLID));
-		if (tmpInputSelectElement && tmpInputSelectElement.length > 0)
+		/** @type {Array<HTMLElement>|HTMLElement} */
+		const tmpInputSelectElements = this.pict.ContentAssignment.getElement(this.getSelectInputHTMLID(pInput.Macro.RawHTMLID));
+		if (!tmpInputSelectElements || tmpInputSelectElements.length < 1)
 		{
-			tmpInputSelectElement = tmpInputSelectElement[0];
+			return false;
 		}
-		else
+		const tmpInputSelectElement = tmpInputSelectElements[0];
+		if (!(tmpInputSelectElement instanceof HTMLSelectElement))
 		{
 			return false;
 		}
@@ -208,7 +217,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		if (!tmpValueSelected)
 		{
 			tmpInputSelectElement.selectedIndex = -1;
-			this.pict.log.error(`The value [${pValue}] was not found in the select options for input [${pInput.Macro.RawHTMLID}] but was set in the hidden HTML input.`);
+			this.log.error(`The value [${pValue}] was not found in the select options for input [${pInput.Macro.RawHTMLID}] but was set in the hidden HTML input.`);
 		}
 
 		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
@@ -227,16 +236,17 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
-		let tmpInputSelectElement = this.pict.ContentAssignment.getElement(this.getTabularSelectDropdownID(pInput.Macro.RawHTMLID, pRowIndex));
-		if (tmpInputSelectElement && tmpInputSelectElement.length > 0)
+		/** @type {Array<HTMLElement>|HTMLElement} */
+		const tmpInputSelectElements = this.pict.ContentAssignment.getElement(this.getTabularSelectDropdownID(pInput.Macro.RawHTMLID, pRowIndex));
+		if (!tmpInputSelectElements || tmpInputSelectElements.length < 1)
 		{
-			tmpInputSelectElement = tmpInputSelectElement[0];
+			return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
 		}
-		else
+		const tmpInputSelectElement = tmpInputSelectElements[0];
+		if (!(tmpInputSelectElement instanceof HTMLSelectElement))
 		{
-			return super.onInputInitializeTabular(pView, pGroup, pInput, pHTMLSelector);
+			return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
 		}
-
 
 		let tmpValueSelected = false;
 
@@ -253,7 +263,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		if (!tmpValueSelected)
 		{
 			tmpInputSelectElement.selectedIndex = -1;
-			this.pict.log.error(`The value [${pValue}] was not found in the select options for input [${pInput.Macro.RawHTMLID}] but was set in the hidden HTML input.`);
+			this.log.error(`The value [${pValue}] was not found in the select options for input [${pInput.Macro.RawHTMLID}] but was set in the hidden HTML input.`);
 		}
 
 		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);

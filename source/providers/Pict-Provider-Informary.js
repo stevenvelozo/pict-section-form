@@ -29,7 +29,14 @@ class PictDynamicFormsInformary extends libPictProvider
 
 		super(pFable, tmpOptions, pServiceHash);
 
-		this.genericManifest = this.pict.newManyfest({Scope:'GenericInformary'});		
+		/** @type {any} */
+		this.options;
+		/** @type {import('pict') & { newManyfest: (options: any) => import('manyfest') }} */
+		this.pict;
+		/** @type {any} */
+		this.log;
+
+		this.genericManifest = this.pict.newManyfest({Scope:'GenericInformary'});
 	}
 
 	/**
@@ -47,7 +54,7 @@ class PictDynamicFormsInformary extends libPictProvider
 
 	/**
 	 * Get a full content browser address based on the form, datum and optionally the container and index.
-	 * 
+	 *
 	 * This can be used in getDomElementByAddress or jquery selectors to return the element.
 	 *
 	 * @param {string} pFormHash - The form hash.
@@ -106,7 +113,7 @@ class PictDynamicFormsInformary extends libPictProvider
 			let tmpDatumAddress = tmpFormElements[i].getAttribute('data-i-datum');
 
 			let tmpContainerAddress = tmpFormElements[i].getAttribute('data-i-container');
-			let tmpIndex = tmpFormElements[i].getAttribute('data-i-index');
+			let tmpIndex = Number(tmpFormElements[i].getAttribute('data-i-index'));
 
 			// Process the filters
 			if (tmpDatum && (tmpDatum !== tmpDatumAddress))
@@ -163,7 +170,7 @@ class PictDynamicFormsInformary extends libPictProvider
 			let tmpDatumAddress = tmpFormElements[i].getAttribute('data-i-datum');
 
 			let tmpContainerAddress = tmpFormElements[i].getAttribute('data-i-container');
-			let tmpIndex = tmpFormElements[i].getAttribute('data-i-index');
+			let tmpIndex = Number(tmpFormElements[i].getAttribute('data-i-index'));
 
 			if (!tmpDatumAddress)
 			{

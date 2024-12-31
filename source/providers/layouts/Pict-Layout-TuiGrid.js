@@ -1,12 +1,24 @@
 const libPictSectionGroupLayout = require('../Pict-Provider-DynamicLayout.js');
 
-const libPictSectionTuiGrid = require('./Pict-Layout-TuiGrid/Pict-Section-TuiGrid.js');
+const libPictSectionTuiGridLayout = require('./Pict-Layout-TuiGrid/Pict-Section-TuiGrid.js');
 
 class TuiGridLayout extends libPictSectionGroupLayout
 {
+	/**
+	 * @param {import('pict')} pFable - The Fable instance.
+	 * @param {any} [pOptions={}] - The options for the TuiGrid layout.
+	 * @param {string} [pServiceHash] - The service hash.
+	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
+
+		/** @type {any} */
+		this.options;
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {any} */
+		this.log;
 
 		this.viewGridConfigurations = {};
 
@@ -43,24 +55,24 @@ class TuiGridLayout extends libPictSectionGroupLayout
 	 *
 	 * @param {string} pView - The view name.
 	 * @param {string} pGroup - The group name.
-	 * @returns {boolean|TuiGrid} - The TuiGrid view if it exists, otherwise false.
+	 * @returns {libPictSectionTuiGridLayout} - The TuiGrid view if it exists, otherwise false.
 	 */
 	getViewGrid(pView, pGroup)
 	{
 		let tmpGridUUID = this.getGridHtmlID(pView, pGroup);
 		if (!this.viewTuiGrids.hasOwnProperty(tmpGridUUID))
 		{
-			return false;
+			return null;
 		}
 		return this.viewTuiGrids[tmpGridUUID];
 	}
 
 	/**
 	 * Creates a TuiGrid view for the specified view and group.
-	 * 
-	 * @param {Object} pView - The view object.
-	 * @param {Object} pGroup - The group object.
-	 * @returns {Object} - The created TuiGrid view.
+	 *
+	 * @param {any} pView - The view object.
+	 * @param {any} pGroup - The group object.
+	 * @return {libPictSectionTuiGridLayout} - The created TuiGrid view.
 	 */
 	createViewTuiGrid(pView, pGroup)
 	{
@@ -68,12 +80,13 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		if (this.viewTuiGrids.hasOwnProperty(tmpGridUUID))
 		{
 			// Purely for information for now.
-			this.pict.log.info(`Dynamic TuiGrid view [${pView.UUID}]::[${pView.Hash}] is reinitializing a TuiGrid in group ${pGroup.GroupIndex} TuiGrid UUID [${tmpGridUUID}].`);
+			this.log.info(`Dynamic TuiGrid view [${pView.UUID}]::[${pView.Hash}] is reinitializing a TuiGrid in group ${pGroup.GroupIndex} TuiGrid UUID [${tmpGridUUID}].`);
 			// ...we need to clear out the littered tuiGrid views probably.
 		}
 		// Generate the pict view
 		let tmpGridConfiguration = this.getViewTuiConfiguration(pView, pGroup);
-		let tmpGridView = this.pict.addView(tmpGridUUID, tmpGridConfiguration, libPictSectionTuiGrid);
+		/** @type {libPictSectionTuiGridLayout} */
+		let tmpGridView = this.pict.addView(tmpGridUUID, tmpGridConfiguration, libPictSectionTuiGridLayout);
 		// Manually initialize the view
 		tmpGridView.cachedGridData = this.generateDataRepresentation(pView, pGroup);
 
@@ -86,8 +99,8 @@ class TuiGridLayout extends libPictSectionGroupLayout
 	/**
 	 * Retrieves the TuiGrid configuration for a specific view and group.
 	 *
-	 * @param {string} pView - The view identifier.
-	 * @param {string} pGroup - The group identifier.
+	 * @param {any} pView - The view identifier.
+	 * @param {any} pGroup - The group identifier.
 	 * @returns {object} - The TuiGrid configuration for the specified view and group.
 	 */
 	getViewTuiConfiguration(pView, pGroup)
@@ -97,7 +110,7 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		if (!this.viewGridConfigurations.hasOwnProperty(tmpGridUUID))
 		{
 			// Generate a unique destination for the TuiGrid
-			let tmpGroupTuiGridConfiguration = JSON.parse(JSON.stringify(libPictSectionTuiGrid.default_configuration));
+			let tmpGroupTuiGridConfiguration = JSON.parse(JSON.stringify(libPictSectionTuiGridLayout.default_configuration));
 			this.viewGridConfigurations[tmpGridUUID] = tmpGroupTuiGridConfiguration;
 
 			tmpGroupTuiGridConfiguration.DefaultDestinationAddress = this.getViewTuiHtmlID(pView, pGroup);
@@ -161,6 +174,7 @@ class TuiGridLayout extends libPictSectionGroupLayout
 				switch (tmpInput.PictForm.InputType)
 				{
 					case 'Option':
+					{
 						tmpTuiGridInput.editor = (
 							{
 								"type": "select",
@@ -186,6 +200,7 @@ class TuiGridLayout extends libPictSectionGroupLayout
 							}
 						}
 						break;
+					}
 				}
 				tmpGroupTuiGridConfiguration.TuiColumnSchema.push(tmpTuiGridInput);
 			}
@@ -196,7 +211,7 @@ class TuiGridLayout extends libPictSectionGroupLayout
 
 	/**
 	 * Generate a group layout template for a TuiGrid dynamically generated group view.
-	 * 
+	 *
 	 * @param {object} pView - The view to generate the dynamic group layout for
 	 * @param {object} pGroup - The group to generate and inject dynamic layout templates
 	 * @returns {string} - The template for the group
@@ -227,9 +242,9 @@ class TuiGridLayout extends libPictSectionGroupLayout
 	/**
 	 * Generates a data representation for the given view and group.
 	 *
-	 * @param {pView} pView - The view object.
-	 * @param {pGroup} pGroup - The group object.
-	 * @returns {Array} - The generated data representation.
+	 * @param {any} pView - The view object.
+	 * @param {any} pGroup - The group object.
+	 * @returns {Array<any>} - The generated data representation.
 	 */
 	generateDataRepresentation(pView, pGroup)
 	{
@@ -260,9 +275,9 @@ class TuiGridLayout extends libPictSectionGroupLayout
 
 	/**
 	 * Initialize the TuiGrid!
-	 * 
-	 * @param {object} pView  - The view to initialize the newly rendered control for
-	 * @param {object} pGroup - The group to initialize the newly rendered control for
+	 *
+	 * @param {any} pView  - The view to initialize the newly rendered control for
+	 * @param {any} pGroup - The group to initialize the newly rendered control for
 	 * @returns {boolean} - Returns true if the initialization is successful, false otherwise.
 	 */
 	onGroupLayoutInitialize(pView, pGroup)
@@ -275,8 +290,12 @@ class TuiGridLayout extends libPictSectionGroupLayout
 
 		if (tmpTuiGridView.tuiGrid)
 		{
-			tmpTuiGridView.tuiGrid.View = pView;
-			tmpTuiGridView.tuiGrid.Group = pGroup;
+			//FIXME: masking the type from the underlying tui-grid so we can decorate it here
+			//       would be better to decorate the type from the upstream package.
+			/** @type {any} */
+			const tmpControl = tmpTuiGridView.tuiGrid;
+			tmpControl.View = pView;
+			tmpControl.Group = pGroup;
 		}
 
 		return true;
@@ -284,7 +303,7 @@ class TuiGridLayout extends libPictSectionGroupLayout
 
 	/**
 	 * Marshals data from a view to a form in the TuiGrid layout.
-	 * 
+	 *
 	 * @param {Object} pView - The view object.
 	 * @param {Object} pGroup - The group object.
 	 * @returns {boolean} - Returns true if the data marshaling is successful, false otherwise.
@@ -335,18 +354,12 @@ class TuiGridLayout extends libPictSectionGroupLayout
 			}
 		}
 
-		if (!tmpTuiGridView)
-		{
-			this.log.error(`PICT Form [${pView.UUID}]::[${pView.Hash}] error marshalling data to form: missing TuiGrid for group ${pGroup.GroupIndex}.`);
-			return false;
-		}
-
 		return true;
 	}
 
 	/**
 	 * Adds a new row to the Pict-Layout-TuiGrid.
-	 * 
+	 *
 	 * @param {string} pViewHash - The hash of the PICT form view.
 	 * @param {number} pGroupIndex - The index of the group in the view.
 	 * @returns {boolean} Returns false if there is an error adding the row, otherwise returns true.
@@ -375,7 +388,7 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		}
 		else if (typeof(tmpDestinationObject) === 'object')
 		{
-			let tmpRowIndex = pView.fable.getUUID();
+			let tmpRowIndex = tmpView.fable.getUUID();
 			tmpDestinationObject[tmpRowIndex] = tmpNewObject;
 		}
 
@@ -383,7 +396,7 @@ class TuiGridLayout extends libPictSectionGroupLayout
 		let tmpTuiGridView = this.getViewGrid(tmpView, tmpGroup);
 		if (tmpTuiGridView)
 		{
-			tmpTuiGridView.appendRow(JSON.parse(JSON.stringify(tmpNewObject)));
+			tmpTuiGridView.tuiGrid.appendRow(JSON.parse(JSON.stringify(tmpNewObject)));
 		}
 	}
 }

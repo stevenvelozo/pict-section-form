@@ -17,7 +17,7 @@ class PictDynamicLayout extends libPictProvider
 {
 	/**
 	 * Creates an instance of the PictDynamicLayout class.
-	 * 
+	 *
 	 * @param {object} pFable - The fable object.
 	 * @param {object} pOptions - The options object.
 	 * @param {object} pServiceHash - The service hash object.
@@ -30,10 +30,10 @@ class PictDynamicLayout extends libPictProvider
 
 	/**
 	 * Generate a group layout template for the Dynamically Generated views.
-	 * 
+	 *
 	 * @param {object} pView - The view to generate the dynamic group layout for
 	 * @param {object} pGroup - The group to generate and inject dynamic layout templates
-	 * @returns 
+	 * @returns
 	 */
 	generateGroupLayoutTemplate(pView, pGroup)
 	{
@@ -41,12 +41,12 @@ class PictDynamicLayout extends libPictProvider
 	}
 
 	/**
-	 * After a group template has been rendered, this lets a layout initialize any controls that 
+	 * After a group template has been rendered, this lets a layout initialize any controls that
 	 * are necessary (e.g. a custom input type or such).
-	 * 
+	 *
 	 * @param {object} pView  - The view to initialize the newly rendered control for
 	 * @param {object} pGroup - The group to initialize the newly rendered control for
-	 * @returns 
+	 * @returns
 	 */
 	onGroupLayoutInitialize(pView, pGroup)
 	{
@@ -55,7 +55,7 @@ class PictDynamicLayout extends libPictProvider
 
 	/**
 	 * This fires after data has been marshaled to the form from the model.
-	 * 
+	 *
 	 * @param {object} pView  - The view to initialize the newly rendered control for
 	 * @param {object} pGroup - The group to initialize the newly rendered control for
 	 * @returns {boolean}

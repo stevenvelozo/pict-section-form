@@ -37,8 +37,15 @@ class PictDynamicFormsTemplates extends libPictProvider
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
-		
+
 		super(pFable, tmpOptions, pServiceHash);
+
+		/** @type {any} */
+		this.options;
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {any} */
+		this.log;
 
 		this.pict.addProviderSingleton('DynamicInput', libDynamicInput.default_configuration, libDynamicInput);
 
@@ -60,23 +67,23 @@ class PictDynamicFormsTemplates extends libPictProvider
 
 	/**
 	 * Injects a template set into Pict for the Dynamic Form Section Provider.
-	 * 
+	 *
 	 * The TemplateSet object expects to have a `TemplatePrefix` and `Templates` property.
-	 * 
+	 *
 	 * The `TemplatePrefix` is used to prefix the hash of the template.
-	 * 
+	 *
 	 * The `Templates` property is an array of objects with the following properties:
 	 * - `HashPostfix` - The postfix to be added to the template hash.  This defines which dynamic template in the Layout it represents.
 	 * - `Template` - The template string to be injected.
 	 * - `DefaultInputExtensions` - An optional array of default input extensions to be added to the Dynamic Input provider.
-	 * 
+	 *
 	 * The context of the template *is not the data*.  The template context is one of these five things depending on the layout layer:
 	 * - `Form` - The form object.
 	 * - `Section` - The section object.
 	 * - `Group` - The group object.
 	 * - `Row` - The row object.
 	 * - `Input` - The input object.
-	 * 
+	 *
 	 * @param {Object} pTemplateSet - The template set to be injected.
 	 */
 	injectTemplateSet(pTemplateSet)

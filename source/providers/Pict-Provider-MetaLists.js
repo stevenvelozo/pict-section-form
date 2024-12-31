@@ -17,7 +17,7 @@ class PictMetalist extends libPictProvider
 {
 	/**
 	 * Creates an instance of the PictMetalist class.
-	 * 
+	 *
 	 * @param {object} pFable - The fable object.
 	 * @param {object} pOptions - The options object.
 	 * @param {object} pServiceHash - The service hash object.
@@ -27,13 +27,26 @@ class PictMetalist extends libPictProvider
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
 		super(pFable, tmpOptions, pServiceHash);
 
+		/** @type {any} */
+		this.options;
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {import('pict')} */
+		this.fable;
+		/** @type {any} */
+		this.log;
+		/** @type {string} */
+		this.UUID;
+		/** @type {string} */
+		this.Hash;
+
 		this.computedLists = {};
 		this.globalLists = {};
 	}
 
 	/**
 	 * Retrieves a list based on the provided view hash and list hash.
-	 * 
+	 *
 	 * @param {string} pViewHash - The view hash.
 	 * @param {string} pListHash - The list hash.
 	 * @returns {Array} - The retrieved list.
@@ -53,7 +66,7 @@ class PictMetalist extends libPictProvider
 
 	/**
 	 * Checks if a list exists in the Pict Provider MetaLists.
-	 * 
+	 *
 	 * @param {string} pViewHash - The hash of the view.
 	 * @param {string} pListHash - The hash of the list.
 	 * @returns {boolean} - Returns true if the list exists, otherwise false.
@@ -65,7 +78,7 @@ class PictMetalist extends libPictProvider
 
 	/**
 	 * Builds meta lists for the Pict provider.
-	 * 
+	 *
 	 * @param {Array|string} pViewHashes - The view hashes to build meta lists for.
 	 */
 	buildLists(pViewHashes)
@@ -133,7 +146,6 @@ class PictMetalist extends libPictProvider
 								let tmpListEntry = tmpListData[i];
 								if (tmpListEntry && (typeof tmpListEntry === 'object'))
 								{
-									debugger;
 									let tmpTextString = this.pict.parseTemplate(tmpPickList.TextTemplate, tmpListEntry);
 									let tmpIDString = this.pict.parseTemplate(tmpPickList.IDTemplate, tmpListEntry);
 

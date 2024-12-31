@@ -1,5 +1,8 @@
 export = PictFormMetacontroller;
 /**
+ * @typedef {(a: any, b: any) => number} SortFunction
+ */
+/**
  * Class representing a PictFormMetacontroller.
  *
  * The metacontroller creates, manages and runs dynamic views and their lifecycle events.
@@ -26,10 +29,10 @@ declare class PictFormMetacontroller extends libPictViewClass {
     /**
      * Executes after the initialization of the object.
      *
-     * @param {Function} fCallback - The callback function to be executed after the initialization.
-     * @returns {Promise} A promise that resolves after the execution of the callback function.
+     * @param {ErrorCallback} fCallback - The callback function to be executed after the initialization.
+     * @returns {void}
      */
-    onAfterInitializeAsync(fCallback: Function): Promise<any>;
+    onAfterInitializeAsync(fCallback: ErrorCallback): void;
     /**
      * Executes after the view is rendered.
      * It regenerates the form section templates, renders the form sections,
@@ -50,11 +53,11 @@ declare class PictFormMetacontroller extends libPictViewClass {
      *
      * By default, filters views based on the provided filter function and sorts them based on the provided sort function.
      *
-     * @param {Function} fFilterFunction - The filter function used to determine if a view should be included.
-     * @param {Function} fSortFunction - The sort function used to sort the filtered views.
+     * @param {Function} [fFilterFunction] - The filter function used to determine if a view should be included.
+     * @param {SortFunction} [fSortFunction] - The sort function used to sort the filtered views.
      * @returns {Array} - The filtered and sorted views.
      */
-    filterViews(fFilterFunction: Function, fSortFunction: Function): any[];
+    filterViews(fFilterFunction?: Function, fSortFunction?: SortFunction): any[];
     /**
      * Renders a specific dynamic form section based on the provided form section hash.
      *
@@ -75,25 +78,25 @@ declare class PictFormMetacontroller extends libPictViewClass {
      *
      * If no filter and sort functions are provided, render all form sections.
      *
-     * @param {Function} fFilterFunction - The filter function used to filter the views.
-     * @param {Function} fSortFunction - The sort function used to sort the views.
+     * @param {Function} [fFilterFunction] - The filter function used to filter the views.
+     * @param {SortFunction} [fSortFunction] - The sort function used to sort the views.
      */
-    renderFormSections(fFilterFunction: Function, fSortFunction: Function): void;
+    renderFormSections(fFilterFunction?: Function, fSortFunction?: SortFunction): void;
     /**
      * Regenerates the DyunamicForm section templates based on the provided filter and sort function.
      *
-     * @param {Function} fFormSectionFilter - (optional) The filter function used to determine which views to include in the regeneration.
-     * @param {Function} fSortFunction - (optional) The sort function used to determine the order of the views in the regeneration.
+     * @param {Function} [fFormSectionFilter] - (optional) The filter function used to determine which views to include in the regeneration.
+     * @param {SortFunction} [fSortFunction] - (optional) The sort function used to determine the order of the views in the regeneration.
      */
-    regenerateFormSectionTemplates(fFormSectionFilter: Function, fSortFunction: Function): void;
+    regenerateFormSectionTemplates(fFormSectionFilter?: Function, fSortFunction?: SortFunction): void;
     /**
      * Generates a meta template for the DynamicForm views managed by this Metacontroller.
      *
-     * @param {Function} fFormSectionFilter - (optional) The filter function to apply on the form section.
-     * @param {Function} fSortFunction - (optional) The sort function to apply on the form section.
+     * @param {Function} [fFormSectionFilter] - (optional) The filter function to apply on the form section.
+     * @param {SortFunction} [fSortFunction] - (optional) The sort function to apply on the form section.
      * @returns {void}
      */
-    generateMetatemplate(fFormSectionFilter: Function, fSortFunction: Function): void;
+    generateMetatemplate(fFormSectionFilter?: Function, fSortFunction?: SortFunction): void;
     /**
      * Retrieves a safe clone of the section definition for a given manyfest section description object.
      *
@@ -109,6 +112,11 @@ declare class PictFormMetacontroller extends libPictViewClass {
      */
     bootstrapPictFormViewsFromManifest(pManifestDescription: any): any[];
     /**
+     * Trigger an event on all inputs on all views.
+     * @param {string} pEvent - The event to trigger
+     */
+    triggerGlobalInputEvent(pEvent: string): void;
+    /**
      * Add a dynamic view to the metacontroller.
      * @param {string} pViewHash
      * @param {Object} pViewConfiguration
@@ -123,7 +131,7 @@ declare class PictFormMetacontroller extends libPictViewClass {
     get isPictMetacontroller(): boolean;
 }
 declare namespace PictFormMetacontroller {
-    export { default_configuration };
+    export { default_configuration, SortFunction };
 }
 import libPictViewClass = require("pict-view");
 declare namespace default_configuration {
@@ -146,4 +154,5 @@ declare namespace default_configuration {
         DestinationAddress: string;
     }[];
 }
+type SortFunction = (a: any, b: any) => number;
 //# sourceMappingURL=Pict-View-Form-Metacontroller.d.ts.map

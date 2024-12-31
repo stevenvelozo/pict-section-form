@@ -56,8 +56,13 @@ class PictMetatemplateGenerator extends libPictProvider
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
-		
+
 		super(pFable, tmpOptions, pServiceHash);
+
+		/** @type {import('pict')} */
+		this.pict;
+		/** @type {any} */
+		this.log;
 
 		this.dynamicInputView = false;
 
@@ -86,7 +91,7 @@ class PictMetatemplateGenerator extends libPictProvider
 	 * @param {Object} pView - The view object.
 	 * @param {string} pTemplatePostfix - The template postfix.
 	 * @param {string} pRawTemplateDataAddress - The raw template data address.
-	 * @returns {string|boolean} The metatemplate template reference in raw format, or false if it doesn't exist.
+	 * @returns {string} The metatemplate template reference in raw format, or false if it doesn't exist.
 	 */
 	getMetatemplateTemplateReferenceRaw(pView, pTemplatePostfix, pRawTemplateDataAddress)
 	{
@@ -103,7 +108,7 @@ class PictMetatemplateGenerator extends libPictProvider
 		// 3. This shouldn't happen if the template is based on the base class.
 		else
 		{
-			return false;
+			return '';
 		}
 	}
 
@@ -118,38 +123,6 @@ class PictMetatemplateGenerator extends libPictProvider
 	getMetatemplateTemplateReference(pView, pTemplatePostfix, pViewDataAddress)
 	{
 		return this.getMetatemplateTemplateReferenceRaw(pView, pTemplatePostfix, `Pict.views["${pView.Hash}"].${pViewDataAddress}`);
-	}
-
-	/**
-	 * Checks if there is a metatemplate reference for the given view, data type, and input type.
-	 * 
-	 * @param {Object} pView - The view object.
-	 * @param {string} pDataType - The data type.
-	 * @param {string} pInputType - The input type.
-	 * @returns {string|boolean} - The metatemplate reference if found, otherwise false.
-	 */
-	checkMetatemplateReference(pView, pDataType, pInputType)
-	{
-		// Input types are customizable -- there could be 30 different input types for the string data type with special handling and templates
-		let tmpTemplateInputTypePostfix = `-Template-Input-InputType-${pInputType}`;
-		// Data types are not customizable; they are a fixed list based on what is available in Manyfest
-		let tmpTemplateDataTypePostfix = `-Template-Input-DataType-${pDataType}`;
-
-		// 1. Check if there is a section-specific template loaded
-		if (pView.checkViewSpecificTemplate(tmpTemplateInputTypePostfix))
-		{
-			return `\n{~T:${pView.formsTemplateSetPrefix}${pTemplatePostfix}:${pRawTemplateDataAddress}~}`;
-		}
-		// 2. Check if there is a theme-specific template loaded for this postfix
-		else if (pView.checkThemeSpecificTemplate(pTemplatePostfix))
-		{
-			return `\n{~T:${pView.defaultTemplatePrefix}${pTemplatePostfix}:${pRawTemplateDataAddress}~}`;
-		}
-		// 3. This shouldn't happen if the template is based on the base class.
-		else
-		{
-			return false;
-		}
 	}
 
 	/**
@@ -184,7 +157,7 @@ class PictMetatemplateGenerator extends libPictProvider
 		{
 			return tmpTemplate;
 		}
-	
+
 		// There wasn't an input type specific or data type specific template, so fall back to the generic input template.
 		return this.getMetatemplateTemplateReference(pView, '-Template-Input', pViewDataAddress);
 	}
@@ -214,15 +187,15 @@ class PictMetatemplateGenerator extends libPictProvider
 		// Tabular inputs are done in three parts -- the "begin", the "address" of the data and the "end".
 
 		// This means it is easily extensible to work on JSON objects as well as arrays.
-		let tmpMidTemplate = this.getMetatemplateTemplateReference(pView, '-TabularTemplate-Mid-Input', pViewDataAddress, pGroupIndex, pRowIndex);
-		let tmpInformaryDataAddressTemplate = this.getMetatemplateTemplateReference(pView, '-TabularTemplate-InformaryAddress-Input', pViewDataAddress, pGroupIndex, pRowIndex);
+		let tmpMidTemplate = this.getMetatemplateTemplateReference(pView, '-TabularTemplate-Mid-Input', pViewDataAddress);
+		let tmpInformaryDataAddressTemplate = this.getMetatemplateTemplateReference(pView, '-TabularTemplate-InformaryAddress-Input', pViewDataAddress);
 
 		// First check if there is an "input type" template available in either the section-specific configuration or in the general
 		if (pInputType)
 		{
 			let tmpBeginTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateBeginInputTypePostfix, pViewDataAddress);
 			let tmpEndTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateEndInputTypePostfix, pViewDataAddress);
-			let tmpCustomMidTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateMidInputTypePostfix, pViewDataAddress, pGroupIndex, pRowIndex);
+			let tmpCustomMidTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateMidInputTypePostfix, pViewDataAddress);
 			tmpMidTemplate = (tmpCustomMidTemplate) ? tmpCustomMidTemplate : tmpMidTemplate;
 			if (tmpBeginTemplate && tmpEndTemplate)
 			{
@@ -235,11 +208,11 @@ class PictMetatemplateGenerator extends libPictProvider
 		let tmpEndTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateEndDataTypePostfix, pViewDataAddress);
 		if (tmpBeginTemplate && tmpEndTemplate)
 		{
-			let tmpCustomMidTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateMidDataTypePostfix, pViewDataAddress, pGroupIndex, pRowIndex);
+			let tmpCustomMidTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateMidDataTypePostfix, pViewDataAddress);
 			tmpMidTemplate = (tmpCustomMidTemplate) ? tmpCustomMidTemplate : tmpMidTemplate;
 			return tmpBeginTemplate + tmpMidTemplate + tmpInformaryDataAddressTemplate + tmpEndTemplate;
 		}
-	
+
 
 
 		// If we didn't find the template for the "input type", or the "data type", fall back to the default
@@ -249,7 +222,7 @@ class PictMetatemplateGenerator extends libPictProvider
 		{
 			return tmpBeginTemplate + tmpMidTemplate + tmpInformaryDataAddressTemplate + tmpEndTemplate;
 		}
-	
+
 		// There was some kind of catastrophic failure -- the above templates should always be loaded.
 		this.log.error(`PICT Form [${pView.UUID}]::[${pView.Hash}] catastrophic error generating tabular metatemplate: missing input template for Data Type ${pDataType} and Input Type ${pInputType}, Data Address ${pViewDataAddress}, Group Index ${pGroupIndex} and Record Subaddress ${pRowIndex}.`)
 		return '';
@@ -291,7 +264,7 @@ class PictMetatemplateGenerator extends libPictProvider
 
 	/**
 	 * Rebuilds the custom template for the given view.
-	 * 
+	 *
 	 * This uses the layout providers for each group.
 	 *
 	 * @param {Object} pView - The view object.
