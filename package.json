@@ -1,6 +1,6 @@
 {
     "name": "pict-section-form",
-    "version": "1.0.50",
+    "version": "1.0.51",
     "description": "Pict dynamic form sections",
     "main": "source/Pict-Section-Form.js",
     "directories": {
@@ -21,9 +21,9 @@
         "build": "npx quack build",
         "test": "npx mocha -u tdd -R spec",
         "lint": "eslint source/**",
-        "types": "npx -p typescript tsc -p . --outDir types"
+        "types": "tsc -p ."
     },
-    "types": "types/Pict-Section-Form.d.ts",
+    "types": "types/source/Pict-Section-Form.d.ts",
     "author": "steven velozo <steven@velozo.com>",
     "license": "MIT",
     "devDependencies": {
