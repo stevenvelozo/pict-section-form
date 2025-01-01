@@ -34,13 +34,6 @@ declare class PictFormMetacontroller extends libPictViewClass {
      */
     onAfterInitializeAsync(fCallback: ErrorCallback): void;
     /**
-     * Executes after the view is rendered.
-     * It regenerates the form section templates, renders the form sections,
-     * and optionally populates the form with data.
-     * @returns {any} The result of the super class's onAfterRender method.
-     */
-    onAfterRender(): any;
-    /**
      * Executes the solve operation -- automatically solves all dynamic views that are present.
      *
      * @returns {any} The result of the solve operation.
@@ -120,9 +113,9 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * Add a dynamic view to the metacontroller.
      * @param {string} pViewHash
      * @param {Object} pViewConfiguration
-     * @returns
+     * @return {libPictViewDynamicForm}
      */
-    addDynamicView(pViewHash: string, pViewConfiguration: any): any;
+    addDynamicView(pViewHash: string, pViewConfiguration: any): libPictViewDynamicForm;
     /**
      * Returns whether the object is a Pict Metacontroller.
      *
@@ -134,6 +127,7 @@ declare namespace PictFormMetacontroller {
     export { default_configuration, SortFunction };
 }
 import libPictViewClass = require("pict-view");
+import libPictViewDynamicForm = require("./Pict-View-DynamicForm.js");
 declare namespace default_configuration {
     let AutoRender: boolean;
     let AutoPopulateDefaultObject: boolean;

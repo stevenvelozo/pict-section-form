@@ -39,7 +39,7 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {Object} pGroup - The group definition object.
 	 * @param {Object} pRow - The Row index.
 	 * @param {Object} pInput - The input object.
-	 * @param {string} pValue - The value of the input object
+	 * @param {any} pValue - The value of the input object
 	 * @param {string} pHTMLSelector - The HTML selector for the input object
 	 */
 	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
@@ -55,7 +55,7 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {Object} pView - The view object.
 	 * @param {Object} pGroup - The group definition object.
 	 * @param {Object} pInput - The input object.
-	 * @param {string} pValue - The value of the input object
+	 * @param {any} pValue - The value of the input object
 	 * @param {string} pHTMLSelector - The HTML selector for the input object (it will return an array).
 	 * @param {number} pRowIndex - The row index of the tabular data
 	 */
@@ -130,7 +130,7 @@ class PictInputExtensionProvider extends libPictProvider
 	 *
 	 * @param {Object} pView - The view object.
 	 * @param {Object} pInput - The input object.
-	 * @param {string} pValue - The value from AppData.
+	 * @param {any} pValue - The value from AppData.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @returns {boolean} - Returns true.
 	 */
@@ -144,7 +144,7 @@ class PictInputExtensionProvider extends libPictProvider
 	 *
 	 * @param {Object} pView - The view object.
 	 * @param {Object} pInput - The input object.
-	 * @param {string} pValue - The value from AppData.
+	 * @param {any} pValue - The value from AppData.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {number} pRowIndex - The row index of the tabular data.
 	 * @returns {boolean} - Returns true.
@@ -160,7 +160,7 @@ class PictInputExtensionProvider extends libPictProvider
 	 *
 	 * @param {Object} pView - The view object.
 	 * @param {Object} pInput - The input object.
-	 * @param {string} pValue - The value from AppData.
+	 * @param {any} pValue - The value from AppData.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {string} pEvent - The event hash that is expected to be triggered.
 	 * @returns {boolean} - Returns true.
@@ -175,7 +175,7 @@ class PictInputExtensionProvider extends libPictProvider
 	 *
 	 * @param {Object} pView - The view object.
 	 * @param {Object} pInput - The input object.
-	 * @param {string} pValue - The value from AppData.
+	 * @param {any} pValue - The value from AppData.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {number} pRowIndex - The row index of the tabular data.
 	 * @param {string} pEvent - The event hash that is expected to be triggered.

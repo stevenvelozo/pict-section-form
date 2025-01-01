@@ -7,10 +7,8 @@ export = PictSectionFormApplication;
  * @class
  * @extends libPictApplication
  */
-declare class PictSectionFormApplication {
+declare class PictSectionFormApplication extends libPictApplication {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
-    /** @type {import('pict') & import('fable')} */
-    pict: import("pict") & any;
     /**
      * Marshals data from any rendered dynamic views to application data.
      */
@@ -23,6 +21,7 @@ declare class PictSectionFormApplication {
 declare namespace PictSectionFormApplication {
     export { default_configuration };
 }
+import libPictApplication = require("pict-application");
 declare namespace default_configuration {
     let Name: string;
     let Hash: string;

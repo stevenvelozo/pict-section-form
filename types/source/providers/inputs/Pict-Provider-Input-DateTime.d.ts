@@ -59,27 +59,6 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @returns {any} - The result of the data marshaling.
      */
     onDataMarshalToFormTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): any;
-    /**
-     * Handles the data request event for the specified input.
-     *
-     * @param {Object} pView - The view object.
-     * @param {Object} pInput - The input object.
-     * @param {any} pValue - The value to be assigned.
-     * @param {string} pHTMLSelector - The HTML selector.
-     * @returns {boolean} - Returns true if the data request is successful, otherwise false.
-     */
-    onDataRequest(pView: any, pInput: any, pValue: any, pHTMLSelector: string): boolean;
-    /**
-     * Handles the data request event for the specified input when in a tabular section.
-     *
-     * @param {Object} pView - The view object.
-     * @param {Object} pInput - The input object.
-     * @param {any} pValue - The value to be assigned.
-     * @param {string} pHTMLSelector - The HTML selector.
-     * @param {number} pRowIndex - The index of the row.
-     * @returns {boolean} - Returns true if the data request is successful, otherwise false.
-     */
-    onDataRequestTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): boolean;
 }
 import libPictSectionInputExtension = require("../Pict-Provider-InputExtension.js");
 //# sourceMappingURL=Pict-Provider-Input-DateTime.d.ts.map

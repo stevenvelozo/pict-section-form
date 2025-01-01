@@ -21,17 +21,6 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      */
     getTabSelectorInputHTMLID(pInputHTMLID: string): string;
     /**
-     * Initializes the input element for the Pict provider select input.
-     * @param {Object} pView - The view object.
-     * @param {Object} pGroup - The group object.
-     * @param {Object} pRow - The row object.
-     * @param {Object} pInput - The input object.
-     * @param {any} pValue - The input value.
-     * @param {string} pHTMLTabSelector - The HTML selector.
-     * @returns {boolean} - Returns true if the input element is successfully initialized, false otherwise.
-     */
-    onInputInitialize(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLTabSelector: string): boolean;
-    /**
      * Handles the change event for the data in the select input.
      * @param {Object} pView - The view object.
      * @param {Object} pInput - The input object.

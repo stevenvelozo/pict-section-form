@@ -90,9 +90,15 @@ class PictFormMetacontroller extends libPictViewClass
 	 * Executes after the view is rendered.
 	 * It regenerates the form section templates, renders the form sections,
 	 * and optionally populates the form with data.
-	 * @returns {any} The result of the super class's onAfterRender method.
+	 *
+	 * @param {import('pict-view').Renderable} pRenderable - The renderable that was rendered.
+	 * @param {string} pRenderDestinationAddress - The address where the renderable was rendered.
+	 * @param {any} pRecord - The record (data) that was used by the renderable.
+	 * @param {string} pContent - The content that was rendered.
+	 *
+	 * @return {boolean} The result of the superclass's onAfterRender method.
 	 */
-	onAfterRender()
+	onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent)
 	{
 		this.regenerateFormSectionTemplates();
 		this.renderFormSections();
@@ -102,7 +108,7 @@ class PictFormMetacontroller extends libPictViewClass
 			this.marshalToView();
 		}
 
-		return super.onAfterRender();
+		return super.onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent);
 	}
 
 	/**
@@ -567,14 +573,14 @@ class PictFormMetacontroller extends libPictViewClass
 	 * Add a dynamic view to the metacontroller.
 	 * @param {string} pViewHash
 	 * @param {Object} pViewConfiguration
-	 * @returns
+	 * @return {libPictViewDynamicForm}
 	 */
 	addDynamicView(pViewHash, pViewConfiguration)
 	{
 		if (pViewHash in this.pict.views)
 		{
 			this.log.error(`addDynamicView() called with a view hash that already exists [${pViewHash}].`);
-			return false;
+			return null;
 		}
 
 		return this.pict.addView(pViewHash, pViewConfiguration, libPictViewDynamicForm);

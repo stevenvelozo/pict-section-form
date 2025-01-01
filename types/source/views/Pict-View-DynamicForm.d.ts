@@ -11,7 +11,7 @@ declare class PictViewDynamicForm extends libPictViewClass {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict') & { PictApplication: import('pict-application'), log: any; instantiateServiceProviderWithoutRegistration: (hash: string) => any; }} */
     pict: import("pict") & {
-        PictApplication: any;
+        PictApplication: import("pict-application");
         log: any;
         instantiateServiceProviderWithoutRegistration: (hash: string) => any;
     };
@@ -151,6 +151,15 @@ declare class PictViewDynamicForm extends libPictViewClass {
      * @returns {any} The result of the solve operation.
      */
     onSolve(): any;
+    /**
+     * Lifecycle hook that triggers after the view is rendered.
+     *
+     * @param {any} [pRenderable] - The renderable that was rendered.
+     * @param {string} [pRenderDestinationAddress] - The address where the renderable was rendered.
+     * @param {any} [pRecord] - The record (data) that was used by the renderable.
+     * @param {string} [pContent] - The content that was rendered.
+     */
+    onAfterRender(pRenderable?: any, pRenderDestinationAddress?: string, pRecord?: any, pContent?: string): boolean;
     /**
      * Executes layout provider functions based on the given function name.
      *

@@ -48,18 +48,6 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     gatherEntitySet(fCallback: any, pEntityInformation: any, pView: any, pInput: any, pValue: any): any;
     gatherDataFromServer(pView: any, pInput: any, pValue: any, pHTMLSelector: any): boolean;
     /**
-     * Initializes the input element for the Pict provider select input.
-     *
-     * @param {Object} pView - The view object.
-     * @param {Object} pGroup - The group object.
-     * @param {Object} pRow - The row object.
-     * @param {Object} pInput - The input object.
-     * @param {any} pValue - The input value.
-     * @param {string} pHTMLSelector - The HTML selector.
-     * @returns {boolean} - Returns true if the input element is successfully initialized, false otherwise.
-     */
-    onInputInitialize(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string): boolean;
-    /**
      * Initializes a tabular input element.
      *
      * @param {Object} pView - The view object.

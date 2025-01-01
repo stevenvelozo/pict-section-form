@@ -22,10 +22,10 @@ declare class PictInputExtensionProvider {
      * @param {Object} pGroup - The group definition object.
      * @param {Object} pRow - The Row index.
      * @param {Object} pInput - The input object.
-     * @param {string} pValue - The value of the input object
+     * @param {any} pValue - The value of the input object
      * @param {string} pHTMLSelector - The HTML selector for the input object
      */
-    onInputInitialize(pView: any, pGroup: any, pRow: any, pInput: any, pValue: string, pHTMLSelector: string): boolean;
+    onInputInitialize(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string): boolean;
     /**
      * A tabular input has been initialized (rendered into the DOM)
      *
@@ -34,11 +34,11 @@ declare class PictInputExtensionProvider {
      * @param {Object} pView - The view object.
      * @param {Object} pGroup - The group definition object.
      * @param {Object} pInput - The input object.
-     * @param {string} pValue - The value of the input object
+     * @param {any} pValue - The value of the input object
      * @param {string} pHTMLSelector - The HTML selector for the input object (it will return an array).
      * @param {number} pRowIndex - The row index of the tabular data
      */
-    onInputInitializeTabular(pView: any, pGroup: any, pInput: any, pValue: string, pHTMLSelector: string, pRowIndex: number): boolean;
+    onInputInitializeTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): boolean;
     /**
      * Called when the data change function is called
      *
@@ -89,45 +89,45 @@ declare class PictInputExtensionProvider {
      *
      * @param {Object} pView - The view object.
      * @param {Object} pInput - The input object.
-     * @param {string} pValue - The value from AppData.
+     * @param {any} pValue - The value from AppData.
      * @param {string} pHTMLSelector - The HTML selector.
      * @returns {boolean} - Returns true.
      */
-    onDataRequest(pView: any, pInput: any, pValue: string, pHTMLSelector: string): boolean;
+    onDataRequest(pView: any, pInput: any, pValue: any, pHTMLSelector: string): boolean;
     /**
      * Handles data requests for the Pict-Provider-InputExtension.
      *
      * @param {Object} pView - The view object.
      * @param {Object} pInput - The input object.
-     * @param {string} pValue - The value from AppData.
+     * @param {any} pValue - The value from AppData.
      * @param {string} pHTMLSelector - The HTML selector.
      * @param {number} pRowIndex - The row index of the tabular data.
      * @returns {boolean} - Returns true.
      */
-    onDataRequestTabular(pView: any, pInput: any, pValue: string, pHTMLSelector: string, pRowIndex: number): boolean;
+    onDataRequestTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): boolean;
     /**
      * Handles events for the Pict-Provider-InputExtension.
      *
      * @param {Object} pView - The view object.
      * @param {Object} pInput - The input object.
-     * @param {string} pValue - The value from AppData.
+     * @param {any} pValue - The value from AppData.
      * @param {string} pHTMLSelector - The HTML selector.
      * @param {string} pEvent - The event hash that is expected to be triggered.
      * @returns {boolean} - Returns true.
      */
-    onEvent(pView: any, pInput: any, pValue: string, pHTMLSelector: string, pEvent: string): boolean;
+    onEvent(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pEvent: string): boolean;
     /**
      * Handles events for the Pict-Provider-InputExtension.
      *
      * @param {Object} pView - The view object.
      * @param {Object} pInput - The input object.
-     * @param {string} pValue - The value from AppData.
+     * @param {any} pValue - The value from AppData.
      * @param {string} pHTMLSelector - The HTML selector.
      * @param {number} pRowIndex - The row index of the tabular data.
      * @param {string} pEvent - The event hash that is expected to be triggered.
      * @returns {boolean} - Returns true.
      */
-    onEventTabular(pView: any, pInput: any, pValue: string, pHTMLSelector: string, pRowIndex: number, pEvent: string): boolean;
+    onEventTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number, pEvent: string): boolean;
 }
 declare namespace PictInputExtensionProvider {
     export { _DefaultProviderConfiguration as default_configuration };
