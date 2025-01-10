@@ -14,7 +14,7 @@ const _Theme = (
   ;,//;,    ,;/
  o:::::::;;///
 >::::::::;;\\\
-  ''\\\\\'" ';\
+  ''\\\\'" ';\
 
 Glug glug CUSTOMIZED glug Oo... -->
 <div id="Pict-{~D:Context[0].UUID~}-FormContainer" class="pict-form">`

@@ -45,12 +45,12 @@ class PostcardMainApplicationView extends libPictView
 		return super.onAfterInitialize();
 	}
 
-	onAfterRender()
+	onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent)
 	{
 		this.pict.views.PictFormMetacontroller.render();
 		this.pict.views.PictFormMetacontroller.renderFormSections();
 		this.pict.PictApplication.marshalDataFromAppDataToView();
-		return super.onAfterRender();
+		return super.onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent);
 		//return super.onAfterRenderAsync(fCallback);
 	}
 }
