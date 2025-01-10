@@ -58,7 +58,6 @@ class ManifestFactory extends libFableServiceProviderBase
 	 */
 	sanitizeObjectKey(pString)
 	{
-		console.info('HELLOOOOO');
 		if (typeof pString !== 'string' || pString.length < 1)
 		{
 			return this._SanitizeObjectKeyInvalid;
@@ -216,7 +215,7 @@ class ManifestFactory extends libFableServiceProviderBase
 	{
 		if (pManifestDescriptor.DataAddress in this.manifest.Descriptors)
 		{
-			console.info('[ERROR] Duplicate descriptor hash found:', pManifestDescriptor);
+			this.log.info('[ERROR] Duplicate descriptor hash found:', pManifestDescriptor);
 		}
 		this.manifest.Descriptors[pManifestDescriptor.DataAddress] = pManifestDescriptor;
 	}
@@ -445,7 +444,7 @@ class ManifestFactory extends libFableServiceProviderBase
 		}
 		if (tmpDescriptor.Hash in pManifestFactory.manifest.Descriptors)
 		{
-			console.info(`[ERROR] Duplicate descriptor hash found ${tmpDescriptor.Hash}.  This will overwrite the original descriptor.`);
+			this.log.info(`[ERROR] Duplicate descriptor hash found ${tmpDescriptor.Hash}.  This will overwrite the original descriptor.`);
 		}
 
 		// Now checking if the group is Tabular -- if it is we need to set some extra values on the Group and have solvers occur inline

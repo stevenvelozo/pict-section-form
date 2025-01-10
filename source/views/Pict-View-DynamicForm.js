@@ -296,7 +296,6 @@ class PictViewDynamicForm extends libPictViewClass
 			{
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
 				let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
-				console.log(tmpValueAddress);
 				this.sectionManifest.setValueByHash(tmpMarshalDestinationObject, tmpValueAddress, pValue)
 
 				// TODO: DRY TIME, excellent.
@@ -849,7 +848,6 @@ class PictViewDynamicForm extends libPictViewClass
 
 		for (let i = 0; i < tmpInputHashes.length; i++)
 		{
-//			console.log(tmpInputHashes[i])
 			if (!(tmpInputHashes[i] in pCompletedHashes))
 			{
 				pCompletedHashes[tmpInputHashes[i]] = true;
