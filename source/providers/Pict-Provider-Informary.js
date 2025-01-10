@@ -60,7 +60,7 @@ class PictDynamicFormsInformary extends libPictProvider
 	 * @param {string} pFormHash - The form hash.
 	 * @param {string} pDatumHash - The datum hash.
 	 * @param {string|null} pContainer - The container (optional).
-	 * @param {number} pIndex - The index.
+	 * @param {string|number} pIndex - The index.
 	 * @returns {string} The content browser address.
 	 */
 	getContentBrowserAddress(pFormHash, pDatumHash, pContainer, pIndex)
@@ -80,7 +80,7 @@ class PictDynamicFormsInformary extends libPictProvider
 	 * Returns the composed container address string for a given container, index, and datum hash.
 	 *
 	 * @param {string} pContainer - The container name.
-	 * @param {number} pIndex - The index of the container.
+	 * @param {string|number} pIndex - The index of the container.
 	 * @param {string} pDatumHash - The datum hash.
 	 * @returns {string} The composed container address.
 	 */
@@ -95,25 +95,25 @@ class PictDynamicFormsInformary extends libPictProvider
 	 * @param {object} pAppStateData - The application state data object to marshal the form data to.
 	 * @param {string} pFormHash - The form hash representing the form elements.
 	 * @param {object} pManifest - The manifest object used to map form data to the application state data.
-	 * @param {string} pDatum - The datum hash to pull in.  If not provided, all data is marshalled.
-	 * @param {number} pRecordIndex - The record index to pull in.  If not provided, all data is marshalled.
+	 * @param {string} [pDatum] - The datum hash to pull in.  If not provided, all data is marshalled.
+	 * @param {number|string} [pRecordIndex] - The record index to pull in.  If not provided, all data is marshalled.
 	 */
 	marshalFormToData(pAppStateData, pFormHash, pManifest, pDatum, pRecordIndex)
 	{
-		let tmpManifest = typeof(pManifest) === 'object' ? pManifest : this.genericManifest;
-		let tmpFormElements = this.getFormElements(pFormHash);
+		const tmpManifest = typeof(pManifest) === 'object' ? pManifest : this.genericManifest;
+		const tmpFormElements = this.getFormElements(pFormHash);
 
 		// Optional Filters (so we don't just blindly do the whole form)
-		let tmpDatum = (typeof(pDatum) === 'undefined') ? false : pDatum;
-		let tmpRecordIndex = (typeof(pRecordIndex) === 'undefined') ? false : pRecordIndex;
+		const tmpDatum = (typeof(pDatum) === 'undefined') ? false : pDatum;
+		const tmpRecordIndex = (typeof(pRecordIndex) === 'number') ? String(pRecordIndex) : pRecordIndex;
 
 		// Enumerate the form elements, and put data in them for each address
-		for (let i = 0; i < tmpFormElements.length; i++)
+		for (const tmpFormElement of tmpFormElements)
 		{
-			let tmpDatumAddress = tmpFormElements[i].getAttribute('data-i-datum');
+			const tmpDatumAddress = tmpFormElement.getAttribute('data-i-datum');
 
-			let tmpContainerAddress = tmpFormElements[i].getAttribute('data-i-container');
-			let tmpIndex = Number(tmpFormElements[i].getAttribute('data-i-index'));
+			const tmpContainerAddress = tmpFormElement.getAttribute('data-i-container');
+			const tmpIndex = tmpFormElement.getAttribute('data-i-index');
 
 			// Process the filters
 			if (tmpDatum && (tmpDatum !== tmpDatumAddress))
@@ -121,7 +121,8 @@ class PictDynamicFormsInformary extends libPictProvider
 				// Falls outside the filter, continue on
 				continue;
 			}
-			if (tmpIndex && tmpRecordIndex && (tmpRecordIndex !== tmpIndex))
+			//NOTE: we ensure above these are both strings (or undefined / unsupported type) which this check depends on
+			if (tmpRecordIndex && tmpIndex && tmpRecordIndex !== tmpIndex)
 			{
 				// Falls outside the filter, continue on
 				continue;

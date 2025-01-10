@@ -35,29 +35,29 @@ declare class PictDynamicFormsInformary {
      * @param {string} pFormHash - The form hash.
      * @param {string} pDatumHash - The datum hash.
      * @param {string|null} pContainer - The container (optional).
-     * @param {number} pIndex - The index.
+     * @param {string|number} pIndex - The index.
      * @returns {string} The content browser address.
      */
-    getContentBrowserAddress(pFormHash: string, pDatumHash: string, pContainer: string | null, pIndex: number): string;
+    getContentBrowserAddress(pFormHash: string, pDatumHash: string, pContainer: string | null, pIndex: string | number): string;
     /**
      * Returns the composed container address string for a given container, index, and datum hash.
      *
      * @param {string} pContainer - The container name.
-     * @param {number} pIndex - The index of the container.
+     * @param {string|number} pIndex - The index of the container.
      * @param {string} pDatumHash - The datum hash.
      * @returns {string} The composed container address.
      */
-    getComposedContainerAddress(pContainer: string, pIndex: number, pDatumHash: string): string;
+    getComposedContainerAddress(pContainer: string, pIndex: string | number, pDatumHash: string): string;
     /**
      * Marshals form data to the provided application state data object using the given form hash and manifest.
      *
      * @param {object} pAppStateData - The application state data object to marshal the form data to.
      * @param {string} pFormHash - The form hash representing the form elements.
      * @param {object} pManifest - The manifest object used to map form data to the application state data.
-     * @param {string} pDatum - The datum hash to pull in.  If not provided, all data is marshalled.
-     * @param {number} pRecordIndex - The record index to pull in.  If not provided, all data is marshalled.
+     * @param {string} [pDatum] - The datum hash to pull in.  If not provided, all data is marshalled.
+     * @param {number|string} [pRecordIndex] - The record index to pull in.  If not provided, all data is marshalled.
      */
-    marshalFormToData(pAppStateData: object, pFormHash: string, pManifest: object, pDatum: string, pRecordIndex: number): void;
+    marshalFormToData(pAppStateData: object, pFormHash: string, pManifest: object, pDatum?: string, pRecordIndex?: number | string): void;
     /**
      * Marshals data from some application state object to a specific subset of browser form elements.
      *
