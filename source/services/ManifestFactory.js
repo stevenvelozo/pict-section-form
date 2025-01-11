@@ -164,6 +164,7 @@ class ManifestFactory extends libFableServiceProviderBase
 				for (let k = 0; k < tmpSupportingManifestDescriptorKeys.length; k++)
 				{
 					let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];
+					tmpInput.IsTabular = true;
 
 					if (!('PictForm' in tmpInput))
 					{
