@@ -31,7 +31,7 @@
         "browser-env": "^3.3.0",
         "eslint": "^9.18.0",
         "jquery": "^3.7.1",
-        "pict": "^1.0.231",
+        "pict": "^1.0.232",
         "pict-application": "^1.0.24",
         "pict-service-commandlineutility": "^1.0.15",
         "quackage": "^1.0.36",
