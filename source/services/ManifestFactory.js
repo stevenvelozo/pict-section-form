@@ -142,6 +142,10 @@ class ManifestFactory extends libFableServiceProviderBase
 		{
 			let tmpGroup = pView.sectionDefinition.Groups[i];
 			tmpGroup.GroupIndex = i;
+			if ('ShowTitle' in tmpGroup)
+			{
+				tmpGroup.ShowTitle = true;
+			}
 			if (!tmpGroup.hasOwnProperty('Layout'))
 			{
 				tmpGroup.Layout = 'Record';

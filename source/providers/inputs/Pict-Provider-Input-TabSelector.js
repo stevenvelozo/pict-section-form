@@ -19,6 +19,73 @@ class CustomInputHandler extends libPictSectionInputExtension
 		this.fable;
 		/** @type {any} */
 		this.log;
+
+		/** @type {string} */
+		this.cssHideClass = 'pict-tab-hidden';
+		this.cssSelectedTabClass = 'pict-tab-selectedtab';
+		this.cssSnippet = '.pict-tab-hidden { display: none; } .pict-tab-selectedtab { font-weight: bold; }';
+
+		this.setCSSSnippets();
+	}
+
+	setCSSSnippets(pCSSHideClass, pCSSSnippet)
+	{
+		this.cssHideClass = pCSSHideClass || this.cssHideClass;
+		this.cssSnippet = pCSSSnippet || this.cssSnippet;
+		this.pict.CSSMap.addCSS('Pict-Section-Form-Input-TabSelector', this.cssSnippet, 1001, 'Pict-Input-TabSelector');
+	}
+
+	getTabSelector(pView, pInput, pGroupHash)
+	{
+		return `#TAB-${pGroupHash}-${pInput.Macro.RawHTMLID}`;
+	}
+
+	getGroupSelector(pView, pGroupHash)
+	{
+		return `#GROUP-${pView.formID}-${pGroupHash}`;
+	}
+
+	selectTabByViewHash(pViewHash, pInputHash, pTabHash)
+	{
+		// First get the view
+		let tmpView = this.pict.views[pViewHash];
+		if (!tmpView)
+		{
+			this.pict.log.error(`TabSelector input provider tried to switch to view [${pViewHash}] input [${pInputHash}] tab [${pTabHash}] but the view did not exist!`)
+			return false;
+		}
+		// Then the input
+		let tmpInput = tmpView.getInputFromHash(pInputHash)
+		if (!tmpInput)
+		{
+			this.pict.log.error(`TabSelector input provider tried to switch to view [${pViewHash}] input [${pInputHash}] tab [${pTabHash}] but the input did not exist!`)
+			return false;
+		}
+		// Now enumerate the tabs and hide the others, then show this one.
+		// TODO: This could be made more elegant by testing which ones are shown and swapping them faster.
+		if (!(tmpInput?.PictForm?.TabGroupSet) || !Array.isArray(tmpInput.PictForm.TabGroupSet))
+		{
+			this.pict.log.error(`TabSelector input provider tried to switch to view [${pViewHash}] input [${pInputHash}] tab [${pTabHash}] but the input did not have a valid TabGroupSet array in the PictForm object!`)
+			return false;
+		}
+
+		for (let i = 0; i < tmpInput.PictForm.TabGroupSet.length; i++)
+		{
+			let tmpTabGroupHash = tmpInput.PictForm.TabGroupSet[i];
+			if (tmpTabGroupHash != pTabHash)
+			{
+				// Hide this tab group if it isn't the "expected to be visible" group
+				this.pict.ContentAssignment.addClass(this.getGroupSelector(tmpView, tmpTabGroupHash), this.cssHideClass);
+				this.pict.ContentAssignment.removeClass(this.getTabSelector(tmpView, tmpInput, tmpTabGroupHash), this.cssSelectedTabClass);
+			}
+			else
+			{
+				// Show this tab group if it is the "expected to be visible" group
+				this.pict.ContentAssignment.removeClass(this.getGroupSelector(tmpView, tmpTabGroupHash), this.cssHideClass);
+				this.pict.ContentAssignment.addClass(this.getTabSelector(tmpView, tmpInput, tmpTabGroupHash), this.cssSelectedTabClass);
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -43,33 +110,29 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector)
 	{
-		// Try to get the input element
-		/** @type {Array<HTMLElement>} */
-		const tmpInputTabSelectorElements = this.pict.ContentAssignment.getElement(this.getTabSelectorInputHTMLID(pInput.Macro.RawHTMLID));
-		let tmpDefaultData = pInput.PictForm?.TabSelectorOptions;
+		let tmpTabSet = pInput.PictForm?.TabGroupSet;
 
-		if (pInput.PictForm.TabSelectorOptionsPickList && this.pict.providers.DynamicMetaLists.hasList(pView.Hash, pInput.PictForm.TabSelectorOptionsPickList))
+		if (!tmpTabSet || !Array.isArray(tmpTabSet) || tmpTabSet.length < 1)
 		{
-			tmpDefaultData = this.pict.providers.DynamicMetaLists.getList(pView.Hash, pInput.PictForm.TabSelectorOptionsPickList);
-		}
-
-		// TODO: Determine later if this should ever be an array.
-		if (!tmpInputTabSelectorElements || tmpInputTabSelectorElements.length < 1)
-		{
+			this.pict.log.error(`TabSelector input provider tried to initialize Tab Group Set for HTML ID [${pInput.Macro.RawHTMLID}] but there were no valid entries in the tmpInput.PictForm.TabGroupSet array!`)
 			return false;
 		}
-		const tmpInputTabSelectorElement = tmpInputTabSelectorElements[0];
 
-		if (tmpInputTabSelectorElement && tmpDefaultData && Array.isArray(tmpDefaultData))
+		let tmpEntryMetatemplateHash = this.pict.providers.DynamicInput.getInputTemplateHash(pView, { PictForm: { InputType: 'TabGroupSelector-TabElement', DataType: 'String' } });
+
+		let tmpTabGroupSetEntries = '';
+
+		for (let i = 0; i < tmpTabSet.length; i++)
 		{
-			for (let i = 0; i < tmpDefaultData.length; i++)
-			{
-				let tmpOption = document.createElement('option');
-				tmpOption.value = tmpDefaultData[i].id;
-				tmpOption.text = tmpDefaultData[i].text;
-				tmpInputTabSelectorElement.appendChild(tmpOption);
-			}
+			tmpTabGroupSetEntries += this.pict.parseTemplateByHash(tmpEntryMetatemplateHash, pInput, null, [pView, {TabGroupHash: tmpTabSet[i]}]);
 		}
+
+		// TODO: Fix typescript types so this function has an optional rather than required fourth parameter.
+		this.pict.ContentAssignment.projectContent('replace', this.getTabSelectorInputHTMLID(pInput.Macro.RawHTMLID), tmpTabGroupSetEntries, 'FixTheTypescriptTypes');
+
+		// Now set the default tab (or first one)
+		let tmpDefaultTabGroupHash = pInput.PictForm?.DefaultTabGroupHash || tmpTabSet[0];
+		this.selectTabByViewHash(pView.Hash, pInput.Hash, tmpDefaultTabGroupHash);
 
 		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector);
 	}

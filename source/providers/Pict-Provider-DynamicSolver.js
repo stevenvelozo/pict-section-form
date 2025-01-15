@@ -61,9 +61,9 @@ class PictDynamicSolver extends libPictProvider
 		{
 			this.pict.addProvider('Pict-Input-DateTime', libInputDateTime.default_configuration, libInputDateTime);
 		}
-		if (!this.pict.providers['Pict-Input-TabSelector'])
+		if (!this.pict.providers['Pict-Input-TabGroupSelector'])
 		{
-			this.pict.addProvider('Pict-Input-TabSelector', libInputTabSelector.default_configuration, libInputTabSelector);
+			this.pict.addProvider('Pict-Input-TabGroupSelector', libInputTabSelector.default_configuration, libInputTabSelector);
 		}
 		if (!this.pict.providers['Pict-Input-EntityBundleRequest'])
 		{

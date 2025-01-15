@@ -100,8 +100,8 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-Template-Group-Prefix",
 			"Template": /*HTML*/`
 			<!-- Form Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
-			<h3>Group: {~D:Record.Name~}</h3>
-			<div {~D:Record.Macro.PictFormLayout~}>
+			<div id="GROUP-{~D:Context[0].formID~}-{~D:Record.Hash~}" {~D:Record.Macro.PictFormLayout~}>
+			{~HCS:Record.ShowTitle~}<h3 class="{~D:Record.CSSClass~}">Group: {~D:Record.Name~}</h3>{~HCE:Record.ShowTitle~}
 `
 		},
 		// row(s) are useful when our form has multiple inputs on some lines and a single on another...
@@ -195,16 +195,50 @@ Glug glug glug Oo... -->
 		 * [ External Control Templates START ]
 		 *
 		 */
+		/*
+		 * Tab Groups are sets of Groups within a single Section that are shown/hidden when a tab control is clicked.
+		 * 
+		 * For example from the complex tabular application manifest descriptors:
+		 *
+		...
+			"UI.StatisticsTabState": {
+				Name: "Statistics Tab State",
+				Hash: "StatisticsTabState",
+				DataType: "String",
+				PictForm: { Section: "Recipe", Group: "StatisticsTabs", 
+					InputType: "TabGroupSelector",
+					// The default when there is no state is the first entry here.
+					// If you want to set a default, you can just do it in the state address though.
+					TabGroupSet: ["Statistics", "FruitStatistics"] }
+			},
+		...
+		 *
+		 */
 		{
-			"HashPostfix": "-Template-Input-InputType-Tab",
-			"DefaultInputExtensions": ["Pict-Input-Tab"],
+			"HashPostfix": "-Template-Input-InputType-TabGroupSelector",
+			"DefaultInputExtensions": ["Pict-Input-TabGroupSelector"],
 			"Template": /*HTML*/`
-					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<!-- InputType TabGroupSelector {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<!-- the TabSelector Input provider deals with populating this from the manifest. -->
 					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
-					<span>{~D:Record.Name~}:</span> <select id="TAB-SELECT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}"></select>
+					<!-- <span>{~D:Record.Name~}:</span> -->
+					<div id="TAB-SELECT-FOR-{~D:Record.Macro.RawHTMLID~}"></div>
 `
 		},
-		/*
+		{
+			"HashPostfix": "-Template-Input-InputType-TabGroupSelector-TabElement",
+			"Template": /*HTML*/`
+			<!-- Sections have "tab groups" which are defined by the hash of the Descriptor that hosts the current TabGroup value. -->
+			<a href="#" id="TAB-{~D:Context[1].TabGroupHash~}-{~D:Record.Macro.RawHTMLID~}" onclick="{~P~}.providers['Pict-Input-TabGroupSelector'].selectTabByViewHash('{~D:Context[0].Hash~}','{~D:Record.Hash~}', '{~D:Context[1].TabGroupHash~}')">{~D:Context[1].TabGroupHash~}</a>
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-TabGroupSelector-EmptyGroupContent",
+			"Template": /*HTML*/`
+			<!-- This is the template for if the tmpInput.PictForm.TabGroupSet array is empty. -->
+			<p>Warning! No tabs to select from for {~D:Record.TabGroupSetRawHTMLID~}</p>
+`
+		},		/*
 		 * END View Management Templates (default)
 		 */
 		/*

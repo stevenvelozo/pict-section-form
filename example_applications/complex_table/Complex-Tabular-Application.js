@@ -94,6 +94,12 @@ module.exports.default_configuration.pict_configuration = {
 					{
 						Hash: "Recipe",
 						Name: "Recipe",
+						CSSClass: "FancyGroupTitle"
+					},
+					{
+						Hash: "StatisticsTabs",
+						Name: "Select a Statistics Section",
+						ShowTitle: false
 					},
 					{
 						Hash: "Statistics",
@@ -265,6 +271,17 @@ module.exports.default_configuration.pict_configuration = {
 				PictForm: {
 					Section: "Book", Group: "Book", Row: 1, Width: 1
 				}
+			},
+
+			"UI.StatisticsTabState": {
+				Name: "Statistics Tab State",
+				Hash: "StatisticsTabState",
+				DataType: "String",
+				PictForm: { Section: "Recipe", Group: "StatisticsTabs", 
+					InputType: "TabGroupSelector",
+					// The default when there is no state is the first entry here.
+					// If you want to set a default, you can just do it in the state address though.
+					TabGroupSet: ["Statistics", "FruitStatistics"] }
 			},
 
 			"Recipe.Feeds": {
