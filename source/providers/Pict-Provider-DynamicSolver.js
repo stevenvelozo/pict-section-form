@@ -4,7 +4,8 @@ const libDynamicMetaLists = require('./Pict-Provider-MetaLists.js');
 
 const libInputSelect = require('./inputs/Pict-Provider-Input-Select.js');
 const libInputDateTime = require('./inputs/Pict-Provider-Input-DateTime.js');
-const libInputTabSelector = require('./inputs/Pict-Provider-Input-TabSelector.js');
+const libInputTabGroupSelector = require('./inputs/Pict-Provider-Input-TabGroupSelector.js');
+const libInputTabSectionSelector = require('./inputs/Pict-Provider-Input-TabSectionSelector.js');
 const libInputEntityBundleRequest = require('./inputs/Pict-Provider-Input-EntityBundleRequest.js');
 const libInputAutofillTriggerGroup = require('./inputs/Pict-Provider-Input-AutofillTriggerGroup.js');
 
@@ -63,7 +64,11 @@ class PictDynamicSolver extends libPictProvider
 		}
 		if (!this.pict.providers['Pict-Input-TabGroupSelector'])
 		{
-			this.pict.addProvider('Pict-Input-TabGroupSelector', libInputTabSelector.default_configuration, libInputTabSelector);
+			this.pict.addProvider('Pict-Input-TabGroupSelector', libInputTabGroupSelector.default_configuration, libInputTabGroupSelector);
+		}
+		if (!this.pict.providers['Pict-Input-TabSectionSelector'])
+		{
+			this.pict.addProvider('Pict-Input-TabSectionSelector', libInputTabSectionSelector.default_configuration, libInputTabSectionSelector);
 		}
 		if (!this.pict.providers['Pict-Input-EntityBundleRequest'])
 		{

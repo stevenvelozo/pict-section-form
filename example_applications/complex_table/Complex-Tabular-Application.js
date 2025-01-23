@@ -94,16 +94,17 @@ module.exports.default_configuration.pict_configuration = {
 					{
 						Hash: "Recipe",
 						Name: "Recipe",
-						CSSClass: "FancyGroupTitle"
+						//CSSClass: "FancyGroupTitle"
 					},
 					{
 						Hash: "StatisticsTabs",
 						Name: "Select a Statistics Section",
-						ShowTitle: false
+//						ShowTitle: true
 					},
 					{
 						Hash: "Statistics",
 						Name: "Statistics",
+//						ShowTitle: true
 					},
 					{
 						Hash: "FruitStatistics",
@@ -145,6 +146,22 @@ module.exports.default_configuration.pict_configuration = {
 						RecordManifest: "FruitEditor",
 					},
 				],
+			},
+			{
+				Hash: "ExtraFormSections",
+				Name: "Extra Form Sections"
+			},
+			{
+				Hash: "Survey",
+				Name: "Food Approval Survey",
+			},
+			{
+				Hash: "DeliveryDestination",
+				Name: "Delivery Destination",
+			},
+			{
+				Hash: "Documentation",
+				Name: "Preparation Documentation",
 			},
 		],
 
@@ -209,20 +226,20 @@ module.exports.default_configuration.pict_configuration = {
 					Providers: ["Pict-Input-EntityBundleRequest", "Pict-Input-AutofillTriggerGroup"],
 					EntitiesBundle: [
 							{
-								"Entity": "Bridge",
-								"Filter": "FBV~IDBridge~EQ~{~D:Record.Value~}",
+								"Entity": "Author",
+								"Filter": "FBV~IDAuthor~EQ~{~D:Record.Value~}",
 								"Destination": "AppData.CurrentAuthor",
 								// This marshals a single record
 								"SingleRecord": true
 							},
 							{
-								"Entity": "BridgeElementCondition",
-								"Filter": "FBV~IDBridge~EQ~{~D:AppData.CurrentAuthor.IDBridge~}",
+								"Entity": "BookAuthorJoin",
+								"Filter": "FBV~IDAuthor~EQ~{~D:AppData.CurrentAuthor.IDAuthor~}",
 								"Destination": "AppData.BookAuthorJoins"
 							},
 							{
-								"Entity": "Element",
-								"Filter": "FBL~IDElement~INN~{~PJU:,^IDElement^AppData.BookAuthorJoins~}",
+								"Entity": "Book",
+								"Filter": "FBL~IDBook~INN~{~PJU:,^IDBook^AppData.BookAuthorJoins~}",
 								"Destination": "AppData.BookAuthorJoins"
 							}
 						],
@@ -246,7 +263,6 @@ module.exports.default_configuration.pict_configuration = {
 				}
 			},
 
-
 			"Books": {
 				Name: "Authors Book List",
 				Hash: "Books",
@@ -261,7 +277,12 @@ module.exports.default_configuration.pict_configuration = {
 					Section: "Book", Group: "Book", Row: 1, Width: 1, "InputType":"Option",
 					"SelectOptionsPickList": "Books",
 					// This performs an entity bundle request whenever a value is selected.
-					Providers: ["Pict-Input-Select"]
+					Providers: ["Pict-Input-Select"],
+					AutofillTriggerGroup:
+						{
+							TriggerGroupName: "BookTriggerGroup",
+							SelectOptionsRefresh: true
+						}
 				}
 			},
 			"Book.Title": {
@@ -277,11 +298,30 @@ module.exports.default_configuration.pict_configuration = {
 				Name: "Statistics Tab State",
 				Hash: "StatisticsTabState",
 				DataType: "String",
-				PictForm: { Section: "Recipe", Group: "StatisticsTabs", 
+				PictForm: {
+					Section: "Recipe",
+					Group: "StatisticsTabs", 
 					InputType: "TabGroupSelector",
 					// The default when there is no state is the first entry here.
 					// If you want to set a default, you can just do it in the state address though.
-					TabGroupSet: ["Statistics", "FruitStatistics"] }
+					TabGroupSet: ["Statistics", "FruitStatistics"],
+					TabGroupNames: ["Statistics", "Fruit Statistics"]
+				}
+			},
+
+
+			"UI.ExtraSectionSelection": {
+				Name: "Extra Form Sections",
+				Hash: "ExtraFormSectionSelection",
+				DataType: "String",
+				PictForm: {
+					Section: "ExtraFormSections",
+					InputType: "TabSectionSelector",
+					// The default when there is no state is the first entry here.
+					// If you want to set a default, you can just do it in the state address though.
+					TabSectionSet: ["Survey", "DeliveryDestination", "Documentation"],
+					TabSectionNames: ["Survey", "Delivery Destination", "Documentation"]
+				}
 			},
 
 			"Recipe.Feeds": {
@@ -390,6 +430,101 @@ module.exports.default_configuration.pict_configuration = {
 			},
 			"FruitData.FruityVice[].nutritions.percent_total_fat": {
 				Hash: "FruitPercentTotalFat",
+			},
+
+
+			"Survey.Subject": {
+				Name: "Subject",
+				Hash: "SurveySubject",
+				DataType: "String",
+				PictForm: {
+					Section: "Survey",
+					Group: "SurveyContent",
+					Row: 1,
+					Width: 1,
+				},
+			},
+			"Survey.Content": {
+				Name: "Content",
+				Hash: "SurveyContent",
+				DataType: "String",
+				PictForm: {
+					Section: "Survey",
+					InputType: "TextArea",
+					Group: "SurveyContent",
+					Row: 2,
+					Width: 1,
+				},
+			},
+
+			"Distribution.Address": {
+				Name: "Address",
+				Hash: "DistributionAddress",
+				DataType: "String",
+				PictForm: {
+					Section: "DeliveryDestination",
+					InputType: "TextArea",
+					Group: "DeliveryDestinationAddress",
+					Row: 1,
+					Width: 1,
+				},
+			},
+			"Distribution.City": {
+				Name: "City",
+				Hash: "DistributionAddressCity",
+				DataType: "String",
+				PictForm: {
+					Section: "DeliveryDestination",
+					Group: "DeliveryDestinationAddress",
+					Row: 2,
+					Width: 1,
+				},
+			},
+			"Distribution.State": {
+				Name: "State",
+				Hash: "DistributionAddressState",
+				DataType: "String",
+				PictForm: {
+					Section: "DeliveryDestination",
+					Group: "DeliveryDestinationAddress",
+					Row: 2,
+					Width: 1,
+				},
+			},
+			"Distribution.Zip": {
+				Name: "Zip",
+				Hash: "DistributionAddressZip",
+				DataType: "String",
+				PictForm: {
+					Section: "DeliveryDestination",
+					Group: "DeliveryDestinationAddress",
+					Row: 2,
+					Width: 1,
+				},
+			},
+
+			"Documentation.Title": {
+				Name: "Title",
+				Hash: "DocumentationTitle",
+				DataType: "String",
+				PictForm: {
+					Section: "Documentation",
+					Group: "Documentation",
+					Row: 1,
+					Width: 1,
+				},
+			},
+			"Documentation.Body": {
+				Name: "Body",
+				Hash: "DocumentationBody",
+				DataType: "String",
+				PictForm: {
+					Section: "Documentation",
+					InputType: "TextArea",
+					Group: "Documentation",
+					Row: 2,
+					Width: 1,
+				},
 			},
 		},
 

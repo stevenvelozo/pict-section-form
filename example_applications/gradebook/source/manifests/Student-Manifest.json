@@ -15,6 +15,7 @@
 			"Name": "Learning Style",
 			"Hash": "StudentLearningStyle",
 			"DataType": "String",
+			"Default": "Visual",
 			"PictForm": {
 				"Section": "StudentGrid",
 				"Group": "StudentGrid"

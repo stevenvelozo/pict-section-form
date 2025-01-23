@@ -142,9 +142,9 @@ class ManifestFactory extends libFableServiceProviderBase
 		{
 			let tmpGroup = pView.sectionDefinition.Groups[i];
 			tmpGroup.GroupIndex = i;
-			if ('ShowTitle' in tmpGroup)
+			if ('HideTitle' in tmpGroup)
 			{
-				tmpGroup.ShowTitle = true;
+				tmpGroup.HideTitle = false;
 			}
 			if (!tmpGroup.hasOwnProperty('Layout'))
 			{
@@ -206,6 +206,20 @@ class ManifestFactory extends libFableServiceProviderBase
 				else
 				{
 					pView.log.error(`RecordSetAddress is not an Array or Object for [${tmpGroup.Hash}]; it is a [${typeof(tmpRecordSetDataObject)}] -- likely the data shape will cause erratic problems.`);
+				}
+
+				// Check if there are default rows to add
+				if (tmpGroup.MinimumRowCount)
+				{
+					if (!tmpRecordSetDataObject)
+					{
+						pView.sectionManifest.setValueByHash(pView.getMarshalDestinationObject(), tmpGroup.RecordSetAddress, []);
+						tmpRecordSetDataObject = pView.sectionManifest.getValueByHash(pView.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+					}
+					for (let i = tmpRecordSetDataObject.length; i < tmpGroup.MinimumRowCount; i++)
+					{
+						pView.pict.providers.DynamicTabularData.createDynamicTableRowWithoutEvents(pView, tmpGroup.GroupIndex);
+					}
 				}
 			}
 		}

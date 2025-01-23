@@ -79,7 +79,7 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-Template-Section-Prefix",
 			"Template": /*HTML*/`
 		<!-- Form Section Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
-		<div class="pict-form-section">
+		<div id="SECTION-{~D:Context[0].formID~}" class="pict-form-section">
 		<h2>{~D:Record.Name~}</h2>
 `
 		},
@@ -101,7 +101,7 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/`
 			<!-- Form Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 			<div id="GROUP-{~D:Context[0].formID~}-{~D:Record.Hash~}" {~D:Record.Macro.PictFormLayout~}>
-			{~HCS:Record.ShowTitle~}<h3 class="{~D:Record.CSSClass~}">Group: {~D:Record.Name~}</h3>{~HCE:Record.ShowTitle~}
+			<h3 class="{~D:Record.CSSClass~}">Group: {~D:Record.Name~}</h3>
 `
 		},
 		// row(s) are useful when our form has multiple inputs on some lines and a single on another...
@@ -187,6 +187,13 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span> <input id="DATETIME-INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}" type="datetime-local" value="" />
 `
 		},
+		{
+			"HashPostfix": "-Template-Input-InputType-ReadOnly",
+			"Template": /*HTML*/`
+					<!-- InputType ReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <input type="text" readonly {~D:Record.Macro.InputFullProperties~}></input>
+`
+		},
 		/*
 		 * END Input Templates (default)
 		 */
@@ -229,7 +236,7 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-Template-Input-InputType-TabGroupSelector-TabElement",
 			"Template": /*HTML*/`
 			<!-- Sections have "tab groups" which are defined by the hash of the Descriptor that hosts the current TabGroup value. -->
-			<a href="#" id="TAB-{~D:Context[1].TabGroupHash~}-{~D:Record.Macro.RawHTMLID~}" onclick="{~P~}.providers['Pict-Input-TabGroupSelector'].selectTabByViewHash('{~D:Context[0].Hash~}','{~D:Record.Hash~}', '{~D:Context[1].TabGroupHash~}')">{~D:Context[1].TabGroupHash~}</a>
+			<a href="#/" id="TAB-{~D:Context[1].TabGroupHash~}-{~D:Record.Macro.RawHTMLID~}" onclick="{~P~}.providers['Pict-Input-TabGroupSelector'].selectTabByViewHash('{~D:Context[0].Hash~}','{~D:Record.Hash~}', '{~D:Context[1].TabGroupHash~}')">{~D:Context[1].TabGroupHash~}</a>
 `
 		},
 		{
@@ -238,7 +245,43 @@ Glug glug glug Oo... -->
 			<!-- This is the template for if the tmpInput.PictForm.TabGroupSet array is empty. -->
 			<p>Warning! No tabs to select from for {~D:Record.TabGroupSetRawHTMLID~}</p>
 `
-		},		/*
+		},
+		/*
+		 * Tab Sections are sets of Sections within a single Section that are shown/hidden when a tab control is clicked.
+		 * 
+		 * For example from the complex tabular application manifest descriptors:
+		 *
+		...
+
+		...
+		 *
+		 */
+		{
+			"HashPostfix": "-Template-Input-InputType-TabSectionSelector",
+			"DefaultInputExtensions": ["Pict-Input-TabSectionSelector"],
+			"Template": /*HTML*/`
+					<!-- InputType TabSectionSelector {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<!-- the TabSelector Input provider deals with populating this from the manifest. -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<!-- <span>{~D:Record.Name~}:</span> -->
+					<div id="TAB-SELECT-FOR-{~D:Record.Macro.RawHTMLID~}"></div>
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-TabSectionSelector-TabElement",
+			"Template": /*HTML*/`
+			<!-- Sections have "tab groups" which are defined by the hash of the Descriptor that hosts the current TabSection value. -->
+			<a href="#/" id="TAB-{~D:Context[1].TabSectionHash~}-{~D:Record.Macro.RawHTMLID~}" onclick="{~P~}.providers['Pict-Input-TabSectionSelector'].selectTabByViewHash('{~D:Context[0].Hash~}','{~D:Record.Hash~}', '{~D:Context[1].TabSectionHash~}')">{~D:Context[1].TabSectionHash~}</a>
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-TabSectionSelector-EmptyGroupContent",
+			"Template": /*HTML*/`
+			<!-- This is the template for if the tmpInput.PictForm.TabSectionSet array is empty. -->
+			<p>Warning! No tabs to select from for {~D:Record.TabSectionSetRawHTMLID~}</p>
+`
+		},
+		/*
 		 * END View Management Templates (default)
 		 */
 		/*
@@ -494,6 +537,18 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/` value="">
 `
 		},
+
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-ReadOnly",
+			"Template": /*HTML*/`
+					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input readonly type="text" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-ReadOnly",
+			"Template": /*HTML*/` value="">`
+		},
+
 
 		/*
 		 * END Tabular Input Templates

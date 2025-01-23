@@ -9,7 +9,7 @@
 				"Hash": "Title",
 				"DataType": "String",
 				"Default": "(unnamed assignment)",
-				"PictForm": { "Section": "AssignmentGrid", "Group":"AssignmentGrid" }
+				"PictForm": { "Section": "AssignmentGrid", "Group":"AssignmentGrid", "InputType": "ReadOnly" }
 			},
 			"Weight":
 			{

@@ -56,7 +56,10 @@ class DynamicTabularData extends libPictProvider
 			this.log.warn(`PICT View Metatemplate Helper getTabularRecordSet ${pGroupIndex} was not a valid group.`);
 			return false;
 		}
-		return pView.sectionManifest.getValueByHash(pView.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+
+		let tmpRowSource = pView.sectionManifest.getValueByHash(pView.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+
+		return tmpRowSource;
 	}
 
 	/**
@@ -158,7 +161,17 @@ class DynamicTabularData extends libPictProvider
 
 			if (Array.isArray(tmpDestinationObject))
 			{
-				tmpDestinationObject.push(tmpGroup.supportingManifest.populateDefaults({}))
+				if (tmpGroup.MaximumRowCount && (tmpDestinationObject.length >= tmpGroup.MaximumRowCount))
+				{
+					this.log.warn(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to add a row but the maximum rows ${tmpGroup.MaximumRowCount} has been reached.`);
+					return;
+				}
+				let tmpRowPrototype = {};
+				if (tmpGroup.DefaultRows && tmpDestinationObject.length < tmpGroup.DefaultRows.length)
+				{
+					tmpRowPrototype = JSON.parse(JSON.stringify(tmpGroup.DefaultRows[tmpDestinationObject.length]));
+				}
+				tmpDestinationObject.push(tmpGroup.supportingManifest.populateDefaults(tmpRowPrototype))
 				pView.render();
 				pView.marshalToView();
 			}
@@ -168,6 +181,45 @@ class DynamicTabularData extends libPictProvider
 				tmpDestinationObject[tmpRowIndex] = tmpGroup.supportingManifest.populateDefaults({});
 				pView.render();
 				pView.marshalToView();
+			}
+		}
+	}
+
+
+	/**
+	 * Creates a dynamic table row for the given view and group index without firing render or marshal events.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {number} pGroupIndex - The index of the group.
+	 */
+	createDynamicTableRowWithoutEvents(pView, pGroupIndex)
+	{
+		let tmpGroup = pView.getGroup(pGroupIndex);
+
+		if (tmpGroup)
+		{
+			let tmpDestinationObject = pView.sectionManifest.getValueByHash(pView.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+
+			if (Array.isArray(tmpDestinationObject))
+			{
+				if (tmpGroup.MaximumRowCount && (tmpDestinationObject.length >= tmpGroup.MaximumRowCount))
+				{
+					this.log.warn(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to add a row but the maximum rows ${tmpGroup.MaximumRowCount} has been reached.`);
+					return;
+				}
+				let tmpRowPrototype = {};
+				if (tmpGroup.DefaultRows && tmpDestinationObject.length < tmpGroup.DefaultRows.length)
+				{
+					tmpRowPrototype = JSON.parse(JSON.stringify(tmpGroup.DefaultRows[tmpDestinationObject.length]));
+				}
+				console.log(tmpRowPrototype);
+				console.log(tmpGroup.supportingManifest.populateDefaults(tmpRowPrototype));
+				tmpDestinationObject.push(tmpGroup.supportingManifest.populateDefaults(tmpRowPrototype))
+			}
+			else if (typeof(tmpDestinationObject) === 'object')
+			{
+				let tmpRowIndex = pView.fable.getUUID();
+				tmpDestinationObject[tmpRowIndex] = tmpGroup.supportingManifest.populateDefaults({});
 			}
 		}
 	}
@@ -306,6 +358,12 @@ class DynamicTabularData extends libPictProvider
 
 			if (Array.isArray(tmpDestinationObject))
 			{
+				if (tmpGroup.MinimumRowCount && (tmpDestinationObject.length <= tmpGroup.MinimumRowCount))
+				{
+					this.log.warn(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to delete a row but the minimum rows ${tmpGroup.MinimumRowCount} has been reached.`);
+					return false;
+				}
+
 				let tmpRowIndex = parseInt(String(pRowIndex), 10);
 				if (tmpDestinationObject.length <= tmpRowIndex)
 				{

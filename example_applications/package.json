@@ -1,0 +1,16 @@
+{
+  "name": "example_applications",
+  "version": "1.0.0",
+  "description": "These applications exercise the library from very basic to complex.",
+  "main": "ServeExamples.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "orator": "^5.0.1",
+    "orator-http-proxy": "^1.0.1",
+    "orator-serviceserver-restify": "^2.0.3"
+  }
+}
