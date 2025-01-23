@@ -55,6 +55,13 @@ declare class DynamicTabularData {
      */
     createDynamicTableRow(pView: any, pGroupIndex: number): void;
     /**
+     * Creates a dynamic table row for the given view and group index without firing render or marshal events.
+     *
+     * @param {Object} pView - The view object.
+     * @param {number} pGroupIndex - The index of the group.
+     */
+    createDynamicTableRowWithoutEvents(pView: any, pGroupIndex: number): void;
+    /**
      * Sets the index of a dynamic table row in a view.
      *
      * @param {Object} pView - The view object.

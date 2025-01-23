@@ -104,7 +104,7 @@ class PictDynamicFormsInformary extends libPictProvider
 		const tmpFormElements = this.getFormElements(pFormHash);
 
 		// Optional Filters (so we don't just blindly do the whole form)
-		const tmpDatum = (typeof(pDatum) === 'undefined') ? false : pDatum;
+		const tmpDatum = (pDatum != null) ? false : pDatum;
 		const tmpRecordIndex = (typeof(pRecordIndex) === 'number') ? String(pRecordIndex) : pRecordIndex;
 
 		// Enumerate the form elements, and put data in them for each address
@@ -135,7 +135,7 @@ class PictDynamicFormsInformary extends libPictProvider
 				this.log.trace(`Informary marshalling BrowserForm Data ${tmpBrowserValue} from form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}] to the datum address [${tmpDatumAddress}].`);
 			}
 
-			if (typeof(tmpBrowserValue) === 'undefined')
+			if (tmpBrowserValue == null)
 			{
 				continue;
 			}
@@ -188,7 +188,7 @@ class PictDynamicFormsInformary extends libPictProvider
 					this.log.trace(`Informary marshalling App State data ${tmpAppStateValue} to Browser Form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}].`);
 				}
 
-				if (typeof(tmpAppStateValue) !== 'undefined')
+				if (tmpAppStateValue != null)
 				{
 					this.pict.ContentAssignment.assignContent(this.getContentBrowserAddress(pFormHash, tmpDatumAddress, tmpContainerAddress, tmpIndex), tmpAppStateValue);
 				}
@@ -202,7 +202,7 @@ class PictDynamicFormsInformary extends libPictProvider
 					this.log.trace(`Informary marshalling App State data ${tmpAppStateValue} to Browser Form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}].`);
 				}
 
-				if (typeof(tmpAppStateValue) !== 'undefined')
+				if (tmpAppStateValue != null)
 				{
 					this.pict.ContentAssignment.assignContent(this.getContentBrowserAddress(pFormHash, tmpDatumAddress, tmpContainerAddress, tmpIndex), tmpAppStateValue);
 				}
