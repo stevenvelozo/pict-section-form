@@ -389,6 +389,45 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 		}
 
+		if (((tmpDescriptor.PictForm.InputType == 'TabSectionSelector') || (tmpDescriptor.PictForm.InputType == 'TabGroupSelector')) &&  (tmpRecord['Input Extra']))
+		{
+			let tmpTabSet = [];
+			let tmpTabSetNames = [];
+			let tmpTabSetConfiguredValues = tmpRecord['Input Extra'].split(',');
+
+			for (let i = 0; i < tmpTabSetConfiguredValues.length; i++)
+			{
+				if (tmpTabSetConfiguredValues[i].trim() != '')
+				{
+					let tmpTabSetValuePair = tmpTabSetConfiguredValues[i].split('^');
+					if (tmpTabSetValuePair.length >= 2)
+					{
+						tmpTabSet.push(tmpTabSetValuePair[0].trim());
+						tmpTabSetNames.push(tmpTabSetValuePair[1].trim());
+					}
+					else
+					{
+						tmpTabSet.push(tmpTabSetValuePair[0].trim());
+						tmpTabSetNames.push(tmpTabSetValuePair[0].trim());
+					}
+				}
+			}
+
+			if (tmpTabSet.length > 0)
+			{
+				if (tmpDescriptor.PictForm.InputType == 'TabSectionSelector')
+				{
+					tmpDescriptor.PictForm.TabSectionSet = tmpTabSet;
+					tmpDescriptor.PictForm.TabSectionNames = tmpTabSetNames;
+				}
+				else if (tmpDescriptor.PictForm.InputType == 'TabGroupSelector')
+				{
+					tmpDescriptor.PictForm.TabGroupSet = tmpTabSet;
+					tmpDescriptor.PictForm.TabGroupNames = tmpTabSetNames;
+				}
+			}
+		}
+
 		// Verbose obtuse data validation.
 		if ((`TriggerGroup` in tmpRecord) && (typeof(tmpRecord.TriggerGroup) === 'string') && (tmpRecord.TriggerGroup != '')
 			&& (`TriggerAddress` in tmpRecord) && (typeof(tmpRecord.TriggerAddress) === 'string') && (tmpRecord.TriggerAddress != ''))
@@ -460,6 +499,48 @@ class ManifestFactory extends libFableServiceProviderBase
 		if (tmpRecord['Group Name'])
 		{
 			tmpGroup.Name = tmpRecord['Group Name'];
+		}
+		if (tmpRecord['Group CSS'])
+		{
+			tmpGroup.CSSClass = tmpRecord['Group CSS'];
+		}
+		if (tmpRecord['Minimum Row Count'])
+		{
+			try
+			{
+				tmpGroup.MinimumRowCount = parseInt(tmpRecord['Minimum Row Count']);
+			}
+			catch (pError)
+			{
+				this.log.error(`Failed to parse Minimum Row Count for ${tmpRecord['Input Hash']}: ${pError}`);
+			}
+		}
+		if (tmpRecord['Maximum Row Count'])
+		{
+			try
+			{
+				tmpGroup.MaximumRowCount = parseInt(tmpRecord['Maximum Row Count']);
+			}
+			catch (pError)
+			{
+				this.log.error(`Failed to parse Maximum Row Count for ${tmpRecord['Input Hash']}: ${pError}`);
+			}
+		}
+		if (tmpRecord['Group Show Title'] && (tmpRecord['Group Show Title'] != ''))
+		{
+			switch(tmpRecord['Group Show Title'].toLowerCase())
+			{
+				case 1:
+				case '1':
+				case 'true':
+					tmpGroup.ShowTitle = true;
+					break;
+				case 0:
+				case '0':
+				case 'false':
+					tmpGroup.ShowTitle = false;
+					break;
+			}	
 		}
 		if (tmpDescriptor.Hash in pManifestFactory.manifest.Descriptors)
 		{
