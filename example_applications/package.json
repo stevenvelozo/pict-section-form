@@ -1,10 +1,10 @@
 {
   "name": "example_applications",
   "version": "1.0.0",
-  "description": "These applications exercise the library from very basic to complex.",
+  "description": "Simple static server and API pass-through to Bookstore API.",
   "main": "ServeExamples.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ServeExamples.js"
   },
   "author": "",
   "license": "ISC",
