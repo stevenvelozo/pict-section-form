@@ -8,6 +8,8 @@ const libInputTabGroupSelector = require('./inputs/Pict-Provider-Input-TabGroupS
 const libInputTabSectionSelector = require('./inputs/Pict-Provider-Input-TabSectionSelector.js');
 const libInputEntityBundleRequest = require('./inputs/Pict-Provider-Input-EntityBundleRequest.js');
 const libInputAutofillTriggerGroup = require('./inputs/Pict-Provider-Input-AutofillTriggerGroup.js');
+const libInputMarkdown = require('./inputs/Pict-Provider-Input-Markdown.js');
+const libInputHTML = require('./inputs/Pict-Provider-Input-HTML.js');
 
 const _DefaultProviderConfiguration = (
 {
@@ -77,6 +79,14 @@ class PictDynamicSolver extends libPictProvider
 		if (!this.pict.providers['Pict-Input-AutofillTriggerGroup'])
 		{
 			this.pict.addProvider('Pict-Input-AutofillTriggerGroup', libInputAutofillTriggerGroup.default_configuration, libInputAutofillTriggerGroup);
+		}
+		if (!this.pict.providers['Pict-Input-Markdown'])
+		{
+			this.pict.addProvider('Pict-Input-Markdown', libInputMarkdown.default_configuration, libInputMarkdown);
+		}
+		if (!this.pict.providers['Pict-Input-HTML'])
+		{
+			this.pict.addProvider('Pict-Input-HTML', libInputHTML.default_configuration, libInputHTML);
 		}
 	}
 

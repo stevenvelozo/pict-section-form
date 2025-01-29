@@ -95,6 +95,19 @@
                     "Group": "Bridge_Data"
                 }
             },
+            "HelpContent.Math": {
+                "Hash": "MathHelpContent",
+                "Name": "So Very Magic",
+                "DataAddress": "HelpContent.Math",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "HTML",
+                    "Row": "1",
+                    "Width": "1",
+                    "Section": "MatheMagic",
+                    "Group": "Math_is_Magic"
+                }
+            },
             "Geometry.Rectangle.Width": {
                 "Hash": "RectangleWidth",
                 "Name": "Width",
@@ -382,6 +395,19 @@
                     "Group": "Box_Summary_Data"
                 }
             },
+            "HelpContent.Cuboid": {
+                "Hash": "CuboidHelpContent",
+                "Name": "How to Cuboid Math",
+                "DataAddress": "HelpContent.Cuboid",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "Markdown",
+                    "Row": "1",
+                    "Width": "1",
+                    "Section": "Rectangular_Area_Help",
+                    "Group": "Rectangular_Area_Help"
+                }
+            },
             "ComplexEquation.PR": {
                 "Hash": "CePR",
                 "Name": "PR",
@@ -480,6 +506,19 @@
                 ]
             },
             {
+                "Name": "MatheMagic",
+                "Hash": "MatheMagic",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "Math is Magic",
+                        "Hash": "Math_is_Magic",
+                        "Rows": [],
+                        "RecordSetSolvers": []
+                    }
+                ]
+            },
+            {
                 "Name": "Basic Geometry",
                 "Hash": "Basic_Geometry",
                 "Solvers": [
@@ -525,7 +564,7 @@
                         "ShowTitle": true,
                         "Layout": "Tabular",
                         "RecordSetAddress": "Boxes",
-                        "RecordManifest": "Boxes"
+                        "RecordManifest": "BoxCollectionData"
                     }
                 ]
             },
@@ -548,6 +587,19 @@
                     {
                         "Name": "Box Summary Data",
                         "Hash": "Box_Summary_Data",
+                        "Rows": [],
+                        "RecordSetSolvers": []
+                    }
+                ]
+            },
+            {
+                "Name": "Rectangular Area Help",
+                "Hash": "Rectangular_Area_Help",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "Rectangular Area Help",
+                        "Hash": "Rectangular_Area_Help",
                         "Rows": [],
                         "RecordSetSolvers": []
                     }
@@ -581,6 +633,7 @@
                         "RecordSetSolvers": [
                             "RectangleArea = RectangleWidth + RectangleHeight"
                         ],
+                        "MinimumRowCount": 20,
                         "ShowTitle": false,
                         "Layout": "Tabular",
                         "RecordSetAddress": "Rectangle",
@@ -590,8 +643,8 @@
             }
         ],
         "ReferenceManifests": {
-            "Boxes": {
-                "Scope": "Boxes",
+            "BoxCollectionData": {
+                "Scope": "BoxCollectionData",
                 "Descriptors": {
                     "Identifier": {
                         "Hash": "BoxIdentifier",

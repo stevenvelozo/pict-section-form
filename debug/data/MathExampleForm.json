@@ -94,6 +94,20 @@
                 "Group": "Bridge_Data"
             }
         },
+        "HelpContent.Math": {
+            "Hash": "MathHelpContent",
+            "Name": "So Very Magic",
+            "DataAddress": "HelpContent.Math",
+            "DataType": "String",
+            "PictForm": {
+                "InputType": "HTML",
+                "Row": "1",
+                "Width": "1",
+                "Section": "MatheMagic",
+                "Group": "Math_is_Magic"
+            },
+            "Content": "<h5> This is static HTML help </h5>\n\n<p>Math is like this hidden superpower that shapes everything around us—it's the secret language of the universe! From the way galaxies spin to the way we calculate our daily coffee expenses, math is the underlying thread that ties it all together. Whether you're working through an elegant proof or just figuring out how many slices of pizza you can afford, math is constantly revealing new patterns, connections, and solutions. It's mind-bending, creative, and endlessly fascinating! Every time you solve a tricky equation or discover a new formula, it feels like unlocking a new level of a game -- there's always something cool to uncover.</p>\n"
+        },
         "Geometry.Rectangle.Width": {
             "Hash": "RectangleWidth",
             "Name": "Width",
@@ -381,6 +395,20 @@
                 "Group": "Box_Summary_Data"
             }
         },
+        "HelpContent.Cuboid": {
+            "Hash": "CuboidHelpContent",
+            "Name": "How to Cuboid Math",
+            "DataAddress": "HelpContent.Cuboid",
+            "DataType": "String",
+            "PictForm": {
+                "InputType": "Markdown",
+                "Row": "1",
+                "Width": "1",
+                "Section": "Rectangular_Area_Help",
+                "Group": "Rectangular_Area_Help"
+            },
+            "Content": "# Computing the Area of a 3-Dimensional Rectangle (Cuboid)\n\nIn three-dimensional space, a \"rectangle\" is typically referred to as a **cuboid**. A cuboid is a 3D shape with six rectangular faces, and to find the area (more precisely, the surface area) of a cuboid, we need to calculate the areas of each face and sum them up.\n\n## Step-by-Step Explanation\n\n### 1. **Understanding the Shape**\n\nA cuboid has three dimensions:\n- **Length (l)**: the longest side.\n- **Width (w)**: the side perpendicular to the length.\n- **Height (h)**: the vertical side.\n\nThese three dimensions define the size of the cuboid.\n\n### 2. **Area of a Rectangle**\n\nThe **area of a rectangle** is calculated using the formula:\n\n\\[\n\\text{Area} = \\text{Length} \\times \\text{Width}\n\\]\n\nThis formula gives the area of one rectangular face of the cuboid.\n\n### 3. **Surface Area of the Cuboid**\n\nThe **surface area** of a cuboid is the total area of all six rectangular faces. A cuboid has three distinct pairs of opposite faces:\n- Two faces with area \\( l \\times w \\)\n- Two faces with area \\( l \\times h \\)\n- Two faces with area \\( w \\times h \\)\n\nThe total surface area \\( A \\) is the sum of the areas of all six faces:\n\n\\[\nA = 2(lw + lh + wh)\n\\]\n\nHere:\n- \\( 2(lw) \\) is for the two faces with length and width.\n- \\( 2(lh) \\) is for the two faces with length and height.\n- \\( 2(wh) \\) is for the two faces with width and height.\n\n### 4. **Final Formula for Surface Area**\n\nThe formula to compute the surface area \\( A \\) of a cuboid is:\n\n\\[\nA = 2(lw + lh + wh)\n\\]\n\nThis formula gives the total area of all six faces of the cuboid.\n\n## Example\n\nLet’s say we have a cuboid with:\n- Length \\( l = 4 \\) units\n- Width \\( w = 3 \\) units\n- Height \\( h = 5 \\) units\n\nWe can plug these values into the formula for surface area:\n\n\\[\nA = 2(4 \\times 3 + 4 \\times 5 + 3 \\times 5)\n\\]\n\n\\[\nA = 2(12 + 20 + 15) = 2 \\times 47 = 94 \\text{ square units}\n\\]\n\nSo, the surface area of this cuboid is 94 square units.\n\n---\n\n## Key Concepts\n\n- **Rectangle Area**: The area of a flat, two-dimensional shape with four right angles. It is calculated by multiplying the length and the width.\n  \n- **Surface Area**: The total area of all the faces of a 3D object. For a cuboid, it’s the sum of the areas of the six rectangular faces.\n  \n- **Dimensions**: These are the three measurements (length, width, height) that define the size of the cuboid.\n\nBy using simple multiplication and addition, you can easily compute the surface area of any cuboid."
+        },
         "ComplexEquation.PR": {
             "Hash": "CePR",
             "Name": "PR",
@@ -479,6 +507,19 @@
             ]
         },
         {
+            "Name": "MatheMagic",
+            "Hash": "MatheMagic",
+            "Solvers": [],
+            "Groups": [
+                {
+                    "Name": "Math is Magic",
+                    "Hash": "Math_is_Magic",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                }
+            ]
+        },
+        {
             "Name": "Basic Geometry",
             "Hash": "Basic_Geometry",
             "Solvers": [
@@ -524,7 +565,7 @@
                     "ShowTitle": true,
                     "Layout": "Tabular",
                     "RecordSetAddress": "Boxes",
-                    "RecordManifest": "Boxes"
+                    "RecordManifest": "BoxCollectionData"
                 }
             ]
         },
@@ -547,6 +588,19 @@
                 {
                     "Name": "Box Summary Data",
                     "Hash": "Box_Summary_Data",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                }
+            ]
+        },
+        {
+            "Name": "Rectangular Area Help",
+            "Hash": "Rectangular_Area_Help",
+            "Solvers": [],
+            "Groups": [
+                {
+                    "Name": "Rectangular Area Help",
+                    "Hash": "Rectangular_Area_Help",
                     "Rows": [],
                     "RecordSetSolvers": []
                 }
@@ -580,17 +634,209 @@
                     "RecordSetSolvers": [
                         "RectangleArea = RectangleWidth + RectangleHeight"
                     ],
+                    "MinimumRowCount": 20,
                     "ShowTitle": false,
                     "Layout": "Tabular",
                     "RecordSetAddress": "Rectangle",
-                    "RecordManifest": "Rectangles"
+                    "RecordManifest": "Rectangles",
+                    "DefaultRows": [
+                        {
+                            "Identifier": "A",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "B",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "C",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "D",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "E",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "F",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "G",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "H",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "I",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "J",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "K",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": "This is not in the manifest but is loaded by the tooling."
+                        },
+                        {
+                            "Identifier": "L",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "M",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "N",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "O",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "P",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "Q",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "Really?",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "S",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "T",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "U",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "V",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "WTF",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "X",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "Y",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "Z",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "TOO MANY",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        }
+                    ]
                 }
             ]
         }
     ],
     "ReferenceManifests": {
-        "Boxes": {
-            "Scope": "Boxes",
+        "BoxCollectionData": {
+            "Scope": "BoxCollectionData",
             "Descriptors": {
                 "Identifier": {
                     "Hash": "BoxIdentifier",

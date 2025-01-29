@@ -194,6 +194,26 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span> <input type="text" readonly {~D:Record.Macro.InputFullProperties~}></input>
 `
 		},
+		{
+			"HashPostfix": "-Template-Input-InputType-Markdown",
+			"DefaultInputExtensions": ["Pict-Input-Markdown"],
+			"Template": /*HTML*/`
+					<!-- InputType Markdown {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-markdown"></div>
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-HTML",
+			"DefaultInputExtensions": ["Pict-Input-HTML"],
+			"Template": /*HTML*/`
+					<!-- InputType Markdown {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-html"></div>
+`
+		},
 		/*
 		 * END Input Templates (default)
 		 */
@@ -304,7 +324,7 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TuiGrid-Controls",
 			"Template": /*HTML*/`
-			<div>[ <a href="#" onclick="{~P~}.providers['Pict-Layout-TuiGrid'].addRow('{~D:Context[0].Hash~}', {~D:Record.GroupIndex~})">create</a> ]</div>
+			<div>[ <a href="#/" onclick="{~P~}.providers['Pict-Layout-TuiGrid'].addRow('{~D:Context[0].Hash~}', {~D:Record.GroupIndex~})">create</a> ]</div>
 `
 		},
 		/*
@@ -333,7 +353,7 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/`
 				</tbody>
 			</table>
-			<div><a href="#" onclick="{~D:Record.Macro.TabularCreateRowFunctionCall~}">create</a></div>
+			<div><a href="#/" onclick="{~D:Record.Macro.TabularCreateRowFunctionCall~}">create</a></div>
 			</div>
 			<!-- Form Tabular Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 `
@@ -362,9 +382,9 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-Row-ExtraPostfix",
 			"Template": /*HTML*/`<!-- TabularTemplateRow-ExtraPostfix-->
-					<td><a href="#" onClick="{~P~}.views['{~D:Context[0].Hash~}'].deleteDynamicTableRow({~D:Record.Group~},'{~D:Record.Key~}')">del</a>
-					<a href="#" onClick="{~P~}.views['{~D:Context[0].Hash~}'].moveDynamicTableRowUp({~D:Record.Group~},'{~D:Record.Key~}')">up</a>
-					<a href="#" onClick="{~P~}.views['{~D:Context[0].Hash~}'].moveDynamicTableRowDown({~D:Record.Group~},'{~D:Record.Key~}')">down</a></td>
+					<td><a href="#/" onClick="{~P~}.views['{~D:Context[0].Hash~}'].deleteDynamicTableRow({~D:Record.Group~},'{~D:Record.Key~}')">del</a>
+					<a href="#/" onClick="{~P~}.views['{~D:Context[0].Hash~}'].moveDynamicTableRowUp({~D:Record.Group~},'{~D:Record.Key~}')">up</a>
+					<a href="#/" onClick="{~P~}.views['{~D:Context[0].Hash~}'].moveDynamicTableRowDown({~D:Record.Group~},'{~D:Record.Key~}')">down</a></td>
 `
 		},
 		/*

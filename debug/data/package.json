@@ -5,6 +5,7 @@
     "main": "Application.js",
     "scripts": {
         "start": "node Application.js",
+        "copymath": "cp ./MathExampleForm.json ./DefaultFormManifest.json",
         "build": "npx quack build && npx quack copy"
     },
     "author": "steven",

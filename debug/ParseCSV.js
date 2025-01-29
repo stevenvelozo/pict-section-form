@@ -116,16 +116,16 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 		this.addCommand();
 	}
 
-	readExtraDataCSV(pFileName, fCallback)
+	readExtraDataCSV(pFilePath, fCallback)
 	{
 		///////////////////////////////////////////////////////////////////////////////
 		// Parse the CSV file
 		const tmpRecords = [];
-		this.fable.log.info(`Parsing CSV file [${pFileName}]...`);
+		this.fable.log.info(`Parsing CSV file [${pFilePath}]...`);
 
 		const tmpReadline = libReadline.createInterface(
 			{
-				input: libFS.createReadStream(pFileName),
+				input: libFS.createReadStream(pFilePath),
 				crlfDelay: Infinity,
 			});
 
@@ -143,36 +143,21 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 			() =>
 			{
 				this.fable.log.info(`...CSV parser completed, pulled ${tmpRecords.length} rows.`);
-
-				// Write the whole manifests thingy out here locally
-				const tmpManifests = this.fable.ManifestFactory.createManifestsFromTabularArray(tmpRecords);
-				libFS.writeFileSync(tmpOutputFileName, JSON.stringify(tmpManifests, null, 4), 'utf8');
-
-				// Write the individual manifests out to the output directory
-				this.fable.log.info(`Writing individual manifests to [${tmpManifestDirectory}]...`);
-				this.fable.FilePersistence.makeFolderRecursive(tmpManifestDirectory,
-					(pError)=>
-					{
-						const tmpManifestKeys = Object.keys(tmpManifests);
-						for (let i = 0; i < tmpManifestKeys.length; i++)
-						{
-							const tmpManifest = tmpManifests[tmpManifestKeys[i]];
-							this.fable.log.info(`Manifest: ${tmpManifestKeys[i]} has ${Object.keys(tmpManifest.Descriptors).length} descriptors.. writing it to ${tmpManifestKeys[i]}.json and to ${tmpManifestKeys[i]}.sql`);
-							libFS.writeFileSync(libPath.join(tmpManifestDirectory,`${tmpManifestKeys[i]}.json`), JSON.stringify(tmpManifest, null, 4), 'utf8');
-						}
-						return fCallback(pError);
-					});
+				return fCallback(null, tmpRecords);
 			});
 	}
 
 	onRunAsync(fCallback)
 	{
+		this.fable.instantiateServiceProvider('CSVParser');
+		this.fable.instantiateServiceProvider('FilePersistence');
+
 		// 1. Load the manifest
 		let tmpManifestFileName = libPath.join(this.CommandOptions.manifest);
 		if (!libFS.existsSync(tmpManifestFileName))
 		{
 			this.log.warn(`Manifest file not found at [${tmpManifestFileName}] -- checking current working directory.`);
-			tmpManifestFileName = libPath.join(process.cwd(), tmpManifestFileName);
+			tmpManifestFileName = libPath.join(process.cwd, tmpManifestFileName);
 		}
 		if (!libFS.existsSync(tmpManifestFileName))
 		{
@@ -205,6 +190,60 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 			return fCallback();
 		}
 
+		let tmpAnticipate = this.fable.newAnticipate();
+
+		// Check to see if there are any markdown files that need to be injected
+		let tmpDescriptorKeys = Object.keys(this.workingManifest.Descriptors);
+		for (let i = 0; i < tmpDescriptorKeys.length; i++)
+		{
+			let tmpDescriptor = this.workingManifest.Descriptors[tmpDescriptorKeys[i]];
+			if ('PictForm' in tmpDescriptor)
+			{
+				if (tmpDescriptor.PictForm.InputType == 'Markdown')
+				{
+					this.log.info(`Checking for extra data Markdown for Descriptor [${tmpDescriptor.Hash}]...`);
+
+					let tmpPotentialMarkdownPath = libPath.join(this.CommandOptions.directory, `${tmpDescriptor.Hash}.md`);
+					if (!libFS.existsSync(tmpPotentialMarkdownPath))
+					{
+						this.log.warn(`No extra data Markdown found at [${tmpPotentialMarkdownPath}] ... checking with full cwd in path`);
+						tmpPotentialMarkdownPath = libPath.join(process.cwd(), this.CommandOptions.directory, `${tmpDescriptor.Hash}.md`);
+					}
+					if (!libFS.existsSync(tmpPotentialMarkdownPath))
+					{
+						this.log.warn(`No extra data Markdown found at [${tmpPotentialMarkdownPath}]`);
+						continue;
+					}
+
+					this.log.info(`...found extra data Markdown at [${tmpPotentialMarkdownPath}].`);
+					let tmpMarkdownContent = libFS.readFileSync(tmpPotentialMarkdownPath, 'utf8');
+					this.log.info(`...[${tmpPotentialMarkdownPath}] had ${tmpMarkdownContent.length} characters; assigning to Content`);
+					tmpDescriptor.Content = tmpMarkdownContent;
+				}
+				if (tmpDescriptor.PictForm.InputType == 'HTML')
+				{
+					this.log.info(`Checking for extra data HTML for Descriptor [${tmpDescriptor.Hash}]...`);
+
+					let tmpPotentialHTMLPath = libPath.join(this.CommandOptions.directory, `${tmpDescriptor.Hash}.html`);
+					if (!libFS.existsSync(tmpPotentialHTMLPath))
+					{
+						this.log.warn(`No extra data HTML found at [${tmpPotentialHTMLPath}] ... checking with full cwd in path`);
+						tmpPotentialHTMLPath = libPath.join(process.cwd(), this.CommandOptions.directory, `${tmpDescriptor.Hash}.html`);
+					}
+					if (!libFS.existsSync(tmpPotentialHTMLPath))
+					{
+						this.log.warn(`No extra data HTML found at [${tmpPotentialHTMLPath}]`);
+						continue;
+					}
+
+					this.log.info(`...found extra data HTML at [${tmpPotentialHTMLPath}].`);
+					let tmpMarkdownContent = libFS.readFileSync(tmpPotentialHTMLPath, 'utf8');
+					this.log.info(`...[${tmpPotentialHTMLPath}] had ${tmpMarkdownContent.length} characters; assigning to Content`);
+					tmpDescriptor.Content = tmpMarkdownContent;
+				}
+			}
+		}
+
 		// 3. See if there are sections with submanifests
 		for (let i = 0; i < this.workingManifest.Sections.length; i++)
 		{
@@ -221,29 +260,63 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 			for (let j = 0; j < tmpSection.Groups.length; j++)
 			{
 				let tmpGroup = tmpSection.Groups[j];
-				if (!('SubManifest' in tmpGroup))
+				if (!('RecordManifest' in tmpGroup))
 				{
 					continue;
 				}
 
-				this.log.info(`Checking for extra data SubManifest for Section [${tmpSection.Name}] Group [${tmpGroup.Name}]...`);
+				this.log.info(`Checking for extra data RecordManifest [${tmpGroup.RecordManifest}] for Section [${tmpSection.Name}] Group [${tmpGroup.Name}]...`);
 
-				let tmpDefaultRows = [];
+				let tmpPotentialCSVPath = libPath.join(this.CommandOptions.directory, `${tmpGroup.RecordManifest}.csv`);
+				if (!libFS.existsSync(tmpPotentialCSVPath))
+				{
+					this.log.warn(`No extra data CSV found at [${tmpPotentialCSVPath}] ... checking with full cwd in path`);
+					tmpPotentialCSVPath = libPath.join(process.cwd(), this.CommandOptions.directory, `${tmpGroup.RecordManifest}.csv`);
+				}
+				if (!libFS.existsSync(tmpPotentialCSVPath))
+				{
+					this.log.warn(`No extra data CSV found at [${tmpPotentialCSVPath}]`);
+					continue;
+				}
 
-				if (libFS.existsSync(libPath.join(this.CommandOptions.directory, tmpGroup.SubManifest)))
-				{
-					let tmpInputDataPath = libPath.join(this.CommandOptions.directory, tmpGroup.SubManifest)
-					this.log.info(`...found SubManifest data  at [${tmpInputDataPath}].`);
-				}
-				else if (libFS.existsSync(libPath.join(process.cwd(), this.CommandOptions.directory, tmpGroup.SubManifest)))
-				{
-					let tmpInputDataPath = libPath.join(process.cwd(), this.CommandOptions.directory, tmpGroup.SubManifest);
-					this.log.info(`...found SubManifest data  at [${tmpInputDataPath}].`);
-				}
+				this.log.info(`...found RecordManifest data at [${tmpPotentialCSVPath}].`);
+
+				tmpAnticipate.anticipate(
+					function (fCallback)
+					{
+						this.readExtraDataCSV(tmpPotentialCSVPath,
+							function (pError, pData)
+							{
+								if (pError)
+								{
+									this.log.error(`Error reading extra data CSV file [${tmpPotentialCSVPath}]: ${pError}`);
+									return fCallback(pError);
+								}
+								if (Array.isArray(pData))
+								{
+									tmpGroup.DefaultRows = pData;
+								}
+								return fCallback();
+							}.bind(this)
+						);
+					}.bind(this));
 			}
 		}
 
+		tmpAnticipate.wait(
+			function (pError)
+			{
+				if (pError)
+				{
+					this.log.error(`Error reading extra data CSV or content file: ${pError}`);
+					return fCallback(pError);
+				}
 
+				// Write the whole manifests thingy out here locally
+				libFS.writeFileSync(this.CommandOptions.output, JSON.stringify(this.workingManifest, null, 4), 'utf8');
+
+				return fCallback();
+			}.bind(this));
 
 	};
 }
