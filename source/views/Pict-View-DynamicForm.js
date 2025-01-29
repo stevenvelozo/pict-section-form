@@ -599,31 +599,6 @@ class PictViewDynamicForm extends libPictViewClass
 							}
 						}
 					}
-					else if (typeof (tmpTabularRecordSet) === 'object')
-					{
-						let tmpRecordSetKeys = Object.keys(tmpTabularRecordSet);
-						let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];
-						// Now run any providers connected to this input
-						let tmpInputProviderList = this.getInputProviderList(tmpInput);
-						for (let i = 0; i < tmpInputProviderList.length; i++)
-						{
-							for (let r = 0; r < tmpRecordSetKeys.length; r++)
-							{
-								if (this.pict.providers[tmpInputProviderList[i]])
-								{
-									// There is a provider, we have an input and it is supposed to be run through for a record
-									let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, tmpRecordSetKeys[r], tmpInput.PictForm.InformaryDataAddress);
-									let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
-									this.pict.providers[tmpInputProviderList[i]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, tmpRecordSetKeys[r]);
-								}
-								else
-								{
-									this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
-								}
-							}
-						}
-					}
-
 				}
 			}
 		}

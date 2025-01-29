@@ -8,4 +8,3 @@ rm -rf ./manyfest_editor/dist
 rm -rf ./postcard_example/dist
 rm -rf ./simple_form/dist
 rm -rf ./simple_table/dist
-rm -rf ./simple_table_from_object/dist

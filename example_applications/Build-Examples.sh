@@ -39,8 +39,3 @@ popd
 pushd simple_table
 npm install && npm run build
 popd
-
-# Building simple_table_from_object
-pushd simple_table_from_object
-npm install && npm run build
-popd
