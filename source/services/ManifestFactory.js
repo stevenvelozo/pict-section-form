@@ -324,10 +324,10 @@ class ManifestFactory extends libFableServiceProviderBase
 		let tmpRecord = JSON.parse(JSON.stringify(pRecord));
 
 		// Fill out required defaults on the row
-		tmpRecord['Input Hash'] = tmpRecord['Input Hash'] ?? `DefaultHash${this.defaultHashCounter++}`;
-		tmpRecord['Input Address'] = tmpRecord['Input Address'] ?? `DefaultData.InputHash_${tmpRecord['Input Hash']}`;
-		tmpRecord['Input Name'] = tmpRecord['Input Name'] ?? `Auto Input ${tmpRecord['Input Hash']}`;
-		tmpRecord.DataType = tmpRecord.DataType ?? 'String';
+		tmpRecord['Input Hash'] = tmpRecord['Input Hash']?.trim?.() || `DefaultHash${this.defaultHashCounter++}`;
+		tmpRecord['Input Address'] = tmpRecord['Input Address']?.trim?.() || `DefaultData.InputHash_${tmpRecord['Input Hash']}`;
+		tmpRecord['Input Name'] = tmpRecord['Input Name']?.trim?.() || `Auto Input ${tmpRecord['Input Hash']}`;
+		tmpRecord.DataType = tmpRecord.DataType?.trim?.() || 'String';
 
 		const tmpDescriptor = (
 			{
@@ -483,22 +483,22 @@ class ManifestFactory extends libFableServiceProviderBase
 		}
 
 		// Setup the Section and the Group
-		const tmpSectionName = tmpRecord['Section Name'] ?? 'Default_Section';
-		const tmpSectionHash = this.sanitizeObjectKey(tmpSectionName);
+		const tmpSectionName = tmpRecord['Section Name']?.trim?.();
+		const tmpSectionHash = this.sanitizeObjectKey(tmpSectionName || 'Default_Section');
 		tmpDescriptor.PictForm.Section = tmpSectionHash;
 		const tmpSection = tmpCoreManifestFactory.getManifestSection(tmpSectionHash);
-		if (tmpRecord['Section Name'])
+		if (tmpSectionName)
 		{
-			tmpSection.Name = tmpRecord['Section Name'];
+			tmpSection.Name = tmpSectionName;
 		}
 
-		const tmpGroupName = tmpRecord['Group Name'] ?? 'Default_Group';
-		const tmpGroupHash = this.sanitizeObjectKey(tmpGroupName);
+		const tmpGroupName = tmpRecord['Group Name']?.trim?.();
+		const tmpGroupHash = this.sanitizeObjectKey(tmpGroupName || 'Default_Group');
 		tmpDescriptor.PictForm.Group = tmpGroupHash;
 		const tmpGroup = tmpCoreManifestFactory.getManifestGroup(tmpSection, tmpGroupHash);
-		if (tmpRecord['Group Name'])
+		if (tmpGroupName)
 		{
-			tmpGroup.Name = tmpRecord['Group Name'];
+			tmpGroup.Name = tmpGroupName;
 		}
 		if (tmpRecord['Group CSS'])
 		{

@@ -59,6 +59,7 @@ declare class PictViewDynamicForm extends libPictViewClass {
         };
         dependencies: {
             "fable-serviceproviderbase": string;
+            marked: string;
             "pict-provider": string;
             "pict-section-tuigrid": string;
             "pict-template": string;
