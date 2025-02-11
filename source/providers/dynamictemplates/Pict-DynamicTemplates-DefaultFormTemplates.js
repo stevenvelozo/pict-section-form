@@ -121,6 +121,20 @@ Glug glug glug Oo... -->
 `
 		},
 		{
+			"HashPostfix": "-Template-VerticalRow-Prefix",
+			"Template": /*HTML*/`
+				<!-- Form Template Vertical Row Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+				<div class="pict-form-vertical-group">
+`
+		},
+		{
+			"HashPostfix": "-Template-VerticalRow-Postfix",
+			"Template": /*HTML*/`
+				</div>
+				<!-- Form Template Vertical Row Postfix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+`
+		},
+		{
 			"HashPostfix": "-Template-Group-Postfix",
 			"Template": /*HTML*/`
 			</div>
@@ -152,6 +166,13 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-Template-Input-DataType-Number",
 			"Template": /*HTML*/`
 					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-DataType-PreciseNumber",
+			"Template": /*HTML*/`
+					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
 					<span>{~D:Record.Name~}:</span> <input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 `
 		},
@@ -216,6 +237,141 @@ Glug glug glug Oo... -->
 		},
 		/*
 		 * END Input Templates (default)
+		 */
+		/*
+		 * BEGIN Vertical Input Templates
+		 */
+		{
+			"HashPostfix": "-VerticalTemplate-Input",
+			"Template": /*HTML*/`
+					<!-- DEFAULT Input {~"D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<input type="text" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-DataType-String",
+			"Template": /*HTML*/`
+					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<input type="text" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-DataType-Number",
+			"Template": /*HTML*/`
+					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-DataType-PreciseNumber",
+			"Template": /*HTML*/`
+					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-TextArea",
+			"Template": /*HTML*/`
+					<!-- InputType TextArea {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<textarea {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~}></textarea>
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-Option",
+			"DefaultInputExtensions": ["Pict-Input-Select"],
+			"Template": /*HTML*/`
+					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<select id="SELECT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}"></select>
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-Boolean",
+			"Template": /*HTML*/`
+					<!-- InputType Boolean {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<input type="checkbox" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-DataType-DateTime",
+			"DefaultInputExtensions": ["Pict-Input-DateTime"],
+			"Template": /*HTML*/`
+					<!-- DataType DateTime {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<input id="DATETIME-INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}" type="datetime-local" value="" />
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-ReadOnly",
+			"Template": /*HTML*/`
+					<!-- InputType ReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<input type="text" readonly {~D:Record.Macro.InputFullProperties~}></input>
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-Markdown",
+			"DefaultInputExtensions": ["Pict-Input-Markdown"],
+			"Template": /*HTML*/`
+					<!-- InputType Markdown {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-markdown"></div>
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-HTML",
+			"DefaultInputExtensions": ["Pict-Input-HTML"],
+			"Template": /*HTML*/`
+					<!-- InputType Markdown {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-html"></div>
+				</div>
+`
+		},
+		/*
+		 * END Vertical Input Templates (default)
 		 */
 		/*
 		 *

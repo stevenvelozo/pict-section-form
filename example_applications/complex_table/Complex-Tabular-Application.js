@@ -104,6 +104,7 @@ module.exports.default_configuration.pict_configuration = {
 					{
 						Hash: "Statistics",
 						Name: "Statistics",
+						Layout: "Vertical",
 //						ShowTitle: true
 					},
 					{
@@ -330,6 +331,7 @@ module.exports.default_configuration.pict_configuration = {
 				DataType: "PreciseNumber",
 				Default: "1",
 				PictForm: { Section: "Recipe", Group: "Statistics", Row: 1, Width: 1,
+					"ExtraDescription": "How many people does this recipe feed?",
 					"InputType":"Option",
 					"Providers": ["CustomDataProvider", "Pict-Input-Select"],
 					"SelectOptions": [{"id":"few", "text":"Few"}, {"id":"some", "text":"Some"}, {"id":"many", "text":"Many"}]

@@ -47,7 +47,6 @@ class RecordSetLayout extends libPictSectionGroupLayout
 
 		for (let j = 0; j < pGroup.Rows.length; j++)
 		{
-
 			for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
 			{
 				let tmpSupportingManifestHash = pGroup.supportingManifest.elementAddresses[k];

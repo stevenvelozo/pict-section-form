@@ -14,6 +14,7 @@ const libMetatemplateGenerator = require('../providers/Pict-Provider-Metatemplat
 const libMetatemplateMacros = require('../providers/Pict-Provider-MetatemplateMacros.js');
 
 const libPictLayoutRecord = require('../providers/layouts/Pict-Layout-Record.js');
+const libPictLayoutVerticalRecord = require('../providers/layouts/Pict-Layout-VerticalRecord.js');
 const libPictLayoutTabular = require('../providers/layouts/Pict-Layout-Tabular.js');
 const libPictLayoutRecordSet = require('../providers/layouts/Pict-Layout-RecordSet.js');
 const libPictLayoutChart = require('../providers/layouts/Pict-Layout-Chart.js');
@@ -50,6 +51,7 @@ class PictDynamicApplication extends libFableServiceProviderBase
 		this.fable.addProviderSingleton('MetatemplateMacros', libMetatemplateMacros.default_configuration, libMetatemplateMacros);
 
 		this.fable.addProviderSingleton('Pict-Layout-Record', libPictLayoutRecord.default_configuration, libPictLayoutRecord);
+		this.fable.addProviderSingleton('Pict-Layout-VerticalRecord', libPictLayoutVerticalRecord.default_configuration, libPictLayoutVerticalRecord);
 		this.fable.addProviderSingleton('Pict-Layout-Tabular', libPictLayoutTabular.default_configuration, libPictLayoutTabular);
 		this.fable.addProviderSingleton('Pict-Layout-RecordSet', libPictLayoutRecordSet.default_configuration, libPictLayoutRecordSet);
 		this.fable.addProviderSingleton('Pict-Layout-Chart', libPictLayoutChart.default_configuration, libPictLayoutChart);

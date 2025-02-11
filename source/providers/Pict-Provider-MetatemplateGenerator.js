@@ -213,8 +213,6 @@ class PictMetatemplateGenerator extends libPictProvider
 			return tmpBeginTemplate + tmpMidTemplate + tmpInformaryDataAddressTemplate + tmpEndTemplate;
 		}
 
-
-
 		// If we didn't find the template for the "input type", or the "data type", fall back to the default
 		tmpBeginTemplate = this.getMetatemplateTemplateReference(pView, 'TabularTemplate-Begin-Input', pViewDataAddress);
 		tmpEndTemplate = this.getMetatemplateTemplateReference(pView, 'TabularTemplate-End-Input', pViewDataAddress);
@@ -226,6 +224,43 @@ class PictMetatemplateGenerator extends libPictProvider
 		// There was some kind of catastrophic failure -- the above templates should always be loaded.
 		this.log.error(`PICT Form [${pView.UUID}]::[${pView.Hash}] catastrophic error generating tabular metatemplate: missing input template for Data Type ${pDataType} and Input Type ${pInputType}, Data Address ${pViewDataAddress}, Group Index ${pGroupIndex} and Record Subaddress ${pRowIndex}.`)
 		return '';
+	}
+
+	/**
+	 * Retrieves the metatemplate template reference for the given vertical input view, data type, input type, and view data address.
+	 *
+	 * @param {Object} pView - The input view.
+	 * @param {string} pDataType - The data type.
+	 * @param {string} pInputType - The input type.
+	 * @param {string} pViewDataAddress - The view data address.
+	 * @returns {string} The metatemplate template reference.
+	 */
+	getVerticalInputMetatemplateTemplateReference(pView, pDataType, pInputType, pViewDataAddress)
+	{
+		// Input types are customizable -- there could be 30 different input types for the string data type with special handling and templates
+		let tmpTemplateInputTypePostfix = `-VerticalTemplate-Input-InputType-${pInputType}`;
+		// Data types are not customizable; they are a fixed list based on what is available in Manyfest
+		let tmpTemplateDataTypePostfix = `-VerticalTemplate-Input-DataType-${pDataType}`;
+
+		// First check if there is an "input type" template available in either the section-specific configuration or in the general
+		if (pInputType)
+		{
+			let tmpTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateInputTypePostfix, pViewDataAddress);
+			if (tmpTemplate)
+			{
+				return tmpTemplate;
+			}
+		}
+
+		// If we didn't find the template for the "input type", check for the "data type"
+		let tmpTemplate = this.getMetatemplateTemplateReference(pView, tmpTemplateDataTypePostfix, pViewDataAddress);
+		if (tmpTemplate)
+		{
+			return tmpTemplate;
+		}
+
+		// There wasn't an input type specific or data type specific template, so fall back to the generic input template.
+		return this.getMetatemplateTemplateReference(pView, '-Template-Input', pViewDataAddress);
 	}
 
 	/**
@@ -248,6 +283,8 @@ class PictMetatemplateGenerator extends libPictProvider
 				return this.pict.providers['Pict-Layout-Tabular'];
 			case 'Record':
 				return this.pict.providers['Pict-Layout-Record'];
+			case 'Vertical':
+				return this.pict.providers['Pict-Layout-VerticalRecord'];
 			case 'Default':
 			default:
 				// Try to load a custom layout, then fall back to the Record layout if it doesn't exist
