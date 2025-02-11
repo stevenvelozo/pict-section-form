@@ -310,7 +310,6 @@ module.exports.default_configuration.pict_configuration = {
 				}
 			},
 
-
 			"UI.ExtraSectionSelection": {
 				Name: "Extra Form Sections",
 				Hash: "ExtraFormSectionSelection",
