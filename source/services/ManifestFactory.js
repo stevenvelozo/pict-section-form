@@ -36,6 +36,9 @@ class ManifestFactory extends libFableServiceProviderBase
 		}
 		this.referenceManifestFactories = {};
 
+		this.sectionHashLookup = {};
+		this.groupHashLookup = {};
+
 		let tmpReferenceManifestKeys = Object.keys(this.manifest.ReferenceManifests);
 		for (let i = 0; i < tmpReferenceManifestKeys.length; i++)
 		{
@@ -47,7 +50,7 @@ class ManifestFactory extends libFableServiceProviderBase
 
 		this._SanitizeObjectKeyRegex = /[^a-zA-Z0-9_]/gi;
 		this._SanitizeObjectKeyReplacement = '_';
-		this._SanitizeObjectKeyInvalid = 'INVALID';
+		this._SanitizeObjectKeyInvalid = 'INVALID';487
 	}
 
 	/**
@@ -482,9 +485,32 @@ class ManifestFactory extends libFableServiceProviderBase
 			pManifestFactory = pManifestFactory.referenceManifestFactories[tmpRecord.SubManifest];
 		}
 
+		if ('Decimal Precision' in tmpRecord)
+		{
+			// See if the Decimal Precision is set
+			if (tmpRecord['Decimal Precision'] && (tmpRecord['Decimal Precision'] != ''))
+			{
+				try
+				{
+					tmpDescriptor.PictForm.DecimalPrecision = parseInt(tmpRecord['Decimal Precision']);
+				}
+				catch (pError)
+				{
+					this.log.error(`Failed to parse Decimal Precision for ${tmpRecord['Input Hash']}: ${pError}`);
+				}
+			}
+		}
+
 		// Setup the Section and the Group
 		const tmpSectionName = tmpRecord['Section Name']?.trim?.();
-		const tmpSectionHash = this.sanitizeObjectKey(tmpSectionName || 'Default_Section');
+
+		let tmpSectionHash = this.sanitizeObjectKey(tmpSectionName || 'Default_Section');
+		// Note: The section name part is laissez-faire about whether it needs to be there or not.  The Hash is required on each column if we want to customize.
+		if (tmpRecord['Section Hash'] && tmpRecord['Section Hash'] != '')
+		{
+			tmpSectionHash = this.sanitizeObjectKey(tmpRecord['Section Hash']);
+		}
+
 		tmpDescriptor.PictForm.Section = tmpSectionHash;
 		const tmpSection = tmpCoreManifestFactory.getManifestSection(tmpSectionHash);
 		if (tmpSectionName)
@@ -493,7 +519,13 @@ class ManifestFactory extends libFableServiceProviderBase
 		}
 
 		const tmpGroupName = tmpRecord['Group Name']?.trim?.();
-		const tmpGroupHash = this.sanitizeObjectKey(tmpGroupName || 'Default_Group');
+		let tmpGroupHash = this.sanitizeObjectKey(tmpGroupName || 'Default_Group');
+		// Note: The group name part is laissez-faire about whether it needs to be there or not.  The Hash is required on each column if we want to customize.
+		if (tmpRecord['Group Hash'] && tmpRecord['Group Hash'] != '')
+		{
+			tmpGroupHash = this.sanitizeObjectKey(tmpRecord['Group Hash']);
+		}
+
 		tmpDescriptor.PictForm.Group = tmpGroupHash;
 		const tmpGroup = tmpCoreManifestFactory.getManifestGroup(tmpSection, tmpGroupHash);
 		if (tmpGroupName)

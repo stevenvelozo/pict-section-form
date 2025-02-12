@@ -117,7 +117,7 @@
                     "Row": "1",
                     "Width": "6",
                     "Section": "Basic_Geometry",
-                    "Group": "Rectangle"
+                    "Group": "BasicGeoGrp"
                 },
                 "Default": "7.25"
             },
@@ -130,7 +130,7 @@
                     "Row": "1",
                     "Width": "6",
                     "Section": "Basic_Geometry",
-                    "Group": "Rectangle"
+                    "Group": "BasicGeoGrp"
                 },
                 "Default": "10.3571"
             },
@@ -143,7 +143,7 @@
                     "Row": "2",
                     "Width": "3",
                     "Section": "Basic_Geometry",
-                    "Group": "Rectangle",
+                    "Group": "BasicGeoGrp",
                     "Units": "unrounded"
                 }
             },
@@ -156,7 +156,7 @@
                     "Row": "2",
                     "Width": "3",
                     "Section": "Basic_Geometry",
-                    "Group": "Rectangle",
+                    "Group": "BasicGeoGrp",
                     "Units": "default"
                 }
             },
@@ -169,7 +169,7 @@
                     "Row": "2",
                     "Width": "3",
                     "Section": "Basic_Geometry",
-                    "Group": "Rectangle",
+                    "Group": "BasicGeoGrp",
                     "Units": "3"
                 }
             },
@@ -182,7 +182,7 @@
                     "Row": "2",
                     "Width": "3",
                     "Section": "Basic_Geometry",
-                    "Group": "Rectangle",
+                    "Group": "BasicGeoGrp",
                     "Units": "5"
                 }
             },
@@ -476,6 +476,12 @@
                 "Name": "Rectangles",
                 "DataAddress": "Rectangle",
                 "DataType": "Array"
+            },
+            "Cylinders": {
+                "Hash": "Cylinders",
+                "Name": "Cylinders",
+                "DataAddress": "Cylinders",
+                "DataType": "Array"
             }
         },
         "Sections": [
@@ -534,7 +540,7 @@
                 "Groups": [
                     {
                         "Name": "Rectangle",
-                        "Hash": "Rectangle",
+                        "Hash": "BasicGeoGrp",
                         "Rows": [],
                         "RecordSetSolvers": []
                     },
@@ -548,12 +554,12 @@
             },
             {
                 "Name": "Box Collection",
-                "Hash": "Box_Collection",
+                "Hash": "BoxCollSec",
                 "Solvers": [],
                 "Groups": [
                     {
                         "Name": "Boxes",
-                        "Hash": "Boxes",
+                        "Hash": "BoxCollGrp",
                         "Rows": [],
                         "RecordSetSolvers": [
                             "BoxFloorspace = BoxWidth * BoxDepth",
@@ -640,6 +646,26 @@
                         "RecordManifest": "Rectangles"
                     }
                 ]
+            },
+            {
+                "Name": "Cylinders",
+                "Hash": "Cylinders",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "Cylinders",
+                        "Hash": "Cylinders",
+                        "Rows": [],
+                        "RecordSetSolvers": [
+                            "Circumference = 2 * PI() * Radius",
+                            "Area = (2 * PI() * Radius * Height) + (2 * PI() * Radius ^2)"
+                        ],
+                        "ShowTitle": false,
+                        "Layout": "Tabular",
+                        "RecordSetAddress": "Cylinders",
+                        "RecordManifest": "Cylinders"
+                    }
+                ]
             }
         ],
         "ReferenceManifests": {
@@ -654,8 +680,8 @@
                         "PictForm": {
                             "Row": "1",
                             "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
+                            "Section": "BoxCollSec",
+                            "Group": "BoxCollGrp"
                         },
                         "IsTabular": true
                     },
@@ -667,8 +693,8 @@
                         "PictForm": {
                             "Row": "1",
                             "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
+                            "Section": "BoxCollSec",
+                            "Group": "BoxCollGrp"
                         },
                         "IsTabular": true
                     },
@@ -680,8 +706,8 @@
                         "PictForm": {
                             "Row": "1",
                             "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
+                            "Section": "BoxCollSec",
+                            "Group": "BoxCollGrp"
                         },
                         "IsTabular": true
                     },
@@ -693,8 +719,8 @@
                         "PictForm": {
                             "Row": "1",
                             "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
+                            "Section": "BoxCollSec",
+                            "Group": "BoxCollGrp"
                         },
                         "IsTabular": true
                     },
@@ -706,8 +732,8 @@
                         "PictForm": {
                             "Row": "1",
                             "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
+                            "Section": "BoxCollSec",
+                            "Group": "BoxCollGrp"
                         },
                         "IsTabular": true
                     },
@@ -719,8 +745,8 @@
                         "PictForm": {
                             "Row": "1",
                             "Width": "1",
-                            "Section": "Box_Collection",
-                            "Group": "Boxes"
+                            "Section": "BoxCollSec",
+                            "Group": "BoxCollGrp"
                         },
                         "IsTabular": true
                     }
@@ -780,6 +806,78 @@
                             "Width": "1",
                             "Section": "Rectangle_Aggregation",
                             "Group": "Rectangle_Set"
+                        },
+                        "IsTabular": true
+                    }
+                },
+                "Sections": [],
+                "ReferenceManifests": {}
+            },
+            "Cylinders": {
+                "Scope": "Cylinders",
+                "Descriptors": {
+                    "Identifier": {
+                        "Hash": "Identifier",
+                        "Name": "Identifier",
+                        "DataAddress": "Identifier",
+                        "DataType": "String",
+                        "PictForm": {
+                            "Row": "1",
+                            "Width": "1",
+                            "Section": "Cylinders",
+                            "Group": "Cylinders"
+                        },
+                        "IsTabular": true
+                    },
+                    "Radius": {
+                        "Hash": "Radius",
+                        "Name": "Radius",
+                        "DataAddress": "Radius",
+                        "DataType": "PreciseNumber",
+                        "PictForm": {
+                            "Row": "1",
+                            "Width": "1",
+                            "Section": "Cylinders",
+                            "Group": "Cylinders"
+                        },
+                        "IsTabular": true
+                    },
+                    "Height": {
+                        "Hash": "Height",
+                        "Name": "Height",
+                        "DataAddress": "Height",
+                        "DataType": "PreciseNumber",
+                        "PictForm": {
+                            "Row": "1",
+                            "Width": "1",
+                            "Section": "Cylinders",
+                            "Group": "Cylinders"
+                        },
+                        "IsTabular": true
+                    },
+                    "Circumference": {
+                        "Hash": "Circumference",
+                        "Name": "Circumference",
+                        "DataAddress": "Circumference",
+                        "DataType": "PreciseNumber",
+                        "PictForm": {
+                            "Row": "1",
+                            "Width": "1",
+                            "Section": "Cylinders",
+                            "Group": "Cylinders"
+                        },
+                        "IsTabular": true
+                    },
+                    "Area": {
+                        "Hash": "Area",
+                        "Name": "Area",
+                        "DataAddress": "Area",
+                        "DataType": "PreciseNumber",
+                        "PictForm": {
+                            "Row": "1",
+                            "Width": "1",
+                            "Section": "Cylinders",
+                            "Group": "Cylinders"
                         },
                         "IsTabular": true
                     }
