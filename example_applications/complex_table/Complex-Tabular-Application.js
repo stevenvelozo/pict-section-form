@@ -341,7 +341,12 @@ module.exports.default_configuration.pict_configuration = {
 				Hash: "RecipeCalories",
 				DataType: "PreciseNumber",
 				Default: "1",
-				PictForm: { Section: "Recipe", Group: "Statistics", Row: 1, Width: 1 },
+				PictForm: {
+					Section: "Recipe",
+					Group: "Statistics",
+					Row: 1,
+					Width: 1
+					},
 			},
 
 			"Recipe.CounterWidth": {
@@ -390,6 +395,8 @@ module.exports.default_configuration.pict_configuration = {
 				Hash: "TotalFruitCalories",
 				DataType: "PreciseNumber",
 				PictForm: {
+					DecimalPrecision: 3,
+					RoundingMethod: 0,
 					Section: "Recipe",
 					Group: "FruitStatistics",
 					Row: 1,

@@ -171,9 +171,13 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-Template-Input-DataType-PreciseNumber",
+			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
 			"Template": /*HTML*/`
 					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
+					<input type="Number" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" {~D:Record.Macro.InputChangeHandler~} value="">
+
 `
 		},
 		{
@@ -276,12 +280,14 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-VerticalTemplate-Input-DataType-PreciseNumber",
+			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
 			"Template": /*HTML*/`
 					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
 				<div class="pict-form-vertical-input">
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
 					<span>{~D:Record.Name~}:</span>
 					<span>{~D:Record.PictForm.ExtraDescription~}</span>
-					<input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<input type="Number" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" {~D:Record.Macro.InputChangeHandler~} value="">
 				</div>
 `
 		},
@@ -653,6 +659,22 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/` value="">
 `
 		},
+
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-DataType-PreciseNumber",
+			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
+			"Template": /*HTML*/`
+					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" id="TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~}  value="">
+					<input type="Number" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~}
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-DataType-PreciseNumber",
+			"Template": /*HTML*/` value="">
+`
+		},
+
 		{
 			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-TextArea",
 			"Template": /*HTML*/`
