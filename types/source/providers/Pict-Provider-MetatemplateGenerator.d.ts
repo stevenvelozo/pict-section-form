@@ -54,6 +54,16 @@ declare class PictMetatemplateGenerator {
      */
     getTabularInputMetatemplateTemplateReference(pView: any, pDataType: string, pInputType: string, pViewDataAddress: string, pGroupIndex: number, pRowIndex: number): string;
     /**
+     * Retrieves the metatemplate template reference for the given vertical input view, data type, input type, and view data address.
+     *
+     * @param {Object} pView - The input view.
+     * @param {string} pDataType - The data type.
+     * @param {string} pInputType - The input type.
+     * @param {string} pViewDataAddress - The view data address.
+     * @returns {string} The metatemplate template reference.
+     */
+    getVerticalInputMetatemplateTemplateReference(pView: any, pDataType: string, pInputType: string, pViewDataAddress: string): string;
+    /**
      * Retrieves the group layout provider based on the given view and group.
      *
      * @param {Object} pView - The view object.

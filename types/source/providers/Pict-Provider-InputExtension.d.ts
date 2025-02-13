@@ -14,6 +14,21 @@ declare class PictInputExtensionProvider {
      */
     constructor(pFable: object, pOptions: object, pServiceHash: object);
     /**
+     * Generates the HTML ID for a custom input element based on the given input HTML ID.
+     *
+     * @param {string} pInputHTMLID - The input HTML ID.
+     * @returns {string} The generated input HTML ID.
+     */
+    getInputHTMLID(pInputHTMLID: string): string;
+    /**
+     * Generates the HTML ID for a hidden input element in a tabular data provider.
+     *
+     * @param {string} pInputHTMLID - The HTML ID of the input element.
+     * @param {number} pRowIndex - The index of the row in the tabular data.
+     * @returns {string} - The generated HTML ID for the hidden input element.
+     */
+    getTabularHiddenInputHTMLID(pInputHTMLID: string, pRowIndex: number): string;
+    /**
      * An input has been initialized (rendered into the DOM)
      *
      * Called when an input has this Provider hash in its 'Providers' array.

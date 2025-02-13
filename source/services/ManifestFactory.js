@@ -528,10 +528,8 @@ class ManifestFactory extends libFableServiceProviderBase
 
 		tmpDescriptor.PictForm.Group = tmpGroupHash;
 		const tmpGroup = tmpCoreManifestFactory.getManifestGroup(tmpSection, tmpGroupHash);
-		if (tmpGroupName)
-		{
-			tmpGroup.Name = tmpGroupName;
-		}
+		tmpGroup.Name = tmpGroupName || ''; // by default, the new group with have a name with the hash, but avoid that to support default groups without ugly forms
+
 		if (tmpRecord['Group CSS'])
 		{
 			tmpGroup.CSSClass = tmpRecord['Group CSS'];

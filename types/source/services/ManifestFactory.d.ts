@@ -11,6 +11,8 @@ declare class ManifestFactory {
     UUID: string;
     manifest: any;
     referenceManifestFactories: {};
+    sectionHashLookup: {};
+    groupHashLookup: {};
     defaultHashCounter: number;
     _SanitizeObjectKeyRegex: RegExp;
     _SanitizeObjectKeyReplacement: string;
