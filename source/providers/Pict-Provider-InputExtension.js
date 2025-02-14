@@ -49,7 +49,7 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {number} pRowIndex - The index of the row in the tabular data.
 	 * @returns {string} - The generated HTML ID for the hidden input element.
 	 */
-	getTabularHiddenInputHTMLID(pInputHTMLID, pRowIndex)
+	getTabularInputHTMLID(pInputHTMLID, pRowIndex)
 	{
 		return `#TABULAR-DATA-${pInputHTMLID}-${pRowIndex}`;
 	}
