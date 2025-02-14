@@ -33,6 +33,7 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     /** @type {any} */
     log: any;
     autoFillFromAddressList(pView: any, pInput: any, pValue: any, pHTMLSelector: any): boolean;
+    autoFillFromAddressListTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: any, pRowIndex: any): boolean;
     onEvent(pView: any, pInput: any, pValue: any, pHTMLSelector: any, pEvent: any): boolean;
     onEventTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: any, pRowIndex: any, pEvent: any): boolean;
 }

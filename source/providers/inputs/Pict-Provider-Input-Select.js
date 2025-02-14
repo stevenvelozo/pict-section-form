@@ -57,17 +57,15 @@ class CustomInputHandler extends libPictSectionInputExtension
 	}
 
 	/**
-	 * Initializes the input element for the Pict provider select input.
-	 *
+	 * Refreshes the select list for a dynamic input.
 	 * @param {Object} pView - The view object.
 	 * @param {Object} pGroup - The group object.
 	 * @param {Object} pRow - The row object.
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The input value.
 	 * @param {string} pHTMLSelector - The HTML selector.
-	 * @returns {boolean} - Returns true if the input element is successfully initialized, false otherwise.
 	 */
-	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
+	refreshSelectList(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
 	{
 		// Try to get the input element
 		/** @type {Array<HTMLElement>|HTMLElement} */
@@ -85,7 +83,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 			return false;
 		}
 
+
 		tmpInputSelectElement = tmpInputSelectElement[0];
+		// HAX
+		tmpInputSelectElement.innerHTML = '';
 
 		if (tmpInputSelectElement && tmpDefaultData && Array.isArray(tmpDefaultData))
 		{
@@ -97,22 +98,19 @@ class CustomInputHandler extends libPictSectionInputExtension
 				tmpInputSelectElement.appendChild(tmpOption);
 			}
 		}
-
-		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
 	}
 
 	/**
-	 * Initializes a tabular input element.
-	 *
+	 * Refreshes the select list for a tabular input.
 	 * @param {Object} pView - The view object.
 	 * @param {Object} pGroup - The group object.
+	 * @param {Object} pRow - The row object.
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The input value.
 	 * @param {string} pHTMLSelector - The HTML selector.
-	 * @param {number} pRowIndex - The index of the row.
-	 * @returns {any} - The result of the initialization.
+	 * @param {number} pRowIndex 
 	 */
-	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
+	refreshSelectListTabular(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
 		// Try to get the input element
 		/** @type {Array<HTMLElement>|HTMLElement} */
@@ -134,6 +132,9 @@ class CustomInputHandler extends libPictSectionInputExtension
 			return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
 		}
 
+		// HAX
+		tmpInputSelectElement.innerHTML = '';
+
 		if (tmpInputSelectElement && tmpDefaultData && Array.isArray(tmpDefaultData))
 		{
 			for (let i = 0; i < tmpDefaultData.length; i++)
@@ -144,6 +145,39 @@ class CustomInputHandler extends libPictSectionInputExtension
 				tmpInputSelectElement.appendChild(tmpOption);
 			}
 		}
+	}
+
+	/**
+	 * Initializes the input element for the Pict provider select input.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group object.
+	 * @param {Object} pRow - The row object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The input value.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @returns {boolean} - Returns true if the input element is successfully initialized, false otherwise.
+	 */
+	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
+	{
+		this.refreshSelectList(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
+		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
+	}
+
+	/**
+	 * Initializes a tabular input element.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The input value.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @returns {any} - The result of the initialization.
+	 */
+	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
+	{
+		this.refreshSelectListTabular(pView, pGroup, pView.getRow(pRowIndex), pInput, pValue, pHTMLSelector, pRowIndex);
 
 		return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
 	}

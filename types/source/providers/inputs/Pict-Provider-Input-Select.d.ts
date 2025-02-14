@@ -38,6 +38,27 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      */
     getTabularSelectDropdownID(pInputHTMLID: string, pRowIndex: number): string;
     /**
+     * Refreshes the select list for a dynamic input.
+     * @param {Object} pView - The view object.
+     * @param {Object} pGroup - The group object.
+     * @param {Object} pRow - The row object.
+     * @param {Object} pInput - The input object.
+     * @param {any} pValue - The input value.
+     * @param {string} pHTMLSelector - The HTML selector.
+     */
+    refreshSelectList(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string): boolean;
+    /**
+     * Refreshes the select list for a tabular input.
+     * @param {Object} pView - The view object.
+     * @param {Object} pGroup - The group object.
+     * @param {Object} pRow - The row object.
+     * @param {Object} pInput - The input object.
+     * @param {any} pValue - The input value.
+     * @param {string} pHTMLSelector - The HTML selector.
+     * @param {number} pRowIndex
+     */
+    refreshSelectListTabular(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): boolean;
+    /**
      * Initializes a tabular input element.
      *
      * @param {Object} pView - The view object.

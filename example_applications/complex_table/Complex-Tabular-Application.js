@@ -241,7 +241,7 @@ module.exports.default_configuration.pict_configuration = {
 							{
 								"Entity": "Book",
 								"Filter": "FBL~IDBook~INN~{~PJU:,^IDBook^AppData.BookAuthorJoins~}",
-								"Destination": "AppData.BookAuthorJoins"
+								"Destination": "AppData.Books"
 							}
 						],
 					EntityBundleTriggerGroup: "BookTriggerGroup"
@@ -278,7 +278,7 @@ module.exports.default_configuration.pict_configuration = {
 					Section: "Book", Group: "Book", Row: 1, Width: 1, "InputType":"Option",
 					"SelectOptionsPickList": "Books",
 					// This performs an entity bundle request whenever a value is selected.
-					Providers: ["Pict-Input-Select"],
+					Providers: ["Pict-Input-Select", "Pict-Input-AutofillTriggerGroup"],
 					AutofillTriggerGroup:
 						{
 							TriggerGroupName: "BookTriggerGroup",
