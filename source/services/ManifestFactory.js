@@ -50,7 +50,7 @@ class ManifestFactory extends libFableServiceProviderBase
 
 		this._SanitizeObjectKeyRegex = /[^a-zA-Z0-9_]/gi;
 		this._SanitizeObjectKeyReplacement = '_';
-		this._SanitizeObjectKeyInvalid = 'INVALID';487
+		this._SanitizeObjectKeyInvalid = 'INVALID';
 	}
 
 	/**
@@ -533,6 +533,10 @@ class ManifestFactory extends libFableServiceProviderBase
 		if (tmpRecord['Group CSS'])
 		{
 			tmpGroup.CSSClass = tmpRecord['Group CSS'];
+		}
+		if (tmpRecord['Group Layout'])
+		{
+			tmpGroup.Layout = tmpRecord['Group Layout'];
 		}
 		if (tmpRecord['Minimum Row Count'])
 		{

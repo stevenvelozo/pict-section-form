@@ -624,7 +624,8 @@
                     "Name": "Complex Equation",
                     "Hash": "Complex_Equation",
                     "Rows": [],
-                    "RecordSetSolvers": []
+                    "RecordSetSolvers": [],
+                    "Layout": "Vertical"
                 }
             ]
         },
