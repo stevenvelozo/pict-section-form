@@ -178,7 +178,6 @@ class CustomInputHandler extends libPictSectionInputExtension
 	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
 		this.refreshSelectListTabular(pView, pGroup, pView.getRow(pRowIndex), pInput, pValue, pHTMLSelector, pRowIndex);
-
 		return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
 	}
 

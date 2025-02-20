@@ -143,6 +143,20 @@ module.exports.default_configuration.pict_configuration = {
 								Expression: "PercentTotalFat = (Fat * 9) / Calories",
 							},
 						],
+
+						PickLists:
+						[
+							{
+								Hash: "Families",
+								ListAddress: "AppData.FruitMetaLists.Families",
+								ListSourceAddress: "FruitData.FruityVice[]",
+								TextTemplate: "{~D:Record.family~}",
+								IDTemplate: "{~D:Record.family~}",
+								Unique: true,
+								Sorted: true,
+								UpdateFrequency: "Once",
+							},
+						],
 						RecordSetAddress: "FruitData.FruityVice",
 						RecordManifest: "FruitEditor",
 					},

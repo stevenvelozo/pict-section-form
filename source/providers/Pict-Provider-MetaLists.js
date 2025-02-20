@@ -94,13 +94,14 @@ class PictMetalist extends libPictProvider
 			{
 				let tmpSection = tmpView.sectionDefinition;
 				let tmpListSourceObject = tmpView.getMarshalDestinationObject();
-				// For uniqueness tracking
-				let tmpListHashes = [];
 
 				if (('PickLists' in tmpSection) && Array.isArray(tmpSection.PickLists))
 				{
-					let tmpPickList = tmpSection.PickLists[i];
-					this.buildList(tmpView, tmpPickList.Hash);
+					for (let j = 0; j < tmpSection.PickLists.length; j++)
+					{
+						let tmpPickList = tmpSection.PickLists[j];
+						this.buildList(tmpView, tmpPickList.Hash);
+					}
 				}
 			}
 		}
