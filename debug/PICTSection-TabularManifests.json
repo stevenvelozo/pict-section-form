@@ -58,25 +58,21 @@
                 "PictForm": {
                     "InputType": "Option",
                     "Row": "3",
-                    "Width": "12",
-                    "SelectOptions": [
-                        {
-                            "id": "Earth",
-                            "text": "Earth"
-                        },
-                        {
-                            "id": "Mars",
-                            "text": "Mars"
-                        },
-                        {
-                            "id": "Saturn",
-                            "text": "Saturn"
-                        },
-                        {
-                            "id": "Jupiter",
-                            "text": "Jupiter"
-                        }
-                    ],
+                    "Width": "6",
+                    "Section": "Header",
+                    "Group": "General_Info",
+                    "Units": "planetary"
+                }
+            },
+            "Header.Universe": {
+                "Hash": "Universe",
+                "Name": "Universe",
+                "DataAddress": "Header.Universe",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "Option",
+                    "Row": "3",
+                    "Width": "6",
                     "Section": "Header",
                     "Group": "General_Info",
                     "Units": "planetary"
@@ -482,6 +478,66 @@
                 "Name": "Cylinders",
                 "DataAddress": "Cylinders",
                 "DataType": "Array"
+            },
+            "Listopia.Color": {
+                "Hash": "Colors",
+                "Name": "Color",
+                "DataAddress": "Listopia.Color",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "Option",
+                    "Row": "1",
+                    "Width": "1",
+                    "Section": "Listopia",
+                    "Group": "OcclusionLists"
+                }
+            },
+            "Listopia.Box": {
+                "Hash": "BoxSelection",
+                "Name": "Box",
+                "DataAddress": "Listopia.Box",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "Option",
+                    "Row": "1",
+                    "Width": "1",
+                    "Providers": [
+                        "Pict-Input-AutofillTriggerGroup"
+                    ],
+                    "AutofillTriggerGroup": {
+                        "TriggerGroup": "Box",
+                        "MarshalEmptyValues": false,
+                        "SelectOptionsRefresh": true
+                    },
+                    "Section": "Listopia",
+                    "Group": "OcclusionLists"
+                }
+            },
+            "Listopia.Fruit": {
+                "Hash": "FruitSelection",
+                "Name": "Fruit",
+                "DataAddress": "Listopia.Fruit",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "Option",
+                    "Row": "1",
+                    "Width": "1",
+                    "Section": "Listopia",
+                    "Group": "OcclusionLists"
+                }
+            },
+            "Listopia.Stone": {
+                "Hash": "Stones",
+                "Name": "Stone",
+                "DataAddress": "Listopia.Stone",
+                "DataType": "String",
+                "PictForm": {
+                    "InputType": "Option",
+                    "Row": "1",
+                    "Width": "1",
+                    "Section": "Listopia",
+                    "Group": "OcclusionLists"
+                }
             }
         },
         "Sections": [
@@ -667,6 +723,19 @@
                         "RecordManifest": "Cylinders"
                     }
                 ]
+            },
+            {
+                "Name": "List Topia",
+                "Hash": "Listopia",
+                "Solvers": [],
+                "Groups": [
+                    {
+                        "Name": "Occlusion Lists",
+                        "Hash": "OcclusionLists",
+                        "Rows": [],
+                        "RecordSetSolvers": []
+                    }
+                ]
             }
         ],
         "ReferenceManifests": {
@@ -681,6 +750,13 @@
                         "PictForm": {
                             "Row": "1",
                             "Width": "1",
+                            "Providers": [
+                                "Pict-Input-AutofillTriggerGroup"
+                            ],
+                            "AutofillTriggerGroup": {
+                                "TriggerGroup": "Box",
+                                "MarshalEmptyValues": false
+                            },
                             "Section": "BoxCollSec",
                             "Group": "BoxCollGrp"
                         },
@@ -746,6 +822,13 @@
                         "PictForm": {
                             "Row": "1",
                             "Width": "1",
+                            "Providers": [
+                                "Pict-Input-AutofillTriggerGroup"
+                            ],
+                            "AutofillTriggerGroup": {
+                                "TriggerGroup": "Box",
+                                "MarshalEmptyValues": false
+                            },
                             "Section": "BoxCollSec",
                             "Group": "BoxCollGrp"
                         },

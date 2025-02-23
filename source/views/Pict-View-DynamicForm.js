@@ -770,6 +770,12 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 		if (('Providers' in pInput.PictForm) && Array.isArray(pInput.PictForm.Providers))
 		{
+			let tmpDefaultProviders = this.pict.providers.DynamicInput.getDefaultInputProviders(this, pInput);
+
+			if (tmpDefaultProviders.length > 0)
+			{
+				return tmpDefaultProviders.concat(pInput.PictForm.Providers);
+			}
 			return pInput.PictForm.Providers;
 		}
 		else

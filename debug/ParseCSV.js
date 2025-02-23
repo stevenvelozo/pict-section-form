@@ -340,21 +340,25 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 
 										// The list source address is scoped to AppData
 										let tmpPickListSourceAddress = tmpOptionsRow['List Source Address'];
+										// Keep track if we have an explicit or implicit source address.
+										// If it's not explicit we won't map the values to a location, but will keep them in the picklists config for use that way.
+										let tmpExplicitAddress = true;
 										if (!tmpPickListSourceAddress)
 										{
 											tmpPickListSourceAddress = `${tmpPickListHash}_SOURCE`;
+											tmpExplicitAddress = false;
 										}
 
 										// The list source address is scoped to AppData
 										let tmpTextTemplate = tmpOptionsRow['Text Template'];
 										if (!tmpTextTemplate)
 										{
-											tmpTextTemplate = `{~Data:OptionText~}`;
+											tmpTextTemplate = `{~Data:text~}`;
 										}
 										let tmpIDTemplate = tmpOptionsRow['ID Template'];
 										if (!tmpIDTemplate)
 										{
-											tmpIDTemplate = `{~Data:OptionIDValue~}`;
+											tmpIDTemplate = `{~Data:id~}`;
 										}
 										let tmpUpdateFrequency = tmpOptionsRow['Update Frequency'];
 										if (!tmpUpdateFrequency)
@@ -400,6 +404,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 										// If there is a valid List Address, use it.
 										tmpPickListConfig.ListAddress = tmpPickListAddress;
 										tmpPickListConfig.ListSourceAddress = tmpPickListSourceAddress;
+										tmpPickListConfig.ExplicitSourceAddress = tmpExplicitAddress;
 
 										tmpPickListConfig.TextTemplate = tmpTextTemplate;
 										tmpPickListConfig.IDTemplate = tmpIDTemplate;
@@ -412,8 +417,8 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 										{
 											tmpPickListConfig.DefaultListData.push(
 												{
-													OptionIDValue: tmpOptionsRow['Option Value'],
-													OptionText: tmpOptionsRow['Option Text']
+													id: tmpOptionsRow['Option Value'],
+													text: tmpOptionsRow['Option Text']
 												});
 										}
 									}
@@ -489,6 +494,25 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 							let tmpMarkdownContent = libFS.readFileSync(tmpPotentialHTMLPath, 'utf8');
 							this.log.info(`...[${tmpPotentialHTMLPath}] had ${tmpMarkdownContent.length} characters; assigning to Content`);
 							tmpDescriptor.Content = tmpMarkdownContent;
+						}
+						let tmpSectionHash = tmpDescriptor?.PictForm?.Section;
+						if (tmpSectionHash)
+						{
+							if ((tmpSectionHash in this.inputToPicklistMapping) && (tmpDescriptor.Hash in this.inputToPicklistMapping[tmpSectionHash]))
+							{
+								let tmpPickListHash = this.inputToPicklistMapping[tmpSectionHash][tmpDescriptor.Hash];
+								let tmpPickList = this.pickListConfigurations[tmpSectionHash][tmpPickListHash];
+								if (tmpPickList.ExplicitSourceAddress)
+								{
+									// TODO: We can set this even if it has default data...
+									// TODO: And we can have it auto marshal values into the location if it's empty but that could get messy.
+									tmpDescriptor.PictForm.SelectOptionsPickList = tmpPickList.Hash;
+								}
+								else
+								{
+									tmpDescriptor.PictForm.SelectOptions = tmpPickList.DefaultListData;
+								}
+							}
 						}
 					}
 				}
@@ -573,8 +597,6 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 									}.bind(this)
 								);
 							}.bind(this));
-						
-						// Now check the group's inputs to see if any of them have OptionsLists to pull in
 					}
 				}
 				return fNextStage();

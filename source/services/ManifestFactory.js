@@ -432,21 +432,29 @@ class ManifestFactory extends libFableServiceProviderBase
 		}
 
 		// Verbose obtuse data validation.
-		if ((`TriggerGroup` in tmpRecord) && (typeof(tmpRecord.TriggerGroup) === 'string') && (tmpRecord.TriggerGroup != '')
-			&& (`TriggerAddress` in tmpRecord) && (typeof(tmpRecord.TriggerAddress) === 'string') && (tmpRecord.TriggerAddress != ''))
+		if ((`TriggerGroup` in tmpRecord) && (typeof(tmpRecord.TriggerGroup) === 'string') && (tmpRecord.TriggerGroup != ''))
 		{
 			if (!Array.isArray(tmpDescriptor.PictForm.Providers))
 			{
 				tmpDescriptor.PictForm.Providers = [];
 			}
 
-			tmpDescriptor.PictForm.Providers.push('AutofillTriggerGroup')
+			tmpDescriptor.PictForm.Providers.push('Pict-Input-AutofillTriggerGroup')
 			tmpDescriptor.PictForm.AutofillTriggerGroup = (
 				{
 					TriggerGroup: tmpRecord.TriggerGroup,
-					TriggerAddress: tmpRecord.TriggerAddress,
 					MarshalEmptyValues: tmpRecord.MarshalEmptyValues ? true : false
 				});
+
+			if ((`TriggerAddress` in tmpRecord) && (typeof(tmpRecord.TriggerAddress) === 'string') && (tmpRecord.TriggerAddress != ''))
+			{
+				tmpDescriptor.PictForm.AutofillTriggerGroup.TriggerAddress = tmpRecord.TriggerAddress;
+			}
+			// TODO: Ugh
+			if (tmpDescriptor.PictForm.InputType == 'Option')
+			{
+				tmpDescriptor.PictForm.AutofillTriggerGroup.SelectOptionsRefresh = true;
+			}
 		}
 
 		if ((`Entity` in tmpRecord) && (typeof(tmpRecord.Entity) === 'string') && (tmpRecord.Entity != '')
@@ -458,7 +466,7 @@ class ManifestFactory extends libFableServiceProviderBase
 				tmpDescriptor.PictForm.Providers = [];
 			}
 
-			tmpDescriptor.PictForm.Providers.push('AutofillTriggerGroup')
+			tmpDescriptor.PictForm.Providers.push('Pict-Input-AutofillTriggerGroup')
 			tmpDescriptor.PictForm.EntitiesBundle = [
 				{
 					"Entity": tmpRecord.Entity,

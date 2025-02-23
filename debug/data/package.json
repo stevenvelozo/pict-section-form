@@ -23,6 +23,10 @@
         {
             "from": "../../node_modules/pict/dist/*",
             "to": "./dist/"
+        },
+        {
+            "from": "./dist/**",
+            "to": "../../example_applications/debug"
         }
     ]
 }

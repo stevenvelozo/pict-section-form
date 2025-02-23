@@ -57,25 +57,21 @@
             "PictForm": {
                 "InputType": "Option",
                 "Row": "3",
-                "Width": "12",
-                "SelectOptions": [
-                    {
-                        "id": "Earth",
-                        "text": "Earth"
-                    },
-                    {
-                        "id": "Mars",
-                        "text": "Mars"
-                    },
-                    {
-                        "id": "Saturn",
-                        "text": "Saturn"
-                    },
-                    {
-                        "id": "Jupiter",
-                        "text": "Jupiter"
-                    }
-                ],
+                "Width": "6",
+                "Section": "Header",
+                "Group": "General_Info",
+                "Units": "planetary"
+            }
+        },
+        "Header.Universe": {
+            "Hash": "Universe",
+            "Name": "Universe",
+            "DataAddress": "Header.Universe",
+            "DataType": "String",
+            "PictForm": {
+                "InputType": "Option",
+                "Row": "3",
+                "Width": "6",
                 "Section": "Header",
                 "Group": "General_Info",
                 "Units": "planetary"
@@ -483,6 +479,133 @@
             "Name": "Cylinders",
             "DataAddress": "Cylinders",
             "DataType": "Array"
+        },
+        "Listopia.Color": {
+            "Hash": "Colors",
+            "Name": "Color",
+            "DataAddress": "Listopia.Color",
+            "DataType": "String",
+            "PictForm": {
+                "InputType": "Option",
+                "Row": "1",
+                "Width": "1",
+                "Section": "Listopia",
+                "Group": "OcclusionLists",
+                "SelectOptions": [
+                    {
+                        "id": "Red",
+                        "text": "The Deepest Red"
+                    },
+                    {
+                        "id": "Green",
+                        "text": "A Challenging Green"
+                    },
+                    {
+                        "id": "Blue",
+                        "text": "Corporate Blue"
+                    },
+                    {
+                        "id": "Orange",
+                        "text": "Almost Brown Orange"
+                    },
+                    {
+                        "id": "Yellow",
+                        "text": "Not a Weak Bellied Yellow"
+                    },
+                    {
+                        "id": "Other",
+                        "text": "Other"
+                    }
+                ]
+            }
+        },
+        "Listopia.Box": {
+            "Hash": "BoxSelection",
+            "Name": "Box",
+            "DataAddress": "Listopia.Box",
+            "DataType": "String",
+            "PictForm": {
+                "InputType": "Option",
+                "Row": "1",
+                "Width": "1",
+                "Providers": [
+                    "Pict-Input-AutofillTriggerGroup"
+                ],
+                "AutofillTriggerGroup": {
+                    "TriggerGroup": "Box",
+                    "MarshalEmptyValues": false,
+                    "SelectOptionsRefresh": true
+                },
+                "Section": "Listopia",
+                "Group": "OcclusionLists",
+                "SelectOptionsPickList": "OPTION_Listopia_BoxSelection"
+            }
+        },
+        "Listopia.Fruit": {
+            "Hash": "FruitSelection",
+            "Name": "Fruit",
+            "DataAddress": "Listopia.Fruit",
+            "DataType": "String",
+            "PictForm": {
+                "InputType": "Option",
+                "Row": "1",
+                "Width": "1",
+                "Section": "Listopia",
+                "Group": "OcclusionLists",
+                "SelectOptions": [
+                    {
+                        "id": "Apple",
+                        "text": "The Apple"
+                    },
+                    {
+                        "id": "Kiwi",
+                        "text": "Kiwi"
+                    },
+                    {
+                        "id": "Tangerine",
+                        "text": "A Soft Tangerine"
+                    },
+                    {
+                        "id": "Orange",
+                        "text": "Orange Crush"
+                    },
+                    {
+                        "id": "Watermelon",
+                        "text": "The Wateriest Melon"
+                    },
+                    {
+                        "id": "Tomato",
+                        "text": "An Heirloom of Rapid Descent"
+                    }
+                ]
+            }
+        },
+        "Listopia.Stone": {
+            "Hash": "Stones",
+            "Name": "Stone",
+            "DataAddress": "Listopia.Stone",
+            "DataType": "String",
+            "PictForm": {
+                "InputType": "Option",
+                "Row": "1",
+                "Width": "1",
+                "Section": "Listopia",
+                "Group": "OcclusionLists",
+                "SelectOptions": [
+                    {
+                        "id": "Small",
+                        "text": "The Small Type Seed"
+                    },
+                    {
+                        "id": "Large",
+                        "text": "A Very Big Seed"
+                    },
+                    {
+                        "id": "None",
+                        "text": "No Seeds to Speak Of"
+                    }
+                ]
+            }
         }
     },
     "Sections": [
@@ -859,6 +982,132 @@
                     "RecordManifest": "Cylinders"
                 }
             ]
+        },
+        {
+            "Name": "List Topia",
+            "Hash": "Listopia",
+            "Solvers": [],
+            "Groups": [
+                {
+                    "Name": "Occlusion Lists",
+                    "Hash": "OcclusionLists",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                }
+            ],
+            "PickLists": [
+                {
+                    "DefaultListData": [
+                        {
+                            "id": "Red",
+                            "text": "The Deepest Red"
+                        },
+                        {
+                            "id": "Green",
+                            "text": "A Challenging Green"
+                        },
+                        {
+                            "id": "Blue",
+                            "text": "Corporate Blue"
+                        },
+                        {
+                            "id": "Orange",
+                            "text": "Almost Brown Orange"
+                        },
+                        {
+                            "id": "Yellow",
+                            "text": "Not a Weak Bellied Yellow"
+                        },
+                        {
+                            "id": "Other",
+                            "text": "Other"
+                        }
+                    ],
+                    "Hash": "OPTION_Listopia_Colors",
+                    "ListAddress": "AppData.OPTION_Listopia_Colors_LIST",
+                    "ListSourceAddress": "OPTION_Listopia_Colors_SOURCE",
+                    "ExplicitSourceAddress": false,
+                    "TextTemplate": "{~Data:text~}",
+                    "IDTemplate": "{~Data:id~}",
+                    "Unique": false,
+                    "Sorted": false,
+                    "UpdateFrequency": "Always"
+                },
+                {
+                    "DefaultListData": [],
+                    "Hash": "OPTION_Listopia_BoxSelection",
+                    "ListAddress": "AppData.OPTION_Listopia_BoxSelection_LIST",
+                    "ListSourceAddress": "Boxes",
+                    "ExplicitSourceAddress": true,
+                    "TextTemplate": "{~D:Record.Identifier~} (volume {~D:Record.Volume~})",
+                    "IDTemplate": "{~D:Record.Identifier~}",
+                    "Unique": false,
+                    "Sorted": false,
+                    "UpdateFrequency": "Always"
+                },
+                {
+                    "DefaultListData": [
+                        {
+                            "id": "Apple",
+                            "text": "The Apple"
+                        },
+                        {
+                            "id": "Kiwi",
+                            "text": "Kiwi"
+                        },
+                        {
+                            "id": "Tangerine",
+                            "text": "A Soft Tangerine"
+                        },
+                        {
+                            "id": "Orange",
+                            "text": "Orange Crush"
+                        },
+                        {
+                            "id": "Watermelon",
+                            "text": "The Wateriest Melon"
+                        },
+                        {
+                            "id": "Tomato",
+                            "text": "An Heirloom of Rapid Descent"
+                        }
+                    ],
+                    "Hash": "OPTION_Listopia_FruitSelection",
+                    "ListAddress": "AppData.OPTION_Listopia_FruitSelection_LIST",
+                    "ListSourceAddress": "OPTION_Listopia_FruitSelection_SOURCE",
+                    "ExplicitSourceAddress": false,
+                    "TextTemplate": "{~Data:text~}",
+                    "IDTemplate": "{~Data:id~}",
+                    "Unique": false,
+                    "Sorted": false,
+                    "UpdateFrequency": "Always"
+                },
+                {
+                    "DefaultListData": [
+                        {
+                            "id": "Small",
+                            "text": "The Small Type Seed"
+                        },
+                        {
+                            "id": "Large",
+                            "text": "A Very Big Seed"
+                        },
+                        {
+                            "id": "None",
+                            "text": "No Seeds to Speak Of"
+                        }
+                    ],
+                    "Hash": "OPTION_Listopia_Stones",
+                    "ListAddress": "AppData.OPTION_Listopia_Stones_LIST",
+                    "ListSourceAddress": "OPTION_Listopia_Stones_SOURCE",
+                    "ExplicitSourceAddress": false,
+                    "TextTemplate": "{~Data:text~}",
+                    "IDTemplate": "{~Data:id~}",
+                    "Unique": false,
+                    "Sorted": false,
+                    "UpdateFrequency": "Always"
+                }
+            ]
         }
     ],
     "ReferenceManifests": {
@@ -873,6 +1122,13 @@
                     "PictForm": {
                         "Row": "1",
                         "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroup": "Box",
+                            "MarshalEmptyValues": false
+                        },
                         "Section": "BoxCollSec",
                         "Group": "BoxCollGrp"
                     },
@@ -938,6 +1194,13 @@
                     "PictForm": {
                         "Row": "1",
                         "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroup": "Box",
+                            "MarshalEmptyValues": false
+                        },
                         "Section": "BoxCollSec",
                         "Group": "BoxCollGrp"
                     },
