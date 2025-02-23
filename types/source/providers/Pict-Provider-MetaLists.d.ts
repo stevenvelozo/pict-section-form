@@ -46,14 +46,14 @@ declare class PictMetalist {
      *
      * @param {Array|string} pViewHashes - The view hashes to build meta lists for.
      */
-    buildLists(pViewHashes: any[] | string): void;
+    buildViewSpecificLists(pViewHashes: any[] | string): void;
     /**
      * Builds meta lists for the Pict provider.
      *
      * @param {Object} pView - The view hashes to build meta lists for.
      * @param {string} pListHash - The list hash.
      */
-    buildList(pView: any, pListHash: string): void;
+    buildViewSpecificList(pView: any, pListHash: string): void;
 }
 declare namespace PictMetalist {
     export { _DefaultProviderConfiguration as default_configuration };

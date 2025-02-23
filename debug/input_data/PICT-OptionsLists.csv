@@ -1,0 +1,17 @@
+Form,Section Hash,Input Hash,Option Value,Option Text,List Hash,List Address,List Source Address,Text Template,ID Template,Unique,Sorted,UpdateFrequency
+MathExampleForm,Listopia,Colors,Red,The Deepest Red,,,,,,,,
+MathExampleForm,Listopia,Colors,Green,A Challenging Green,,,,,,,,
+MathExampleForm,Listopia,Colors,Blue,Corporate Blue,,,,,,,,
+MathExampleForm,Listopia,Colors,Orange,Almost Brown Orange,,,,,,,,
+MathExampleForm,Listopia,Colors,Yellow,Not a Weak Bellied Yellow,,,,,,,,
+MathExampleForm,Listopia,Colors,Other,Other,,,,,,,,
+MathExampleForm,Listopia,BoxSelection,,,BoxList,,AppData.Boxes,{~D:Record.Identifier~} (volume {~D:Record.Volume~}),{~D:Record.Identifier~},true,true,Always
+MathExampleForm,Listopia,FruitSelection,Apple,The Apple,,,,,,,,
+MathExampleForm,Listopia,FruitSelection,Kiwi,Kiwi,FruitList,,,,,,,
+MathExampleForm,Listopia,FruitSelection,Tangerine,A Soft Tangerine,FruitList,,,,,,,
+MathExampleForm,Listopia,FruitSelection,Orange,Orange Crush,FruitList,,,,,,,
+MathExampleForm,Listopia,FruitSelection,Watermelon,The Wateriest Melon,FruitList,,,,,,,
+MathExampleForm,Listopia,FruitSelection,Tomato,An Heirloom of Rapid Descent,FruitList,,,,,,,
+MathExampleForm,Listopia,Stones,Small,The Small Type Seed,Stones,,,,,,,
+MathExampleForm,Listopia,Stones,Large,A Very Big Seed,Stones,,,,,,,
+MathExampleForm,Listopia,Stones,None,No Seeds to Speak Of,Stones,,,,,,,

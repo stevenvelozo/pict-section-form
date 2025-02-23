@@ -41,7 +41,6 @@ class PictMetalist extends libPictProvider
 		this.Hash;
 
 		this.computedLists = {};
-		this.globalLists = {};
 	}
 
 	/**
@@ -57,10 +56,6 @@ class PictMetalist extends libPictProvider
 		{
 			return this.computedLists[pViewHash][pListHash];
 		}
-		else if (pListHash in this.globalLists)
-		{
-			return this.globalLists[pListHash];
-		}
 		return [];
 	}
 
@@ -73,7 +68,7 @@ class PictMetalist extends libPictProvider
 	 */
 	hasList(pViewHash, pListHash)
 	{
-		return ((pViewHash in this.computedLists) && (pListHash in this.computedLists[pViewHash])) || (pListHash in this.globalLists);
+		return ((pViewHash in this.computedLists) && (pListHash in this.computedLists[pViewHash]));
 	}
 
 	/**
@@ -81,7 +76,7 @@ class PictMetalist extends libPictProvider
 	 *
 	 * @param {Array|string} pViewHashes - The view hashes to build meta lists for.
 	 */
-	buildLists(pViewHashes)
+	buildViewSpecificLists(pViewHashes)
 	{
 		// this.log.trace(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] pulling Metalists.`);
 		let tmpViewHashes = Array.isArray(pViewHashes) ? pViewHashes : Object.keys(this.fable.views);
@@ -93,14 +88,13 @@ class PictMetalist extends libPictProvider
 			if (tmpView.isPictSectionForm)
 			{
 				let tmpSection = tmpView.sectionDefinition;
-				let tmpListSourceObject = tmpView.getMarshalDestinationObject();
 
 				if (('PickLists' in tmpSection) && Array.isArray(tmpSection.PickLists))
 				{
 					for (let j = 0; j < tmpSection.PickLists.length; j++)
 					{
 						let tmpPickList = tmpSection.PickLists[j];
-						this.buildList(tmpView, tmpPickList.Hash);
+						this.buildViewSpecificList(tmpView, tmpPickList.Hash);
 					}
 				}
 			}
@@ -113,7 +107,7 @@ class PictMetalist extends libPictProvider
 	 * @param {Object} pView - The view hashes to build meta lists for.
 	 * @param {string} pListHash - The list hash.
 	 */
-	buildList(pView, pListHash)
+	buildViewSpecificList(pView, pListHash)
 	{
 		if (pView.isPictSectionForm)
 		{
@@ -200,13 +194,12 @@ class PictMetalist extends libPictProvider
 						tmpResultingList.sort((pLeft, pRight) => pLeft.text.localeCompare(pRight.text));
 					}
 
-					// Now store the list, both in this as well as at the data location address
+					// Now store the list
 					if (!(pView.Hash in this.computedLists))
 					{
 						this.computedLists[pView.Hash] = {};
 					}
 					this.computedLists[pView.Hash][tmpPickList.Hash] = tmpResultingList;
-					this.globalLists[tmpPickList.Hash] = tmpResultingList;
 					// Right now all that's available is pict and AppData... which means if they associate it with "Nonce" or such, it will be lost.
 					// TODO: This is intentional to allow lists managed here, but should be revisited.
 					pView.sectionManifest.setValueByHash({Pict:this.pict, AppData:this.pict.AppData}, tmpPickList.ListAddress, tmpResultingList);

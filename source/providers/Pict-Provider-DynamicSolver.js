@@ -380,7 +380,7 @@ class PictDynamicSolver extends libPictProvider
 		}
 
 		// Now regenerate the metalists .. after the solve has happened.
-		this.pict.providers.DynamicMetaLists.buildLists(tmpViewHashes);
+		this.pict.providers.DynamicMetaLists.buildViewSpecificLists(tmpViewHashes);
 
 		tmpSolveOutcome.EndTimeStamp = +new Date();
 

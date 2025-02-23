@@ -140,7 +140,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		else if (pInput.PictForm.AutofillTriggerGroup.SelectOptionsRefresh)
 		{
 			// Regenerate the picklist
-			this.pict.providers.DynamicMetaLists.buildList(pView, pInput.PictForm.SelectOptionsPickList);
+			this.pict.providers.DynamicMetaLists.buildViewSpecificList(pView, pInput.PictForm.SelectOptionsPickList);
 			this.pict.providers['Pict-Input-Select'].refreshSelectList(pView, pView.getGroup(pInput.PictForm.GroupIndex), pView.getRow(pInput.PictForm.Row), pInput, pValue, pHTMLSelector);
 		}
 
@@ -177,7 +177,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			else
 			{
 				// Regenerate the picklist
-				this.pict.providers.DynamicMetaLists.buildList(pView, pInput.PictForm.SelectOptionsPickList);
+				this.pict.providers.DynamicMetaLists.buildViewSpecificList(pView, pInput.PictForm.SelectOptionsPickList);
 				this.pict.providers['Pict-Input-Select'].refreshSelectListTabular(pView, pView.getGroup(pInput.PictForm.GroupIndex), pView.getRow(pInput.PictForm.Row), pInput, pValue, pHTMLSelector, pRowIndex);
 			}
 		}
