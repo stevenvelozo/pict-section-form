@@ -1127,7 +1127,8 @@
                         ],
                         "AutofillTriggerGroup": {
                             "TriggerGroup": "Box",
-                            "MarshalEmptyValues": false
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
                         },
                         "Section": "BoxCollSec",
                         "Group": "BoxCollGrp"
@@ -1199,7 +1200,8 @@
                         ],
                         "AutofillTriggerGroup": {
                             "TriggerGroup": "Box",
-                            "MarshalEmptyValues": false
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
                         },
                         "Section": "BoxCollSec",
                         "Group": "BoxCollGrp"

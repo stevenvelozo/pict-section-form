@@ -102,6 +102,9 @@ class ManifestFactory extends libFableServiceProviderBase
 			{
 				tmpDescriptor.PictForm.InformaryDataAddress = tmpDescriptorKeys[i];
 
+				// Decorate the view hash for reverse lookup
+				tmpDescriptor.PictForm.ViewHash = pView.Hash;
+
 				let tmpGroupHash = (typeof(tmpDescriptor.PictForm.Group) == 'string') ? tmpDescriptor.PictForm.Group : 'Default';
 
 				if (!('Groups' in pView.sectionDefinition))
@@ -177,6 +180,7 @@ class ManifestFactory extends libFableServiceProviderBase
 					{
 						tmpInput.PictForm = {};
 					}
+					tmpInput.PictForm.ViewHash = pView.Hash;
 
 					tmpInput.PictForm.InformaryDataAddress = tmpSupportingManifestDescriptorKeys[k];
 					if (typeof(tmpGroup.RecordSetAddress) == 'string')
@@ -449,6 +453,11 @@ class ManifestFactory extends libFableServiceProviderBase
 			if ((`TriggerAddress` in tmpRecord) && (typeof(tmpRecord.TriggerAddress) === 'string') && (tmpRecord.TriggerAddress != ''))
 			{
 				tmpDescriptor.PictForm.AutofillTriggerGroup.TriggerAddress = tmpRecord.TriggerAddress;
+			}
+			if ((`TriggerAllInputs` in tmpRecord) && (typeof(tmpRecord.TriggerAllInputs) === 'string') 
+				&& ((tmpRecord.TriggerAllInputs.toLowerCase() == 'true') || (tmpRecord.TriggerAllInputs.toLowerCase() == 'x') || (tmpRecord.TriggerAllInputs.toLowerCase() == '1')))
+			{
+				tmpDescriptor.PictForm.AutofillTriggerGroup.TriggerAllInputs = true;
 			}
 			// TODO: Ugh
 			if (tmpDescriptor.PictForm.InputType == 'Option')
