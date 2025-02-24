@@ -1,5 +1,6 @@
 const libPictProvider = require('pict-provider');
 
+const libListDistilling = require('./Pict-Provider-ListDistilling.js');
 const libDynamicMetaLists = require('./Pict-Provider-MetaLists.js');
 
 const libInputSelect = require('./inputs/Pict-Provider-Input-Select.js');
@@ -56,6 +57,10 @@ class PictDynamicSolver extends libPictProvider
 		if (!this.pict.providers.DynamicMetaLists)
 		{
 			this.pict.addProvider('DynamicMetaLists', libDynamicMetaLists.default_configuration, libDynamicMetaLists);
+		}
+		if (!this.pict.providers.ListDistilling)
+		{
+			this.pict.addProvider('ListDistilling', libListDistilling.default_configuration, libListDistilling);
 		}
 		if (!this.pict.providers['Pict-Input-Select'])
 		{

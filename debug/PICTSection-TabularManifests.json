@@ -485,7 +485,7 @@
                 "DataAddress": "Listopia.Color",
                 "DataType": "String",
                 "PictForm": {
-                    "InputType": "Option",
+                    "InputType": "ListBoxSingleSelect",
                     "Row": "1",
                     "Width": "1",
                     "Section": "Listopia",
@@ -532,7 +532,7 @@
                 "DataAddress": "Listopia.Stone",
                 "DataType": "String",
                 "PictForm": {
-                    "InputType": "Option",
+                    "InputType": "ListBoxSingleSelect",
                     "Row": "1",
                     "Width": "1",
                     "Section": "Listopia",
