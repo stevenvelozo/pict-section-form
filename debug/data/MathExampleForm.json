@@ -59,8 +59,7 @@
                 "Row": "3",
                 "Width": "6",
                 "Section": "Header",
-                "Group": "General_Info",
-                "Units": "planetary"
+                "Group": "General_Info"
             }
         },
         "Header.Universe": {
@@ -73,8 +72,7 @@
                 "Row": "3",
                 "Width": "6",
                 "Section": "Header",
-                "Group": "General_Info",
-                "Units": "planetary"
+                "Group": "General_Info"
             }
         },
         "BridgeData.IDBridge": {
@@ -139,8 +137,7 @@
                 "Row": "2",
                 "Width": "3",
                 "Section": "Basic_Geometry",
-                "Group": "BasicGeoGrp",
-                "Units": "unrounded"
+                "Group": "BasicGeoGrp"
             }
         },
         "Geometry.Rectangle.AreaRoundedDefault": {
@@ -152,8 +149,7 @@
                 "Row": "2",
                 "Width": "3",
                 "Section": "Basic_Geometry",
-                "Group": "BasicGeoGrp",
-                "Units": "default"
+                "Group": "BasicGeoGrp"
             }
         },
         "Geometry.Rectangle.AreaRoundedThree": {
@@ -165,8 +161,7 @@
                 "Row": "2",
                 "Width": "3",
                 "Section": "Basic_Geometry",
-                "Group": "BasicGeoGrp",
-                "Units": "3"
+                "Group": "BasicGeoGrp"
             }
         },
         "Geometry.Rectangle.AreaRoundedFour": {
@@ -178,8 +173,7 @@
                 "Row": "2",
                 "Width": "3",
                 "Section": "Basic_Geometry",
-                "Group": "BasicGeoGrp",
-                "Units": "5"
+                "Group": "BasicGeoGrp"
             }
         },
         "Geometry.Circle.Radius": {
@@ -204,8 +198,7 @@
                 "Row": "2",
                 "Width": "3",
                 "Section": "Basic_Geometry",
-                "Group": "Circle",
-                "Units": "unrounded"
+                "Group": "Circle"
             }
         },
         "Geometry.Circle.AreaRoundedDefault": {
@@ -217,8 +210,7 @@
                 "Row": "2",
                 "Width": "3",
                 "Section": "Basic_Geometry",
-                "Group": "Circle",
-                "Units": "default"
+                "Group": "Circle"
             }
         },
         "Geometry.Circle.AreaRoundedThree": {
@@ -230,8 +222,7 @@
                 "Row": "2",
                 "Width": "3",
                 "Section": "Basic_Geometry",
-                "Group": "Circle",
-                "Units": "4"
+                "Group": "Circle"
             }
         },
         "Geometry.Circle.AreaRoundedFour": {
@@ -243,8 +234,7 @@
                 "Row": "2",
                 "Width": "3",
                 "Section": "Basic_Geometry",
-                "Group": "Circle",
-                "Units": "6"
+                "Group": "Circle"
             }
         },
         "Boxes": {
@@ -486,7 +476,7 @@
             "DataAddress": "Listopia.Color",
             "DataType": "String",
             "PictForm": {
-                "InputType": "ListBoxSingleSelect",
+                "InputType": "Option",
                 "Row": "1",
                 "Width": "1",
                 "Section": "Listopia",
@@ -586,7 +576,7 @@
             "DataAddress": "Listopia.Stone",
             "DataType": "String",
             "PictForm": {
-                "InputType": "ListBoxSingleSelect",
+                "InputType": "Option",
                 "Row": "1",
                 "Width": "1",
                 "Section": "Listopia",
