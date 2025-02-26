@@ -45,6 +45,37 @@ class PictListDistilling extends libPictProvider
 	  *   Example:
 	  * 	{ FilterType: "StringMatch", StringMatch: '*Apple* }
 	  */
+	/**
+	  * Filter a list of options based on the filtering rules in a dynamic form input.
+	  * 
+	  * Example Configuration:
+	  * ...
+			"ListFilterRules": [
+					{
+						"Filter": "Colour Entry Filter",
+						"FilterType": "Explicit",
+						"FilterValueComparison": "==",
+						"FilterValueAddress": "Listopia.Filters.Colour",
+						"IgnoreEmptyValue": true
+					},
+					{
+						"Filter": "Colour List Distilling Filter",
+						"FilterType": "CrossMap",
+						"JoinListAddress": "View.sectionDefinition.Intersections.Colors.FruitSelectionColorsJoin",
+						"JoinListAddressGlobal": true,
+						"JoinListValueAddress": "GUIDColors",
+						"ExternalValueAddress": "GUIDFruitSelection",
+						"FilterToValueAddress": "Listopia.Fruit",
+						"IgnoreEmpty": true
+					}
+				],
+	  * ...
+	  * 
+	  * @param {Object} pView - The pict view the list is within
+	  * @param {*} pInput - The input within the dynamic forms view
+	  * @param {*} pList - The raw list of options to filter
+	  * @returns 
+	  */
 	filterList(pView, pInput, pList)
 	{
 		// The list is expected to be an array of objects with "id" and "text" properties.  This is because of Select2.
@@ -222,7 +253,9 @@ class PictListDistilling extends libPictProvider
 							// The join list is not an array.  We can't filter it.
 							break;
 						}
-						
+
+						this.pict.log.trace(`FilterList: CrossMap: JoinListAddress[${tmpJoinListAddress}](${tmpJoinList.length})->${tmpJoinListValueAddress} ExternalValueAddress[${tmpExternalValueAddress}] FilterToValueAddress[${tmpFilterToValueAddress}]`);
+
 						// TODO: This is not industrial grade, yo.  Small lists only please.  O(n^2) is not cool.
 						let tmpPossiblyAllowed = false;
 						for (let i = 0; i < tmpJoinList.length; i++)
@@ -236,8 +269,10 @@ class PictListDistilling extends libPictProvider
 								continue;
 							}
 
+							this.pict.log.trace(`          CrossMap Test: JoinListValue[${tmpJoinListValue}]<==>ComparisonValue[${tmpComparisonValue}] ExternalValue[${tmpExternalValue}]<==>FilterToValue[${tmpFilterToValueAddressValue}]`);
 							if ((tmpFilterToValueAddressValue == tmpExternalValue) && (tmpJoinListValue == tmpComparisonValue))
 							{
+								this.pict.log.trace(`   !!! CrossMap: Matched: ${tmpJoinListValue} == ${tmpComparisonValue} && ${tmpExternalValue} == ${tmpFilterToValueAddressValue}`);
 								tmpPossiblyAllowed = true;
 								break;
 							}
@@ -245,7 +280,17 @@ class PictListDistilling extends libPictProvider
 						tmpEntryAllowed = tmpPossiblyAllowed && tmpEntryAllowed;
 
 						break;
-						
+
+					default:
+						// See if there is a provider for it
+						let tmpProvider = this.pict.providers[tmpFilterRule.FilterType];
+						if (tmpProvider)
+						{
+							// Your provider could do anything here.
+							// We may want a second place to bolt one of these on
+							tmpEntryAllowed = tmpProvider.filterList(pView, pInput, pList, tmpListEntry);
+						}
+						break;
 				}
 			}
 

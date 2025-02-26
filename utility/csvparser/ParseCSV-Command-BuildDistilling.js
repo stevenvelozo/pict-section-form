@@ -35,7 +35,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 	 * @param {Array} pRecords 
 	 * @param {Object} pComprehension 
 	 */
-	intersectTabularData(pFirstEntity, pSecondEntity, pRecords, pComprehension)
+	intersectTabularData(pFirstEntity, pSecondEntity, pRecords, pComprehension, pIntersectionOutcome)
 	{
 		// If there isn't at least one row, there are no joins defined
 		if (pRecords.length < 1)
@@ -50,6 +50,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 		{
 			pComprehension[tmpJoinEntityName] = {};
 		}
+
 
 		let tmpFirstLeftEntityKey = `__GUID__`;
 		for (let i = 0; i < pRecords.length; i++)
@@ -76,6 +77,19 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 					let tmpSecondTopEntityKey = `GUID${pSecondEntity}`;
 					let tmpSecondTopEntityValue = tmpRecordKeys[j];
 					let tmpJoinRecordGUID = `L-${tmpFirstLeftEntityValue}-T-${tmpSecondTopEntityValue}`;
+
+					pIntersectionOutcome.FirstLeftEntityKey = tmpFirstLeftEntityKey;
+					pIntersectionOutcome.SecondTopEntityKey = tmpSecondTopEntityKey;
+
+						// "JoinListValueAddress": "GUIDColors",
+						// "ExternalValueAddress": "GUIDFruitSelection",
+					if (!('EntityCrossFilterLookup' in pIntersectionOutcome))
+					{
+						// Build the entity cross-filter lookup to make it easy to generate filter configuration below
+						pIntersectionOutcome.EntityCrossFilterLookup = {};
+						pIntersectionOutcome.EntityCrossFilterLookup[pFirstEntity] = { JoinListValueAddress:tmpFirstLeftEntityKey, ExternalValueAddress:tmpSecondTopEntityKey };
+						pIntersectionOutcome.EntityCrossFilterLookup[pSecondEntity] = { JoinListValueAddress:tmpSecondTopEntityKey, ExternalValueAddress:tmpFirstLeftEntityKey };
+					}
 
 					let tmpJoinRecord = {};
 					tmpJoinRecord[tmpJoinEntityGUIDName] = tmpJoinRecordGUID;
@@ -144,7 +158,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 		}
 
 		// Initialize the fable CSV parser
-		this.fable.instantiateServiceProvider('CSVParser');
+		let tmpCSVParser = this.fable.instantiateServiceProvider('CSVParser');
 		this.fable.instantiateServiceProvider('FilePersistence');
 
 		// Do some input file housekeeping
@@ -169,7 +183,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 		tmpReadline.on('line',
 			(pLine) =>
 			{
-				const tmpIncomingRecord = this.fable.CSVParser.parseCSVLine(pLine);
+				const tmpIncomingRecord = tmpCSVParser.parseCSVLine(pLine);
 
 				tmpIntersectionOutcome.ParsedRowCount++;
 				tmpIntersectionOutcome.RawRecords.push(tmpIncomingRecord);
@@ -179,15 +193,84 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 			() =>
 			{
 				// Now perform the intersection
-				this.intersectTabularData(tmpIntersectionOutcome.CommandConfiguration.FirstEntity, tmpIntersectionOutcome.CommandConfiguration.SecondEntity, tmpIntersectionOutcome.RawRecords, tmpIntersectionOutcome.Comprehension);
+				this.intersectTabularData(tmpIntersectionOutcome.CommandConfiguration.FirstEntity, tmpIntersectionOutcome.CommandConfiguration.SecondEntity, tmpIntersectionOutcome.RawRecords, tmpIntersectionOutcome.Comprehension, tmpIntersectionOutcome);
 
 				// Now decorate the descriptor with the data
 				pFileToLoad.IntersectionOutcome = tmpIntersectionOutcome;
-				
+				// Name the trigger group with the file
+				let tmpGeneratedTriggerGroupName = `AutoTriggerGroup-${pFileToLoad.FileName}`;
+				let tmpGeneratedTriggerGroup = (
+					{
+						// This is the trigger group name used to bind all the inputs together
+						TriggerGroup: tmpGeneratedTriggerGroupName,
+						// This flags the input to update other inputs when the value changes
+						TriggerAllInputs: true
+					});
+				/*
+					The state below is to aid in generation of this:
+					...
+					{
+						"Filter": "Colour List Distilling Filter",
+						"FilterType": "CrossMap",
+						"JoinListAddressGlobal": true,
+						"IgnoreEmpty": true,
+
+						"JoinListAddress": "View.sectionDefinition.Intersections.Colors.FruitSelectionColorsJoin",
+						"JoinListValueAddress": "GUIDColors",
+						"ExternalValueAddress": "GUIDFruitSelection",
+						"FilterToValueAddress": "Listopia.Fruit",
+					}
+					...
+				*/
+				let tmpFilterStanzaPrototype = (
+					{
+						"Filter": `${tmpGeneratedTriggerGroupName} List Distilling Filter`,
+						"FilterType": "CrossMap",
+						"JoinListAddressGlobal": true,
+						"IgnoreEmpty": true
+					});
+
+				// Because sometimes both descriptors are in the same section, we need to keep track of which filters and autofilltriggergroups have been added
+				let tmpFilterStanzasAdded = {};
+				let tmpAutofillTriggerGroupsAdded = {};
+
 				for (let i = 0; i < pFileToLoad.MatchedDescriptors.length; i++)
 				{
 					let tmpDescriptor = pFileToLoad.MatchedDescriptors[i];
 					let tmpSectionHash = tmpDescriptor.PictForm.Section;
+
+					// For filter stanza generation only!
+					let tmpOtherDescriptor = pFileToLoad.MatchedDescriptors[(i === 0) ? 1 : 0];
+
+					// Check to see if the descriptor already has a custom providers array
+					if (!('Providers' in tmpDescriptor.PictForm))
+					{
+						tmpDescriptor.PictForm.Providers = [];
+					}
+					// Check if the Pict-Input-AutofillTriggerGroup provider is already in the providers array
+					if (!tmpDescriptor.PictForm.Providers.includes('Pict-Input-AutofillTriggerGroup'))
+					{
+						tmpDescriptor.PictForm.Providers.push('Pict-Input-AutofillTriggerGroup');
+					}
+
+					// Check to see if the descriptor already has a trigger group
+					if (!('AutofillTriggerGroup' in tmpDescriptor.PictForm))
+					{
+						tmpDescriptor.PictForm.AutofillTriggerGroup = [];
+					}
+					// Add the trigger group to the descriptor
+					let tmpDescriptorTriggerGroup = Object.assign({}, tmpGeneratedTriggerGroup);
+					if (!(`${tmpSectionHash}-~-${tmpDescriptor.Hash}` in tmpAutofillTriggerGroupsAdded))
+					{
+						tmpAutofillTriggerGroupsAdded[`${tmpSectionHash}-~-${tmpDescriptor.Hash}`] = true;
+						tmpDescriptor.PictForm.AutofillTriggerGroup.push(tmpDescriptorTriggerGroup);
+					}
+					// TODO: Add other select-type filtered groups here
+					if ((tmpDescriptor?.PictForm?.InputType === 'Select') || (tmpDescriptor?.PictForm?.InputType === 'Option'))
+					{
+						// Because this is an options trigger group, we need to tell the autofill trigger group to also refresh select options on trigger
+						tmpDescriptorTriggerGroup.SelectOptionsRefresh = true;
+					}
 
 					for (let j = 0; j < this.workingManifest.Sections.length; j++)
 					{
@@ -210,50 +293,38 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 							for (let k = 0; k < tmpComprehensionKeys.length; k++)
 							{
 								let tmpComprehensionKey = tmpComprehensionKeys[k];
+								// We may want to merge comprehensions in the future, but for now we just overwrite
+								tmpSection.Intersections[tmpDescriptor.Hash][tmpComprehensionKey] = pFileToLoad.IntersectionOutcome.Comprehension[tmpComprehensionKey];
 
-								if (tmpSection.Intersections[tmpDescriptor.Hash][tmpComprehensionKey])
+								// Lastly, add the filter stanza to the descriptor
+								let tmpFilterStanza = Object.assign({}, tmpFilterStanzaPrototype);
+								if ('EntityCrossFilterLookup' in pFileToLoad.IntersectionOutcome)
 								{
-									// If there is already a comprehension key, merge the data
-									let tmpExistingComprehension = tmpSection.Intersections[tmpDescriptor.Hash][tmpComprehensionKey];
-									let tmpNewComprehension = pFileToLoad.IntersectionOutcome.Comprehension[tmpComprehensionKey];
-
-									let tmpExistingComprehensionKeys = Object.keys(tmpExistingComprehension);
-									for (let l = 0; l < tmpExistingComprehensionKeys.length; l++)
+									if (tmpDescriptor.Hash in pFileToLoad.IntersectionOutcome.EntityCrossFilterLookup)
 									{
-										let tmpExistingComprehensionKey = tmpExistingComprehensionKeys[l];
-										if (!tmpNewComprehension[tmpExistingComprehensionKey])
-										{
-											tmpNewComprehension[tmpExistingComprehensionKey] = tmpExistingComprehension[tmpExistingComprehensionKey];
-										}
-										else
-										{
-											tmpNewComprehension[tmpExistingComprehensionKey] = Object.assign({}, tmpExistingComprehension[tmpExistingComprehensionKey], tmpNewComprehension[tmpExistingComprehensionKey]);
-										}
+										tmpFilterStanza = Object.assign({}, tmpFilterStanza, pFileToLoad.IntersectionOutcome.EntityCrossFilterLookup[tmpDescriptor.Hash]);
 									}
 								}
-								else
+//									"JoinListAddress": "View.sectionDefinition.Intersections.Colors.FruitSelectionColorsJoin",
+								tmpFilterStanza.JoinListAddress = `View.sectionDefinition.Intersections.${tmpDescriptor.PictForm.Section}.${tmpComprehensionKey}`;
+//									"FilterToValueAddress": "Listopia.Fruit",
+								// This is the complex part -- we need to use the other descriptor hash to get the value address
+								tmpFilterStanza.FilterToValueAddress = tmpOtherDescriptor.Hash;
+								tmpFilterStanza.JoinListAddress = `View.sectionDefinition.Intersections.${tmpDescriptor.Hash}.${tmpComprehensionKey}`;
+
+								if (!('ListFilterRules' in tmpDescriptor.PictForm))
 								{
-									// If there is no comprehension key, just copy the data in as the new comprehension.
-									tmpSection.Intersections[tmpDescriptor.Hash][tmpComprehensionKey] = pFileToLoad.IntersectionOutcome.Comprehension[tmpComprehensionKey];
+									tmpDescriptor.PictForm.ListFilterRules = [];
+								}
+								if (!(`${tmpSectionHash}-~-${tmpDescriptor.PictForm.Hash}` in tmpFilterStanzasAdded))
+								{
+									tmpFilterStanzasAdded[`${tmpSectionHash}-~-${tmpDescriptor.Hash}`] = true;
+									tmpDescriptor.PictForm.ListFilterRules.push(tmpFilterStanza);
 								}
 							}
 						}
 					}
 				}
-
-				// Now add the input trigger groups to the descriptors
-
-				/*
-				"Providers": [
-                    "Pict-Input-AutofillTriggerGroup"
-                ],
-                "AutofillTriggerGroup": {
-                    "TriggerGroup": "Box",
-                    "MarshalEmptyValues": false,
-                    "SelectOptionsRefresh": true
-                },
-
-				*/
 
 				return fCallback();
 			});

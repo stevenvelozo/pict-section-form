@@ -476,13 +476,6 @@
             "DataAddress": "Listopia.Filters.Colour",
             "DataType": "String",
             "PictForm": {
-                "Providers": [
-                    "Pict-Input-AutofillTriggerGroup"
-                ],
-                "AutofillTriggerGroup": {
-                    "TriggerGroup": "ColorsTriggered",
-                    "TriggerAllInputs": true
-                },
                 "Row": "1",
                 "Width": "1",
                 "Section": "Listopia",
@@ -500,32 +493,6 @@
                 "Width": "1",
                 "Section": "Listopia",
                 "Group": "OcclusionLists",
-                "Providers": [
-                    "Pict-Input-AutofillTriggerGroup"
-                ],
-                "AutofillTriggerGroup": {
-                    "TriggerGroup": "ColorsTriggered",
-                    "SelectOptionsRefresh": true
-                },
-                "ListFilterRules": [
-                    {
-                        "Filter": "Colour Entry Filter",
-                        "FilterType": "Explicit",
-                        "FilterValueComparison": "==",
-                        "FilterValueAddress": "Listopia.Filters.Colour",
-                        "IgnoreEmptyValue": true
-                    },
-                    {
-                        "Filter": "Colour List Distilling Filter",
-                        "FilterType": "CrossMap",
-                        "JoinListAddress": "View.sectionDefinition.Intersections.Colors.FruitSelectionColorsJoin",
-                        "JoinListAddressGlobal": true,
-                        "JoinListValueAddress": "GUIDColors",
-                        "ExternalValueAddress": "GUIDFruitSelection",
-                        "FilterToValueAddress": "Listopia.Fruit",
-                        "IgnoreEmpty": true
-                    }
-                ],
                 "SelectOptions": [
                     {
                         "id": "Red",
@@ -550,6 +517,28 @@
                     {
                         "id": "Other",
                         "text": "Other"
+                    }
+                ],
+                "Providers": [
+                    "Pict-Input-AutofillTriggerGroup"
+                ],
+                "AutofillTriggerGroup": [
+                    {
+                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Colors.csv",
+                        "TriggerAllInputs": true,
+                        "SelectOptionsRefresh": true
+                    }
+                ],
+                "ListFilterRules": [
+                    {
+                        "Filter": "AutoTriggerGroup-FruitSelection-Colors.csv List Distilling Filter",
+                        "FilterType": "CrossMap",
+                        "JoinListAddressGlobal": true,
+                        "IgnoreEmpty": true,
+                        "JoinListValueAddress": "GUIDColors",
+                        "ExternalValueAddress": "GUIDFruitSelection",
+                        "JoinListAddress": "View.sectionDefinition.Intersections.Colors.FruitSelectionColorsJoin",
+                        "FilterToValueAddress": "FruitSelection"
                     }
                 ]
             }
@@ -587,14 +576,6 @@
                 "Width": "1",
                 "Section": "Listopia",
                 "Group": "OcclusionLists",
-
-                "Providers": [
-                    "Pict-Input-AutofillTriggerGroup"
-                ],
-                "AutofillTriggerGroup": {
-                    "TriggerGroup": "ColorsTriggered",
-                    "SelectOptionsRefresh": true
-                },
                 "SelectOptions": [
                     {
                         "id": "Apple",
@@ -619,6 +600,43 @@
                     {
                         "id": "Tomato",
                         "text": "An Heirloom of Rapid Descent"
+                    }
+                ],
+                "Providers": [
+                    "Pict-Input-AutofillTriggerGroup"
+                ],
+                "AutofillTriggerGroup": [
+                    {
+                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Colors.csv",
+                        "TriggerAllInputs": true,
+                        "SelectOptionsRefresh": true
+                    },
+                    {
+                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Stones.csv",
+                        "TriggerAllInputs": true,
+                        "SelectOptionsRefresh": true
+                    }
+                ],
+                "ListFilterRules": [
+                    {
+                        "Filter": "AutoTriggerGroup-FruitSelection-Colors.csv List Distilling Filter",
+                        "FilterType": "CrossMap",
+                        "JoinListAddressGlobal": true,
+                        "IgnoreEmpty": true,
+                        "JoinListValueAddress": "GUIDFruitSelection",
+                        "ExternalValueAddress": "GUIDColors",
+                        "JoinListAddress": "View.sectionDefinition.Intersections.FruitSelection.FruitSelectionColorsJoin",
+                        "FilterToValueAddress": "Colors"
+                    },
+                    {
+                        "Filter": "AutoTriggerGroup-FruitSelection-Stones.csv List Distilling Filter",
+                        "FilterType": "CrossMap",
+                        "JoinListAddressGlobal": true,
+                        "IgnoreEmpty": true,
+                        "JoinListValueAddress": "GUIDFruitSelection",
+                        "ExternalValueAddress": "GUIDStones",
+                        "JoinListAddress": "View.sectionDefinition.Intersections.FruitSelection.FruitSelectionStonesJoin",
+                        "FilterToValueAddress": "Stones"
                     }
                 ]
             }
@@ -646,6 +664,28 @@
                     {
                         "id": "None",
                         "text": "No Seeds to Speak Of"
+                    }
+                ],
+                "Providers": [
+                    "Pict-Input-AutofillTriggerGroup"
+                ],
+                "AutofillTriggerGroup": [
+                    {
+                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Stones.csv",
+                        "TriggerAllInputs": true,
+                        "SelectOptionsRefresh": true
+                    }
+                ],
+                "ListFilterRules": [
+                    {
+                        "Filter": "AutoTriggerGroup-FruitSelection-Stones.csv List Distilling Filter",
+                        "FilterType": "CrossMap",
+                        "JoinListAddressGlobal": true,
+                        "IgnoreEmpty": true,
+                        "JoinListValueAddress": "GUIDStones",
+                        "ExternalValueAddress": "GUIDFruitSelection",
+                        "JoinListAddress": "View.sectionDefinition.Intersections.Stones.FruitSelectionStonesJoin",
+                        "FilterToValueAddress": "FruitSelection"
                     }
                 ]
             }
@@ -1236,50 +1276,50 @@
                         }
                     },
                     "FruitSelectionStonesJoin": {
-                        "L-Apple-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Apple-T-Blue",
+                        "L-Apple-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Apple-T-None",
                             "GUIDFruitSelection": "Apple",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Kiwi-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Kiwi-T-Blue",
+                        "L-Kiwi-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Kiwi-T-None",
                             "GUIDFruitSelection": "Kiwi",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Tangerine-T-Red": {
-                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-Red",
+                        "L-Tangerine-T-Small": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-Small",
                             "GUIDFruitSelection": "Tangerine",
-                            "GUIDStones": "Red"
+                            "GUIDStones": "Small"
                         },
-                        "L-Tangerine-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-Blue",
+                        "L-Tangerine-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-None",
                             "GUIDFruitSelection": "Tangerine",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Orange-T-Red": {
-                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-Red",
+                        "L-Orange-T-Small": {
+                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-Small",
                             "GUIDFruitSelection": "Orange",
-                            "GUIDStones": "Red"
+                            "GUIDStones": "Small"
                         },
-                        "L-Orange-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-Blue",
+                        "L-Orange-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-None",
                             "GUIDFruitSelection": "Orange",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Watermelon-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Watermelon-T-Blue",
+                        "L-Watermelon-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Watermelon-T-None",
                             "GUIDFruitSelection": "Watermelon",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Tomato-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Tomato-T-Blue",
+                        "L-Tomato-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tomato-T-None",
                             "GUIDFruitSelection": "Tomato",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Peach-T-Green": {
-                            "GUIDFruitSelectionStonesJoin": "L-Peach-T-Green",
+                        "L-Peach-T-Large": {
+                            "GUIDFruitSelectionStonesJoin": "L-Peach-T-Large",
                             "GUIDFruitSelection": "Peach",
-                            "GUIDStones": "Green"
+                            "GUIDStones": "Large"
                         }
                     }
                 },
@@ -1369,50 +1409,50 @@
                 },
                 "Stones": {
                     "FruitSelectionStonesJoin": {
-                        "L-Apple-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Apple-T-Blue",
+                        "L-Apple-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Apple-T-None",
                             "GUIDFruitSelection": "Apple",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Kiwi-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Kiwi-T-Blue",
+                        "L-Kiwi-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Kiwi-T-None",
                             "GUIDFruitSelection": "Kiwi",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Tangerine-T-Red": {
-                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-Red",
+                        "L-Tangerine-T-Small": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-Small",
                             "GUIDFruitSelection": "Tangerine",
-                            "GUIDStones": "Red"
+                            "GUIDStones": "Small"
                         },
-                        "L-Tangerine-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-Blue",
+                        "L-Tangerine-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-None",
                             "GUIDFruitSelection": "Tangerine",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Orange-T-Red": {
-                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-Red",
+                        "L-Orange-T-Small": {
+                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-Small",
                             "GUIDFruitSelection": "Orange",
-                            "GUIDStones": "Red"
+                            "GUIDStones": "Small"
                         },
-                        "L-Orange-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-Blue",
+                        "L-Orange-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-None",
                             "GUIDFruitSelection": "Orange",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Watermelon-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Watermelon-T-Blue",
+                        "L-Watermelon-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Watermelon-T-None",
                             "GUIDFruitSelection": "Watermelon",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Tomato-T-Blue": {
-                            "GUIDFruitSelectionStonesJoin": "L-Tomato-T-Blue",
+                        "L-Tomato-T-None": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tomato-T-None",
                             "GUIDFruitSelection": "Tomato",
-                            "GUIDStones": "Blue"
+                            "GUIDStones": "None"
                         },
-                        "L-Peach-T-Green": {
-                            "GUIDFruitSelectionStonesJoin": "L-Peach-T-Green",
+                        "L-Peach-T-Large": {
+                            "GUIDFruitSelectionStonesJoin": "L-Peach-T-Large",
                             "GUIDFruitSelection": "Peach",
-                            "GUIDStones": "Green"
+                            "GUIDStones": "Large"
                         }
                     }
                 }

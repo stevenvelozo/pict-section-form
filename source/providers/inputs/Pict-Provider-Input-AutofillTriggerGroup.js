@@ -39,6 +39,16 @@ class CustomInputHandler extends libPictSectionInputExtension
 		this.log;
 	}
 
+	getTriggerGroupConfigurationArray(pInput)
+	{
+		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
+		if (!Array.isArray(tmpAutoFillTriggerGroups))
+		{
+			tmpAutoFillTriggerGroups = [tmpAutoFillTriggerGroups];
+		}
+		return tmpAutoFillTriggerGroups;
+	}
+
 	autoFillFromAddressList(pView, pInput, pValue, tmpTriggerGroupInfo, pHTMLSelector)
 	{
 		// First sanity check the triggergroupinfo
@@ -113,26 +123,16 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataChange(pView, pInput, pValue, pHTMLSelector)
 	{
-		let tmpTriggerGroupConfiguration = pInput.PictForm.AutofillTriggerGroup;
-
-		if (!tmpTriggerGroupConfiguration)
+		let tmpTriggerGroupConfigurations = this.getTriggerGroupConfigurationArray(pInput);
+		if (Array.isArray(tmpTriggerGroupConfigurations))
 		{
-			return super.onDataChange(pView, pInput, pValue, pHTMLSelector);
-		}
-
-		if (Array.isArray(tmpTriggerGroupConfiguration))
-		{
-			for (let i = 0; i < tmpTriggerGroupConfiguration.length; i++)
+			for (let i = 0; i < tmpTriggerGroupConfigurations.length; i++)
 			{
-				if (tmpTriggerGroupConfiguration[i].TriggerAllInputs)
+				if (tmpTriggerGroupConfigurations[i].TriggerAllInputs)
 				{
 					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`${pInput.PictForm.AutofillTriggerGroup.TriggerGroup}`);
 				}
 			}
-		}
-		if (tmpTriggerGroupConfiguration && tmpTriggerGroupConfiguration.TriggerAllInputs)
-		{
-			this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`${pInput.PictForm.AutofillTriggerGroup.TriggerGroup}`);
 		}
 		return super.onDataChange(pView, pInput, pValue, pHTMLSelector);
 	}
@@ -149,26 +149,16 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
-		let tmpTriggerGroupConfiguration = pInput.PictForm.AutofillTriggerGroup;
-
-		if (!tmpTriggerGroupConfiguration)
+		let tmpTriggerGroupConfigurations = this.getTriggerGroupConfigurationArray(pInput);
+		if (Array.isArray(tmpTriggerGroupConfigurations))
 		{
-			return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex);
-		}
-
-		if (Array.isArray(tmpTriggerGroupConfiguration))
-		{
-			for (let i = 0; i < tmpTriggerGroupConfiguration.length; i++)
+			for (let i = 0; i < tmpTriggerGroupConfigurations.length; i++)
 			{
-				if (tmpTriggerGroupConfiguration[i].TriggerAllInputs)
+				if (tmpTriggerGroupConfigurations[i].TriggerAllInputs)
 				{
 					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`${pInput.PictForm.AutofillTriggerGroup.TriggerGroup}`);
 				}
 			}
-		}
-		if (tmpTriggerGroupConfiguration && tmpTriggerGroupConfiguration.TriggerAllInputs)
-		{
-			this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`${pInput.PictForm.AutofillTriggerGroup.TriggerGroup}`);
 		}
 		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex);
 	}
@@ -185,7 +175,6 @@ class CustomInputHandler extends libPictSectionInputExtension
 		let tmpTriggerGroupName = pEvent.substring(tmpSeparatorIndex+1);
 
 		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
-
 		if (!tmpAutoFillTriggerGroups)
 		{
 			return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);			
