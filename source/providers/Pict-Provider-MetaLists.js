@@ -171,7 +171,7 @@ class PictMetalist extends libPictProvider
 		let tmpListData = this.pict.views.PictFormMetacontroller.getValueByHash(pListObject.ListSourceAddress);
 		if (!tmpListData)
 		{
-			this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] failed to fetch the list data for PickList [${pListObject.Hash}]. Skipping.`);
+			//this.log.warn(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] failed to fetch the list data for PickList [${pListObject.Hash}]. Skipping.`);
 			this.computedLists[pListObject.Hash] = [];
 			return false;
 		}

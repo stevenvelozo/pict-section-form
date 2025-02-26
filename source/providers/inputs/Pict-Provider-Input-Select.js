@@ -252,7 +252,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		if (!tmpValueSelected)
 		{
 			tmpInputSelectElement.selectedIndex = -1;
-			this.log.error(`The value [${pValue}] was not found in the select options for input [${pInput.Macro.RawHTMLID}] but was set in the hidden HTML input.`);
+			//this.log.error(`The value [${pValue}] was not found in the select options for input [${pInput.Macro.RawHTMLID}] but was set in the hidden HTML input.`);
 		}
 
 		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
@@ -298,7 +298,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		if (!tmpValueSelected)
 		{
 			tmpInputSelectElement.selectedIndex = -1;
-			this.log.error(`The value [${pValue}] was not found in the select options for input [${pInput.Macro.RawHTMLID}] but was set in the hidden HTML input.`);
+			//this.log.error(`The value [${pValue}] was not found in the select options for input [${pInput.Macro.RawHTMLID}] but was set in the hidden HTML input.`);
 		}
 
 		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);

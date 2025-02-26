@@ -4,6 +4,8 @@ const libPackage = require('../../package.json');
 
 const libPictDynamicApplication = require(`../services/Pict-Service-DynamicApplication.js`);
 
+const libFableServiceTransactionTracking = require(`../services/Fable-Service-TransactionTracking.js`);
+
 const _DefaultConfiguration = require('./Pict-View-DynamicForm-DefaultConfiguration.json');
 
 /**
@@ -61,6 +63,11 @@ class PictViewDynamicForm extends libPictViewClass
 		/** @type {import('pict') & { PictApplication: import('pict-application'), log: any; instantiateServiceProviderWithoutRegistration: (hash: string) => any; }} */
 		this.pict;
 
+		this.fable.addServiceTypeIfNotExists('TransactionTracking', libFableServiceTransactionTracking);
+
+		// Use this to manage transactions
+		this.transactionTracking = this.fable.instantiateServiceProviderWithoutRegistration('TransactionTracking');
+
 		// Load the dynamic application dependencies if they don't exist
 		this.fable.addAndInstantiateSingletonService('PictDynamicApplication', libPictDynamicApplication.default_configuration, libPictDynamicApplication);
 
@@ -115,6 +122,7 @@ class PictViewDynamicForm extends libPictViewClass
 		this.viewMarshalDestination = null;
 
 		this.fable.ManifestFactory.initializeFormGroups(this);
+
 	}
 
 	/**
@@ -151,7 +159,11 @@ class PictViewDynamicForm extends libPictViewClass
 	{
 		let tmpInput = this.getInputFromHash(pInputHash);
 		// This is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
-		// TODO: Make this more specific to the input hash.  Should be trivial with new informary.
+
+		if (this.pict.LogNoisiness > 2)
+		{
+			this.log.trace(`Dynamic form [${this.Hash}]::[${this.UUID}] dataChanged event for input [${pInputHash}].`);
+		}
 		if (pInputHash)
 		{
 			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
@@ -172,7 +184,7 @@ class PictViewDynamicForm extends libPictViewClass
 					}
 					else
 					{
-						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
+						this.log.error(`Dynamic form dataChanged [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
 					}
 				}
 			}
@@ -200,6 +212,10 @@ class PictViewDynamicForm extends libPictViewClass
 	 */
 	dataChangedTabular(pGroupIndex, pInputIndex, pRowIndex)
 	{
+		if (this.pict.LogNoisiness > 2)
+		{
+			this.log.trace(`Dynamic form [${this.Hash}]::[${this.UUID}] dataChangedTabular event for group ${pGroupIndex} input ${pInputIndex} row ${pRowIndex}.`);
+		}
 		let tmpInput = this.getTabularRecordInput(pGroupIndex, pInputIndex);
 		if (
 			(typeof (pGroupIndex) != 'undefined')
@@ -229,7 +245,7 @@ class PictViewDynamicForm extends libPictViewClass
 					}
 					else
 					{
-						this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
+						this.log.error(`Dynamic form dataChangedTabular [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
 					}
 				}
 			}
@@ -438,10 +454,13 @@ class PictViewDynamicForm extends libPictViewClass
 		// TODO: Only marshal data that has changed since the last marshal.  Thought experiment: who decides what changes happened?
 		try
 		{
+			let tmpTransactionGUID = this.fable.getUUID();
+			this.transactionTracking.registerTransaction(tmpTransactionGUID);
 			let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
+			// TODO: Add optional transaction awareness to informary
 			this.pict.providers.Informary.marshalDataToForm(tmpMarshalDestinationObject, this.formID, this.sectionManifest);
-			this.runLayoutProviderFunctions('onDataMarshalToForm');
-			this.runInputProviderFunctions('onDataMarshalToForm');
+			this.runLayoutProviderFunctions('onDataMarshalToForm', tmpTransactionGUID);
+			this.runInputProviderFunctions('onDataMarshalToForm', null, null, tmpTransactionGUID);
 		}
 		catch (pError)
 		{
@@ -450,13 +469,15 @@ class PictViewDynamicForm extends libPictViewClass
 		return super.onMarshalToView();
 	}
 
-	manualMarshalDataToViewByInput(pInput)
+	manualMarshalDataToViewByInput(pInput, pTransactionGUID)
 	{
 		try
 		{
+			let tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
+			this.transactionTracking.registerTransaction(tmpTransactionGUID);
 			this.pict.providers.Informary.manualMarshalDataToFormByInput(pInput);
-			this.runLayoutProviderFunctions('onDataMarshalToForm');
-			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash);
+			this.runLayoutProviderFunctions('onDataMarshalToForm', tmpTransactionGUID);
+			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash, null, tmpTransactionGUID);
 		}
 		catch (pError)
 		{
@@ -464,13 +485,15 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 	}
 
-	manualMarshalTabularDataToViewByInput(pInput, pRowIndex)
+	manualMarshalTabularDataToViewByInput(pInput, pRowIndex, pTransactionGUID)
 	{
 		try
 		{
+			let tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
+			this.transactionTracking.registerTransaction(tmpTransactionGUID);
 			this.pict.providers.Informary.manualMarshalTabularDataToFormByInput(pInput, pRowIndex);
-			this.runLayoutProviderFunctions('onDataMarshalToForm');
-			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash, pRowIndex);
+			this.runLayoutProviderFunctions('onDataMarshalToForm', tmpTransactionGUID);
+			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash, pRowIndex, tmpTransactionGUID);
 		}
 		catch (pError)
 		{
@@ -503,7 +526,17 @@ class PictViewDynamicForm extends libPictViewClass
 	onAfterMarshalToForm()
 	{
 		// Check to see if there are any hooks set from the input templates
-		this.runInputProviderFunctions('onAfterMarshalToForm');
+		try
+		{
+			let tmpTransactionGUID = this.fable.getUUID();
+			this.transactionTracking.registerTransaction(tmpTransactionGUID);
+			this.runInputProviderFunctions('onAfterMarshalToForm', null, null, tmpTransactionGUID);
+						
+		}
+		catch (pError)
+		{
+			this.log.error(`Gross error running after marshal to form: ${pError}`);
+		}
 	}
 
 	/**
@@ -536,8 +569,11 @@ class PictViewDynamicForm extends libPictViewClass
 	 */
 	onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent)
 	{
-		this.runLayoutProviderFunctions('onGroupLayoutInitialize')
-		this.runInputProviderFunctions('onInputInitialize');
+		let tmpTransactionGUID = this.fable.getUUID();
+		this.transactionTracking.registerTransaction(tmpTransactionGUID);
+
+		this.runLayoutProviderFunctions('onGroupLayoutInitialize', tmpTransactionGUID);
+		this.runInputProviderFunctions('onInputInitialize', null, null, tmpTransactionGUID);
 		return super.onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent);
 	}
 
@@ -555,9 +591,13 @@ class PictViewDynamicForm extends libPictViewClass
 	 * The easiest way (and a speed up for other queries as such) is to scope it within the view container element
 	 *
 	 * @param {string} pFunctionName - The name of the function to execute.
+	 * @param {string} [pTransactionGUID] - The transaction GUID to use for logging.
 	 */
-	runLayoutProviderFunctions(pFunctionName)
+	runLayoutProviderFunctions(pFunctionName, pTransactionGUID)
 	{
+		let tmpTransactionGUID = (typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
+		let tmpTransaction = this.transactionTracking.transactions[pTransactionGUID];
+
 		// Check to see if there are any hooks set from the input templates
 		let tmpLayoutProviders = this.pict.ContentAssignment.getElement(`${this.sectionDefinition.DefaultDestinationAddress} [data-i-pictdynamiclayout="true"]`);
 
@@ -588,7 +628,10 @@ class PictViewDynamicForm extends libPictViewClass
 			if (tmpLayoutProvider && (pFunctionName in tmpLayoutProvider))
 			{
 				let tmpFunction = tmpLayoutProvider[pFunctionName];
-				tmpFunction.call(tmpLayoutProvider, this, tmpGroup);
+				if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `G${tmpGroupIndex}-L${tmpLayout}`, pFunctionName))
+				{
+					tmpFunction.call(tmpLayoutProvider, this, tmpGroup);
+				}
 			}
 		}
 	}
@@ -599,9 +642,13 @@ class PictViewDynamicForm extends libPictViewClass
 	 * @param {string} pFunctionName - The name of the function to run for each input provider.
 	 * @param {string} [pInputHash] - The hash of the input to run the function for.
 	 * @param {number} [pRowIndex] - The index of the row to run the
+	 * @param {string} [pTransactionGUID] - The transaction GUID to use for logging.
 	 */
-	runInputProviderFunctions(pFunctionName, pInputHash, pRowIndex)
+	runInputProviderFunctions(pFunctionName, pInputHash, pRowIndex, pTransactionGUID)
 	{
+		let tmpTransactionGUID = (typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
+		let tmpTransaction = this.transactionTracking.transactions[pTransactionGUID];
+
 		// Check to see if there are any hooks set from the input templates
 		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
 		{
@@ -629,7 +676,14 @@ class PictViewDynamicForm extends libPictViewClass
 									let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpHashAddress);
 									try
 									{
-										this.pict.providers[tmpInputProviderList[l]][pFunctionName](this, tmpGroup, j, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+										if (this.pict.LogNoisiness > 2)
+										{
+											this.log.trace(`Dynamic form [${this.Hash}]::[${this.UUID}] running provider [${tmpInputProviderList[l]}] function [${pFunctionName}] for input [${tmpInput.Hash}].`);
+										}
+										if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
+										{
+											this.pict.providers[tmpInputProviderList[l]][pFunctionName](this, tmpGroup, j, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+										}
 									}
 									catch (pError)
 									{
@@ -638,7 +692,7 @@ class PictViewDynamicForm extends libPictViewClass
 								}
 								else
 								{
-									this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[l]}] for input [${tmpInput.Hash}].`);
+									this.log.error(`Dynamic form runInputProviderFunctions core [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[l]}] for input [${tmpInput.Hash}].`);
 								}
 							}
 						}
@@ -671,14 +725,17 @@ class PictViewDynamicForm extends libPictViewClass
 								for (let r = 0; r < tmpTabularRecordSet.length; r++)
 								{
 									if (this.pict.providers[tmpInputProviderList[l]] &&
-										(pRowIndex === undefined || pRowIndex === r))
+										(pRowIndex === undefined || pRowIndex === null || pRowIndex === r))
 									{
 										// There is a provider, we have an input and it is supposed to be run through for a record
 										let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, r, tmpInput.PictForm.InformaryDataAddress);
 										let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
 										try
 										{
-											this.pict.providers[tmpInputProviderList[l]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r);
+											if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `TI${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
+											{
+												this.pict.providers[tmpInputProviderList[l]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r);
+											}
 										}
 										catch (pError)
 										{
@@ -687,7 +744,7 @@ class PictViewDynamicForm extends libPictViewClass
 									}
 									else
 									{
-										this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[l]}] for input [${tmpInput.Hash}].`);
+										this.log.error(`Dynamic form runInputProviderFunctions supporting [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[l]}] for input [${tmpInput.Hash}].`);
 									}
 								}
 							}

@@ -589,6 +589,7 @@ class PictFormMetacontroller extends libPictViewClass
 	 */
 	triggerGlobalInputEvent(pEvent)
 	{
+		let tmpEvent = (typeof(pEvent) === 'string') ? pEvent : this.fable.getUUID();
 		let tmpViewHashes = Object.keys(this.pict.views);
 		let tmpCompletedHashes = {};
 		// Filter the views based on the filter function and type
@@ -597,7 +598,7 @@ class PictFormMetacontroller extends libPictViewClass
 			let tmpView = this.pict.views[tmpViewHashes[i]];
 			if (tmpView.isPictSectionForm)
 			{
-				tmpView.globalInputEvent(pEvent, tmpCompletedHashes);
+				tmpView.globalInputEvent(tmpEvent, tmpCompletedHashes);
 			}
 		}
 	}

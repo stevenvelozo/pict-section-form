@@ -100,8 +100,6 @@ class PictListDistilling extends libPictProvider
 			return pList;
 		}
 
-		let tmpMarshalDestinationObject = pView.getMarshalDestinationObject();
-
 		// Make a copy of the incoming list of options
 		let tmpFilteredList = pList.slice(0);
 		// We walk backwards so we can remove items from the end without breaking this loop.
@@ -254,7 +252,7 @@ class PictListDistilling extends libPictProvider
 							break;
 						}
 
-						this.pict.log.trace(`FilterList: CrossMap: JoinListAddress[${tmpJoinListAddress}](${tmpJoinList.length})->${tmpJoinListValueAddress} ExternalValueAddress[${tmpExternalValueAddress}] FilterToValueAddress[${tmpFilterToValueAddress}]`);
+						//this.pict.log.trace(`FilterList: CrossMap: JoinListAddress[${tmpJoinListAddress}](${tmpJoinList.length})->${tmpJoinListValueAddress} ExternalValueAddress[${tmpExternalValueAddress}] FilterToValueAddress[${tmpFilterToValueAddress}]`);
 
 						// TODO: This is not industrial grade, yo.  Small lists only please.  O(n^2) is not cool.
 						let tmpPossiblyAllowed = false;
@@ -269,10 +267,10 @@ class PictListDistilling extends libPictProvider
 								continue;
 							}
 
-							this.pict.log.trace(`          CrossMap Test: JoinListValue[${tmpJoinListValue}]<==>ComparisonValue[${tmpComparisonValue}] ExternalValue[${tmpExternalValue}]<==>FilterToValue[${tmpFilterToValueAddressValue}]`);
+							//this.pict.log.trace(`          CrossMap Test: JoinListValue[${tmpJoinListValue}]<==>ComparisonValue[${tmpComparisonValue}] ExternalValue[${tmpExternalValue}]<==>FilterToValue[${tmpFilterToValueAddressValue}]`);
 							if ((tmpFilterToValueAddressValue == tmpExternalValue) && (tmpJoinListValue == tmpComparisonValue))
 							{
-								this.pict.log.trace(`   !!! CrossMap: Matched: ${tmpJoinListValue} == ${tmpComparisonValue} && ${tmpExternalValue} == ${tmpFilterToValueAddressValue}`);
+								//this.pict.log.trace(`   !!! CrossMap: Matched: ${tmpJoinListValue} == ${tmpComparisonValue} && ${tmpExternalValue} == ${tmpFilterToValueAddressValue}`);
 								tmpPossiblyAllowed = true;
 								break;
 							}
@@ -299,6 +297,9 @@ class PictListDistilling extends libPictProvider
 				tmpFilteredList.splice(h,1);
 			}
 		}
+
+		//this.log.trace(`FilterList: Input [${pInput.Hash}] has [${pList.length}] options to filter with [${tmpFilterRules.length}] rules.`);
+
 		return tmpFilteredList;
 	}
 }

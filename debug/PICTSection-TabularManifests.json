@@ -488,7 +488,7 @@
                 "DataType": "String",
                 "PictForm": {
                     "InputType": "Option",
-                    "Row": "1",
+                    "Row": "2",
                     "Width": "1",
                     "Section": "Listopia",
                     "Group": "OcclusionLists"
@@ -501,7 +501,7 @@
                 "DataType": "String",
                 "PictForm": {
                     "InputType": "Option",
-                    "Row": "1",
+                    "Row": "2",
                     "Width": "1",
                     "Providers": [
                         "Pict-Input-AutofillTriggerGroup"
@@ -522,7 +522,7 @@
                 "DataType": "String",
                 "PictForm": {
                     "InputType": "Option",
-                    "Row": "1",
+                    "Row": "3",
                     "Width": "1",
                     "Section": "Listopia",
                     "Group": "OcclusionLists"
@@ -535,7 +535,7 @@
                 "DataType": "String",
                 "PictForm": {
                     "InputType": "Option",
-                    "Row": "1",
+                    "Row": "3",
                     "Width": "1",
                     "Section": "Listopia",
                     "Group": "OcclusionLists"

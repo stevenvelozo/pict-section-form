@@ -49,17 +49,12 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return tmpAutoFillTriggerGroups;
 	}
 
-	autoFillFromAddressList(pView, pInput, pValue, tmpTriggerGroupInfo, pHTMLSelector)
+	autoFillFromAddressList(pView, pInput, tmpTriggerGroupInfo, pHTMLSelector)
 	{
 		// First sanity check the triggergroupinfo
 		if (!('TriggerGroupName' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerGroupName) != 'string'))
 		{
 			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupName string is not present.`);
-			return false;
-		}
-		if (tmpTriggerGroupInfo.TriggerGroupName != pValue)
-		{
-			this.log.warn(`AutofillTriggerGroup did not match names so no action will be taken.`);
 			return false;
 		}
 		if (!('TriggerAddress' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerAddress) != 'string'))
@@ -80,17 +75,12 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return true;
 	}
 
-	autoFillFromAddressListTabular(pView, pInput, pValue, tmpTriggerGroupInfo, pHTMLSelector, pRowIndex)
+	autoFillFromAddressListTabular(pView, pInput, tmpTriggerGroupInfo, pHTMLSelector, pRowIndex)
 	{
 		// First sanity check the triggergroupinfo
 		if (!('TriggerGroupName' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerGroupName) != 'string'))
 		{
 			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupName string is not present.`);
-			return false;
-		}
-		if (tmpTriggerGroupInfo.TriggerGroupName != pValue)
-		{
-			this.log.warn(`AutofillTriggerGroup did not match names so no action will be taken.`);
 			return false;
 		}
 		if (!('TriggerAddress' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerAddress) != 'string'))
@@ -130,7 +120,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			{
 				if (tmpTriggerGroupConfigurations[i].TriggerAllInputs)
 				{
-					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`${pInput.PictForm.AutofillTriggerGroup.TriggerGroup}`);
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`AFTG-ODC-${this.pict.getUUID()}`);
 				}
 			}
 		}
@@ -156,7 +146,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			{
 				if (tmpTriggerGroupConfigurations[i].TriggerAllInputs)
 				{
-					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`${pInput.PictForm.AutofillTriggerGroup.TriggerGroup}`);
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`AFTG-ODC-${this.pict.getUUID()}`);
 				}
 			}
 		}
@@ -167,12 +157,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	onEvent(pView, pInput, pValue, pHTMLSelector, pEvent)
 	{
 		// Get all inputs that are in this autofill trigger group
-		let tmpSeparatorIndex = pEvent.indexOf('-');
-		if (pEvent.length <= tmpSeparatorIndex+1)
-		{
-			return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);
-		}
-		let tmpTriggerGroupName = pEvent.substring(tmpSeparatorIndex+1);
+		let tmpEventGUID = (typeof(pEvent) === 'string') ? pEvent : this.pict.getUUID();
 
 		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
 		if (!tmpAutoFillTriggerGroups)
@@ -190,7 +175,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			if ('TriggerAddress' in tmpAutoFillTriggerGroup)
 			{
 				// Autofill based on the address list as it isn't a select option
-				this.autoFillFromAddressList(pView, pInput, tmpTriggerGroupName, tmpAutoFillTriggerGroup, pHTMLSelector);
+				this.autoFillFromAddressList(pView, pInput, tmpAutoFillTriggerGroup, pHTMLSelector);
 			}
 			
 			if (tmpAutoFillTriggerGroup.SelectOptionsRefresh)
@@ -200,7 +185,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 				let tmpInputView = this.pict.views[pInput.PictForm.ViewHash];
 				this.pict.providers.DynamicMetaLists.rebuildListByHash(pInput.PictForm.SelectOptionsPickList);
 				this.pict.providers['Pict-Input-Select'].refreshSelectList(tmpInputView, tmpInputView.getGroup(pInput.PictForm.GroupIndex), tmpInputView.getRow(pInput.PictForm.GroupIndex, pInput.PictForm.Row), pInput, pValue, pHTMLSelector);
-				tmpInputView.manualMarshalDataToViewByInput(pInput);
+				tmpInputView.manualMarshalDataToViewByInput(pInput, tmpEventGUID);
 			}
 		}
 
@@ -209,14 +194,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 
 	onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent)
 	{
-		// Get all inputs that are in this autofill trigger group
-		let tmpSeparatorIndex = pEvent.indexOf('-');
-		if (pEvent.length <= tmpSeparatorIndex+1)
-		{
-			return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);
-		}
-		let tmpTriggerGroupName = pEvent.substring(tmpSeparatorIndex+1);
-		//console.log(`Event ${pEvent} triggered for ${pInput.Hash} with the group ${tmpTriggerGroupName}...`);
+		let tmpEventGUID = (typeof(pEvent) === 'string') ? pEvent : this.pict.getUUID();
 
 		if (!pInput.PictForm.hasOwnProperty('AutofillTriggerGroup'))
 		{
@@ -226,7 +204,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			(!('SelectOptionsRefresh' in pInput.PictForm.AutofillTriggerGroup) || !pInput.PictForm.AutofillTriggerGroup.SelectOptionsRefresh))
 		{
 			// Autofill based on the address list as it isn't a select option
-			this.autoFillFromAddressListTabular(pView, pInput, tmpTriggerGroupName, pHTMLSelector, pRowIndex);
+			this.autoFillFromAddressListTabular(pView, pInput, pHTMLSelector, pRowIndex);
 		}
 		else if (pInput.PictForm.AutofillTriggerGroup.SelectOptionsRefresh)
 		{
@@ -238,10 +216,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 			{
 				// Regenerate the picklist
 				// TODO: This is inefficient -- it regenerates the list for every single row.  Easy optimization.
+				// Use the transaction stuff at some point, now that we have it in the event.
 				let tmpInputView = this.pict.views[pInput.PictForm.ViewHash];
 				this.pict.providers.DynamicMetaLists.rebuildListByHash(pInput.PictForm.SelectOptionsPickList);
 				this.pict.providers['Pict-Input-Select'].refreshSelectListTabular(tmpInputView, tmpInputView.getGroup(pInput.PictForm.GroupIndex), tmpInputView.getRow(pInput.PictForm.GroupIndex, pInput.PictForm.Row), pInput, pValue, pHTMLSelector, pRowIndex);
-				tmpInputView.manualMarshalTabularDataToViewByInput(pInput, pRowIndex);
+				tmpInputView.manualMarshalTabularDataToViewByInput(pInput, pRowIndex, tmpEventGUID);
 			}
 		}
 
