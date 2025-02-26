@@ -150,11 +150,100 @@ class PictListDistilling extends libPictProvider
 						break;
 
 					case 'CrossMap':
-						let tmpFilterValueAddress = tmpFilterRule.FilterValueAddres;
-						let tmpFilterValueListAddress = tmpFilterRule.FilterValueListAddress;
-						let tmpFilterValueTemplate = tmpFilterRule.FilterValueTemplate;
+						// Filter based on a list of "join" records, with:
+						// A "JoinListAddress" address - where to find the list of joins in the application state
+						// A "JoinListAddressGlobal" boolean - if the list is global or not (global means scoped to pict vs appdata/state location)
+						// A "JoinListValueAddress" address - the address within the record that maps to the ID of the list value
+						// A "ExternalValueAddress" address - the address of the external value we are comparing to
+						// A "FilterToValueAddress" address - the external address to use to see if the ExternalValue matches
+						// A "IgnoreEmpty" boolean - makes the tech ignore empty ExternalValue (including undefined etc.)
+						//
+						// So for example, if you had a list of Colors with id: "Red", "Green", "Blue"
+						/*
+							...And you had a list of joins they would be something like:
+							AppData.BrandList [
+								{ Brand: "Santa", DominantColor: "Red"},
+								{ Brand: "Subaru", DominantColor: "Off White"},
+								{ Brand: "Subaru", DominantColor: "Green"},
+								{ Brand: "IBM", DominantColor: "Blue"},
+								{ .... }
+							]
 
-						// Check if there is a value to filter on; otherwise this won't remove values from the set.
+							...And somewhere else we had the following state:
+
+							AppData.SelectedBrand: "Subaru"
+						*/
+						/*
+							The values would be:
+								-> JoinListAddress: "AppData.BrandList"
+								-> JoinListAddressGlobal: false
+								-> JoinListValueAddress: "Record.Color"          <-- (this maps to the id in the select list)
+								-> ExternalValueAddress: "Record.Brand"          <-- (this maps to the id for the external lookup)
+								-> FilterToValueAddress: "AppData.SelectedBrand"
+								-> IgnoreEmpty: true                             <-- Don't filter if the AppData.SelectedBrand is an empty string or such
+						*/
+						let tmpJoinListAddress = tmpFilterRule.JoinListAddress;
+						let tmpJoinListAddressGlobal = ('JoinListAddressGlobal' in tmpFilterRule) ? tmpFilterRule.JoinListAddressGlobal : false;
+						let tmpJoinListValueAddress = tmpFilterRule.JoinListValueAddress;
+						let tmpExternalValueAddress = tmpFilterRule.ExternalValueAddress;
+						let tmpFilterToValueAddress = tmpFilterRule.FilterToValueAddress;
+						let tmpIgnoreEmpty = ('IgnoreEmpty' in tmpFilterRule) ? tmpFilterRule.IgnoreEmpty : false;
+
+						let tmpJoinList;
+						
+						if (tmpJoinListAddressGlobal)
+						{
+							tmpJoinList = this.pict.manifest.getValueAtAddress({Pict: this.pict, AppData: this.pict.AppData, View: pView}, tmpJoinListAddress);
+						}
+						else
+						{
+							tmpJoinList = pView.getValueByHash(tmpJoinListAddress);
+						}
+						let tmpFilterToValueAddressValue = pView.getValueByHash(tmpFilterToValueAddress);
+
+						if (tmpIgnoreEmpty && ((!tmpFilterToValueAddressValue) || (tmpFilterToValueAddressValue == '')))
+						{
+							// The comparison value is empty, so ignore it.
+							break;
+						}
+						if ((!Array.isArray(tmpJoinList)) && (tmpJoinList != null) && (typeof(tmpJoinList) == 'object'))
+						{
+							let tmpJoinListKeys = Object.keys(tmpJoinList);
+							let tmpNewJoinList = [];
+							for (let i = 0; i < tmpJoinListKeys.length; i++)
+							{
+								tmpNewJoinList.push(tmpJoinList[tmpJoinListKeys[i]]);
+							}
+							tmpJoinList = tmpNewJoinList;
+						}
+
+						if ((!Array.isArray(tmpJoinList)) || (tmpJoinList.length == 0))
+						{
+							// The join list is not an array.  We can't filter it.
+							break;
+						}
+						
+						// TODO: This is not industrial grade, yo.  Small lists only please.  O(n^2) is not cool.
+						let tmpPossiblyAllowed = false;
+						for (let i = 0; i < tmpJoinList.length; i++)
+						{
+							let tmpJoinListValue = this.pict.manifest.getValueAtAddress(tmpJoinList[i], tmpJoinListValueAddress);
+							let tmpExternalValue = this.pict.manifest.getValueAtAddress(tmpJoinList[i], tmpExternalValueAddress);
+
+							if (tmpIgnoreEmpty && ((!tmpJoinListValue) || (tmpJoinListValue == '')))
+							{
+								// The comparison value is empty, so ignore it.
+								continue;
+							}
+
+							if ((tmpFilterToValueAddressValue == tmpExternalValue) && (tmpJoinListValue == tmpComparisonValue))
+							{
+								tmpPossiblyAllowed = true;
+								break;
+							}
+						}
+						tmpEntryAllowed = tmpPossiblyAllowed && tmpEntryAllowed;
+
 						break;
 						
 				}
@@ -162,7 +251,7 @@ class PictListDistilling extends libPictProvider
 
 			if (!tmpEntryAllowed)
 			{
-				tmpFilteredList = tmpFilteredList.splice(h,1);
+				tmpFilteredList.splice(h,1);
 			}
 		}
 		return tmpFilteredList;

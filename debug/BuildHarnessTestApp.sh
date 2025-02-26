@@ -9,7 +9,7 @@
 cd data
 
 # Build the configuration
-npm run copymath
+#npm run copymath
 
 # Build the app
 npm run build

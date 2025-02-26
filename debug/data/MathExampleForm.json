@@ -470,26 +470,16 @@
             "DataAddress": "Cylinders",
             "DataType": "Array"
         },
-
-        "Listopia.ColorFilter": {
-            "Hash": "JobTitle",
-            "Name": "Job Title",
-            "DataAddress": "Filters.Colour",
+        "Listopia.Filters.Colour": {
+            "Hash": "ColourFilter",
+            "Name": "Color Filter",
+            "DataAddress": "Listopia.Filters.Colour",
             "DataType": "String",
             "PictForm": {
-                "Providers": [
-                    "Pict-Input-AutofillTriggerGroup"
-                ],
-                "AutofillTriggerGroup": {
-                    "TriggerGroup": "Fruit",
-                    "MarshalEmptyValues": false,
-                    "SelectOptionsRefresh": true,
-                    "TriggerAllInputs": true
-                },
                 "Row": "1",
-                "Width": "6",
-                "Section": "Header",
-                "Group": "General_Info"
+                "Width": "1",
+                "Section": "Listopia",
+                "Group": "OcclusionLists"
             }
         },
         "Listopia.Color": {
@@ -528,25 +518,7 @@
                         "id": "Other",
                         "text": "Other"
                     }
-                ],
-                "Providers": [
-                    "Pict-Input-AutofillTriggerGroup"
-                ],
-                "AutofillTriggerGroup": {
-                    "TriggerGroup": "Fruit",
-                    "MarshalEmptyValues": false,
-                    "SelectOptionsRefresh": true
-                },
-                "ListFilterRules": [
-                    {
-                        "Filter": "Fruit List",
-                        "FilterType": "Explicit",
-                        "FilterValueComparison": "==",
-                        "FilterValueAddress": "Filters.Colour",
-                        "IgnoreEmptyValue": true
-                    }
                 ]
-
             }
         },
         "Listopia.Box": {

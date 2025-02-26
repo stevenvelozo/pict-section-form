@@ -469,6 +469,18 @@
                 "DataAddress": "Cylinders",
                 "DataType": "Array"
             },
+            "Listopia.Filters.Colour": {
+                "Hash": "ColourFilter",
+                "Name": "Color Filter",
+                "DataAddress": "Listopia.Filters.Colour",
+                "DataType": "String",
+                "PictForm": {
+                    "Row": "1",
+                    "Width": "1",
+                    "Section": "Listopia",
+                    "Group": "OcclusionLists"
+                }
+            },
             "Listopia.Color": {
                 "Hash": "Colors",
                 "Name": "Color",

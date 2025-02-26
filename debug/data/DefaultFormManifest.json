@@ -470,26 +470,23 @@
             "DataAddress": "Cylinders",
             "DataType": "Array"
         },
-
-        "Listopia.ColorFilter": {
-            "Hash": "JobTitle",
-            "Name": "Job Title",
-            "DataAddress": "Filters.Colour",
+        "Listopia.Filters.Colour": {
+            "Hash": "ColourFilter",
+            "Name": "Color Filter",
+            "DataAddress": "Listopia.Filters.Colour",
             "DataType": "String",
             "PictForm": {
                 "Providers": [
                     "Pict-Input-AutofillTriggerGroup"
                 ],
                 "AutofillTriggerGroup": {
-                    "TriggerGroup": "Fruit",
-                    "MarshalEmptyValues": false,
-                    "SelectOptionsRefresh": true,
+                    "TriggerGroup": "ColorsTriggered",
                     "TriggerAllInputs": true
                 },
                 "Row": "1",
-                "Width": "6",
-                "Section": "Header",
-                "Group": "General_Info"
+                "Width": "1",
+                "Section": "Listopia",
+                "Group": "OcclusionLists"
             }
         },
         "Listopia.Color": {
@@ -503,6 +500,32 @@
                 "Width": "1",
                 "Section": "Listopia",
                 "Group": "OcclusionLists",
+                "Providers": [
+                    "Pict-Input-AutofillTriggerGroup"
+                ],
+                "AutofillTriggerGroup": {
+                    "TriggerGroup": "ColorsTriggered",
+                    "SelectOptionsRefresh": true
+                },
+                "ListFilterRules": [
+                    {
+                        "Filter": "Colour Entry Filter",
+                        "FilterType": "Explicit",
+                        "FilterValueComparison": "==",
+                        "FilterValueAddress": "Listopia.Filters.Colour",
+                        "IgnoreEmptyValue": true
+                    },
+                    {
+                        "Filter": "Colour List Distilling Filter",
+                        "FilterType": "CrossMap",
+                        "JoinListAddress": "View.sectionDefinition.Intersections.Colors.FruitSelectionColorsJoin",
+                        "JoinListAddressGlobal": true,
+                        "JoinListValueAddress": "GUIDColors",
+                        "ExternalValueAddress": "GUIDFruitSelection",
+                        "FilterToValueAddress": "Listopia.Fruit",
+                        "IgnoreEmpty": true
+                    }
+                ],
                 "SelectOptions": [
                     {
                         "id": "Red",
@@ -528,25 +551,7 @@
                         "id": "Other",
                         "text": "Other"
                     }
-                ],
-                "Providers": [
-                    "Pict-Input-AutofillTriggerGroup"
-                ],
-                "AutofillTriggerGroup": {
-                    "TriggerGroup": "Fruit",
-                    "MarshalEmptyValues": false,
-                    "SelectOptionsRefresh": true
-                },
-                "ListFilterRules": [
-                    {
-                        "Filter": "Fruit List",
-                        "FilterType": "Explicit",
-                        "FilterValueComparison": "==",
-                        "FilterValueAddress": "Filters.Colour",
-                        "IgnoreEmptyValue": true
-                    }
                 ]
-
             }
         },
         "Listopia.Box": {
@@ -582,6 +587,14 @@
                 "Width": "1",
                 "Section": "Listopia",
                 "Group": "OcclusionLists",
+
+                "Providers": [
+                    "Pict-Input-AutofillTriggerGroup"
+                ],
+                "AutofillTriggerGroup": {
+                    "TriggerGroup": "ColorsTriggered",
+                    "SelectOptionsRefresh": true
+                },
                 "SelectOptions": [
                     {
                         "id": "Apple",
