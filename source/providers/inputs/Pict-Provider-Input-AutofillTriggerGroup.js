@@ -39,16 +39,8 @@ class CustomInputHandler extends libPictSectionInputExtension
 		this.log;
 	}
 
-	autoFillFromAddressList(pView, pInput, pValue, pHTMLSelector)
+	autoFillFromAddressList(pView, pInput, pValue, tmpTriggerGroupInfo, pHTMLSelector)
 	{
-		let tmpInput = pInput;
-		if (!('AutofillTriggerGroup' in tmpInput.PictForm))
-		{
-			this.log.warn(`AutofillTriggerGroup failed to find configuration in ${pHTMLSelector} ... autofill is not possible.`);
-			return false;
-		}
-		let tmpTriggerGroupInfo = pInput.PictForm.AutofillTriggerGroup;
-
 		// First sanity check the triggergroupinfo
 		if (!('TriggerGroupName' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerGroupName) != 'string'))
 		{
@@ -73,20 +65,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 			return false;
 		}
 		// Maybe this just works!
-		this.pict.ContentAssignment.assignContent(pHTMLSelector, tmpValue);
+		pView.setDataByInput(pInput, tmpValue);
+		pView.manualMarshalDataToViewByInput(pInput);
 		return true;
 	}
 
-	autoFillFromAddressListTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
+	autoFillFromAddressListTabular(pView, pInput, pValue, tmpTriggerGroupInfo, pHTMLSelector, pRowIndex)
 	{
-		let tmpInput = pInput;
-		if (!('AutofillTriggerGroup' in tmpInput.PictForm))
-		{
-			this.log.warn(`AutofillTriggerGroup failed to find configuration in ${pHTMLSelector} ... autofill is not possible.`);
-			return false;
-		}
-		let tmpTriggerGroupInfo = pInput.PictForm.AutofillTriggerGroup;
-
 		// First sanity check the triggergroupinfo
 		if (!('TriggerGroupName' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerGroupName) != 'string'))
 		{
@@ -110,8 +95,9 @@ class CustomInputHandler extends libPictSectionInputExtension
 		{
 			return false;
 		}
-		// Maybe this just works!
-		this.pict.ContentAssignment.assignContent(pInput.Macro.RawHTMLID, tmpValue);
+		// Setting data is in the view intentionally, to allow triggered events.  Probabbly needs to be a separate provider.
+		pView.setDataByInputTabular(pInput.PictForm.GroupIndex, pInput.Hash, pRowIndex, tmpValue);
+		pView.manualMarshalDataToViewByInput(pInput);
 		return true;
 	}
 
@@ -127,6 +113,27 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataChange(pView, pInput, pValue, pHTMLSelector)
 	{
+		let tmpTriggerGroupConfiguration = pInput.PictForm.AutofillTriggerGroup;
+
+		if (!tmpTriggerGroupConfiguration)
+		{
+			return super.onDataChange(pView, pInput, pValue, pHTMLSelector);
+		}
+
+		if (Array.isArray(tmpTriggerGroupConfiguration))
+		{
+			for (let i = 0; i < tmpTriggerGroupConfiguration.length; i++)
+			{
+				if (tmpTriggerGroupConfiguration[i].TriggerAllInputs)
+				{
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`${pInput.PictForm.AutofillTriggerGroup.TriggerGroup}`);
+				}
+			}
+		}
+		if (tmpTriggerGroupConfiguration && tmpTriggerGroupConfiguration.TriggerAllInputs)
+		{
+			this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`${pInput.PictForm.AutofillTriggerGroup.TriggerGroup}`);
+		}
 		return super.onDataChange(pView, pInput, pValue, pHTMLSelector);
 	}
 
@@ -143,6 +150,22 @@ class CustomInputHandler extends libPictSectionInputExtension
 	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
 		let tmpTriggerGroupConfiguration = pInput.PictForm.AutofillTriggerGroup;
+
+		if (!tmpTriggerGroupConfiguration)
+		{
+			return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex);
+		}
+
+		if (Array.isArray(tmpTriggerGroupConfiguration))
+		{
+			for (let i = 0; i < tmpTriggerGroupConfiguration.length; i++)
+			{
+				if (tmpTriggerGroupConfiguration[i].TriggerAllInputs)
+				{
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`${pInput.PictForm.AutofillTriggerGroup.TriggerGroup}`);
+				}
+			}
+		}
 		if (tmpTriggerGroupConfiguration && tmpTriggerGroupConfiguration.TriggerAllInputs)
 		{
 			this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`${pInput.PictForm.AutofillTriggerGroup.TriggerGroup}`);
@@ -160,25 +183,36 @@ class CustomInputHandler extends libPictSectionInputExtension
 			return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);
 		}
 		let tmpTriggerGroupName = pEvent.substring(tmpSeparatorIndex+1);
-		//console.log(`Event ${pEvent} triggered for ${pInput.Hash} with the group ${tmpTriggerGroupName}...`);
 
-		if (!pInput.PictForm.hasOwnProperty('AutofillTriggerGroup'))
+		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
+
+		if (!tmpAutoFillTriggerGroups)
 		{
-			// Do nothing for now -- this is the triggering element
+			return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);			
 		}
-		else if (pInput.PictForm.hasOwnProperty('AutofillTriggerGroup') && 
-			(!('SelectOptionsRefresh' in pInput.PictForm.AutofillTriggerGroup) || !pInput.PictForm.AutofillTriggerGroup.SelectOptionsRefresh))
+		if (!Array.isArray(tmpAutoFillTriggerGroups))
 		{
-			// Autofill based on the address list as it isn't a select option
-			this.autoFillFromAddressList(pView, pInput, tmpTriggerGroupName, pHTMLSelector);
+			tmpAutoFillTriggerGroups = [tmpAutoFillTriggerGroups];
 		}
-		else if (pInput.PictForm.AutofillTriggerGroup.SelectOptionsRefresh)
+		for (let i = 0; i < tmpAutoFillTriggerGroups.length; i++)
 		{
-			// Regenerate the picklist
-			// Because the pick lists are view specific, we need to lookup the view the input is in
-			let tmpInputView = this.pict.views[pInput.PictForm.ViewHash];
-			this.pict.providers.DynamicMetaLists.buildViewSpecificList(tmpInputView, pInput.PictForm.SelectOptionsPickList);
-			this.pict.providers['Pict-Input-Select'].refreshSelectList(tmpInputView, tmpInputView.getGroup(pInput.PictForm.GroupIndex), tmpInputView.getRow(pInput.PictForm.Row), pInput, pValue, pHTMLSelector);
+			let tmpAutoFillTriggerGroup = tmpAutoFillTriggerGroups[i];
+
+			if ('TriggerAddress' in tmpAutoFillTriggerGroup)
+			{
+				// Autofill based on the address list as it isn't a select option
+				this.autoFillFromAddressList(pView, pInput, tmpTriggerGroupName, tmpAutoFillTriggerGroup, pHTMLSelector);
+			}
+			
+			if (tmpAutoFillTriggerGroup.SelectOptionsRefresh)
+			{
+				// Regenerate the picklist
+				// Because the pick lists are view specific, we need to lookup the view the input is in
+				let tmpInputView = this.pict.views[pInput.PictForm.ViewHash];
+				this.pict.providers.DynamicMetaLists.rebuildListByHash(pInput.PictForm.SelectOptionsPickList);
+				this.pict.providers['Pict-Input-Select'].refreshSelectList(tmpInputView, tmpInputView.getGroup(pInput.PictForm.GroupIndex), tmpInputView.getRow(pInput.PictForm.GroupIndex, pInput.PictForm.Row), pInput, pValue, pHTMLSelector);
+				tmpInputView.manualMarshalDataToViewByInput(pInput);
+			}
 		}
 
 		return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);
@@ -216,8 +250,9 @@ class CustomInputHandler extends libPictSectionInputExtension
 				// Regenerate the picklist
 				// TODO: This is inefficient -- it regenerates the list for every single row.  Easy optimization.
 				let tmpInputView = this.pict.views[pInput.PictForm.ViewHash];
-				this.pict.providers.DynamicMetaLists.buildViewSpecificList(tmpInputView, pInput.PictForm.SelectOptionsPickList);
-				this.pict.providers['Pict-Input-Select'].refreshSelectListTabular(tmpInputView, tmpInputView.getGroup(pInput.PictForm.GroupIndex), tmpInputView.getRow(pInput.PictForm.Row), pInput, pValue, pHTMLSelector, pRowIndex);
+				this.pict.providers.DynamicMetaLists.rebuildListByHash(pInput.PictForm.SelectOptionsPickList);
+				this.pict.providers['Pict-Input-Select'].refreshSelectListTabular(tmpInputView, tmpInputView.getGroup(pInput.PictForm.GroupIndex), tmpInputView.getRow(pInput.PictForm.GroupIndex, pInput.PictForm.Row), pInput, pValue, pHTMLSelector, pRowIndex);
+				tmpInputView.manualMarshalTabularDataToViewByInput(pInput, pRowIndex);
 			}
 		}
 

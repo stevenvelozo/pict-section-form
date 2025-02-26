@@ -249,6 +249,44 @@ class PictViewDynamicForm extends libPictViewClass
 	}
 
 	/**
+	 * Sets the data in a specific form input based on the provided input object
+	 *
+	 * @param {object} pInput - The input object.
+	 * @param {any} pValue - The value to set.
+	 * @returns {boolean} Returns true if the data was set successfully, false otherwise.
+	 */
+	setDataByInput(pInput, pValue)
+	{
+		try
+		{
+			this.sectionManifest.setValueByHash(this.getMarshalDestinationObject(), pInput.Hash, pValue)
+
+			// TODO: DRY TIME, excellent.
+			let tmpValue = pValue;
+			// Each row has a distinct address!
+			let tmpVirtualInformaryHTMLSelector = pInput.Macro.HTMLSelector;
+			let tmpInputProviderList = this.getInputProviderList(pInput);
+			for (let i = 0; i < tmpInputProviderList.length; i++)
+			{
+				if (this.pict.providers[tmpInputProviderList[i]])
+				{
+					this.pict.providers[tmpInputProviderList[i]].onDataChange(this, pInput, tmpValue, tmpVirtualInformaryHTMLSelector);
+				}
+				else
+				{
+					this.log.error(`Dynamic form setDataByInput [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${pInput.Hash}].`);
+				}
+			}
+		}
+		catch (pError)
+		{
+			this.log.error(`Dynamic form setDataByInput [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInput.Hash}) from view in dataChanged event: ${pError}`);
+		}
+
+		return false;
+	}
+
+	/**
 	 * Sets the data in a specific tabular form input based on the provided hash, group and row.
 	 *
 	 * @param {number} pGroupIndex - The index of the group.
@@ -355,11 +393,11 @@ class PictViewDynamicForm extends libPictViewClass
 		let tmpMarshalDestinationObject = false;
 		if (this.viewMarshalDestination)
 		{
-			tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.viewMarshalDestination);
+			tmpMarshalDestinationObject = this.sectionManifest.getValueByHash(this, this.viewMarshalDestination);
 		}
 		else if (this.pict.views.PictFormMetacontroller && this.pict.views.PictFormMetacontroller.viewMarshalDestination)
 		{
-			tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
+			tmpMarshalDestinationObject = this.sectionManifest.getValueByHash(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
 
 			if (!tmpMarshalDestinationObject)
 			{
@@ -367,7 +405,7 @@ class PictViewDynamicForm extends libPictViewClass
 				if (this.sectionManifest.setValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination, {}))
 				{
 					// And try to load it once more!
-					tmpMarshalDestinationObject = this.sectionManifest.getValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
+					tmpMarshalDestinationObject = this.sectionManifest.getValueByHash(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
 				}
 			}
 		}
@@ -379,6 +417,15 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 
 		return tmpMarshalDestinationObject;
+	}
+
+	/**
+	 * Gets a value by hash address.
+	 * @param {string} pHashAddress 
+	 */
+	getValueByHash(pHashAddress)
+	{
+		return this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), pHashAddress);
 	}
 
 	/**
@@ -401,6 +448,34 @@ class PictViewDynamicForm extends libPictViewClass
 			this.log.error(`Gross error marshaling data to view: ${pError}`);
 		}
 		return super.onMarshalToView();
+	}
+
+	manualMarshalDataToViewByInput(pInput)
+	{
+		try
+		{
+			this.pict.providers.Informary.manualMarshalDataToFormByInput(pInput);
+			this.runLayoutProviderFunctions('onDataMarshalToForm');
+			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash);
+		}
+		catch (pError)
+		{
+			this.log.error(`Gross error marshaling data to view: ${pError}`);
+		}
+	}
+
+	manualMarshalTabularDataToViewByInput(pInput, pRowIndex)
+	{
+		try
+		{
+			this.pict.providers.Informary.manualMarshalTabularDataToFormByInput(pInput, pRowIndex);
+			this.runLayoutProviderFunctions('onDataMarshalToForm');
+			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash, pRowIndex);
+		}
+		catch (pError)
+		{
+			this.log.error(`Gross error marshaling tabular data to view: ${pError}`);
+		}
 	}
 
 	/**
@@ -522,8 +597,10 @@ class PictViewDynamicForm extends libPictViewClass
 	 * Runs the input provider functions.
 	 *
 	 * @param {string} pFunctionName - The name of the function to run for each input provider.
+	 * @param {string} [pInputHash] - The hash of the input to run the function for.
+	 * @param {number} [pRowIndex] - The index of the row to run the
 	 */
-	runInputProviderFunctions(pFunctionName)
+	runInputProviderFunctions(pFunctionName, pInputHash, pRowIndex)
 	{
 		// Check to see if there are any hooks set from the input templates
 		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
@@ -540,20 +617,28 @@ class PictViewDynamicForm extends libPictViewClass
 					{
 						let tmpInput = tmpRow.Inputs[k];
 						// Now run any providers connected to this input
-						if (tmpInput && tmpInput.PictForm)
+						if (tmpInput && tmpInput.PictForm 
+							&& (!pInputHash || (pInputHash === tmpInput.Hash)))
 						{
 							let tmpInputProviderList = this.getInputProviderList(tmpInput);
-							for (let i = 0; i < tmpInputProviderList.length; i++)
+							for (let l = 0; l < tmpInputProviderList.length; l++)
 							{
-								if (this.pict.providers[tmpInputProviderList[i]])
+								if (this.pict.providers[tmpInputProviderList[l]])
 								{
 									let tmpHashAddress = this.sectionManifest.resolveHashAddress(tmpInput.Hash);
 									let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpHashAddress);
-									this.pict.providers[tmpInputProviderList[i]][pFunctionName](this, tmpGroup, j, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+									try
+									{
+										this.pict.providers[tmpInputProviderList[l]][pFunctionName](this, tmpGroup, j, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+									}
+									catch (pError)
+									{
+										this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] failed to run provider [${tmpInputProviderList[l]}] function [${pFunctionName}] for input [${tmpInput.Hash}] with error: ${pError}`);
+									}
 								}
 								else
 								{
-									this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
+									this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[l]}] for input [${tmpInput.Hash}].`);
 								}
 							}
 						}
@@ -577,23 +662,32 @@ class PictViewDynamicForm extends libPictViewClass
 					{
 						let tmpInput = tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestDescriptorKeys[k]];
 						// Now run any providers connected to this input
-						if (tmpInput && tmpInput.PictForm)
+						if (tmpInput && tmpInput.PictForm
+							&& (!pInputHash || (pInputHash === tmpInput.Hash)))
 						{
 							let tmpInputProviderList = this.getInputProviderList(tmpInput);
-							for (let i = 0; i < tmpInputProviderList.length; i++)
+							for (let l = 0; l < tmpInputProviderList.length; l++)
 							{
 								for (let r = 0; r < tmpTabularRecordSet.length; r++)
 								{
-									if (this.pict.providers[tmpInputProviderList[i]])
+									if (this.pict.providers[tmpInputProviderList[l]] &&
+										(pRowIndex === undefined || pRowIndex === r))
 									{
 										// There is a provider, we have an input and it is supposed to be run through for a record
 										let tmpValueAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, r, tmpInput.PictForm.InformaryDataAddress);
 										let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
-										this.pict.providers[tmpInputProviderList[i]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r);
+										try
+										{
+											this.pict.providers[tmpInputProviderList[l]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r);
+										}
+										catch (pError)
+										{
+											this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] failed to run provider [${tmpInputProviderList[l]}] function [${pFunctionName}] for input [${tmpInput.Hash}] with error: ${pError}`);
+										}
 									}
 									else
 									{
-										this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
+										this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[l]}] for input [${tmpInput.Hash}].`);
 									}
 								}
 							}
@@ -702,8 +796,8 @@ class PictViewDynamicForm extends libPictViewClass
 			}
 			if (pRowIndex > tmpGroup.Rows.length)
 			{
-				this.log.warn(`PICT View Metatemplate Helper getRow ${pRowIndex} was out of bounds.`);
-				return false;
+				//this.log.warn(`PICT View Metatemplate Helper getRow ${pRowIndex} was out of bounds.`);
+				return [];
 			}
 			return tmpGroup.Rows[pRowIndex];
 		}

@@ -32,7 +32,9 @@ class PictFormMetacontroller extends libPictViewClass
 
 		this.lastRenderedViews = [];
 
-		this.formTemplatePrefix = this.pict.providers.MetatemplateGenerator.baseTemplatePrefix;;
+		this.formTemplatePrefix = this.pict.providers.MetatemplateGenerator.baseTemplatePrefix;
+
+		this.manifest = this.pict.manifest;
 	}
 
 	/**
@@ -69,6 +71,25 @@ class PictFormMetacontroller extends libPictViewClass
 			}
 		}
 		return super.onMarshalToView();
+	}
+
+	/**
+	 * Retrieves the marshal destination object.  This is where the model data is stored.
+	 *
+	 * @returns {Object} The marshal destination object.
+	 */
+	getMarshalDestinationObject()
+	{
+		return this.manifest.getValueByHash(this, this.viewMarshalDestination);
+	}
+
+	/**
+	 * Gets a value by hash address.
+	 * @param {string} pHashAddress 
+	 */
+	getValueByHash(pHashAddress)
+	{
+		return this.manifest.getValueByHash(this.getMarshalDestinationObject(), pHashAddress);
 	}
 
 	/**
@@ -546,6 +567,18 @@ class PictFormMetacontroller extends libPictViewClass
 			tmpViewConfiguration.AutoMarshalDataOnSolve = this.options.AutoMarshalDataOnSolve;
 			this.pict.addView(tmpViewHash, tmpViewConfiguration, libPictViewDynamicForm);
 		}
+
+		if ('PickLists' in tmpManifestDescription)
+		{
+			let tmpPickListKeys = Object.keys(tmpManifestDescription.PickLists);
+			for (let i = 0; i < tmpPickListKeys.length; i++)
+			{
+				let tmpPickList = tmpManifestDescription.PickLists[tmpPickListKeys[i]];
+				this.pict.providers.DynamicMetaLists.buildList(tmpPickList);
+			}
+		}
+
+		this.manifest = tmpManifest;
 
 		return tmpSectionList;
 	}

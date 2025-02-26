@@ -110,46 +110,61 @@ class PictDynamicFormsInformary extends libPictProvider
 		// Enumerate the form elements, and put data in them for each address
 		for (const tmpFormElement of tmpFormElements)
 		{
-			const tmpDatumAddress = tmpFormElement.getAttribute('data-i-datum');
-
-			const tmpContainerAddress = tmpFormElement.getAttribute('data-i-container');
-			const tmpIndex = tmpFormElement.getAttribute('data-i-index');
-
-			// Process the filters
-			if (tmpDatum && (tmpDatum !== tmpDatumAddress))
-			{
-				// Falls outside the filter, continue on
-				continue;
-			}
-			//NOTE: we ensure above these are both strings (or undefined / unsupported type) which this check depends on
-			if (tmpRecordIndex && tmpIndex && tmpRecordIndex !== tmpIndex)
-			{
-				// Falls outside the filter, continue on
-				continue;
-			}
-
-			let tmpBrowserValue = this.pict.ContentAssignment.readContent(this.getContentBrowserAddress(pFormHash, tmpDatumAddress, tmpContainerAddress, tmpIndex));
-
-			if (this.pict.LogNoisiness > 3)
-			{
-				this.log.trace(`Informary marshalling BrowserForm Data ${tmpBrowserValue} from form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}] to the datum address [${tmpDatumAddress}].`);
-			}
-
-			if (tmpBrowserValue == null)
-			{
-				continue;
-			}
-
-			if (!tmpContainerAddress)
-			{
-				tmpManifest.setValueAtAddress(pAppStateData, tmpDatumAddress, tmpBrowserValue);
-			}
-			else
-			{
-				// Compose the address .. right now only arrays
-				tmpManifest.setValueAtAddress(pAppStateData, this.getComposedContainerAddress(tmpContainerAddress, tmpIndex, tmpDatumAddress), tmpBrowserValue);
-			}
+			this.marshalSpecicificFormElementToData(pFormHash, tmpFormElement, tmpManifest, pAppStateData, tmpDatum, tmpRecordIndex);
 		}
+	}
+
+	/**
+	 * Marshals a specific form element's data to the application state data.
+	 *
+	 * @param {string} pFormHash - The hash of the form.
+	 * @param {HTMLElement} tmpFormElement - The form element to marshal.
+	 * @param {Object} tmpManifest - The manifest object to set values.
+	 * @param {Object} pAppStateData - The application state data object.
+	 * @param {any} [pDatumFilter] - Optional filter for datum address.
+	 * @param {any} [pRecordIndexFilter] - Optional filter for record index.
+	 * @returns {boolean} - Returns false if the element falls outside the filters or if the browser value is null.
+	 */
+	marshalSpecicificFormElementToData(pFormHash, tmpFormElement, tmpManifest, pAppStateData, pDatumFilter, pRecordIndexFilter)
+	{
+		const tmpDatumAddress = tmpFormElement.getAttribute('data-i-datum');
+
+		const tmpContainerAddress = tmpFormElement.getAttribute('data-i-container');
+		const tmpIndex = tmpFormElement.getAttribute('data-i-index');
+
+		// Process the filters
+		// TODO: Now that this is a function, having these filters here is not good.  We need to move this to the caller.  But the above getAttribute is required... rethink filtering?
+		if (pDatumFilter && (pDatumFilter !== tmpDatumAddress))
+		{
+			// Falls outside the filter, continue on
+			return false;
+		}
+		if (pRecordIndexFilter && tmpIndex && pRecordIndexFilter !== tmpIndex)
+		{
+			// Falls outside the filter, continue on
+			return false;
+		}
+
+		let tmpBrowserValue = this.pict.ContentAssignment.readContent(this.getContentBrowserAddress(pFormHash, tmpDatumAddress, tmpContainerAddress, tmpIndex));
+		if (this.pict.LogNoisiness > 3)
+		{
+			this.log.trace(`Informary marshalling BrowserForm Data ${tmpBrowserValue} from form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}] to the datum address [${tmpDatumAddress}].`);
+		}
+
+		if (tmpBrowserValue == null)
+		{
+			return false;
+		}
+
+		if (!tmpContainerAddress)
+		{
+			tmpManifest.setValueAtAddress(pAppStateData, tmpDatumAddress, tmpBrowserValue);
+		}
+		else
+		{
+			// Compose the address .. right now only arrays
+			tmpManifest.setValueAtAddress(pAppStateData, this.getComposedContainerAddress(tmpContainerAddress, tmpIndex, tmpDatumAddress), tmpBrowserValue);
+		}		
 	}
 
 	/**
@@ -168,46 +183,146 @@ class PictDynamicFormsInformary extends libPictProvider
 		// Enumerate the form elements, and put data in them for each address
 		for (let i = 0; i < tmpFormElements.length; i++)
 		{
-			let tmpDatumAddress = tmpFormElements[i].getAttribute('data-i-datum');
+			this.marshalSpecificElementDataToForm(pFormHash, tmpFormElements[i], tmpManifest, pAppStateData);
+		}
+	}
 
-			let tmpContainerAddress = tmpFormElements[i].getAttribute('data-i-container');
-			let tmpIndex = Number(tmpFormElements[i].getAttribute('data-i-index'));
+	/**
+	 * Marshals specific element data to a form.
+	 *
+	 * @param {string} pFormHash - The hash of the form.
+	 * @param {HTMLElement} pFormElement - The form element to marshal data to.
+	 * @param {Object} tmpManifest - The manifest object containing data retrieval methods.
+	 * @param {Object} pAppStateData - The application state data.
+	 * @returns {boolean} Returns false if the form element does not have a datum address.
+	 */
+	marshalSpecificElementDataToForm(pFormHash, pFormElement, tmpManifest, pAppStateData)
+	{
+		let tmpDatumAddress = pFormElement.getAttribute('data-i-datum');
 
-			if (!tmpDatumAddress)
+		let tmpContainerAddress = pFormElement.getAttribute('data-i-container');
+		let tmpIndex = Number(pFormElement.getAttribute('data-i-index'));
+
+		if (!tmpDatumAddress)
+		{
+			this.log.warn(`Informary found a form element without a datum address.  Skipping.`);
+			return false;
+		}
+
+		if (!tmpContainerAddress)
+		{
+			let tmpAppStateValue = tmpManifest.getValueAtAddress(pAppStateData, tmpDatumAddress);
+
+			if (this.pict.LogNoisiness > 3)
 			{
-				this.log.warn(`Informary found a form element without a datum address.  Skipping.`);
-				continue;
+				this.log.trace(`Informary marshalling App State data ${tmpAppStateValue} to Browser Form element [${tmpDatumAddress}].`);
 			}
 
-			if (!tmpContainerAddress)
+			if (tmpAppStateValue != null)
 			{
-				let tmpAppStateValue = tmpManifest.getValueAtAddress(pAppStateData, tmpDatumAddress);
-
-				if (this.pict.LogNoisiness > 3)
-				{
-					this.log.trace(`Informary marshalling App State data ${tmpAppStateValue} to Browser Form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}].`);
-				}
-
-				if (tmpAppStateValue != null)
-				{
-					this.pict.ContentAssignment.assignContent(this.getContentBrowserAddress(pFormHash, tmpDatumAddress, tmpContainerAddress, tmpIndex), tmpAppStateValue);
-				}
-			}
-			else
-			{
-				let tmpAppStateValue = tmpManifest.getValueAtAddress(pAppStateData, this.getComposedContainerAddress(tmpContainerAddress, tmpIndex, tmpDatumAddress));
-
-				if (this.pict.LogNoisiness > 3)
-				{
-					this.log.trace(`Informary marshalling App State data ${tmpAppStateValue} to Browser Form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}].`);
-				}
-
-				if (tmpAppStateValue != null)
-				{
-					this.pict.ContentAssignment.assignContent(this.getContentBrowserAddress(pFormHash, tmpDatumAddress, tmpContainerAddress, tmpIndex), tmpAppStateValue);
-				}
+				this.pict.ContentAssignment.assignContent(this.getContentBrowserAddress(pFormHash, tmpDatumAddress, tmpContainerAddress, tmpIndex), tmpAppStateValue);
 			}
 		}
+		else
+		{
+			let tmpAppStateValue = tmpManifest.getValueAtAddress(pAppStateData, this.getComposedContainerAddress(tmpContainerAddress, tmpIndex, tmpDatumAddress));
+
+			if (this.pict.LogNoisiness > 3)
+			{
+				this.log.trace(`Informary marshalling App State data ${tmpAppStateValue} to Browser Form element [${tmpDatumAddress}] in container [${tmpContainerAddress}] at index [${tmpIndex}].`);
+			}
+
+			if (tmpAppStateValue != null)
+			{
+				this.pict.ContentAssignment.assignContent(this.getContentBrowserAddress(pFormHash, tmpDatumAddress, tmpContainerAddress, tmpIndex), tmpAppStateValue);
+			}
+		}
+	}
+
+	/**
+	 * Manually marshals data to a form by assigning content based on context in the descriptor.
+	 * @param {object} pInput - The input manifest descriptor to marshal data to form from.
+	 * @returns boolean if assignment was successful
+	 */
+	manualMarshalDataToFormByInput(pInput)
+	{
+		if (typeof(pInput) !== 'object')
+		{
+			this.log.error(`Informary failed to marshal data to form because the input is not an object.`);
+			return false;
+		}
+		if (!('Hash' in pInput))
+		{
+			this.log.error(`Informary failed to marshal data to form because the input is missing a hash.`);
+			return false;
+		}
+		if (!('PictForm' in pInput))
+		{
+			this.log.error(`Informary failed to marshal data to form because the input is missing a PictForm object.`);
+			return false;
+		}
+		let tmpInputView = this.pict.views[pInput.PictForm.ViewHash];
+		if (!tmpInputView)
+		{
+			this.log.error(`Informary failed to marshal data to form because the input view is missing.`);
+			return false;
+		}
+		return this.pict.ContentAssignment.assignContent(pInput.Macro.HTMLSelector, tmpInputView.getValueByHash(pInput.Hash));
+	}
+
+	/**
+	 * Manually marshals tabular data to a form by assigning content based on context in the descriptor.
+	 * @param {object} pInput - The input manifest descriptor to marshal data to form from.
+	 * @param {number} pRowIndex - The index of the row in the tabular data.
+	 * @returns boolean if assignment was successful
+	 */
+	manualMarshalTabularDataToFormByInput(pInput, pRowIndex)
+	{
+		if (typeof(pInput) !== 'object')
+		{
+			this.log.error(`Informary failed to marshal data to form because the input is not an object.`);
+			return false;
+		}
+		if (!('Hash' in pInput))
+		{
+			this.log.error(`Informary failed to marshal data to form because the input is missing a hash.`);
+			return false;
+		}
+		if (!('PictForm' in pInput))
+		{
+			this.log.error(`Informary failed to marshal data to form because the input is missing a PictForm object.`);
+			return false;
+		}
+		let tmpInputView = this.pict.views[pInput.PictForm.ViewHash];
+		if (!tmpInputView)
+		{
+			this.log.error(`Informary failed to marshal data to form because the input view is missing.`);
+			return false;
+		}
+		return this.pict.ContentAssignment.assignContent(`${pInput.Macro.HTMLSelectorTabular}[data-i-index="${pRowIndex}"]`, tmpInputView.getValueByHash(pInput.Hash));
+	}
+
+	/**
+	 * Manually marshals data to a form by assigning content to a specified HTML address.
+	 *
+	 * @param {string} pHTMLAddress - The HTML address where the content should be assigned.
+	 * @param {string} pValue - The value to be assigned to the specified HTML address.
+	 */
+	manualMarshalDataToForm(pHTMLAddress, pValue)
+	{
+		return this.pict.ContentAssignment.assignContent(pHTMLAddress, pValue);
+	}
+
+	/**
+	 * Manually marshals tabular data to a form.
+	 *
+	 * @param {string} pHTMLAddress - The HTML address where the data should be assigned.
+	 * @param {string} pValue - The value to be assigned to the form element.
+	 * @param {number} pRowIndex - The index of the row in the tabular data.
+	 */
+	manualMarshalTabularDataToForm(pHTMLAddress, pValue, pRowIndex)
+	{
+		return this.pict.ContentAssignment.assignContent(`${pHTMLAddress}[data-i-index="${pRowIndex}"]`, pValue);
 	}
 }
 

@@ -69,44 +69,100 @@ class PictListDistilling extends libPictProvider
 			return pList;
 		}
 
-		let tmpFilteredList = [];
-		for (let h = 0; h < pList.length; h++)
+		let tmpMarshalDestinationObject = pView.getMarshalDestinationObject();
+
+		// Make a copy of the incoming list of options
+		let tmpFilteredList = pList.slice(0);
+		// We walk backwards so we can remove items from the end without breaking this loop.
+		for (let h = pList.length - 1; h >= 0; h--)
 		{
 			let tmpListEntry = pList[h];
+			let tmpEntryAllowed = true;
 			for (let i = 0; i < tmpFilterRules.length; i++)
 			{
 				let tmpFilterRule = tmpFilterRules[i];
-				let tmpEntryAllowed = true;
+
+				// Remember that options are objects with "id" and "text" properties.  Because of Select2.
+				// Genericising this with templating.  Most users will not leverage this technology.
+				let tmpRecordComparisonValueAddress = ('FilteredRecordComparisonValue' in tmpFilterRule) ? tmpFilterRule.FilteredRecordComparisonValueAddress : false;
+				let tmpComparisonValue;
+				if (!tmpRecordComparisonValueAddress)
+				{
+					// Presume it's filtering on 'id'
+					tmpComparisonValue = tmpListEntry.id;
+				}
+				else
+				{
+					tmpComparisonValue = pView.getValueByHash(tmpRecordComparisonValueAddress);
+				}
 
 				switch(tmpFilterRule.FilterType)
 				{
 					case 'Explicit':
-						if (!('FilterList' in tmpFilterRule) || (!Array.isArray(tmpFilterRule.FilterList)))
+						let tmpExplicitFilterValueAddress = tmpFilterRule.FilterValueAddress;
+						let tmpExplicitFilterValueComparison = ('FilterValueComparison' in tmpFilterRule) ? tmpFilterRule.FilterValueComparison : '==';
+						let tmpExplicitFilterIgnoreEmpty = ('IgnoreEmptyValue' in tmpFilterRule) ? tmpFilterRule.IgnoreEmptyValue : false;
+
+						// TODO: This can be massively optimized by only solving this when something changes in the data location.
+						//       Cache invalidation will be a PITA on this one.
+						let tmpExplicitFilterValue = pView.getValueByHash(tmpExplicitFilterValueAddress);
+
+						if (tmpExplicitFilterIgnoreEmpty && ((!tmpExplicitFilterValue) || (tmpExplicitFilterValue == '')))
 						{
-							this.log.warn(`FilterList failed because the FilterList is not an array.`);
+							// The comparison value is empty, so ignore it.
 							break;
 						}
-						if (tmpFilterRule.FilterList.indexOf(tmpListEntry) == -1)
+
+						// Now check each value in the list to see if it matches the filter.
+						switch(tmpExplicitFilterValueComparison.toLowerCase())
 						{
-							tmpEntryAllowed = false;
+							// Equal To
+							case '=':
+							case '==':
+							case 'eq':
+								if (tmpComparisonValue != tmpExplicitFilterValue)
+								{
+									this.fable.log.debug(`FilterList: ${tmpComparisonValue} != ${tmpExplicitFilterValue}; distilling is removing from the outcome array.`);
+									tmpEntryAllowed = false;
+								}
+								break;
+
+							// Not Equal
+							case '!=':
+							case 'ne':
+								if (tmpComparisonValue == tmpExplicitFilterValue)
+								{
+									this.fable.log.debug(`FilterList: ${tmpComparisonValue} == ${tmpExplicitFilterValue}; distilling is removing from the outcome array.`);
+									tmpEntryAllowed = false;
+								}
+								break;
+
+							// Approximately Equal
+							case '~=':
+							case 'ae':
+								if (tmpComparisonValue == tmpExplicitFilterValue)
+								{
+									this.fable.log.debug(`FilterList: ${tmpComparisonValue} == ${tmpExplicitFilterValue}; distilling is removing from the outcome array.`);
+									tmpEntryAllowed = false;
+								}
+								break;
 						}
 						break;
+
 					case 'CrossMap':
-						// This either works from hard-coded values or from an address.
-						let tmpFilterValue = tmpFilterRule.FilterValue;
-						let tmpFilterValueAddress = tmpFilterRule.FilterValueAddress;
-						let tmpFilterValueLookupAddress = tmpFilterRule.FilterValueLookupAddress;
-						let tmpFilterMap = tmpFilterRule.FilterMap;
-						let tmpFilterMapAddress = tmpFilterRule.FilterMapAddress;
+						let tmpFilterValueAddress = tmpFilterRule.FilterValueAddres;
+						let tmpFilterValueListAddress = tmpFilterRule.FilterValueListAddress;
+						let tmpFilterValueTemplate = tmpFilterRule.FilterValueTemplate;
+
+						// Check if there is a value to filter on; otherwise this won't remove values from the set.
 						break;
 						
 				}
+			}
 
-				// Now enumerate each rule and check the filter.
-				if (tmpEntryAllowed)
-				{
-					tmpFilteredList.push(tmpListEntry);
-				}
+			if (!tmpEntryAllowed)
+			{
+				tmpFilteredList = tmpFilteredList.splice(h,1);
 			}
 		}
 		return tmpFilteredList;

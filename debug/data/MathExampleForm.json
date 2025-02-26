@@ -99,7 +99,8 @@
                 "Width": "1",
                 "Section": "MatheMagic",
                 "Group": "Math_is_Magic"
-            }
+            },
+            "Content": "<h5> This is static HTML help </h5>\n\n<p>Math is like this hidden superpower that shapes everything around us—it's the secret language of the universe! From the way galaxies spin to the way we calculate our daily coffee expenses, math is the underlying thread that ties it all together. Whether you're working through an elegant proof or just figuring out how many slices of pizza you can afford, math is constantly revealing new patterns, connections, and solutions. It's mind-bending, creative, and endlessly fascinating! Every time you solve a tricky equation or discover a new formula, it feels like unlocking a new level of a game -- there's always something cool to uncover.</p>\n"
         },
         "Geometry.Rectangle.Width": {
             "Hash": "RectangleWidth",
@@ -391,7 +392,8 @@
                 "Width": "1",
                 "Section": "Rectangular_Area_Help",
                 "Group": "Rectangular_Area_Help"
-            }
+            },
+            "Content": "# Computing the Area of a 3-Dimensional Rectangle (Cuboid)\n\nIn three-dimensional space, a \"rectangle\" is typically referred to as a **cuboid**. A cuboid is a 3D shape with six rectangular faces, and to find the area (more precisely, the surface area) of a cuboid, we need to calculate the areas of each face and sum them up.\n\n## Step-by-Step Explanation\n\n### 1. **Understanding the Shape**\n\nA cuboid has three dimensions:\n- **Length (l)**: the longest side.\n- **Width (w)**: the side perpendicular to the length.\n- **Height (h)**: the vertical side.\n\nThese three dimensions define the size of the cuboid.\n\n### 2. **Area of a Rectangle**\n\nThe **area of a rectangle** is calculated using the formula:\n\n\\[\n\\text{Area} = \\text{Length} \\times \\text{Width}\n\\]\n\nThis formula gives the area of one rectangular face of the cuboid.\n\n### 3. **Surface Area of the Cuboid**\n\nThe **surface area** of a cuboid is the total area of all six rectangular faces. A cuboid has three distinct pairs of opposite faces:\n- Two faces with area \\( l \\times w \\)\n- Two faces with area \\( l \\times h \\)\n- Two faces with area \\( w \\times h \\)\n\nThe total surface area \\( A \\) is the sum of the areas of all six faces:\n\n\\[\nA = 2(lw + lh + wh)\n\\]\n\nHere:\n- \\( 2(lw) \\) is for the two faces with length and width.\n- \\( 2(lh) \\) is for the two faces with length and height.\n- \\( 2(wh) \\) is for the two faces with width and height.\n\n### 4. **Final Formula for Surface Area**\n\nThe formula to compute the surface area \\( A \\) of a cuboid is:\n\n\\[\nA = 2(lw + lh + wh)\n\\]\n\nThis formula gives the total area of all six faces of the cuboid.\n\n## Example\n\nLet’s say we have a cuboid with:\n- Length \\( l = 4 \\) units\n- Width \\( w = 3 \\) units\n- Height \\( h = 5 \\) units\n\nWe can plug these values into the formula for surface area:\n\n\\[\nA = 2(4 \\times 3 + 4 \\times 5 + 3 \\times 5)\n\\]\n\n\\[\nA = 2(12 + 20 + 15) = 2 \\times 47 = 94 \\text{ square units}\n\\]\n\nSo, the surface area of this cuboid is 94 square units.\n\n---\n\n## Key Concepts\n\n- **Rectangle Area**: The area of a flat, two-dimensional shape with four right angles. It is calculated by multiplying the length and the width.\n  \n- **Surface Area**: The total area of all the faces of a 3D object. For a cuboid, it’s the sum of the areas of the six rectangular faces.\n  \n- **Dimensions**: These are the three measurements (length, width, height) that define the size of the cuboid.\n\nBy using simple multiplication and addition, you can easily compute the surface area of any cuboid."
         },
         "ComplexEquation.PR": {
             "Hash": "CePR",
@@ -468,6 +470,28 @@
             "DataAddress": "Cylinders",
             "DataType": "Array"
         },
+
+        "Listopia.ColorFilter": {
+            "Hash": "JobTitle",
+            "Name": "Job Title",
+            "DataAddress": "Filters.Colour",
+            "DataType": "String",
+            "PictForm": {
+                "Providers": [
+                    "Pict-Input-AutofillTriggerGroup"
+                ],
+                "AutofillTriggerGroup": {
+                    "TriggerGroup": "Fruit",
+                    "MarshalEmptyValues": false,
+                    "SelectOptionsRefresh": true,
+                    "TriggerAllInputs": true
+                },
+                "Row": "1",
+                "Width": "6",
+                "Section": "Header",
+                "Group": "General_Info"
+            }
+        },
         "Listopia.Color": {
             "Hash": "Colors",
             "Name": "Color",
@@ -478,7 +502,51 @@
                 "Row": "1",
                 "Width": "1",
                 "Section": "Listopia",
-                "Group": "OcclusionLists"
+                "Group": "OcclusionLists",
+                "SelectOptions": [
+                    {
+                        "id": "Red",
+                        "text": "The Deepest Red"
+                    },
+                    {
+                        "id": "Green",
+                        "text": "A Challenging Green"
+                    },
+                    {
+                        "id": "Blue",
+                        "text": "Corporate Blue"
+                    },
+                    {
+                        "id": "Orange",
+                        "text": "Almost Brown Orange"
+                    },
+                    {
+                        "id": "Yellow",
+                        "text": "Not a Weak Bellied Yellow"
+                    },
+                    {
+                        "id": "Other",
+                        "text": "Other"
+                    }
+                ],
+                "Providers": [
+                    "Pict-Input-AutofillTriggerGroup"
+                ],
+                "AutofillTriggerGroup": {
+                    "TriggerGroup": "Fruit",
+                    "MarshalEmptyValues": false,
+                    "SelectOptionsRefresh": true
+                },
+                "ListFilterRules": [
+                    {
+                        "Filter": "Fruit List",
+                        "FilterType": "Explicit",
+                        "FilterValueComparison": "==",
+                        "FilterValueAddress": "Filters.Colour",
+                        "IgnoreEmptyValue": true
+                    }
+                ]
+
             }
         },
         "Listopia.Box": {
@@ -499,7 +567,8 @@
                     "SelectOptionsRefresh": true
                 },
                 "Section": "Listopia",
-                "Group": "OcclusionLists"
+                "Group": "OcclusionLists",
+                "SelectOptionsPickList": "OPTION_Listopia_BoxSelection"
             }
         },
         "Listopia.Fruit": {
@@ -512,7 +581,33 @@
                 "Row": "1",
                 "Width": "1",
                 "Section": "Listopia",
-                "Group": "OcclusionLists"
+                "Group": "OcclusionLists",
+                "SelectOptions": [
+                    {
+                        "id": "Apple",
+                        "text": "The Apple"
+                    },
+                    {
+                        "id": "Kiwi",
+                        "text": "Kiwi"
+                    },
+                    {
+                        "id": "Tangerine",
+                        "text": "A Soft Tangerine"
+                    },
+                    {
+                        "id": "Orange",
+                        "text": "Orange Crush"
+                    },
+                    {
+                        "id": "Watermelon",
+                        "text": "The Wateriest Melon"
+                    },
+                    {
+                        "id": "Tomato",
+                        "text": "An Heirloom of Rapid Descent"
+                    }
+                ]
             }
         },
         "Listopia.Stone": {
@@ -525,7 +620,21 @@
                 "Row": "1",
                 "Width": "1",
                 "Section": "Listopia",
-                "Group": "OcclusionLists"
+                "Group": "OcclusionLists",
+                "SelectOptions": [
+                    {
+                        "id": "Small",
+                        "text": "The Small Type Seed"
+                    },
+                    {
+                        "id": "Large",
+                        "text": "A Very Big Seed"
+                    },
+                    {
+                        "id": "None",
+                        "text": "No Seeds to Speak Of"
+                    }
+                ]
             }
         }
     },
@@ -689,7 +798,198 @@
                     "ShowTitle": false,
                     "Layout": "Tabular",
                     "RecordSetAddress": "Rectangle",
-                    "RecordManifest": "Rectangles"
+                    "RecordManifest": "Rectangles",
+                    "DefaultRows": [
+                        {
+                            "Identifier": "A",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "B",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "C",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "D",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "E",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "F",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "G",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "H",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "I",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "J",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "K",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": "This is not in the manifest but is loaded by the tooling."
+                        },
+                        {
+                            "Identifier": "L",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "M",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "N",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "O",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "P",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "Q",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "Really?",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "S",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "T",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "U",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "V",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "WTF",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "X",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "Y",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "Z",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        },
+                        {
+                            "Identifier": "TOO MANY",
+                            "Width": "1",
+                            "Height": "1",
+                            "Depth": "1",
+                            "ExtraData": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -723,6 +1023,119 @@
                     "Hash": "OcclusionLists",
                     "Rows": [],
                     "RecordSetSolvers": []
+                }
+            ],
+            "PickLists": [
+                {
+                    "DefaultListData": [
+                        {
+                            "id": "Red",
+                            "text": "The Deepest Red"
+                        },
+                        {
+                            "id": "Green",
+                            "text": "A Challenging Green"
+                        },
+                        {
+                            "id": "Blue",
+                            "text": "Corporate Blue"
+                        },
+                        {
+                            "id": "Orange",
+                            "text": "Almost Brown Orange"
+                        },
+                        {
+                            "id": "Yellow",
+                            "text": "Not a Weak Bellied Yellow"
+                        },
+                        {
+                            "id": "Other",
+                            "text": "Other"
+                        }
+                    ],
+                    "Hash": "OPTION_Listopia_Colors",
+                    "ListAddress": "AppData.OPTION_Listopia_Colors_LIST",
+                    "ListSourceAddress": "OPTION_Listopia_Colors_SOURCE",
+                    "ExplicitSourceAddress": false,
+                    "TextTemplate": "{~Data:text~}",
+                    "IDTemplate": "{~Data:id~}",
+                    "Unique": false,
+                    "Sorted": false,
+                    "UpdateFrequency": "Always"
+                },
+                {
+                    "DefaultListData": [],
+                    "Hash": "OPTION_Listopia_BoxSelection",
+                    "ListAddress": "AppData.OPTION_Listopia_BoxSelection_LIST",
+                    "ListSourceAddress": "Boxes",
+                    "ExplicitSourceAddress": true,
+                    "TextTemplate": "{~D:Record.Identifier~} (volume {~D:Record.Volume~})",
+                    "IDTemplate": "{~D:Record.Identifier~}",
+                    "Unique": false,
+                    "Sorted": false,
+                    "UpdateFrequency": "Always"
+                },
+                {
+                    "DefaultListData": [
+                        {
+                            "id": "Apple",
+                            "text": "The Apple"
+                        },
+                        {
+                            "id": "Kiwi",
+                            "text": "Kiwi"
+                        },
+                        {
+                            "id": "Tangerine",
+                            "text": "A Soft Tangerine"
+                        },
+                        {
+                            "id": "Orange",
+                            "text": "Orange Crush"
+                        },
+                        {
+                            "id": "Watermelon",
+                            "text": "The Wateriest Melon"
+                        },
+                        {
+                            "id": "Tomato",
+                            "text": "An Heirloom of Rapid Descent"
+                        }
+                    ],
+                    "Hash": "OPTION_Listopia_FruitSelection",
+                    "ListAddress": "AppData.OPTION_Listopia_FruitSelection_LIST",
+                    "ListSourceAddress": "OPTION_Listopia_FruitSelection_SOURCE",
+                    "ExplicitSourceAddress": false,
+                    "TextTemplate": "{~Data:text~}",
+                    "IDTemplate": "{~Data:id~}",
+                    "Unique": false,
+                    "Sorted": false,
+                    "UpdateFrequency": "Always"
+                },
+                {
+                    "DefaultListData": [
+                        {
+                            "id": "Small",
+                            "text": "The Small Type Seed"
+                        },
+                        {
+                            "id": "Large",
+                            "text": "A Very Big Seed"
+                        },
+                        {
+                            "id": "None",
+                            "text": "No Seeds to Speak Of"
+                        }
+                    ],
+                    "Hash": "OPTION_Listopia_Stones",
+                    "ListAddress": "AppData.OPTION_Listopia_Stones_LIST",
+                    "ListSourceAddress": "OPTION_Listopia_Stones_SOURCE",
+                    "ExplicitSourceAddress": false,
+                    "TextTemplate": "{~Data:text~}",
+                    "IDTemplate": "{~Data:id~}",
+                    "Unique": false,
+                    "Sorted": false,
+                    "UpdateFrequency": "Always"
                 }
             ],
             "Intersections": {
@@ -808,6 +1221,53 @@
                             "GUIDFruitSelection": "Tomato",
                             "GUIDColors": "Other"
                         }
+                    },
+                    "FruitSelectionStonesJoin": {
+                        "L-Apple-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Apple-T-Blue",
+                            "GUIDFruitSelection": "Apple",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Kiwi-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Kiwi-T-Blue",
+                            "GUIDFruitSelection": "Kiwi",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Tangerine-T-Red": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-Red",
+                            "GUIDFruitSelection": "Tangerine",
+                            "GUIDStones": "Red"
+                        },
+                        "L-Tangerine-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-Blue",
+                            "GUIDFruitSelection": "Tangerine",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Orange-T-Red": {
+                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-Red",
+                            "GUIDFruitSelection": "Orange",
+                            "GUIDStones": "Red"
+                        },
+                        "L-Orange-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-Blue",
+                            "GUIDFruitSelection": "Orange",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Watermelon-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Watermelon-T-Blue",
+                            "GUIDFruitSelection": "Watermelon",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Tomato-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tomato-T-Blue",
+                            "GUIDFruitSelection": "Tomato",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Peach-T-Green": {
+                            "GUIDFruitSelectionStonesJoin": "L-Peach-T-Green",
+                            "GUIDFruitSelection": "Peach",
+                            "GUIDStones": "Green"
+                        }
                     }
                 },
                 "Colors": {
@@ -891,6 +1351,55 @@
                             "GUIDFruitSelectionColorsJoin": "L-Tomato-T-Other",
                             "GUIDFruitSelection": "Tomato",
                             "GUIDColors": "Other"
+                        }
+                    }
+                },
+                "Stones": {
+                    "FruitSelectionStonesJoin": {
+                        "L-Apple-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Apple-T-Blue",
+                            "GUIDFruitSelection": "Apple",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Kiwi-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Kiwi-T-Blue",
+                            "GUIDFruitSelection": "Kiwi",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Tangerine-T-Red": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-Red",
+                            "GUIDFruitSelection": "Tangerine",
+                            "GUIDStones": "Red"
+                        },
+                        "L-Tangerine-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tangerine-T-Blue",
+                            "GUIDFruitSelection": "Tangerine",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Orange-T-Red": {
+                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-Red",
+                            "GUIDFruitSelection": "Orange",
+                            "GUIDStones": "Red"
+                        },
+                        "L-Orange-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Orange-T-Blue",
+                            "GUIDFruitSelection": "Orange",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Watermelon-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Watermelon-T-Blue",
+                            "GUIDFruitSelection": "Watermelon",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Tomato-T-Blue": {
+                            "GUIDFruitSelectionStonesJoin": "L-Tomato-T-Blue",
+                            "GUIDFruitSelection": "Tomato",
+                            "GUIDStones": "Blue"
+                        },
+                        "L-Peach-T-Green": {
+                            "GUIDFruitSelectionStonesJoin": "L-Peach-T-Green",
+                            "GUIDFruitSelection": "Peach",
+                            "GUIDStones": "Green"
                         }
                     }
                 }

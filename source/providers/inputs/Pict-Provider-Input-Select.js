@@ -70,11 +70,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 		// Try to get the input element
 		/** @type {Array<HTMLElement>|HTMLElement} */
 		let tmpInputSelectElement = this.pict.ContentAssignment.getElement(this.getSelectInputHTMLID(pInput.Macro.RawHTMLID));
-		let tmpDefaultData = pInput.PictForm?.SelectOptions;
+		let tmpListData = pInput.PictForm?.SelectOptions;
 
-		if (pInput.PictForm.SelectOptionsPickList && this.pict.providers.DynamicMetaLists.hasList(pView.Hash, pInput.PictForm.SelectOptionsPickList))
+		if (pInput.PictForm.SelectOptionsPickList && this.pict.providers.DynamicMetaLists.hasList(pInput.PictForm.SelectOptionsPickList))
 		{
-			tmpDefaultData = this.pict.providers.DynamicMetaLists.getList(pView.Hash, pInput.PictForm.SelectOptionsPickList);
+			tmpListData = this.pict.providers.DynamicMetaLists.getList(pInput.PictForm.SelectOptionsPickList);
 		}
 
 		// TODO: Determine later if this should ever be an array.
@@ -83,18 +83,19 @@ class CustomInputHandler extends libPictSectionInputExtension
 			return false;
 		}
 
+		tmpListData = this.pict.providers.ListDistilling.filterList(pView, pInput, tmpListData);
 
 		tmpInputSelectElement = tmpInputSelectElement[0];
 		// HAX
 		tmpInputSelectElement.innerHTML = '';
 
-		if (tmpInputSelectElement && tmpDefaultData && Array.isArray(tmpDefaultData))
+		if (tmpInputSelectElement && tmpListData && Array.isArray(tmpListData))
 		{
-			for (let i = 0; i < tmpDefaultData.length; i++)
+			for (let i = 0; i < tmpListData.length; i++)
 			{
 				let tmpOption = document.createElement('option');
-				tmpOption.value = tmpDefaultData[i].id;
-				tmpOption.text = tmpDefaultData[i].text;
+				tmpOption.value = tmpListData[i].id;
+				tmpOption.text = tmpListData[i].text;
 				tmpInputSelectElement.appendChild(tmpOption);
 			}
 		}
@@ -115,12 +116,14 @@ class CustomInputHandler extends libPictSectionInputExtension
 		// Try to get the input element
 		/** @type {Array<HTMLElement>|HTMLElement} */
 		let tmpInputSelectElement = this.pict.ContentAssignment.getElement(this.getTabularSelectDropdownID(pInput.Macro.RawHTMLID, pRowIndex));
-		let tmpDefaultData = pInput.PictForm.SelectOptions;
+		let tmpListData = pInput.PictForm?.SelectOptions;
 
-		if (pInput.PictForm.SelectOptionsPickList && this.pict.providers.DynamicMetaLists.hasList(pView.Hash, pInput.PictForm.SelectOptionsPickList))
+		if (pInput.PictForm.SelectOptionsPickList && this.pict.providers.DynamicMetaLists.hasList(pInput.PictForm.SelectOptionsPickList))
 		{
-			tmpDefaultData = this.pict.providers.DynamicMetaLists.getList(pView.Hash, pInput.PictForm.SelectOptionsPickList);
+			tmpListData = this.pict.providers.DynamicMetaLists.getList(pInput.PictForm.SelectOptionsPickList);
 		}
+
+		tmpListData = this.pict.providers.ListDistilling.filterList(pView, pInput, tmpListData);
 
 		// TODO: Determine later if this should ever be an array.
 		if (tmpInputSelectElement && tmpInputSelectElement.length > 0)
@@ -131,17 +134,16 @@ class CustomInputHandler extends libPictSectionInputExtension
 		{
 			return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
 		}
-
 		// HAX
 		tmpInputSelectElement.innerHTML = '';
 
-		if (tmpInputSelectElement && tmpDefaultData && Array.isArray(tmpDefaultData))
+		if (tmpInputSelectElement && tmpListData && Array.isArray(tmpListData))
 		{
-			for (let i = 0; i < tmpDefaultData.length; i++)
+			for (let i = 0; i < tmpListData.length; i++)
 			{
 				let tmpOption = document.createElement('option');
-				tmpOption.value = tmpDefaultData[i].id;
-				tmpOption.text = tmpDefaultData[i].text;
+				tmpOption.value = tmpListData[i].id;
+				tmpOption.text = tmpListData[i].text;
 				tmpInputSelectElement.appendChild(tmpOption);
 			}
 		}
@@ -177,7 +179,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
-		this.refreshSelectListTabular(pView, pGroup, pView.getRow(pRowIndex), pInput, pValue, pHTMLSelector, pRowIndex);
+		this.refreshSelectListTabular(pView, pGroup, pView.getRow(pInput.PictForm.GroupIndex, pRowIndex), pInput, pValue, pHTMLSelector, pRowIndex);
 		return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
 	}
 

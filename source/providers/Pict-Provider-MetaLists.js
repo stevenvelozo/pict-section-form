@@ -41,20 +41,20 @@ class PictMetalist extends libPictProvider
 		this.Hash;
 
 		this.computedLists = {};
+		this.listDefinitions = {};
 	}
 
 	/**
 	 * Retrieves a list based on the provided view hash and list hash.
 	 *
-	 * @param {string} pViewHash - The view hash.
 	 * @param {string} pListHash - The list hash.
 	 * @returns {Array} - The retrieved list.
 	 */
-	getList(pViewHash, pListHash)
+	getList(pListHash)
 	{
-		if ((pViewHash in this.computedLists) && (pListHash in this.computedLists[pViewHash]))
+		if (pListHash in this.computedLists)
 		{
-			return this.computedLists[pViewHash][pListHash];
+			return this.computedLists[pListHash];
 		}
 		return [];
 	}
@@ -62,19 +62,17 @@ class PictMetalist extends libPictProvider
 	/**
 	 * Checks if a list exists in the Pict Provider MetaLists.
 	 *
-	 * @param {string} pViewHash - The hash of the view.
 	 * @param {string} pListHash - The hash of the list.
 	 * @returns {boolean} - Returns true if the list exists, otherwise false.
 	 */
-	hasList(pViewHash, pListHash)
+	hasList(pListHash)
 	{
-		return ((pViewHash in this.computedLists) && (pListHash in this.computedLists[pViewHash]));
+		return (pListHash in this.computedLists);
 	}
 
 	/**
-	 * Builds meta lists for the Pict provider.
-	 *
-	 * @param {Array|string} pViewHashes - The view hashes to build meta lists for.
+	 * Rebuilds any lists defined in specific views
+	 * @param {Array} pViewHashes - An array of strings representing the view hashes to rebuild lists for.
 	 */
 	buildViewSpecificLists(pViewHashes)
 	{
@@ -88,13 +86,12 @@ class PictMetalist extends libPictProvider
 			if (tmpView.isPictSectionForm)
 			{
 				let tmpSection = tmpView.sectionDefinition;
-
 				if (('PickLists' in tmpSection) && Array.isArray(tmpSection.PickLists))
 				{
 					for (let j = 0; j < tmpSection.PickLists.length; j++)
 					{
 						let tmpPickList = tmpSection.PickLists[j];
-						this.buildViewSpecificList(tmpView, tmpPickList.Hash);
+						this.buildList(tmpPickList);
 					}
 				}
 			}
@@ -102,110 +99,120 @@ class PictMetalist extends libPictProvider
 	}
 
 	/**
-	 * Builds meta lists for the Pict provider.
+	 * Rebuilds a list based on the provided hash.
 	 *
-	 * @param {Object} pView - The view hashes to build meta lists for.
-	 * @param {string} pListHash - The list hash.
+	 * @param {string} pListHash - The hash of the list to be rebuilt.
 	 */
-	buildViewSpecificList(pView, pListHash)
+	rebuildListByHash(pListHash)
 	{
-		if (pView.isPictSectionForm)
+		if (pListHash in this.listDefinitions)
 		{
-			let tmpSection = pView.sectionDefinition;
-			let tmpListSourceObject = pView.getMarshalDestinationObject();
-			// For uniqueness tracking
-			let tmpListHashes = [];
+			this.buildList(this.listDefinitions[pListHash]);
+		}
+	}
 
-			if (('PickLists' in tmpSection) && Array.isArray(tmpSection.PickLists))
+	/**
+	 * Builds a list based on the provided list object.  Stores it internally for use in dropdowns and list boxes.
+	 * @param {Object} pListObject - The List definition object
+	 * @returns boolean
+	 */
+	buildList(pListObject)
+	{
+		// Basic list validation
+		if (typeof(pListObject) !== 'object')
+		{
+			this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] found a PickList that is not an object. Skipping.`);
+			return false;
+		}
+		if (!('Hash' in pListObject))
+		{
+			this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] found a PickList without a Hash. Skipping.`);
+			return false;
+		}
+
+		// Lazily add it if it doesn't exist
+		if (!(pListObject.Hash in this.listDefinitions))
+		{
+			this.listDefinitions[pListObject.Hash] = pListObject;
+			this.computedLists[pListObject.Hash] = [];
+		}
+
+		// Now try to build the list!
+		let tmpResultingList = [];
+
+		// Advanced list validation
+		if (!('ListAddress' in pListObject))
+		{
+			this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] found a PickList without a ListAddress. Skipping.`);
+			this.computedLists[pListObject.Hash] = [];
+			return false;
+		}
+		if (!('ListSourceAddress' in pListObject))
+		{
+			this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] found a PickList without a ListSourceAddress. Skipping.`);
+			this.computedLists[pListObject.Hash] = [];
+			return false;
+		}
+		// TODO: Research easy ways to infer this...
+		if (!('TextTemplate' in pListObject))
+		{
+			this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] found a PickList without a TextTemplate. Skipping.`);
+			this.computedLists[pListObject.Hash] = [];
+			return false;
+		}
+		if (!('IDTemplate' in pListObject))
+		{
+			this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] found a PickList without a IDTemplate. Skipping.`);
+			this.computedLists[pListObject.Hash] = [];
+			return false;
+		}
+
+		// Now try to fetch the list data
+		let tmpListData = this.pict.views.PictFormMetacontroller.getValueByHash(pListObject.ListSourceAddress);
+		if (!tmpListData)
+		{
+			this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] failed to fetch the list data for PickList [${pListObject.Hash}]. Skipping.`);
+			this.computedLists[pListObject.Hash] = [];
+			return false;
+		}
+
+		// Use this for the unique feature
+		let tmpListHashes = {};
+
+		if (Array.isArray(tmpListData))
+		{
+			for (let i = 0; i < tmpListData.length; i++)
 			{
-				for (let i = 0; i < tmpSection.PickLists.length; i++)
+				let tmpListEntry = tmpListData[i];
+				if (tmpListEntry && (typeof tmpListEntry === 'object'))
 				{
-					let tmpPickList = tmpSection.PickLists[i];
-					let tmpResultingList = [];
+					let tmpTextString = this.pict.parseTemplate(pListObject.TextTemplate, tmpListEntry);
+					let tmpIDString = this.pict.parseTemplate(pListObject.IDTemplate, tmpListEntry);
 
-					if (!('Hash' in tmpPickList))
+					if (!tmpTextString || !tmpIDString)
 					{
-						this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] found a PickList without a Hash. Skipping.`);
-						continue;
-					}
-					if (tmpPickList.Hash != pListHash)
-					{
-						// This isn't the specific list
-						continue;
-					}
-					if (!('ListAddress' in tmpPickList))
-					{
-						this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] found a PickList without a ListAddress. Skipping.`);
-						continue;
-					}
-					if (!('ListSourceAddress' in tmpPickList))
-					{
-						this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] found a PickList without a ListSourceAddress. Skipping.`);
-						continue;
-					}
-					// TODO: Research easy ways to infer this...
-					if (!('TextTemplate' in tmpPickList))
-					{
-						this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] found a PickList without a TextTemplate. Skipping.`);
-						continue
-					}
-					if (!('IDTemplate' in tmpPickList))
-					{
-						this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] found a PickList without a IDTemplate. Skipping.`);
+						this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] failed to generate the Text or ID for PickList [${pListObject.Hash}]. Skipping.`);
+//						this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] failed to generate the Text or ID for PickList [${pListObject.Hash}]. Skipping.`, {"Text": tmpTextString, "ID": tmpIDString, "Entry": tmpListEntry});
 						continue;
 					}
 
-					// Now try to fetch the list data
-					let tmpListData = pView.sectionManifest.getValueByHash(tmpListSourceObject, tmpPickList.ListSourceAddress);
-					if (!tmpListData)
+					if (pListObject.Unique && (tmpIDString in tmpListHashes))
 					{
-						this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] failed to fetch the list data for PickList [${tmpPickList.Hash}]. Skipping.`);
 						continue;
 					}
-
-					if (Array.isArray(tmpListData))
-					{
-						for (let i = 0; i < tmpListData.length; i++)
-						{
-							let tmpListEntry = tmpListData[i];
-							if (tmpListEntry && (typeof tmpListEntry === 'object'))
-							{
-								let tmpTextString = this.pict.parseTemplate(tmpPickList.TextTemplate, tmpListEntry);
-								let tmpIDString = this.pict.parseTemplate(tmpPickList.IDTemplate, tmpListEntry);
-
-								if (!tmpTextString || !tmpIDString)
-								{
-									this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] failed to generate the Text or ID for PickList [${tmpPickList.Hash}]. Skipping.`);
-									continue;
-								}
-
-								if (tmpPickList.Unique && (tmpIDString in tmpListHashes))
-								{
-									continue;
-								}
-								tmpListHashes[tmpIDString] = true;
-								tmpResultingList.push({"id": tmpIDString, "text": tmpTextString});
-							}
-						}
-					}
-
-					if (tmpPickList.Sorted)
-					{
-						tmpResultingList.sort((pLeft, pRight) => pLeft.text.localeCompare(pRight.text));
-					}
-
-					// Now store the list
-					if (!(pView.Hash in this.computedLists))
-					{
-						this.computedLists[pView.Hash] = {};
-					}
-					this.computedLists[pView.Hash][tmpPickList.Hash] = tmpResultingList;
-					// Right now all that's available is pict and AppData... which means if they associate it with "Nonce" or such, it will be lost.
-					// TODO: This is intentional to allow lists managed here, but should be revisited.
-					pView.sectionManifest.setValueByHash({Pict:this.pict, AppData:this.pict.AppData}, tmpPickList.ListAddress, tmpResultingList);
+					tmpListHashes[tmpIDString] = true;
+					tmpResultingList.push({"id": tmpIDString, "text": tmpTextString});
 				}
 			}
 		}
+
+		if (pListObject.Sorted)
+		{
+			tmpResultingList.sort((pLeft, pRight) => pLeft.text.localeCompare(pRight.text));
+		}
+
+		// Now store the list
+		this.computedLists[pListObject.Hash] = tmpResultingList;
 	}
 }
 

@@ -23,33 +23,7 @@ module.exports.default_configuration.pict_configuration = {
 	DefaultFormManifest: {
 		Scope: "SuperComplexTabularForm",
 
-		Sections: [
-			{
-				Hash: "Recipe",
-				Name: "Fruit-based Recipe",
-
-				Solvers:
-				[
-					"TotalFruitCalories = SUM(FruitNutritionCalories)",
-					"AverageFruitCalories = MEAN(FruitNutritionCalories)",
-					{
-						Ordinal: 99,
-						Expression: "AverageFatPercent = MEAN(FruitPercentTotalFat)",
-					},
-					"RecipeCounterSurfaceArea = RecipeCounterWidth * RecipeCounterDepth",
-					"RecipeCounterVolume = RecipeCounterSurfaceArea * RecipeVerticalClearance",
-				],
-
-				MetaTemplates:
-				[
-					{
-						//onclick="{~D:Record.Macro.DataRequestFunction~}"
-						"HashPostfix": "-Template-Wrap-Prefix",
-						"Template": "<h1>Rectangular Area Solver Micro-app</h1><div><a href=\"#\" onclick=\"{~Pict~}.PictApplication.solve()\">[ solve ]</a></div><hr />"
-					}
-				],
-
-				PickLists:
+		PickLists:
 				[
 					{
 						Hash: "Families",
@@ -87,7 +61,33 @@ module.exports.default_configuration.pict_configuration = {
 						IDTemplate: "{~D:Record.IDBook~}",
 						Sorted: true,
 						UpdateFrequency: "Always",
+					}
+				],
+
+		Sections: [
+			{
+				Hash: "Recipe",
+				Name: "Fruit-based Recipe",
+
+				Solvers:
+				[
+					"TotalFruitCalories = SUM(FruitNutritionCalories)",
+					"AverageFruitCalories = MEAN(FruitNutritionCalories)",
+					{
+						Ordinal: 99,
+						Expression: "AverageFatPercent = MEAN(FruitPercentTotalFat)",
 					},
+					"RecipeCounterSurfaceArea = RecipeCounterWidth * RecipeCounterDepth",
+					"RecipeCounterVolume = RecipeCounterSurfaceArea * RecipeVerticalClearance",
+				],
+
+				MetaTemplates:
+				[
+					{
+						//onclick="{~D:Record.Macro.DataRequestFunction~}"
+						"HashPostfix": "-Template-Wrap-Prefix",
+						"Template": "<h1>Rectangular Area Solver Micro-app</h1><div><a href=\"#\" onclick=\"{~Pict~}.PictApplication.solve()\">[ solve ]</a></div><hr />"
+					}
 				],
 
 				Groups: [
@@ -289,8 +289,11 @@ module.exports.default_configuration.pict_configuration = {
 				Hash: "SpecificIDBook",
 				DataType: "Number",
 				PictForm: {
-					Section: "Book", Group: "Book", Row: 1, Width: 1, "InputType":"Option",
-					"SelectOptionsPickList": "Books",
+					Section: "Book",
+					Group: "Book",
+					Row: 1, Width: 1,
+					InputType:"Option",
+					SelectOptionsPickList: "Books",
 					// This performs an entity bundle request whenever a value is selected.
 					Providers: ["Pict-Input-Select", "Pict-Input-AutofillTriggerGroup"],
 					AutofillTriggerGroup:

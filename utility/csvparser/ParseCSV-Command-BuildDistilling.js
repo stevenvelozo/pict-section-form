@@ -199,11 +199,61 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 								tmpSection.Intersections = {};
 							}
 
-							// Put the intersection data into the section, keyed by the descriptor hash
-							tmpSection.Intersections[tmpDescriptor.Hash] = pFileToLoad.IntersectionOutcome.Comprehension;
+							// Merge the intersection data into the section->descriptor hash comprehension
+							if (!tmpSection.Intersections[tmpDescriptor.Hash])
+							{
+								tmpSection.Intersections[tmpDescriptor.Hash] = {};
+							}
+
+							let tmpComprehensionKeys = Object.keys(pFileToLoad.IntersectionOutcome.Comprehension);
+
+							for (let k = 0; k < tmpComprehensionKeys.length; k++)
+							{
+								let tmpComprehensionKey = tmpComprehensionKeys[k];
+
+								if (tmpSection.Intersections[tmpDescriptor.Hash][tmpComprehensionKey])
+								{
+									// If there is already a comprehension key, merge the data
+									let tmpExistingComprehension = tmpSection.Intersections[tmpDescriptor.Hash][tmpComprehensionKey];
+									let tmpNewComprehension = pFileToLoad.IntersectionOutcome.Comprehension[tmpComprehensionKey];
+
+									let tmpExistingComprehensionKeys = Object.keys(tmpExistingComprehension);
+									for (let l = 0; l < tmpExistingComprehensionKeys.length; l++)
+									{
+										let tmpExistingComprehensionKey = tmpExistingComprehensionKeys[l];
+										if (!tmpNewComprehension[tmpExistingComprehensionKey])
+										{
+											tmpNewComprehension[tmpExistingComprehensionKey] = tmpExistingComprehension[tmpExistingComprehensionKey];
+										}
+										else
+										{
+											tmpNewComprehension[tmpExistingComprehensionKey] = Object.assign({}, tmpExistingComprehension[tmpExistingComprehensionKey], tmpNewComprehension[tmpExistingComprehensionKey]);
+										}
+									}
+								}
+								else
+								{
+									// If there is no comprehension key, just copy the data in as the new comprehension.
+									tmpSection.Intersections[tmpDescriptor.Hash][tmpComprehensionKey] = pFileToLoad.IntersectionOutcome.Comprehension[tmpComprehensionKey];
+								}
+							}
 						}
 					}
 				}
+
+				// Now add the input trigger groups to the descriptors
+
+				/*
+				"Providers": [
+                    "Pict-Input-AutofillTriggerGroup"
+                ],
+                "AutofillTriggerGroup": {
+                    "TriggerGroup": "Box",
+                    "MarshalEmptyValues": false,
+                    "SelectOptionsRefresh": true
+                },
+
+				*/
 
 				return fCallback();
 			});
