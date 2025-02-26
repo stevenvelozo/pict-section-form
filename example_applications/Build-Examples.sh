@@ -15,11 +15,6 @@ pushd gradebook
 npm install && npm run build
 popd
 
-# Building manifest_testbed
-pushd manifest_testbed
-npm install && npm run build
-popd
-
 # Building manyfest_editor
 pushd manyfest_editor
 npm install && npm run build

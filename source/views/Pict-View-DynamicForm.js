@@ -680,7 +680,9 @@ class PictViewDynamicForm extends libPictViewClass
 										{
 											this.log.trace(`Dynamic form [${this.Hash}]::[${this.UUID}] running provider [${tmpInputProviderList[l]}] function [${pFunctionName}] for input [${tmpInput.Hash}].`);
 										}
-										if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
+										// TODO: Right now the Option input requires this bug to work
+										//if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
+										if ((tmpInput.PictForm.InputType == 'Option') || this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
 										{
 											this.pict.providers[tmpInputProviderList[l]][pFunctionName](this, tmpGroup, j, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
 										}
@@ -732,7 +734,7 @@ class PictViewDynamicForm extends libPictViewClass
 										let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
 										try
 										{
-											if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `TI${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
+											if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `TI${tmpInput.Hash}-P${tmpInputProviderList[l]}-R${r}`, pFunctionName))
 											{
 												this.pict.providers[tmpInputProviderList[l]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r);
 											}
