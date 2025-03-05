@@ -124,10 +124,12 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 		let tmpPotentialOptionsCSVExists = libFS.existsSync(tmpPotentialOptionsCSVPath);
 		if (!tmpPotentialOptionsCSVExists)
 		{
-			this.log.warn(`No Options CSV found at [${tmpPotentialCSVPath}] ... checking with full cwd in path`);
-			tmpPotentialOptionsCSVPath = libPath.join(process.cwd(), this.CommandOptions.directory, `${tmpGroup.RecordManifest}.csv`);
+			this.log.warn(`No Options CSV found at [${tmpPotentialOptionsCSVPath}] ... checking with full cwd in path`);
+			tmpPotentialOptionsCSVPath = libPath.join(process.cwd(), this.CommandOptions.directory, `Pict-OptionsLists.csv`);
 			tmpPotentialOptionsCSVExists = libFS.existsSync(tmpPotentialOptionsCSVPath);
 		}
+		this.inputToPicklistMapping = {};
+		this.pickListConfigurations = {};
 		if (tmpPotentialOptionsCSVExists)
 		{
 			this.log.info(`Options CSV located at [${tmpPotentialOptionsCSVPath}]... loading and checking against options Descriptors.`);
@@ -273,7 +275,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 										let tmpSorted = ((tmpOptionsRow['Sorted'].toLowerCase() == 'x') || (tmpOptionsRow['Sorted'].toLowerCase() == 'TRUE'));
 
 										// For each picklist hash add it to the PickLists array.
-										if (!(tmpSectionHash in this.inputToPicklistMapping))
+										if (!(tmpSectionHash in this.inputToPicklistMapping) || !this.inputToPicklistMapping[tmpSectionHash])
 										{
 											this.inputToPicklistMapping[tmpSectionHash] = {};
 										}
@@ -401,7 +403,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 						let tmpSectionHash = tmpDescriptor?.PictForm?.Section;
 						if (tmpSectionHash)
 						{
-							if ((tmpSectionHash in this.inputToPicklistMapping) && (tmpDescriptor.Hash in this.inputToPicklistMapping[tmpSectionHash]))
+							if ((tmpSectionHash in this.inputToPicklistMapping) && this.inputToPicklistMapping[tmpSectionHash] && (tmpDescriptor.Hash in this.inputToPicklistMapping[tmpSectionHash]))
 							{
 								let tmpPickListHash = this.inputToPicklistMapping[tmpSectionHash][tmpDescriptor.Hash];
 								let tmpPickList = this.pickListConfigurations[tmpSectionHash][tmpPickListHash];
