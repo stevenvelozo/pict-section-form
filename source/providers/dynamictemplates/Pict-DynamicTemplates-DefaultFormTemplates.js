@@ -418,7 +418,7 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-Template-Input-InputType-TabGroupSelector-TabElement",
 			"Template": /*HTML*/`
 			<!-- Sections have "tab groups" which are defined by the hash of the Descriptor that hosts the current TabGroup value. -->
-			<a href="#/" id="TAB-{~D:Context[1].TabGroupHash~}-{~D:Record.Macro.RawHTMLID~}" onclick="{~P~}.providers['Pict-Input-TabGroupSelector'].selectTabByViewHash('{~D:Context[0].Hash~}','{~D:Record.Hash~}', '{~D:Context[1].TabGroupHash~}')">{~D:Context[1].TabGroupHash~}</a>
+			<a href="#/" id="TAB-{~D:Context[1].TabGroupHash~}-{~D:Record.Macro.RawHTMLID~}" onclick="{~P~}.providers['Pict-Input-TabGroupSelector'].selectTabByViewHash('{~D:Context[0].Hash~}','{~D:Record.Hash~}', '{~D:Context[1].TabGroupHash~}')">{~D:Context[1].TabGroupName~}</a>
 `
 		},
 		{
@@ -453,7 +453,7 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-Template-Input-InputType-TabSectionSelector-TabElement",
 			"Template": /*HTML*/`
 			<!-- Sections have "tab groups" which are defined by the hash of the Descriptor that hosts the current TabSection value. -->
-			<a href="#/" id="TAB-{~D:Context[1].TabSectionHash~}-{~D:Record.Macro.RawHTMLID~}" onclick="{~P~}.providers['Pict-Input-TabSectionSelector'].selectTabByViewHash('{~D:Context[0].Hash~}','{~D:Record.Hash~}', '{~D:Context[1].TabSectionHash~}')">{~D:Context[1].TabSectionHash~}</a>
+			<a href="#/" id="TAB-{~D:Context[1].TabSectionHash~}-{~D:Record.Macro.RawHTMLID~}" onclick="{~P~}.providers['Pict-Input-TabSectionSelector'].selectTabByViewHash('{~D:Context[0].Hash~}','{~D:Record.Hash~}', '{~D:Context[1].TabSectionHash~}')">{~D:Context[1].TabSectionName~}</a>
 `
 		},
 		{

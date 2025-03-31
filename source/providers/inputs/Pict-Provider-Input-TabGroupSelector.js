@@ -121,10 +121,12 @@ class CustomInputHandler extends libPictSectionInputExtension
 		let tmpEntryMetatemplateHash = this.pict.providers.DynamicInput.getInputTemplateHash(pView, { PictForm: { InputType: 'TabGroupSelector-TabElement', DataType: 'String' } });
 
 		let tmpTabGroupSetEntries = '';
+		// If there are tab group names, use them, otherwise use the hash
+		let tempTabSetNames = pInput.PictForm?.TabGroupNames || [];
 
 		for (let i = 0; i < tmpTabSet.length; i++)
 		{
-			tmpTabGroupSetEntries += this.pict.parseTemplateByHash(tmpEntryMetatemplateHash, pInput, null, [pView, {TabGroupHash: tmpTabSet[i]}]);
+			tmpTabGroupSetEntries += this.pict.parseTemplateByHash(tmpEntryMetatemplateHash, pInput, null, [pView, {TabGroupHash: tmpTabSet[i], TabGroupName: (tempTabSetNames[i] || tmpTabSet[i])}]);
 		}
 
 		// TODO: Fix typescript types so this function has an optional rather than required fourth parameter.
