@@ -40,9 +40,9 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return `PictSectionForm-${pManifestSectionHash}`;
 	}
 
-	getTabSelector(pTabView, pInput)
+	getTabSelector(pTabSectionHash, pInput)
 	{
-		return `#TAB-${pTabView.formID}-${pInput.Macro.RawHTMLID}`;
+		return `#TAB-${pTabSectionHash}-${pInput.Macro.RawHTMLID}`;
 	}
 
 	getSectionSelector(pTabViewSectionHash)
