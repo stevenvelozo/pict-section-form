@@ -8,6 +8,8 @@ const templateSetReadOnlyTemplates = require('./dynamictemplates/Pict-DynamicTem
 const libTemplateValueSetWithGroup = require('../templates/Pict-Template-Metacontroller-ValueSetWithGroup.js');
 const libTemplateDynamicInput = require('../templates/Pict-Template-Metatemplate-Input.js');
 const libTemplateDynamicInputWithHashAddress = require('../templates/Pict-Template-Metatemplate-InputWithHashAddress.js');
+const libTemplateControlFromDynamicManifest = require('../templates/Pict-Template-ControlFromDynamicManifest.js')
+const libTemplateControlFromDynamicManifestForHash = require('../templates/Pict-Template-ControlFromDynamicManifestForHash.js')
 
 // TODO: This is temporary until we publish new pict
 const libTemplatePluckJoinUnique = require('../templates/Pict-Template-Proxy-PluckJoinUnique.js');
@@ -53,6 +55,8 @@ class PictDynamicFormsTemplates extends libPictProvider
 		this.pict.addTemplate(libTemplateDynamicInput);
 		this.pict.addTemplate(libTemplateDynamicInputWithHashAddress);
 		this.pict.addTemplate(libTemplatePluckJoinUnique);
+		this.pict.addTemplate(libTemplateControlFromDynamicManifest);
+		this.pict.addTemplate(libTemplateControlFromDynamicManifestForHash);
 
 		if (this.options?.MetaTemplateSet && typeof(this.options.MetaTemplateSet) === 'object')
 		{

@@ -30,6 +30,21 @@
 				"Name": "Delivery Confirmation Contact Info",
 				"Hash": "DeliveryConfirmationInfo",
 				"Description": "The email address and phone number of the sender."
+			},
+			{
+				"Name": "Custom Layout Test",
+				"Hash": "CustomLayoutTest",
+				"Description": "A test section to see how custom layout works.",
+				"Groups":
+					[
+						{
+							"Name": "Custom Layout",
+							"Hash": "Custom1",
+							"Description": "The message and recipient of your postcard.",
+							"Layout": "Custom",
+							"CustomLayoutTemplate": "<div id=\"custom\">{~DI:Custom.CustomField1~} <div id=\"custom2\">{~DIH:CustomField2~}</div></div>"
+						}
+					]
 			}
 		],
 
@@ -67,7 +82,7 @@
 					"DataType":"String"
 					,"PictForm": { "Section":"Postcard", "Group":"Content", "Row":3, "Width":12, "InputType":"TextArea" }
 				},
-			"PostcardContent.SignatureLine": 
+			"PostcardContent.SignatureLine":
 				{
 					"Name":"Signature Line",
 					"Hash":"SignatureLine",
@@ -75,7 +90,7 @@
 					"DataType":"String"
 					,"PictForm": { "InputType":"PostKardSignature", "Section":"Postcard", "Group":"Content", "Row":4, "Width":12, "Providers": ["PostKardInputExtension"] }
 				},
-			"DeliveryDestination.StreetAddress1": 
+			"DeliveryDestination.StreetAddress1":
 				{
 					"Name":"Street Address Line 1",
 					"Hash":"StreetAddress1",
@@ -83,7 +98,7 @@
 					"DataType":"String"
 					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":1, "Width":12 }
 				},
-			"DeliveryDestination.StreetAddress2": 
+			"DeliveryDestination.StreetAddress2":
 				{
 					"Name":"Street Address Line 2",
 					"Hash":"StreetAddress2",
@@ -91,7 +106,7 @@
 					"DataType":"String"
 					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":2, "Width":12 }
 				},
-			"DeliveryDestination.City": 
+			"DeliveryDestination.City":
 				{
 					"Name":"City",
 					"Hash":"City",
@@ -99,7 +114,7 @@
 					"DataType":"String"
 					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":3, "Width":6 }
 				},
-			"DeliveryDestination.State": 
+			"DeliveryDestination.State":
 				{
 					"Name":"State",
 					"Hash":"State",
@@ -107,7 +122,7 @@
 					"DataType":"String"
 					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":1, "Width":2 }
 				},
-			"DeliveryDestination.Zip": 
+			"DeliveryDestination.Zip":
 				{
 					"Name":"Zip Code",
 					"Hash":"Zip",
@@ -115,7 +130,7 @@
 					"DataType":"Number"
 					,"PictForm": { "Section":"Postcard", "Group":"Destination", "Row":1, "Width":4 }
 				},
-			"SenderData.EmailAddress": 
+			"SenderData.EmailAddress":
 				{
 					"Name":"Email Address",
 					"Hash":"SenderEmailAddress",
@@ -123,7 +138,7 @@
 					"DataType":"String"
 					,"PictForm": { "Section":"DeliveryConfirmationInfo", "Row":1, "Width":12 }
 				},
-			"SenderData.PhoneNumber": 
+			"SenderData.PhoneNumber":
 				{
 					"Name":"Phone Number",
 					"Hash":"SenderPhoneNumber",
@@ -131,13 +146,29 @@
 					"DataType":"String"
 					,"PictForm": { "Section":"DeliveryConfirmationInfo", "Row":2, "Width":10, "CSSClasses": ["VeryImportantData"] }
 				},
-			"SenderData.ExplicitConsentToMailers": 
+			"SenderData.ExplicitConsentToMailers":
 				{
 					"Name":"Marketing Consent",
 					"Hash":"SenderExplicitMarketingConsent",
 					"Description":"I agree to receiving marketing material at this phone number and email address.",
 					"DataType":"Boolean"
 					,"PictForm": { "Section":"DeliveryConfirmationInfo", "Row":1, "Width":2 }
+				},
+			"Custom.CustomField1":
+				{
+					"Name":"Custom Field 1",
+					"Hash":"CustomField1",
+					"Description":"A custom field for testing.",
+					"DataType":"String",
+					"PictForm": { "InputType":"PostKardSignature", "Section":"CustomLayoutTest","Group":"Custom1", "Providers": ["PostKardInputExtension"] }
+				},
+			"Custom.CustomField2":
+				{
+					"Name":"Custom Field 2",
+					"Hash":"CustomField2",
+					"Description":"A custom field for testing.",
+					"DataType":"String",
+					"PictForm": { "InputType":"ParaGraphaString", "Section":"CustomLayoutTest", "Group":"Custom1", "Providers": ["PostKardInputExtension"] }
 				}
 		}
 }

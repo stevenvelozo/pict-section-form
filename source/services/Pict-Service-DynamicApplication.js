@@ -19,6 +19,7 @@ const libPictLayoutTabular = require('../providers/layouts/Pict-Layout-Tabular.j
 const libPictLayoutRecordSet = require('../providers/layouts/Pict-Layout-RecordSet.js');
 const libPictLayoutChart = require('../providers/layouts/Pict-Layout-Chart.js');
 const libPictLayoutTuiGrid = require('../providers/layouts/Pict-Layout-TuiGrid.js');
+const libPictLayoutCustom = require('../providers/layouts/Pict-Layout-Custom.js');
 
 const libInformary = require('../providers/Pict-Provider-Informary.js');
 
@@ -56,6 +57,7 @@ class PictDynamicApplication extends libFableServiceProviderBase
 		this.fable.addProviderSingleton('Pict-Layout-RecordSet', libPictLayoutRecordSet.default_configuration, libPictLayoutRecordSet);
 		this.fable.addProviderSingleton('Pict-Layout-Chart', libPictLayoutChart.default_configuration, libPictLayoutChart);
 		this.fable.addProviderSingleton('Pict-Layout-TuiGrid', libPictLayoutTuiGrid.default_configuration, libPictLayoutTuiGrid);
+		this.fable.addProviderSingleton('Pict-Layout-Custom', libPictLayoutCustom.default_configuration, libPictLayoutCustom);
 
 		this.fable.addProviderSingleton('Informary', libInformary.default_configuration, libInformary);
 	}
