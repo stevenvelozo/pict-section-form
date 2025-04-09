@@ -20,7 +20,7 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     cssSnippet: string;
     setCSSSnippets(pCSSHideClass: any, pCSSSnippet: any): void;
     getViewHash(pManifestSectionHash: any): string;
-    getTabSelector(pTabView: any, pInput: any): string;
+    getTabSelector(pTabSectionHash: any, pInput: any): string;
     getSectionSelector(pTabViewSectionHash: any): string;
     selectTabByViewHash(pViewHash: any, pInputHash: any, pTabViewHash: any): boolean;
     /**

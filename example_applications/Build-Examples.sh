@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Building complex_table
 pushd complex_table

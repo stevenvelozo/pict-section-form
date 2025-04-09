@@ -15,6 +15,7 @@ declare class PictViewDynamicForm extends libPictViewClass {
         log: any;
         instantiateServiceProviderWithoutRegistration: (hash: string) => any;
     };
+    transactionTracking: any;
     /** @type {Object} */
     _PackagePictView: any;
     _Package: {
@@ -109,6 +110,14 @@ declare class PictViewDynamicForm extends libPictViewClass {
      */
     dataChangedTabular(pGroupIndex: number, pInputIndex: number, pRowIndex: number): void;
     /**
+     * Sets the data in a specific form input based on the provided input object
+     *
+     * @param {object} pInput - The input object.
+     * @param {any} pValue - The value to set.
+     * @returns {boolean} Returns true if the data was set successfully, false otherwise.
+     */
+    setDataByInput(pInput: object, pValue: any): boolean;
+    /**
      * Sets the data in a specific tabular form input based on the provided hash, group and row.
      *
      * @param {number} pGroupIndex - The index of the group.
@@ -131,11 +140,18 @@ declare class PictViewDynamicForm extends libPictViewClass {
      */
     getMarshalDestinationObject(): any;
     /**
+     * Gets a value by hash address.
+     * @param {string} pHashAddress
+     */
+    getValueByHash(pHashAddress: string): any;
+    /**
      * Marshals data to the view.
      *
      * @returns {any} The result of calling the superclass's onMarshalToView method.
      */
     onMarshalToView(): any;
+    manualMarshalDataToViewByInput(pInput: any, pTransactionGUID: any): void;
+    manualMarshalTabularDataToViewByInput(pInput: any, pRowIndex: any, pTransactionGUID: any): void;
     /**
      * Marshals data from the view to the destination object.
      * @returns {any} The result of calling the superclass's onMarshalFromView method.
@@ -175,14 +191,18 @@ declare class PictViewDynamicForm extends libPictViewClass {
      * The easiest way (and a speed up for other queries as such) is to scope it within the view container element
      *
      * @param {string} pFunctionName - The name of the function to execute.
+     * @param {string} [pTransactionGUID] - The transaction GUID to use for logging.
      */
-    runLayoutProviderFunctions(pFunctionName: string): void;
+    runLayoutProviderFunctions(pFunctionName: string, pTransactionGUID?: string): void;
     /**
      * Runs the input provider functions.
      *
      * @param {string} pFunctionName - The name of the function to run for each input provider.
+     * @param {string} [pInputHash] - The hash of the input to run the function for.
+     * @param {number} [pRowIndex] - The index of the row to run the
+     * @param {string} [pTransactionGUID] - The transaction GUID to use for logging.
      */
-    runInputProviderFunctions(pFunctionName: string): void;
+    runInputProviderFunctions(pFunctionName: string, pInputHash?: string, pRowIndex?: number, pTransactionGUID?: string): void;
     /**
      * Checks if a view-specific template exists based on the given template postfix.
      * @param {string} pTemplatePostfix - The postfix of the template to check.

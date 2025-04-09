@@ -59,6 +59,18 @@ declare class PictDynamicFormsInformary {
      */
     marshalFormToData(pAppStateData: object, pFormHash: string, pManifest: object, pDatum?: string, pRecordIndex?: number | string): void;
     /**
+     * Marshals a specific form element's data to the application state data.
+     *
+     * @param {string} pFormHash - The hash of the form.
+     * @param {HTMLElement} tmpFormElement - The form element to marshal.
+     * @param {Object} tmpManifest - The manifest object to set values.
+     * @param {Object} pAppStateData - The application state data object.
+     * @param {any} [pDatumFilter] - Optional filter for datum address.
+     * @param {any} [pRecordIndexFilter] - Optional filter for record index.
+     * @returns {boolean} - Returns false if the element falls outside the filters or if the browser value is null.
+     */
+    marshalSpecicificFormElementToData(pFormHash: string, tmpFormElement: HTMLElement, tmpManifest: any, pAppStateData: any, pDatumFilter?: any, pRecordIndexFilter?: any): boolean;
+    /**
      * Marshals data from some application state object to a specific subset of browser form elements.
      *
      * @param {object} pAppStateData - The application state data to marshal into the form.  Usually AppData but can be other objects.
@@ -66,6 +78,44 @@ declare class PictDynamicFormsInformary {
      * @param {object} pManifest - The manifest object.  If not provided, the generic manifest is used.
      */
     marshalDataToForm(pAppStateData: object, pFormHash: string, pManifest: object): void;
+    /**
+     * Marshals specific element data to a form.
+     *
+     * @param {string} pFormHash - The hash of the form.
+     * @param {HTMLElement} pFormElement - The form element to marshal data to.
+     * @param {Object} tmpManifest - The manifest object containing data retrieval methods.
+     * @param {Object} pAppStateData - The application state data.
+     * @returns {boolean} Returns false if the form element does not have a datum address.
+     */
+    marshalSpecificElementDataToForm(pFormHash: string, pFormElement: HTMLElement, tmpManifest: any, pAppStateData: any): boolean;
+    /**
+     * Manually marshals data to a form by assigning content based on context in the descriptor.
+     * @param {object} pInput - The input manifest descriptor to marshal data to form from.
+     * @returns boolean if assignment was successful
+     */
+    manualMarshalDataToFormByInput(pInput: object): false | void;
+    /**
+     * Manually marshals tabular data to a form by assigning content based on context in the descriptor.
+     * @param {object} pInput - The input manifest descriptor to marshal data to form from.
+     * @param {number} pRowIndex - The index of the row in the tabular data.
+     * @returns boolean if assignment was successful
+     */
+    manualMarshalTabularDataToFormByInput(pInput: object, pRowIndex: number): false | void;
+    /**
+     * Manually marshals data to a form by assigning content to a specified HTML address.
+     *
+     * @param {string} pHTMLAddress - The HTML address where the content should be assigned.
+     * @param {string} pValue - The value to be assigned to the specified HTML address.
+     */
+    manualMarshalDataToForm(pHTMLAddress: string, pValue: string): void;
+    /**
+     * Manually marshals tabular data to a form.
+     *
+     * @param {string} pHTMLAddress - The HTML address where the data should be assigned.
+     * @param {string} pValue - The value to be assigned to the form element.
+     * @param {number} pRowIndex - The index of the row in the tabular data.
+     */
+    manualMarshalTabularDataToForm(pHTMLAddress: string, pValue: string, pRowIndex: number): void;
 }
 declare namespace PictDynamicFormsInformary {
     export { _DefaultProviderConfiguration as default_configuration };

@@ -24,36 +24,38 @@ declare class PictMetalist {
     /** @type {string} */
     Hash: string;
     computedLists: {};
-    globalLists: {};
+    listDefinitions: {};
     /**
      * Retrieves a list based on the provided view hash and list hash.
      *
-     * @param {string} pViewHash - The view hash.
      * @param {string} pListHash - The list hash.
      * @returns {Array} - The retrieved list.
      */
-    getList(pViewHash: string, pListHash: string): any[];
+    getList(pListHash: string): any[];
     /**
      * Checks if a list exists in the Pict Provider MetaLists.
      *
-     * @param {string} pViewHash - The hash of the view.
      * @param {string} pListHash - The hash of the list.
      * @returns {boolean} - Returns true if the list exists, otherwise false.
      */
-    hasList(pViewHash: string, pListHash: string): boolean;
+    hasList(pListHash: string): boolean;
     /**
-     * Builds meta lists for the Pict provider.
-     *
-     * @param {Array|string} pViewHashes - The view hashes to build meta lists for.
+     * Rebuilds any lists defined in specific views
+     * @param {Array} pViewHashes - An array of strings representing the view hashes to rebuild lists for.
      */
-    buildViewSpecificLists(pViewHashes: any[] | string): void;
+    buildViewSpecificLists(pViewHashes: any[]): void;
     /**
-     * Builds meta lists for the Pict provider.
+     * Rebuilds a list based on the provided hash.
      *
-     * @param {Object} pView - The view hashes to build meta lists for.
-     * @param {string} pListHash - The list hash.
+     * @param {string} pListHash - The hash of the list to be rebuilt.
      */
-    buildViewSpecificList(pView: any, pListHash: string): void;
+    rebuildListByHash(pListHash: string): void;
+    /**
+     * Builds a list based on the provided list object.  Stores it internally for use in dropdowns and list boxes.
+     * @param {Object} pListObject - The List definition object
+     * @returns boolean
+     */
+    buildList(pListObject: any): boolean;
 }
 declare namespace PictMetalist {
     export { _DefaultProviderConfiguration as default_configuration };

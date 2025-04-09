@@ -27,7 +27,7 @@ declare class PictInputExtensionProvider {
      * @param {number} pRowIndex - The index of the row in the tabular data.
      * @returns {string} - The generated HTML ID for the hidden input element.
      */
-    getTabularHiddenInputHTMLID(pInputHTMLID: string, pRowIndex: number): string;
+    getTabularInputHTMLID(pInputHTMLID: string, pRowIndex: number): string;
     /**
      * An input has been initialized (rendered into the DOM)
      *
