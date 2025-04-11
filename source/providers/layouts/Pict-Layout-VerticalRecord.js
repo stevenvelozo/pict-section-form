@@ -48,10 +48,7 @@ class VerticalRecordLayout extends libPictSectionGroupLayout
 				// Update the InputIndex to match the current render config
 				tmpInput.PictForm.InputIndex = k;
 				tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
-				if (!('Row' in tmpInput.PictForm))
-				{
-					tmpInput.PictForm.Row = j;
-				}
+				tmpInput.PictForm.RowIndex = j;
 
 				tmpTemplate += tmpMetatemplateGenerator.getVerticalInputMetatemplateTemplateReference(pView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("${pGroup.GroupIndex}","${j}","${k}")`);
 			}

@@ -88,7 +88,7 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 
 		// Now generate the metatemplate
 		const tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpView, descriptor.DataType, descriptor.PictForm.InputType,
-			`getInput("${descriptor.PictForm.GroupIndex}","${descriptor.PictForm.Row}","${descriptor.PictForm.InputIndex}")`);
+			`getInput("${descriptor.PictForm.GroupIndex}","${descriptor.PictForm.RowIndex}","${descriptor.PictForm.InputIndex}")`);
 
 		// Now parse it and return it.
 		return this.pict.parseTemplate(tmpTemplate, descriptor, fCallback, [tmpView]);

@@ -39,10 +39,7 @@ class RecordLayout extends libPictSectionGroupLayout
 				// Update the InputIndex to match the current render config
 				tmpInput.PictForm.InputIndex = k;
 				tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
-				if (!('Row' in tmpInput.PictForm))
-				{
-					tmpInput.PictForm.Row = j;
-				}
+				tmpInput.PictForm.RowIndex = j;
 			}
 		}
 		const hash = pGroup.CustomLayoutTemplateHash;
