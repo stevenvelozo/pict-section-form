@@ -66,6 +66,7 @@ class PictViewDynamicForm extends libPictViewClass
 		this.fable.addServiceTypeIfNotExists('TransactionTracking', libFableServiceTransactionTracking);
 
 		// Use this to manage transactions
+		/** @type {import('../services/Fable-Service-TransactionTracking.js')} */
 		this.transactionTracking = this.fable.instantiateServiceProviderWithoutRegistration('TransactionTracking');
 
 		// Load the dynamic application dependencies if they don't exist
@@ -595,8 +596,8 @@ class PictViewDynamicForm extends libPictViewClass
 	 */
 	runLayoutProviderFunctions(pFunctionName, pTransactionGUID)
 	{
-		let tmpTransactionGUID = (typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
-		let tmpTransaction = this.transactionTracking.transactions[pTransactionGUID];
+		const tmpTransactionGUID = (typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
+		const tmpTransaction = this.transactionTracking.registerTransaction(tmpTransactionGUID);
 
 		// Check to see if there are any hooks set from the input templates
 		let tmpLayoutProviders = this.pict.ContentAssignment.getElement(`${this.sectionDefinition.DefaultDestinationAddress} [data-i-pictdynamiclayout="true"]`);
@@ -646,8 +647,8 @@ class PictViewDynamicForm extends libPictViewClass
 	 */
 	runInputProviderFunctions(pFunctionName, pInputHash, pRowIndex, pTransactionGUID)
 	{
-		let tmpTransactionGUID = (typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
-		let tmpTransaction = this.transactionTracking.transactions[pTransactionGUID];
+		const tmpTransactionGUID = (typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
+		const tmpTransaction = this.transactionTracking.registerTransaction(tmpTransactionGUID);
 
 		// Check to see if there are any hooks set from the input templates
 		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
