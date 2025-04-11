@@ -42,7 +42,7 @@
 							"Hash": "Custom1",
 							"Description": "The message and recipient of your postcard.",
 							"Layout": "Custom",
-							"CustomLayoutTemplate": "<div id=\"custom\">{~DI:Custom.CustomField1~} <div id=\"custom2\">{~DIH:CustomField2~}</div></div>"
+							"CustomLayoutTemplate": "<div id=\"custom\"><h5>I AM CUSTOM</h5>{~DI:Custom.CustomField1~} <div id=\"custom2\">{~DIH:CustomField2~}</div></div>"
 						}
 					]
 			}

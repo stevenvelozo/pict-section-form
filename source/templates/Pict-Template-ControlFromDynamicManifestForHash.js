@@ -82,31 +82,16 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 		/** @type {Manyfest} */
 		const manifest = metacontroller.manifest;
 		const descriptor = manifest.getDescriptorByHash(tmpHash);
-		// Check to see if the input is already in the manifest
-		let tmpRow = tmpMetatemplateGenerator.dynamicInputView.getRow(0, 0);
+		const tmpView = this.pict.views[descriptor.PictForm.ViewHash];
 
-		for (let i = 0; i < tmpRow.Inputs.length; i++)
-		{
-			if (tmpRow.Inputs[i].Hash === descriptor.Hash)
-			{
-				let descriptor = tmpRow.Inputs[i];
-				return this.pict.parseTemplate(tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, descriptor.DataType, descriptor.PictForm.InputType, `getInput("0","0","${descriptor.PictForm.InputIndex}")`), descriptor, null, [tmpMetatemplateGenerator.dynamicInputView]);
-			}
-		}
-
-		// It isn't already in the manifest, so add it.
-		descriptor.PictForm.InputIndex = tmpRow.Inputs.length;
-		tmpMetatemplateGenerator.dynamicInputView.sectionManifest.addDescriptor(descriptor.Address, descriptor);
-		tmpRow.Inputs.push(descriptor);
-
-		//TODO: needed? just once?
-		this.pict.providers.MetatemplateMacros.buildInputMacros(tmpMetatemplateGenerator.dynamicInputView, descriptor);
+		this.pict.providers.MetatemplateMacros.buildInputMacros(tmpView, descriptor);
 
 		// Now generate the metatemplate
-		const tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, descriptor.DataType, descriptor.PictForm.InputType, `getInput("0","0","${descriptor.PictForm.InputIndex}")`);
+		const tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpView, descriptor.DataType, descriptor.PictForm.InputType,
+			`getInput("${descriptor.PictForm.GroupIndex}","${descriptor.PictForm.Row}","${descriptor.PictForm.InputIndex}")`);
 
 		// Now parse it and return it.
-		return this.pict.parseTemplate(tmpTemplate, descriptor, fCallback, [tmpMetatemplateGenerator.dynamicInputView]);
+		return this.pict.parseTemplate(tmpTemplate, descriptor, fCallback, [tmpView]);
 	}
 }
 

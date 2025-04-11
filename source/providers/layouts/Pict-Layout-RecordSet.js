@@ -58,6 +58,10 @@ class RecordSetLayout extends libPictSectionGroupLayout
 				}
 				tmpInput.PictForm.InputIndex = k;
 				tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
+				if (!('Row' in tmpInput.PictForm))
+				{
+					tmpInput.PictForm.Row = j;
+				}
 
 				tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-HeaderCell`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
 

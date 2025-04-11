@@ -26,6 +26,25 @@ class RecordLayout extends libPictSectionGroupLayout
 	 */
 	generateGroupLayoutTemplate(pView, pGroup)
 	{
+		// loop over descriptors that have my group set?
+		// set their GroupIndex from pGroup
+		for (let j = 0; j < pGroup.Rows.length; j++)
+		{
+			let tmpRow = pGroup.Rows[j];
+
+			// There are three row layouts: Record, Tabular and Columnar
+			for (let k = 0; k < tmpRow.Inputs.length; k++)
+			{
+				let tmpInput = tmpRow.Inputs[k];
+				// Update the InputIndex to match the current render config
+				tmpInput.PictForm.InputIndex = k;
+				tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
+				if (!('Row' in tmpInput.PictForm))
+				{
+					tmpInput.PictForm.Row = j;
+				}
+			}
+		}
 		const hash = pGroup.CustomLayoutTemplateHash;
 		if (hash)
 		{

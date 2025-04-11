@@ -55,6 +55,11 @@ class TabularLayout extends libPictSectionGroupLayout
 			}
 			tmpInput.PictForm.InputIndex = k;
 			tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
+			if (!('Row' in tmpInput.PictForm))
+			{
+				//FIXME: what is the right thing here?
+				tmpInput.PictForm.Row = 0;
+			}
 
 			tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-HeaderCell`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
 
