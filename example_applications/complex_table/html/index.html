@@ -5,6 +5,33 @@
 		<style id="PICT-CSS"></style>
 		<script src="./pict.min.js" type="text/javascript"></script>
 		<script type="text/javascript">Pict.safeOnDocumentReady(() => { Pict.safeLoadPictApplication(ComplexTabularApplication, 0)});</script>
+		<!-- CSS placed here to simulate an external collection where we can leverage existing class names/patterns -->
+		<style type="text/css">
+			.HasFancyHeaders h2
+			{
+				font-weight: bold;
+				text-transform: uppercase;
+				font-style: italic;
+				color: maroon;
+				text-decoration: underline;
+				margin: 0.5em 0;
+			}
+			.HasFancyHeaders h3
+			{
+				font-weight: bold;
+				font-style: italic;
+				color: brown;
+				text-decoration: underline;
+				margin: 0.5em 0;
+			}
+			.FancyCustomGroupTitleOverride > h3 {
+				font-weight: bold;
+				font-style: italic;
+				color: darkblue;
+				text-decoration: underline;
+				margin: 0.5em 0;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="Pict-Form-Container"></div>

@@ -116,10 +116,12 @@ module.exports.default_configuration.pict_configuration = {
 			{
 				Hash: "Book",
 				Name: "Books about Tables",
+				CSSClass: "HasFancyHeaders",
 				Groups: [
 					{
 						Hash: "Author",
-						Name: "Author"
+						Name: "Author",
+						CSSClass: "FancyCustomGroupTitleOverride",
 					},
 					{
 						Hash: "Book",

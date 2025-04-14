@@ -535,6 +535,11 @@ class ManifestFactory extends libFableServiceProviderBase
 			tmpSection.Name = tmpSectionName;
 		}
 
+		if (tmpSection['Section CSS'])
+		{
+			tmpSection.CSSClass = tmpSection['Section CSS'];
+		}
+
 		const tmpGroupName = tmpRecord['Group Name']?.trim?.();
 		let tmpGroupHash = this.sanitizeObjectKey(tmpGroupName || 'Default_Group');
 		// Note: The group name part is laissez-faire about whether it needs to be there or not.  The Hash is required on each column if we want to customize.
