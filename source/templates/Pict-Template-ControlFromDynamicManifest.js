@@ -61,9 +61,9 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 	}
 
 	/**
-	 * Renders the PICT Metacontroller Template.  The Record reference is ignored in this template.
+	 * Renders a view managed by the metacontroller based on the manifest schema address.
 	 *
-	 * @param {string} pTemplateHash - The template hash.
+	 * @param {string} pTemplateHash - The schema hash of the control.
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
 	 * @returns {string} - The rendered template.
@@ -73,6 +73,15 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 		return this.renderAsync(pTemplateHash, pRecord, null, pContextArray);
 	}
 
+	/**
+	 * Renders a view managed by the metacontroller based on the manifest schema address.
+	 *
+	 * @param {string} pTemplateHash - The schema hash of the control.
+	 * @param {object} pRecord - The record object.
+	 * @param {function} fCallback - The callback function.
+	 * @param {array} pContextArray - The context array.
+	 * @returns {string} - The rendered template.
+	 */
 	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
 	{
 		const tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
@@ -82,6 +91,11 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 		/** @type {Manyfest} */
 		const manifest = metacontroller.manifest;
 		const descriptor = manifest.getDescriptor(tmpHash);
+		if (!descriptor)
+		{
+			this.log.error(`PictTemplateControlFromDynamicManifest: Cannot find descriptor for address [${tmpHash}]`);
+			return '';
+		}
 		const tmpView = this.pict.views[descriptor.PictForm.ViewHash];
 
 		this.pict.providers.MetatemplateMacros.buildInputMacros(tmpView, descriptor);

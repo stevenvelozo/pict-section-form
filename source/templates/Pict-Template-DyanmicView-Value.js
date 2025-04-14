@@ -3,7 +3,7 @@ const libPictTemplate = require('pict-template');
 /**
  * This is a template that will generate a Metatemplate input, for manual use of metatemplates.
  */
-class PictTemplateControlFromDynamicManifest extends libPictTemplate
+class PictTemplateGetViewSchemaValue extends libPictTemplate
 {
 	/**
 	 * @param {Object} pFable - The Fable Framework instance
@@ -21,12 +21,12 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 		/** @type {any} */
 		this.log;
 
-		this.addPattern('{~DynamicInputForHash:', '~}');
-		this.addPattern('{~DIH:', '~}');
+		this.addPattern('{~SchemaValue:', '~}');
+		this.addPattern('{~SV:', '~}');
 	}
 
 	/**
-	 * Renders a view managed by the metacontroller based on the manifest schema hash.
+	 * Renders a view managed by the metacontroller based on the manifest schema address.
 	 *
 	 * @param {string} pTemplateHash - The schema hash of the control.
 	 * @param {object} pRecord - The record object.
@@ -39,7 +39,7 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 	}
 
 	/**
-	 * Renders a view managed by the metacontroller based on the manifest schema hash.
+	 * Renders a view managed by the metacontroller based on the manifest schema address.
 	 *
 	 * @param {string} pTemplateHash - The schema hash of the control.
 	 * @param {object} pRecord - The record object.
@@ -55,23 +55,19 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 		const metacontroller = this.pict.views.PictFormMetacontroller;
 		/** @type {import('./Pict-Template-ControlFromDynamicManifest.js').Manyfest} */
 		const manifest = metacontroller.manifest;
-		const descriptor = manifest.getDescriptorByHash(tmpHash);
+		const descriptor = manifest.getDescriptor(tmpHash);
 		if (!descriptor)
 		{
-			this.log.error(`PictTemplateControlFromDynamicManifest: Cannot find descriptor for hash [${tmpHash}]`);
+			this.log.error(`PictTemplateGetViewSchemaValue: Cannot find descriptor for address [${tmpHash}]`);
 			return '';
 		}
+		/** @type {import('../views/Pict-View-DynamicForm.js')} */
 		const tmpView = this.pict.views[descriptor.PictForm.ViewHash];
 
-		this.pict.providers.MetatemplateMacros.buildInputMacros(tmpView, descriptor);
+		const value = tmpView.getValueByHash(tmpHash);
 
-		// Now generate the metatemplate
-		const tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpView, descriptor.DataType, descriptor.PictForm.InputType,
-			`getInput("${descriptor.PictForm.GroupIndex}","${descriptor.PictForm.RowIndex}","${descriptor.PictForm.InputIndex}")`);
-
-		// Now parse it and return it.
-		return this.pict.parseTemplate(tmpTemplate, descriptor, fCallback, [tmpView]);
+		return value ? String(value) : '';
 	}
 }
 
-module.exports = PictTemplateControlFromDynamicManifest;
+module.exports = PictTemplateGetViewSchemaValue;

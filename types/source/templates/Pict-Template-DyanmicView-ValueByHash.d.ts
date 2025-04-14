@@ -1,8 +1,8 @@
-export = PictTemplateControlFromDynamicManifest;
+export = PictTemplateGetViewSchemaValueByHash;
 /**
  * This is a template that will generate a Metatemplate input, for manual use of metatemplates.
  */
-declare class PictTemplateControlFromDynamicManifest extends libPictTemplate {
+declare class PictTemplateGetViewSchemaValueByHash extends libPictTemplate {
     /**
      * @param {Object} pFable - The Fable Framework instance
      * @param {Object} pOptions - The options for the service
@@ -18,7 +18,7 @@ declare class PictTemplateControlFromDynamicManifest extends libPictTemplate {
     /** @type {any} */
     log: any;
     /**
-     * Renders a view managed by the metacontroller based on the manifest schema hash.
+     * Renders a view managed by the metacontroller based on the manifest schema address.
      *
      * @param {string} pTemplateHash - The schema hash of the control.
      * @param {object} pRecord - The record object.
@@ -29,4 +29,4 @@ declare class PictTemplateControlFromDynamicManifest extends libPictTemplate {
     renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function, pContextArray: any[]): string;
 }
 import libPictTemplate = require("pict-template");
-//# sourceMappingURL=Pict-Template-ControlFromDynamicManifestForHash.d.ts.map
+//# sourceMappingURL=Pict-Template-DyanmicView-ValueByHash.d.ts.map

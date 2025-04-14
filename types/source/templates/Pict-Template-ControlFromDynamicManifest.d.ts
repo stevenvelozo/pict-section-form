@@ -50,7 +50,16 @@ declare class PictTemplateControlFromDynamicManifest extends libPictTemplate {
     };
     /** @type {any} */
     log: any;
-    renderAsync(pTemplateHash: any, pRecord: any, fCallback: any, pContextArray: any): string;
+    /**
+     * Renders a view managed by the metacontroller based on the manifest schema address.
+     *
+     * @param {string} pTemplateHash - The schema hash of the control.
+     * @param {object} pRecord - The record object.
+     * @param {function} fCallback - The callback function.
+     * @param {array} pContextArray - The context array.
+     * @returns {string} - The rendered template.
+     */
+    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function, pContextArray: any[]): string;
 }
 declare namespace PictTemplateControlFromDynamicManifest {
     export { Manyfest };
