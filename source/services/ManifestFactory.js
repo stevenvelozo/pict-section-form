@@ -535,9 +535,9 @@ class ManifestFactory extends libFableServiceProviderBase
 			tmpSection.Name = tmpSectionName;
 		}
 
-		if (tmpSection['Section CSS'])
+		if (tmpRecord['Section CSS'])
 		{
-			tmpSection.CSSClass = tmpSection['Section CSS'];
+			tmpSection.CSSClass = tmpRecord['Section CSS'];
 		}
 
 		const tmpGroupName = tmpRecord['Group Name']?.trim?.();
