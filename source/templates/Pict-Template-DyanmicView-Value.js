@@ -45,28 +45,52 @@ class PictTemplateGetViewSchemaValue extends libPictTemplate
 	 * @param {object} pRecord - The record object.
 	 * @param {function} fCallback - The callback function.
 	 * @param {array} pContextArray - The context array.
-	 * @returns {string} - The rendered template.
+	 * @returns {string?} - The rendered template.
 	 */
 	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
 	{
-		const tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
-		const tmpHash = pTemplateHash.trim();
+		const [ tmpSchemaAddress, tmpTemplateHash ] = pTemplateHash.trim().split('^');
 		/** @type{import('../views/Pict-View-Form-Metacontroller.js')} */
 		const metacontroller = this.pict.views.PictFormMetacontroller;
 		/** @type {import('./Pict-Template-ControlFromDynamicManifest.js').Manyfest} */
 		const manifest = metacontroller.manifest;
-		const descriptor = manifest.getDescriptor(tmpHash);
+		const descriptor = manifest.getDescriptor(tmpSchemaAddress);
 		if (!descriptor)
 		{
-			this.log.error(`PictTemplateGetViewSchemaValue: Cannot find descriptor for address [${tmpHash}]`);
+			this.log.error(`PictTemplateGetViewSchemaValue: Cannot find descriptor for address [${tmpSchemaAddress}]`);
 			return '';
 		}
 		/** @type {import('../views/Pict-View-DynamicForm.js')} */
 		const tmpView = this.pict.views[descriptor.PictForm.ViewHash];
 
-		const value = tmpView.getValueByHash(tmpHash);
+		const value = tmpView.getValueByHash(tmpSchemaAddress);
 
-		return value ? String(value) : '';
+		if (tmpTemplateHash)
+		{
+			const tmpRecord = { Value: value, ParentRecord: pRecord, View: tmpView, Descriptor: descriptor };
+			if (typeof fCallback !== 'function')
+			{
+				return this.pict.parseTemplateByHash(tmpTemplateHash, tmpRecord, null, pContextArray);
+			}
+			return this.pict.parseTemplateByHash(tmpTemplateHash, tmpRecord,
+				(pError, pValue) =>
+				{
+					if (pError)
+					{
+						return fCallback(pError, '');
+					}
+					return fCallback(null, pValue);
+				}, pContextArray);
+		}
+
+		if (typeof(fCallback) === 'function')
+		{
+			fCallback(null, value ? String(value) : '');
+		}
+		else
+		{
+			return value ? String(value) : '';
+		}
 	}
 }
 

@@ -49,24 +49,48 @@ class PictTemplateGetViewSchemaValueByHash extends libPictTemplate
 	 */
 	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
 	{
-		const tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
-		const tmpHash = pTemplateHash.trim();
+		const [ tmpSchemaHash, tmpTemplateHash ] = pTemplateHash.trim().split('^');
 		/** @type{import('../views/Pict-View-Form-Metacontroller.js')} */
 		const metacontroller = this.pict.views.PictFormMetacontroller;
 		/** @type {import('./Pict-Template-ControlFromDynamicManifest.js').Manyfest} */
 		const manifest = metacontroller.manifest;
-		const descriptor = manifest.getDescriptorByHash(tmpHash);
+		const descriptor = manifest.getDescriptorByHash(tmpSchemaHash);
 		if (!descriptor)
 		{
-			this.log.error(`PictTemplateGetViewSchemaValueByHash: Cannot find descriptor for hash [${tmpHash}]`);
+			this.log.error(`PictTemplateGetViewSchemaValueByHash: Cannot find descriptor for address [${tmpSchemaHash}]`);
 			return '';
 		}
 		/** @type {import('../views/Pict-View-DynamicForm.js')} */
 		const tmpView = this.pict.views[descriptor.PictForm.ViewHash];
 
-		const value = tmpView.getValueByHash(tmpHash);
+		const value = tmpView.getValueByHash(tmpSchemaHash);
 
-		return value ? String(value) : '';
+		if (tmpTemplateHash)
+		{
+			const tmpRecord = { Value: value, ParentRecord: pRecord, View: tmpView, Descriptor: descriptor };
+			if (typeof fCallback !== 'function')
+			{
+				return this.pict.parseTemplateByHash(tmpTemplateHash, tmpRecord, null, pContextArray);
+			}
+			return this.pict.parseTemplateByHash(tmpTemplateHash, tmpRecord,
+				(pError, pValue) =>
+				{
+					if (pError)
+					{
+						return fCallback(pError, '');
+					}
+					return fCallback(null, pValue);
+				}, pContextArray);
+		}
+
+		if (typeof(fCallback) === 'function')
+		{
+			fCallback(null, value ? String(value) : '');
+		}
+		else
+		{
+			return value ? String(value) : '';
+		}
 	}
 }
 

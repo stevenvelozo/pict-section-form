@@ -24,9 +24,9 @@ declare class PictTemplateGetViewSchemaValue extends libPictTemplate {
      * @param {object} pRecord - The record object.
      * @param {function} fCallback - The callback function.
      * @param {array} pContextArray - The context array.
-     * @returns {string} - The rendered template.
+     * @returns {string?} - The rendered template.
      */
-    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function, pContextArray: any[]): string;
+    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function, pContextArray: any[]): string | null;
 }
 import libPictTemplate = require("pict-template");
 //# sourceMappingURL=Pict-Template-DyanmicView-Value.d.ts.map
