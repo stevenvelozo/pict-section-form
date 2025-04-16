@@ -539,6 +539,22 @@ class ManifestFactory extends libFableServiceProviderBase
 		{
 			tmpSection.CSSClass = tmpRecord['Section CSS'];
 		}
+		if (tmpRecord['Section Show Title'] && (tmpRecord['Section Show Title'] != ''))
+		{
+			switch(tmpRecord['Section Show Title'].toLowerCase())
+			{
+				case 1:
+				case '1':
+				case 'true':
+					tmpSection.ShowTitle = true;
+					break;
+				case 0:
+				case '0':
+				case 'false':
+					tmpSection.ShowTitle = false;
+					break;
+			}	
+		}
 
 		const tmpGroupName = tmpRecord['Group Name']?.trim?.();
 		let tmpGroupHash = this.sanitizeObjectKey(tmpGroupName || 'Default_Group');
