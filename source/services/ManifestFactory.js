@@ -539,16 +539,14 @@ class ManifestFactory extends libFableServiceProviderBase
 		{
 			tmpSection.CSSClass = tmpRecord['Section CSS'];
 		}
-		if (tmpRecord['Section Show Title'] && (tmpRecord['Section Show Title'] != ''))
+		if (tmpRecord['Section Show Title'])
 		{
-			switch(tmpRecord['Section Show Title'].toLowerCase())
+			switch(tmpRecord['Section Show Title'].trim().toLowerCase())
 			{
-				case 1:
 				case '1':
 				case 'true':
 					tmpSection.ShowTitle = true;
 					break;
-				case 0:
 				case '0':
 				case 'false':
 					tmpSection.ShowTitle = false;
@@ -598,16 +596,14 @@ class ManifestFactory extends libFableServiceProviderBase
 				this.log.error(`Failed to parse Maximum Row Count for ${tmpRecord['Input Hash']}: ${pError}`);
 			}
 		}
-		if (tmpRecord['Group Show Title'] && (tmpRecord['Group Show Title'] != ''))
+		if (tmpRecord['Group Show Title'])
 		{
-			switch(tmpRecord['Group Show Title'].toLowerCase())
+			switch(tmpRecord['Group Show Title'].trim().toLowerCase())
 			{
-				case 1:
 				case '1':
 				case 'true':
 					tmpGroup.ShowTitle = true;
 					break;
-				case 0:
 				case '0':
 				case 'false':
 					tmpGroup.ShowTitle = false;

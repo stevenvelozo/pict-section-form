@@ -9,6 +9,15 @@ class ComplexTabularApplication extends libPictSectionForm.PictFormApplication
 		super(pFable, pOptions, pServiceHash);
 
 		this.pict.addProvider('CustomDataProvider', libCustomDataProvider.default_configuration, libCustomDataProvider);
+
+		this.pict.MetaTemplate.addPattern('{~ShowTitle:', '~}', (pHash, pData) =>
+		{
+			if (pData.hasOwnProperty('ShowTitle') && !pData.ShowTitle)
+			{
+				return 'style="display:none;"';
+			}
+			return '';
+		});
 	}
 }
 
