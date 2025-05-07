@@ -31,10 +31,10 @@
         "browser-env": "^3.3.0",
         "eslint": "^9.21.0",
         "jquery": "^3.7.1",
-        "pict": "^1.0.234",
-        "pict-application": "^1.0.24",
+        "pict": "^1.0.239",
+        "pict-application": "^1.0.25",
         "pict-service-commandlineutility": "^1.0.15",
-        "quackage": "^1.0.38",
+        "quackage": "^1.0.41",
         "tui-grid": "^4.21.22",
         "typescript": "^5.7.3"
     },
@@ -44,7 +44,7 @@
         "pict-provider": "^1.0.3",
         "pict-section-tuigrid": "^1.0.27",
         "pict-template": "^1.0.10",
-        "pict-view": "^1.0.59"
+        "pict-view": "^1.0.60"
     },
     "mocha": {
         "diff": true,
