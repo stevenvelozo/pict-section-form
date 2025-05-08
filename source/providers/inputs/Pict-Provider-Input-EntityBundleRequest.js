@@ -134,7 +134,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The value of the input.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 *
-	 * @return {Promise<Error?>} - Returns a promise that resolves when the data has been gathered.
+	 * @return {Promise<any>} - Returns a promise that resolves when the data has been gathered.
 	 */
 	async gatherDataFromServer(pView, pInput, pValue, pHTMLSelector)
 	{
@@ -179,7 +179,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 				fNext();
 			});
 
-		return new Promise((resolve, reject) =>
+		return new Promise((pResolve, pReject) =>
 		{
 			// Now fire the "autofilldata" event for the groups.
 			tmpAnticipate.wait(
@@ -190,8 +190,8 @@ class CustomInputHandler extends libPictSectionInputExtension
 					{
 						this.log.error(`EntityBundleRequest error gathering entity set: ${pError}`, pError);
 					}
-					resolve(pError);
-					return true;
+
+					return pResolve(pError);
 				});
 		});
 	}
@@ -210,6 +210,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
 	{
 		// Try to get the input element
+		if (pValue && pInput.PictForm && pInput.PictForm.EntityBundleTriggerOnInitialize)
+		{
+			// This is a request on initial load
+			this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector);
+		}
 		// This is in case we need to do a request on initial load!
 		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
 	}
