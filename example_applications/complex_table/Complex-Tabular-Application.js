@@ -9,6 +9,15 @@ class ComplexTabularApplication extends libPictSectionForm.PictFormApplication
 		super(pFable, pOptions, pServiceHash);
 
 		this.pict.addProvider('CustomDataProvider', libCustomDataProvider.default_configuration, libCustomDataProvider);
+
+		this.pict.MetaTemplate.addPattern('{~ShowTitle:', '~}', (pHash, pData) =>
+		{
+			if (pData.hasOwnProperty('ShowTitle') && !pData.ShowTitle)
+			{
+				return 'style="display:none;"';
+			}
+			return '';
+		});
 	}
 }
 
@@ -68,6 +77,7 @@ module.exports.default_configuration.pict_configuration = {
 			{
 				Hash: "Recipe",
 				Name: "Fruit-based Recipe",
+				ShowTitle: false,
 
 				Solvers:
 				[
@@ -99,7 +109,7 @@ module.exports.default_configuration.pict_configuration = {
 					{
 						Hash: "StatisticsTabs",
 						Name: "Select a Statistics Section",
-//						ShowTitle: true
+						ShowTitle: false,
 					},
 					{
 						Hash: "Statistics",
