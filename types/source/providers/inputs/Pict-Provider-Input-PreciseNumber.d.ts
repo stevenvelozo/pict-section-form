@@ -10,8 +10,10 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
-    /** @type {import('pict')} */
-    fable: import("pict");
+    /** @type {import('pict') & { Math: any }} */
+    fable: import("pict") & {
+        Math: any;
+    };
     /** @type {any} */
     log: any;
     roundValue(pInput: any, pValue: any): any;

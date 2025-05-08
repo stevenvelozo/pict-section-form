@@ -46,7 +46,17 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     /** @type {any} */
     log: any;
     gatherEntitySet(fCallback: any, pEntityInformation: any, pView: any, pInput: any, pValue: any): any;
-    gatherDataFromServer(pView: any, pInput: any, pValue: any, pHTMLSelector: any): boolean;
+    /**
+     * TODO: I added a proise return here to know when this data load is done for the dashboard usecase. Could use a revisit.
+     *
+     * @param {Object} pView - The view object.
+     * @param {Object} pInput - The input object.
+     * @param {any} pValue - The value of the input.
+     * @param {string} pHTMLSelector - The HTML selector.
+     *
+     * @return {Promise<Error?>} - Returns a promise that resolves when the data has been gathered.
+     */
+    gatherDataFromServer(pView: any, pInput: any, pValue: any, pHTMLSelector: string): Promise<Error | null>;
     /**
      * Initializes a tabular input element.
      *

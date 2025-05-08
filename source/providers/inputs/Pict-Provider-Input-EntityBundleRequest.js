@@ -80,7 +80,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 
 		// Now get the records
 		this.pict.EntityProvider.getEntitySet(pEntityInformation.Entity, tmpFilterString,
-			function (pError, pRecordSet)
+			(pError, pRecordSet) =>
 			{
 				if (pError)
 				{
@@ -109,10 +109,20 @@ class CustomInputHandler extends libPictSectionInputExtension
 				}
 
 				return fCallback();
-			}.bind(this));
+			});
 	}
 
-	gatherDataFromServer(pView, pInput, pValue, pHTMLSelector)
+	/**
+	 * TODO: I added a proise return here to know when this data load is done for the dashboard usecase. Could use a revisit.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value of the input.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 *
+	 * @return {Promise<Error?>} - Returns a promise that resolves when the data has been gathered.
+	 */
+	async gatherDataFromServer(pView, pInput, pValue, pHTMLSelector)
 	{
 		// Gather data from the server
 		// These have to date not been asyncronous.  Now they will be...
@@ -130,7 +140,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		{
 			let tmpEntityBundleEntry = tmpInput.PictForm.EntitiesBundle[i];
 			tmpAnticipate.anticipate(
-				function (fNext)
+				(fNext) =>
 				{
 					try
 					{
@@ -141,25 +151,35 @@ class CustomInputHandler extends libPictSectionInputExtension
 						this.log.error(`EntityBundleRequest error gathering entity set: ${pError}`, pError);
 						return fNext();
 					}
-				}.bind(this));
+				});
 		}
 
 		tmpAnticipate.anticipate(
-			function (fNext)
+			(fNext) =>
 			{
 				if (tmpInput.PictForm.EntityBundleTriggerGroup)
 				{
 					// Trigger the autofill global event
 					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`AutoFill-${tmpInput.PictForm.EntityBundleTriggerGroup}`);
 				}
-			}.bind(this))
+				fNext();
+			});
 
-		// Now fire the "autofilldata" event for the groups.
-		tmpAnticipate.wait(
-			function (pError)
-			{
-				return true;
-			}.bind(this));
+		return new Promise((resolve, reject) =>
+		{
+			// Now fire the "autofilldata" event for the groups.
+			tmpAnticipate.wait(
+				(pError) =>
+				{
+					//FIXME: should we be ignoring this error? rejecting here is unsafe since the result isn't guaranteed to be handled, so will crash stuff currently
+					if (pError)
+					{
+						this.log.error(`EntityBundleRequest error gathering entity set: ${pError}`, pError);
+					}
+					resolve(pError);
+					return true;
+				});
+		});
 	}
 
 	/**

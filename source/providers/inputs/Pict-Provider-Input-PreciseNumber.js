@@ -15,7 +15,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 
 		/** @type {import('pict')} */
 		this.pict;
-		/** @type {import('pict')} */
+		/** @type {import('pict') & { Math: any }} */
 		this.fable;
 		/** @type {any} */
 		this.log;
