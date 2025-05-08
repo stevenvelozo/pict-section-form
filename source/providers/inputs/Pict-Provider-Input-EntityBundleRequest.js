@@ -163,8 +163,8 @@ class CustomInputHandler extends libPictSectionInputExtension
 					catch (pError)
 					{
 						this.log.error(`EntityBundleRequest error gathering entity set: ${pError}`, pError);
-						return fNext();
 					}
+					return fNext();
 				});
 		}
 
