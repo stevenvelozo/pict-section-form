@@ -70,6 +70,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 		}
 
 		const tmpFilterTemplateRecord = { Value:pValue, Input:pInput, View:pView };
+		let tmpRecordStartCursor = null;
+		let tmpRecordCount = null;
+		if (pEntityInformation.RecordCount)
+		{
+			tmpRecordStartCursor = pEntityInformation.RecordStartCursor != null ? pEntityInformation.RecordStartCursor : 0;
+			tmpRecordCount = pEntityInformation.RecordCount != null ? pEntityInformation.RecordCount : null;
+		}
 		// Parse the filter template
 		const tmpFilterString = this.pict.parseTemplate(pEntityInformation.Filter, tmpFilterTemplateRecord);
 		if (tmpFilterString == '')
@@ -79,37 +86,44 @@ class CustomInputHandler extends libPictSectionInputExtension
 		}
 
 		// Now get the records
-		this.pict.EntityProvider.getEntitySet(pEntityInformation.Entity, tmpFilterString,
-			(pError, pRecordSet) =>
+		const callback = (pError, pRecordSet) =>
+		{
+			if (pError)
 			{
-				if (pError)
-				{
-					this.log.error(`EntityBundleRequest request Error getting entity set for [${pEntityInformation.Entity}] with filter [${tmpFilterString}]: ${pError}`, pError);
-					return fCallback(pError, '');
-				}
+				this.log.error(`EntityBundleRequest request Error getting entity set for [${pEntityInformation.Entity}] with filter [${tmpFilterString}]: ${pError}`, pError);
+				return fCallback(pError, '');
+			}
 
-				this.log.trace(`EntityBundleRequest found ${pRecordSet.length} records for ${pEntityInformation.Entity} filtered to [${tmpFilterString}]`);
+			this.log.trace(`EntityBundleRequest found ${pRecordSet.length} records for ${pEntityInformation.Entity} filtered to [${tmpFilterString}]`);
 
-				// Now assign it back to the destination; because this is not view specific it doesn't use the manifests from them (to deal with scope overlap with subgrids).
-				if (pEntityInformation.SingleRecord)
+			// Now assign it back to the destination; because this is not view specific it doesn't use the manifests from them (to deal with scope overlap with subgrids).
+			if (pEntityInformation.SingleRecord)
+			{
+				if (pRecordSet.length > 1)
 				{
-					if (pRecordSet.length > 1)
-					{
-						this.log.warn(`EntityBundleRequest found more than one record for ${pEntityInformation.Entity} filtered to [${tmpFilterString}] but SingleRecord is true; setting the first record.`);
-					}
-					if (pRecordSet.length < 1)
-					{
-						this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, false);
-					}
-					this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, pRecordSet[0]);
+					this.log.warn(`EntityBundleRequest found more than one record for ${pEntityInformation.Entity} filtered to [${tmpFilterString}] but SingleRecord is true; setting the first record.`);
 				}
-				else
+				if (pRecordSet.length < 1)
 				{
-					this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, pRecordSet);
+					this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, false);
 				}
+				this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, pRecordSet[0]);
+			}
+			else
+			{
+				this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, pRecordSet);
+			}
 
-				return fCallback();
-			});
+			return fCallback();
+		};
+		if (tmpRecordCount)
+		{
+			this.pict.EntityProvider.getEntitySetPage(pEntityInformation.Entity, tmpFilterString, tmpRecordStartCursor, tmpRecordCount, callback);
+		}
+		else
+		{
+			this.pict.EntityProvider.getEntitySet(pEntityInformation.Entity, tmpFilterString, callback);
+		}
 	}
 
 	/**
@@ -129,7 +143,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		if ((typeof(pInput) !== 'object') || !('PictForm' in pInput) || !('EntitiesBundle' in pInput.PictForm) || !Array.isArray(pInput.PictForm.EntitiesBundle))
 		{
 			this.log.warn(`Input at ${pHTMLSelector} is set as an EntityBundleRequest input but no array of entity requests was found`);
-			return false;
+			return null;
 		}
 
 		let tmpInput = pInput;
