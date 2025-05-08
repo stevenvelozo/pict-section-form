@@ -56,6 +56,8 @@ module.exports.default_configuration.pict_configuration = (
 							}
 						],
 						EntityBundleTriggerGroup: "BookTriggerGroup",
+						EntityBundleTriggerMetacontrollerSolve: true,
+						EntityBundleTriggerMetacontrollerRender: true,
 						EntityBundleTriggerOnInitialize: true
 					}
 				},

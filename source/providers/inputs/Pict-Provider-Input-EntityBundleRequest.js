@@ -176,6 +176,16 @@ class CustomInputHandler extends libPictSectionInputExtension
 					// Trigger the autofill global event
 					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`AutoFill-${tmpInput.PictForm.EntityBundleTriggerGroup}`);
 				}
+				if (tmpInput.PictForm.EntityBundleTriggerMetacontrollerSolve)
+				{
+					// Trigger the solve global event
+					this.pict.views.PictFormMetacontroller.solve();
+				}
+				if (tmpInput.PictForm.EntityBundleTriggerMetacontrollerRender)
+				{
+					// Trigger the render
+					this.pict.views.PictFormMetacontroller.render();
+				}
 				fNext();
 			});
 
