@@ -92,6 +92,20 @@ class PictFormMetacontroller extends libPictViewClass
 		return this.manifest.getValueByHash(this.getMarshalDestinationObject(), pHashAddress);
 	}
 
+	gatherInitialBundle(fCallback)
+	{
+		if (this.manifestDescription && this.manifestDescription.InitialBundle)
+		{
+			this.log.info(`Gathering initial bundle for ${this.manifestDescription.InitialBundle.length} entities.`);
+			return this.pict.EntityProvider.gatherDataFromServer(this.manifestDescription.InitialBundle, fCallback);
+		}
+		else
+		{
+			this.log.info('No initial bundle to gather.');
+			return fCallback();
+		}
+	}
+
 	/**
 	 * Executes after the initialization of the object.
 	 *
@@ -104,7 +118,12 @@ class PictFormMetacontroller extends libPictViewClass
 		this.bootstrapPictFormViewsFromManifest();
 		// Generate the metatemplate (the container for each section)
 		this.generateMetatemplate();
-		return super.onAfterInitializeAsync(fCallback);
+
+		return super.onAfterInitializeAsync(
+			function (pError)
+			{
+				this.gatherInitialBundle(fCallback);
+			}.bind(this));		
 	}
 
 	/**
@@ -484,7 +503,7 @@ class PictFormMetacontroller extends libPictViewClass
 				return tmpSectionList;
 			}
 		}
-
+		this.manifestDescription = tmpManifestDescription;
 		let tmpManifest = this.fable.instantiateServiceProviderWithoutRegistration('Manifest', tmpManifestDescription);
 
 		if (this.options.AutoPopulateDefaultObject)

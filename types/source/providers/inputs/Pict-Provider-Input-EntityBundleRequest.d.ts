@@ -54,9 +54,9 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @param {any} pValue - The value of the input.
      * @param {string} pHTMLSelector - The HTML selector.
      *
-     * @return {Promise<Error?>} - Returns a promise that resolves when the data has been gathered.
+     * @return {Promise<any>} - Returns a promise that resolves when the data has been gathered.
      */
-    gatherDataFromServer(pView: any, pInput: any, pValue: any, pHTMLSelector: string): Promise<Error | null>;
+    gatherDataFromServer(pView: any, pInput: any, pValue: any, pHTMLSelector: string): Promise<any>;
     /**
      * Initializes a tabular input element.
      *

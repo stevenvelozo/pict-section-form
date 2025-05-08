@@ -9,6 +9,27 @@ module.exports.default_configuration.pict_configuration = (
 		"DefaultFormManifest": {
 			"Scope": "SuperSimpleForm",
 
+			"InitialBundle":
+				[
+					{
+						"Entity": "Author",
+						"Filter": "FBV~IDAuthor~EQ~100",
+						"Destination": "AppData.CurrentAuthor",
+						// This marshals a single record
+						"SingleRecord": true
+					},
+					{
+						"Entity": "BookAuthorJoin",
+						"Filter": "FBV~IDAuthor~EQ~{~D:AppData.CurrentAuthor.IDAuthor~}",
+						"Destination": "AppData.BookAuthorJoins"
+					},
+					{
+						"Entity": "Book",
+						"Filter": "FBL~IDBook~INN~{~PJU:,^IDBook^AppData.BookAuthorJoins~}",
+						"Destination": "AppData.Books"
+					}
+				],
+
 			"Sections": [
 				{
 					"Hash": "Book",
@@ -55,10 +76,7 @@ module.exports.default_configuration.pict_configuration = (
 								"Destination": "AppData.Books"
 							}
 						],
-						EntityBundleTriggerGroup: "BookTriggerGroup",
-						EntityBundleTriggerMetacontrollerSolve: true,
-						EntityBundleTriggerMetacontrollerRender: true,
-						EntityBundleTriggerOnInitialize: true
+						EntityBundleTriggerGroup: "BookTriggerGroup"
 					}
 				},
 				"Author.Name": {

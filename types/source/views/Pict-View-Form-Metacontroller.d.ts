@@ -38,6 +38,7 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @param {string} pHashAddress
      */
     getValueByHash(pHashAddress: string): any;
+    gatherInitialBundle(fCallback: any): any;
     /**
      * Executes after the initialization of the object.
      *
@@ -116,6 +117,7 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @returns {Array} - An array of section definitions.
      */
     bootstrapPictFormViewsFromManifest(pManifestDescription: any): any[];
+    manifestDescription: any;
     /**
      * Trigger an event on all inputs on all views.
      * @param {string} pEvent - The event to trigger
