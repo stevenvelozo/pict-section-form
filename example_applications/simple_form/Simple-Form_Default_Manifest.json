@@ -79,8 +79,41 @@
 				{
 					"Name":"Area of Rectangle",
 					"Hash":"Area",
-					"DataType":"Number"
-					,"PictForm": { "Section":"Area", "Row":4, "Width":2 }
+					"DataType":"PreciseNumber"
+					
+					,"PictForm": {"InputType": "PreciseNumberReadOnly", "DecimalPrecision": 3, "DigitsPrefix": "$", "DigitsPostfix": " DOllars", "Section":"Area", "Row":4, "Width":2 }
+				},
+
+			"PreciseNumberOutputExercise":
+				{
+					"Name":"DataType PreciseNumber",
+					"Hash":"DTPN",
+					"DataType":"PreciseNumber"
+					,"PictForm": {"InputType": "PreciseNumberReadOnly", "Section":"Marshaling", "Row":1, "Width":3 }
+				},
+			"PreciseNumberInputOutputExercise":
+				{
+					"Name":"InputType PreciseNumberReadOnly",
+					"Hash":"ITPNRO",
+					"DataType":"PreciseNumber",
+					"InputType": "PreciseNumberReadOnly"
+					,"PictForm": { "Section":"Marshaling", "Row":1, "Width":3 }
+				},
+			"DollarsOutputExercise":
+				{
+					"Name":"InputType DollarsReadOnly",
+					"Hash":"ITDRO",
+					"DataType":"PreciseNumber",
+					"InputType": "DollarsReadOnly"
+					,"PictForm": { "Section":"Marshaling", "Row":1, "Width":3 }
+				},
+			"PercentOutputExercise":
+				{
+					"Name":"InputType PercentReadOnly",
+					"Hash":"ITPRO",
+					"DataType":"PreciseNumber",
+					"InputType": "PercentReadOnly"
+					,"PictForm": { "Section":"Marshaling", "Row":1, "Width":3 }
 				}
 		}
 }

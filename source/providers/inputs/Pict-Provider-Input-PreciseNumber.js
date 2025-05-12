@@ -42,6 +42,15 @@ class CustomInputHandler extends libPictSectionInputExtension
 			tmpValue = this.fable.Math.roundPrecise(tmpValue, pInput.PictForm.DecimalPrecision, tmpRoundingMethod);
 		}
 
+		if ('DigitsPrefix' in pInput.PictForm)
+		{
+			tmpValue = pInput.PictForm.DigitsPrefix + tmpValue;
+		}
+		if ('DigitsPostfix' in pInput.PictForm)
+		{
+			tmpValue = tmpValue + pInput.PictForm.DigitsPostfix;
+		}
+
 		return tmpValue;
 	}
 

@@ -180,6 +180,19 @@ Glug glug glug Oo... -->
 
 `
 		},
+
+		{
+			"HashPostfix": "-Template-Input-InputType-PreciseNumberReadOnly",
+			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
+			"Template": /*HTML*/`
+					<!-- InputType PreciseNumberReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span>
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
+					<input type="text" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" {~D:Record.Macro.InputChangeHandler~} value="" readonly="readonly">
+
+`
+		},
+
 		{
 			"HashPostfix": "-Template-Input-InputType-TextArea",
 			"Template": /*HTML*/`
