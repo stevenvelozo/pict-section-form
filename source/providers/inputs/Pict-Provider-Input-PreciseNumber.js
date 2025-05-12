@@ -15,7 +15,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 
 		/** @type {import('pict')} */
 		this.pict;
-		/** @type {import('pict') & { Math: any }} */
+		/** @type {import('pict') & { Math: any } & { DataFormat: any }} */
 		this.fable;
 		/** @type {any} */
 		this.log;
@@ -40,6 +40,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 				}
 			}
 			tmpValue = this.fable.Math.roundPrecise(tmpValue, pInput.PictForm.DecimalPrecision, tmpRoundingMethod);
+		}
+
+		if (('AddCommas' in pInput.PictForm) && pInput.PictForm.AddCommas)
+		{
+			tmpValue = this.fable.DataFormat.formatterAddCommasToNumber(tmpValue);
 		}
 
 		if ('DigitsPrefix' in pInput.PictForm)

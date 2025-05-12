@@ -14,7 +14,11 @@
 				[
 					"Area = Height * Width",
 					"WidthCubeArea = Width ^ 3",
-					"HeightCubeArea = Height ^ 3"
+					"HeightCubeArea = Height ^ 3",
+					"DTPN = Height * Width",
+					"ITPNRO = Height * Width",
+					"ITDRO = Height * Width",
+					"ITPRO = Height * Width"
 				],
 			"MetaTemplates":
 				[
@@ -81,39 +85,29 @@
 					"Hash":"Area",
 					"DataType":"PreciseNumber"
 					
-					,"PictForm": {"InputType": "PreciseNumberReadOnly", "DecimalPrecision": 3, "DigitsPrefix": "$", "DigitsPostfix": " DOllars", "Section":"Area", "Row":4, "Width":2 }
+					,"PictForm": {"Section":"Area", "Row":4, "Width":2 }
 				},
 
-			"PreciseNumberOutputExercise":
+			"DTPN":
 				{
 					"Name":"DataType PreciseNumber",
 					"Hash":"DTPN",
 					"DataType":"PreciseNumber"
 					,"PictForm": {"InputType": "PreciseNumberReadOnly", "Section":"Marshaling", "Row":1, "Width":3 }
 				},
-			"PreciseNumberInputOutputExercise":
+			"ITPNRO":
 				{
 					"Name":"InputType PreciseNumberReadOnly",
 					"Hash":"ITPNRO",
 					"DataType":"PreciseNumber",
 					"InputType": "PreciseNumberReadOnly"
-					,"PictForm": { "Section":"Marshaling", "Row":1, "Width":3 }
-				},
-			"DollarsOutputExercise":
-				{
-					"Name":"InputType DollarsReadOnly",
-					"Hash":"ITDRO",
-					"DataType":"PreciseNumber",
-					"InputType": "DollarsReadOnly"
-					,"PictForm": { "Section":"Marshaling", "Row":1, "Width":3 }
-				},
-			"PercentOutputExercise":
-				{
-					"Name":"InputType PercentReadOnly",
-					"Hash":"ITPRO",
-					"DataType":"PreciseNumber",
-					"InputType": "PercentReadOnly"
-					,"PictForm": { "Section":"Marshaling", "Row":1, "Width":3 }
+					,"PictForm": { 
+						"InputType": "PreciseNumberReadOnly", 
+						"DecimalPrecision": 2,
+						"AddCommas": false,
+						"DigitsPrefix": "$", 
+						"DigitsPostfix": " (estimated)", 
+						"Section":"Marshaling", "Row":1, "Width":3 }
 				}
 		}
 }
