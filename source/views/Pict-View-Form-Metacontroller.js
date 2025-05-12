@@ -599,6 +599,16 @@ class PictFormMetacontroller extends libPictViewClass
 
 		this.manifest = tmpManifest;
 
+		// Now see if there is custom CSS
+		for (let i = 0; i < tmpSectionList.length; i++)
+		{
+			let tmpSection = tmpSectionList[i];
+			if (('CustomCSS' in tmpSection) && (typeof(tmpSection.CustomCSS) == 'string'))
+			{
+				this.pict.CSSMap.addCSS(`PSF-SectionCSS-${tmpSection.Hash}`, tmpSection.CustomCSS);
+			}
+		}
+
 		return tmpSectionList;
 	}
 

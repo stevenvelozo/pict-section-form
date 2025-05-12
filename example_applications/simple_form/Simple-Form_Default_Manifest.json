@@ -8,6 +8,8 @@
 			"Name": "Rectangular Area Calculator",
 			"Description": "Calculate the area of a Rectangle",
 
+			"CustomCSS": "h3 { color: #ff00ff; font-size: 1.5em; }",
+
 			"Solvers":
 				[
 					"Area = Height * Width",
