@@ -164,7 +164,7 @@ class PictDynamicSolver extends libPictProvider
 				continue;
 			}
 
-			tmpSolver.StartTimeStamp = +new Date();
+			tmpSolver.StartTimeStamp = Date.now();
 			tmpSolver.Hash = `${pGroupSolverArray[j].ViewHash}-GroupSolver-${j}`;
 
 			if (this.pict.LogNoisiness > 1)
@@ -174,20 +174,6 @@ class PictDynamicSolver extends libPictProvider
 
 			let tmpRecordSet = tmpView.getTabularRecordSet(tmpGroup.GroupIndex);
 
-			if (typeof(tmpRecordSet) == 'object')
-			{
-				let tmpRecordSetKeys = Object.keys(tmpRecordSet);
-				for (let l = 0; l < tmpRecordSetKeys.length; l++)
-				{
-					let tmpRecord = tmpRecordSet[tmpRecordSetKeys[l]];
-					tmpSolver.ResultsObject = {};
-					let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpRecord, tmpSolver.ResultsObject, tmpGroup.supportingManifest, tmpRecord);
-					if (this.pict.LogNoisiness > 1)
-					{
-						tmpView.log.trace(`Group ${tmpGroup.Hash} [${tmpSolver.Expression}] record ${l} result was ${tmpSolutionValue}`);
-					}
-				}
-			}
 			if (Array.isArray(tmpRecordSet))
 			{
 				for (let l = 0; l < tmpRecordSet.length; l++)
@@ -201,7 +187,21 @@ class PictDynamicSolver extends libPictProvider
 					}
 				}
 			}
-			tmpSolver.EndTimeStamp = +new Date();
+			else if (typeof(tmpRecordSet) == 'object')
+			{
+				let tmpRecordSetKeys = Object.keys(tmpRecordSet);
+				for (let l = 0; l < tmpRecordSetKeys.length; l++)
+				{
+					let tmpRecord = tmpRecordSet[tmpRecordSetKeys[l]];
+					tmpSolver.ResultsObject = {};
+					let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpRecord, tmpSolver.ResultsObject, tmpGroup.supportingManifest, tmpRecord);
+					if (this.pict.LogNoisiness > 1)
+					{
+						tmpView.log.trace(`Group ${tmpGroup.Hash} [${tmpSolver.Expression}] record ${l} result was ${tmpSolutionValue}`);
+					}
+				}
+			}
+			tmpSolver.EndTimeStamp = Date.now();
 		}
 	}
 
