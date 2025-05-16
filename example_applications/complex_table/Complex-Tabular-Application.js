@@ -386,7 +386,7 @@ module.exports.default_configuration.pict_configuration = {
 				Name: "Required Counter Surface Area",
 				Hash: "RecipeCounterSurfaceArea",
 				DataType: "PreciseNumber",
-				PictForm: { Section: "Recipe", Group: "Statistics", Row: 2, Width: 1 },
+				PictForm: { Section: "Recipe", Group: "Statistics", Row: 2, Width: 1, "InputType": "PreciseNumberReadOnly", "DecimalPrecision": 3, "DigitsPostfix": " sq. in." },
 			},
 
 			"Recipe.VerticalClearance": {
@@ -621,7 +621,7 @@ module.exports.default_configuration.pict_configuration = {
 						Name: "PercentTotalFat",
 						Hash: "PercentTotalFat",
 						DataType: "Number",
-						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid", "InputType": "PreciseNumberReadOnly", "DecimalPrecision": 4 },
 					},
 				},
 			},

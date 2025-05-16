@@ -171,16 +171,11 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-Template-Input-DataType-PreciseNumber",
-			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
 			"Template": /*HTML*/`
 					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span>
-					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
-					<input type="Number" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" {~D:Record.Macro.InputChangeHandler~} value="">
-
+					<span>{~D:Record.Name~}:</span> <input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 `
 		},
-
 		{
 			"HashPostfix": "-Template-Input-InputType-PreciseNumberReadOnly",
 			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
@@ -188,7 +183,7 @@ Glug glug glug Oo... -->
 					<!-- InputType PreciseNumberReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
 					<span>{~D:Record.Name~}:</span>
 					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
-					<input type="text" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" {~D:Record.Macro.InputChangeHandler~} value="" readonly="readonly">
+					<input type="text" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" value="" readonly="readonly">
 
 `
 		},
@@ -293,15 +288,26 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-VerticalTemplate-Input-DataType-PreciseNumber",
-			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
 			"Template": /*HTML*/`
 					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
 				<div class="pict-form-vertical-input">
-					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
 					<span>{~D:Record.Name~}:</span>
 					<span>{~D:Record.PictForm.ExtraDescription~}</span>
-					<input type="Number" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" {~D:Record.Macro.InputChangeHandler~} value="">
+					<input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-PreciseNumberReadOnly",
+			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
+			"Template": /*HTML*/`
+					<!-- InputType PreciseNumberReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<div class="pict-form-vertical-input">
+						<span>{~D:Record.Name~}:</span>
+						<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
+						<input type="text" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" value="" readonly="readonly">
+					</div>
+
 `
 		},
 		{
@@ -675,12 +681,9 @@ Glug glug glug Oo... -->
 
 		{
 			"HashPostfix": "-TabularTemplate-Begin-Input-DataType-PreciseNumber",
-			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
 			"Template": /*HTML*/`
 					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input type="hidden" id="TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~}  value="">
-					<input type="Number" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~}
-`
+					<input type="Number" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-PreciseNumber",
@@ -688,6 +691,21 @@ Glug glug glug Oo... -->
 `
 		},
 
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-PreciseNumberReadOnly",
+			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
+			"Template": /*HTML*/`
+					<!-- InputType PreciseNumberReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" id="PRECISE-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~}
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-PreciseNumberReadOnly",
+			"Template": /*HTML*/`
+						value="">
+					<input type="text" id="TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" value="" readonly="readonly">
+`
+		},
 		{
 			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-TextArea",
 			"Template": /*HTML*/`
