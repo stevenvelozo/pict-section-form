@@ -144,6 +144,10 @@ module.exports.default_configuration.pict_configuration = {
 								Ordinal: 0,
 								Expression: "PercentTotalFat = (Fat * 9) / Calories",
 							},
+							{
+								Ordinal: 1,
+								Expression: "ProteinFatRatio = Protein / Fat * 100",
+							},
 						],
 
 						PickLists:
@@ -616,6 +620,12 @@ module.exports.default_configuration.pict_configuration = {
 						Hash: "Protein",
 						DataType: "Number",
 						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
+					},
+					"nutritions.protein_fat_ratio": {
+						Name: "Protein Fat Ratio",
+						Hash: "ProteinFatRatio",
+						DataType: "Number",
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid", TabularHidden: true },
 					},
 					"nutritions.percent_total_fat": {
 						Name: "PercentTotalFat",
