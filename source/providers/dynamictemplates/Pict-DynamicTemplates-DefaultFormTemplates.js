@@ -696,14 +696,14 @@ Glug glug glug Oo... -->
 			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
 			"Template": /*HTML*/`
 					<!-- InputType PreciseNumberReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input type="hidden" id="PRECISE-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~}
+					<input type="hidden" id="PRECISE-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.InformaryTabular~}
 `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-PreciseNumberReadOnly",
 			"Template": /*HTML*/`
 						value="">
-					<input type="text" id="TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" value="" readonly="readonly">
+					<input type="text" id="TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} value="" readonly="readonly">
 `
 		},
 		{
@@ -722,12 +722,12 @@ Glug glug glug Oo... -->
 			"DefaultInputExtensions": ["Pict-Input-Select"],
 			"Template": /*HTML*/`
 					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input type="hidden" id="SELECT-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+					<input type="hidden" id="SELECT-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-Option",
 			"Template": /*HTML*/` value="">
-					<select id="SELECT-TABULAR-DROPDOWN-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"></select>
+					<select id="SELECT-TABULAR-DROPDOWN-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"></select>
 `
 		},
 		{
@@ -746,12 +746,14 @@ Glug glug glug Oo... -->
 			"DefaultInputExtensions": ["Pict-Input-DateTime"],
 			"Template": /*HTML*/`
 					<!-- DataType DateTime {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input type="hidden" id="DATETIME-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+					<input type="hidden" id="DATETIME-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-DateTime",
 			"Template": /*HTML*/` value="">
-					<input id="DATETIME-TABULAR-INPUT-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')" type="datetime-local" value="" />
+					<input id="DATETIME-TABULAR-INPUT-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~}
+						onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"
+						type="datetime-local" value="" />
 `
 		},
 		{
