@@ -126,6 +126,72 @@ class CustomInputHandler extends libPictSectionInputExtension
 		}
 	}
 
+	gatherCustomDataSet(fCallback, pCustomRequestInformation, pView, pInput, pValue)
+	{
+		// First sanity check the pCustomRequestInformation
+		if (!('URL' in pCustomRequestInformation) || (typeof(pCustomRequestInformation.URL) != 'string'))
+		{
+			this.log.warn(`EntityBundleRequest failed to parse custom data request because the stanza did not contain a URL string.`);
+			return fCallback();
+		}
+
+		const tmpURLTemplateRecord = { Value:pValue, Input:pInput, View:pView };
+		// Parse the filter template
+		const tmpURLTemplateString = this.pict.parseTemplate(pCustomRequestInformation.URL, tmpURLTemplateRecord);
+		if (tmpURLTemplateString == '')
+		{
+			// We may want to continue, but for now let's say nah and nope out.
+			this.log.warn(`EntityBundleRequest failed to parse custom data request because the entity Filter did not return a string for FilterBy`)
+		}
+
+		let tmpURLPrefix = '';
+		// This will only be true if the "Host" is set.
+		const tmpCustomURIHost = pCustomRequestInformation.Host ? pCustomRequestInformation.Host : false;
+		// If "Host" is set, protocol and port are optional.
+		const tmpCustomURIProtocol = pCustomRequestInformation.Protocol ? pCustomRequestInformation.Protocol : 'https';
+		const tmpCustomURIPort = pCustomRequestInformation.Port ? pCustomRequestInformation.Port : false;
+
+		if (tmpCustomURIHost)
+		{
+			tmpURLPrefix = `${tmpCustomURIProtocol}://${tmpCustomURIHost}`;
+			if (tmpCustomURIPort)
+			{
+				tmpURLPrefix += `:${tmpCustomURIPort}`;
+			}
+		}
+		else
+		{
+			tmpURLPrefix = this.pict.EntityProvider.options.urlPrefix;
+		}
+
+		// Now get the records
+		const callback = (pError, pResponse, pData) =>
+		{
+			if (pError)
+			{
+				this.log.error(`EntityBundleRequest request Error getting data set for [${pCustomRequestInformation.Entity}] with filter [${tmpURLTemplateString}]: ${pError}`, pError);
+				return fCallback(pError, '');
+			}
+
+			this.log.trace(`EntityBundleRequest completed request for ${pCustomRequestInformation.Entity} filtered to [${tmpURLTemplateString}]`);
+
+			// Since this is a templated endpoint it can be used for logging etc.
+			if (pCustomRequestInformation.Destination)
+			{
+				this.pict.manifest.setValueByHash(this.pict, pCustomRequestInformation.Destination, pData);
+			}
+
+			return fCallback();
+		};
+
+		let tmpOptions = (
+			{
+				url: `${tmpURLPrefix}${tmpURLTemplateString}`
+			});
+		tmpOptions = this.pict.EntityProvider.prepareRequestOptions(tmpOptions);
+		return this.pict.EntityProvider.restClient.getJSON(tmpOptions, callback);
+	}
+
 	/**
 	 * TODO: I added a proise return here to know when this data load is done for the dashboard usecase. Could use a revisit.
 	 *
@@ -158,7 +224,15 @@ class CustomInputHandler extends libPictSectionInputExtension
 				{
 					try
 					{
-						return this.gatherEntitySet(fNext, tmpEntityBundleEntry, pView, tmpInput, tmpValue);
+						switch (tmpEntityBundleEntry.Type)
+						{
+							case 'Custom':
+								return this.gatherCustomDataSet(fNext, tmpEntityBundleEntry, pView, tmpInput, tmpValue);
+							// This is the default case, for a meadow entity set or single entity
+							case 'MeadowEntity':
+							default:
+								return this.gatherEntitySet(fNext, tmpEntityBundleEntry, pView, tmpInput, tmpValue);
+						}
 					}
 					catch (pError)
 					{

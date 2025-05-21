@@ -309,14 +309,6 @@ module.exports.default_configuration.pict_configuration = {
 						}
 				}
 			},
-			"Book.Title": {
-				Name: "Book Title",
-				Hash: "BookTitle",
-				DataType: "String",
-				PictForm: {
-					Section: "Book", Group: "Book", Row: 1, Width: 1
-				}
-			},
 
 			"UI.StatisticsTabState": {
 				Name: "Statistics Tab State",

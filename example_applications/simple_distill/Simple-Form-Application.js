@@ -9,6 +9,18 @@ module.exports.default_configuration.pict_configuration = (
 		"DefaultFormManifest": {
 			"Scope": "SuperSimpleForm",
 
+			"PickLists": [
+				{
+					"Hash": "Books",
+					"ListAddress": "AppData.AuthorsBooks",
+					"ListSourceAddress": "Books[]",
+					"TextTemplate": "{~D:Record.Title~}",
+					"IDTemplate": "{~D:Record.IDBook~}",
+					"Sorted": true,
+					"UpdateFrequency": "Always"
+				}
+			],
+
 			"InitialBundle":
 				[
 					{
@@ -27,6 +39,14 @@ module.exports.default_configuration.pict_configuration = (
 						"Entity": "Book",
 						"Filter": "FBL~IDBook~INN~{~PJU:,^IDBook^AppData.BookAuthorJoins~}",
 						"Destination": "AppData.Books"
+					},
+					{
+						"Type": "Custom",
+						"Protocol": "HTTP",
+						"Host": "localhost",
+						"Port": 9999,
+						"URL": "/1.0/BookAuthorJoin/Schema",
+						"Destination": "AppData.BookAuthorJoinSchema"
 					}
 				],
 
@@ -74,6 +94,19 @@ module.exports.default_configuration.pict_configuration = (
 								"Entity": "Book",
 								"Filter": "FBL~IDBook~INN~{~PJU:,^IDBook^AppData.BookAuthorJoins~}",
 								"Destination": "AppData.Books"
+							},
+							{
+								"Type": "Custom",
+								"Protocol": "HTTP",
+								"Host": "localhost",
+								"Port": 9999,
+								"URL": "/1.0/Book/Schema?Author={~D:AppData.CurrentAuthor.IDAuthor~}",
+								"Destination": "AppData.BookSchema"
+							},
+							{
+								"Type": "Custom",
+								"URL": "Author/Schema",
+								"Destination": "AppData.AuthorSchema"
 							}
 						],
 						EntityBundleTriggerGroup: "BookTriggerGroup"
@@ -119,14 +152,6 @@ module.exports.default_configuration.pict_configuration = (
 							TriggerGroupName: "BookTriggerGroup",
 							SelectOptionsRefresh: true
 						}
-					}
-				},
-				"Book.Title": {
-					Name: "Book Title",
-					Hash: "BookTitle",
-					DataType: "String",
-					PictForm: {
-						Section: "Book", Group: "Book", Row: 1, Width: 1
 					}
 				}
 			}
