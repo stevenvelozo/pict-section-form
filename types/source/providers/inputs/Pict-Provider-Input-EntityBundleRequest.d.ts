@@ -46,6 +46,7 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     /** @type {any} */
     log: any;
     gatherEntitySet(fCallback: any, pEntityInformation: any, pView: any, pInput: any, pValue: any): any;
+    gatherCustomDataSet(fCallback: any, pCustomRequestInformation: any, pView: any, pInput: any, pValue: any): any;
     /**
      * TODO: I added a proise return here to know when this data load is done for the dashboard usecase. Could use a revisit.
      *

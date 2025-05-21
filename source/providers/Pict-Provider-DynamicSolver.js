@@ -12,7 +12,7 @@ const libInputAutofillTriggerGroup = require('./inputs/Pict-Provider-Input-Autof
 const libInputMarkdown = require('./inputs/Pict-Provider-Input-Markdown.js');
 const libInputHTML = require('./inputs/Pict-Provider-Input-HTML.js');
 const libInputPreciseNumber = require('./inputs/Pict-Provider-Input-PreciseNumber.js');
-const libInputTemplateEntityLookup = require('./inputs/Pict-Provider-Input-TemplatedEntityLookup.js');
+const libInputTemplatedEntityLookup = require('./inputs/Pict-Provider-Input-TemplatedEntityLookup.js');
 
 const _DefaultProviderConfiguration = (
 {
@@ -99,9 +99,9 @@ class PictDynamicSolver extends libPictProvider
 		{
 			this.pict.addProvider('Pict-Input-PreciseNumber', libInputPreciseNumber.default_configuration, libInputPreciseNumber);
 		}
-		if (!this.pict.providers['Pict-Input-TemplateEntityLookup'])
+		if (!this.pict.providers['Pict-Input-TemplatedEntityLookup'])
 		{
-			this.pict.addProvider('Pict-Input-TemplateEntityLookup', libInputTemplateEntityLookup.default_configuration, libInputTemplateEntityLookup);
+			this.pict.addProvider('Pict-Input-TemplatedEntityLookup', libInputTemplatedEntityLookup.default_configuration, libInputTemplatedEntityLookup);
 		}
 	}
 

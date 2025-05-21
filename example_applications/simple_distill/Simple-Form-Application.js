@@ -163,8 +163,8 @@ module.exports.default_configuration.pict_configuration = (
 						Group: "Book",
 						Row: 2, Width: 1,
 						InputType: "TemplatedEntityLookup",
-						Providers: ["Pict-Input-TemplateEntityLookup"],
-						TemplateEntityLookup:
+						Providers: ["Pict-Input-TemplatedEntityLookup"],
+						TemplatedEntityLookup:
 						{
 							Template: "Record GUIDBookAuthorJoin {~D:AppData.CurrentBookAuthorJoinForDisplayTemplate.GUIDBookAuthorJoin~} IDBook {~D:AppData.CurrentBookAuthorJoinForDisplayTemplate.IDBook~} is the first book for IDAuthor {~D:AppData.CurrentAuthor.IDAuthor~} AuthorName [{~D:AppData.CurrentAuthor.Name~}]",
 

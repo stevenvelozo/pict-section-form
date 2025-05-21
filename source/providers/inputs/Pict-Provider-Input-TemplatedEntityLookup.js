@@ -55,7 +55,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	assignDisplayEntityData(pDisplayID, pInput, pValue)
 	{
 		// 0. Manage state
-		let tmpDisplayTemplate = (typeof(pInput.PictForm.TemplateEntityLookup.Template) === "string") ? pInput.PictForm.TemplateEntityLookup.Template : "";
+		let tmpDisplayTemplate = (typeof(pInput.PictForm.TemplatedEntityLookup.Template) === "string") ? pInput.PictForm.TemplatedEntityLookup.Template : "";
 		let tmpDisplayContent = '';
 
 		if (typeof(pInput) != "object")
@@ -68,14 +68,14 @@ class CustomInputHandler extends libPictSectionInputExtension
 			this.log.error("Error in assignDisplayEntityData: pInput.PictForm is not an object");
 			return;
 		}
-		if (!(`TemplateEntityLookup` in pInput.PictForm))
+		if (!(`TemplatedEntityLookup` in pInput.PictForm))
 		{
-			this.log.error("Error in assignDisplayEntityData: pInput.PictForm.TemplateEntityLookup is not in the PictForm object");
+			this.log.error("Error in assignDisplayEntityData: pInput.PictForm.TemplatedEntityLookup is not in the PictForm object");
 			return;
 		}
-		if (!Array.isArray(pInput.PictForm.TemplateEntityLookup.EntitiesBundle))
+		if (!Array.isArray(pInput.PictForm.TemplatedEntityLookup.EntitiesBundle))
 		{
-			this.log.error("Error in assignDisplayEntityData: pInput.PictForm.TemplateEntityLookup.EntitiesBundle is not an array");
+			this.log.error("Error in assignDisplayEntityData: pInput.PictForm.TemplatedEntityLookup.EntitiesBundle is not an array");
 			return;
 		}
 
@@ -85,7 +85,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		tmpAnticipate.anticipate(
 			function (fNext)
 			{
-				this.pict.EntityProvider.gatherDataFromServer(pInput.PictForm.TemplateEntityLookup.EntitiesBundle, fNext);
+				this.pict.EntityProvider.gatherDataFromServer(pInput.PictForm.TemplatedEntityLookup.EntitiesBundle, fNext);
 			}.bind(this));
 
 		// 2. Check the Empty Value Test List
