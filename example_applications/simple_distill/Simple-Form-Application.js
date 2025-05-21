@@ -153,6 +153,34 @@ module.exports.default_configuration.pict_configuration = (
 							SelectOptionsRefresh: true
 						}
 					}
+				},
+				"BookAuthorJoin": {
+					Name: "BookAuthorJoinInfo",
+					Hash: "BookAuthorJoin",
+					DataType: "String",
+					PictForm: {
+						Section: "Book",
+						Group: "Book",
+						Row: 2, Width: 1,
+						InputType: "TemplatedEntityLookup",
+						Providers: ["Pict-Input-TemplateEntityLookup"],
+						TemplateEntityLookup:
+						{
+							Template: "Record GUIDBookAuthorJoin {~D:AppData.CurrentBookAuthorJoinForDisplayTemplate.GUIDBookAuthorJoin~} IDBook {~D:AppData.CurrentBookAuthorJoinForDisplayTemplate.IDBook~} is the first book for IDAuthor {~D:AppData.CurrentAuthor.IDAuthor~} AuthorName [{~D:AppData.CurrentAuthor.Name~}]",
+
+							EmptyValueTestList: ["AppData.CurrentBookAuthorJoinForDisplayTemplate"],
+							EmptyValueTemplate: "No BookAuthorJoin Found",
+
+							EntitiesBundle: [
+								{
+									"Entity": "BookAuthorJoin",
+									"Filter": "FBV~IDAuthor~EQ~{~D:AppData.CurrentAuthor.IDAuthor~}",
+									"Destination": "AppData.CurrentBookAuthorJoinForDisplayTemplate",
+									// This marshals a single record
+									"SingleRecord": true
+								}]
+						}
+					}
 				}
 			}
 		}

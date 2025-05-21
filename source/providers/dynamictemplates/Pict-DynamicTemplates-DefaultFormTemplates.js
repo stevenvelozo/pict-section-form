@@ -247,6 +247,16 @@ Glug glug glug Oo... -->
 					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-html"></div>
 `
 		},
+		{
+			"HashPostfix": "-Template-Input-InputType-TemplatedEntityLookup",
+			"DefaultInputExtensions": ["Pict-Input-TemplatedEntityLookup"],
+			"Template": /*HTML*/`
+					<!-- InputType TemplatedEntityLookup {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}"></div>
+`
+		},
 		/*
 		 * END Input Templates (default)
 		 */
@@ -392,6 +402,19 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span>
 					<span>{~D:Record.PictForm.ExtraDescription~}</span>
 					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-html"></div>
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-TemplatedEntityLookup",
+			"DefaultInputExtensions": ["Pict-Input-TemplatedEntityLookup"],
+			"Template": /*HTML*/`
+					<!-- InputType TemplatedEntityLookup {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}"></div>
 				</div>
 `
 		},
@@ -780,6 +803,16 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/` value="">`
 		},
 
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-TemplatedEntityLookup",
+			"Template": /*HTML*/`
+					<!-- InputType TemplatedEntityLookup {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="text" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-TemplatedEntityLookup",
+			"Template": /*HTML*/` value="">`
+		},
 
 		/*
 		 * END Tabular Input Templates
