@@ -42,6 +42,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 	getTriggerGroupConfigurationArray(pInput)
 	{
 		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
+		if (!tmpAutoFillTriggerGroups)
+		{
+			return [];
+		}
 		if (!Array.isArray(tmpAutoFillTriggerGroups))
 		{
 			tmpAutoFillTriggerGroups = [tmpAutoFillTriggerGroups];
