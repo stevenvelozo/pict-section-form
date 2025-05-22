@@ -90,7 +90,7 @@ class PictDynamicInputEvents extends libPictProvider
 				{
 					if (pView.pict.providers[tmpInputProviderList[i]])
 					{
-						pView.pict.providers[tmpInputProviderList[i]].onEvent(pView, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, pEvent);
+						pView.pict.providers[tmpInputProviderList[i]].onEvent(pView, tmpInput, tmpValue, tmpInput.Macro?.HTMLSelector ?? '', pEvent);
 					}
 					else
 					{
