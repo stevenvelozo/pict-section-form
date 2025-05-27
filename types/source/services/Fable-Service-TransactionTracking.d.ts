@@ -16,6 +16,6 @@ declare class TransactionTracking {
     checkEvent(pKey: any, pEvent: any, pHash: any): boolean;
 }
 declare namespace TransactionTracking {
-    let default_configuration: {};
+    let default_configuration: Record<string, any>;
 }
 //# sourceMappingURL=Fable-Service-TransactionTracking.d.ts.map

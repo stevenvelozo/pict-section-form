@@ -43,10 +43,6 @@ declare class PictDynamicFormsTemplates {
 declare namespace PictDynamicFormsTemplates {
     export { _DefaultProviderConfiguration as default_configuration };
 }
-declare namespace _DefaultProviderConfiguration {
-    let ProviderIdentifier: string;
-    let AutoInitialize: boolean;
-    let AutoInitializeOrdinal: number;
-    let AutoSolveWithApp: boolean;
-}
+/** @type {Record<string, any>} */
+declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-DynamicTemplates.d.ts.map

@@ -1,6 +1,7 @@
 const libPictProvider = require('pict-provider');
 
 // TODO: Pull this back to pict as a core service once we are happy with the shape.
+/** @type {Record<string, any>} */
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-Informary",

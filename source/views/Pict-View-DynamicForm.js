@@ -1,11 +1,13 @@
 const libPictViewClass = require('pict-view');
 
+/** @type {Record<string, any>} */
 const libPackage = require('../../package.json');
 
 const libPictDynamicApplication = require(`../services/Pict-Service-DynamicApplication.js`);
 
 const libFableServiceTransactionTracking = require(`../services/Fable-Service-TransactionTracking.js`);
 
+/** @type {Record<string, any>} */
 const _DefaultConfiguration = require('./Pict-View-DynamicForm-DefaultConfiguration.json');
 
 /**

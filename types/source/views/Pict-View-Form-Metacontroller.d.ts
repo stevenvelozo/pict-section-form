@@ -142,25 +142,6 @@ declare namespace PictFormMetacontroller {
 }
 import libPictViewClass = require("pict-view");
 import libPictViewDynamicForm = require("./Pict-View-DynamicForm.js");
-declare namespace default_configuration {
-    let AutoRender: boolean;
-    let AutoPopulateDefaultObject: boolean;
-    let AutoSolveBeforeRender: boolean;
-    let AutoPopulateAfterRender: boolean;
-    let DefaultRenderable: string;
-    let DefaultDestinationAddress: string;
-    let AutoMarshalDataOnSolve: boolean;
-    let OnlyRenderDynamicSections: boolean;
-    let MetaTemplateHash: string;
-    let Templates: {
-        Hash: string;
-        Template: string;
-    }[];
-    let Renderables: {
-        RenderableHash: string;
-        TemplateHash: string;
-        DestinationAddress: string;
-    }[];
-}
+declare const default_configuration: Record<string, any>;
 type SortFunction = (a: any, b: any) => number;
 //# sourceMappingURL=Pict-View-Form-Metacontroller.d.ts.map

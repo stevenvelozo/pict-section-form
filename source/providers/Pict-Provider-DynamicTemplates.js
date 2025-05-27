@@ -17,6 +17,7 @@ const libTemplateGetViewSchemaValueByHash = require('../templates/Pict-Template-
 // TODO: This is temporary until we publish new pict
 const libTemplatePluckJoinUnique = require('../templates/Pict-Template-Proxy-PluckJoinUnique.js');
 
+/** @type {Record<string, any>} */
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-MetaTemplates-Basic",

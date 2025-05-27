@@ -661,6 +661,7 @@ class PictFormMetacontroller extends libPictViewClass
 }
 
 module.exports = PictFormMetacontroller;
+/** @type {Record<string, any>} */
 module.exports.default_configuration = (
 {
 	"AutoRender": true,

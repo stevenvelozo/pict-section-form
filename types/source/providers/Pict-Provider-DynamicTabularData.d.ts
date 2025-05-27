@@ -102,12 +102,8 @@ declare class DynamicTabularData {
 declare namespace DynamicTabularData {
     export { _DefaultProviderConfiguration as default_configuration, ElementDescriptor };
 }
-declare namespace _DefaultProviderConfiguration {
-    let ProviderIdentifier: string;
-    let AutoInitialize: boolean;
-    let AutoInitializeOrdinal: number;
-    let AutoSolveWithApp: boolean;
-}
+/** @type {Record<string, any>} */
+declare const _DefaultProviderConfiguration: Record<string, any>;
 type ElementDescriptor = {
     /**
      * - The hash of the element.

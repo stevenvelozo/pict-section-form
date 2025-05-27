@@ -65,4 +65,5 @@ class PictDynamicApplication extends libFableServiceProviderBase
 
 module.exports = PictDynamicApplication;
 
+/** @type {Record<string, any>} */
 PictDynamicApplication.default_configuration = { };

@@ -14,6 +14,7 @@ const libInputHTML = require('./inputs/Pict-Provider-Input-HTML.js');
 const libInputPreciseNumber = require('./inputs/Pict-Provider-Input-PreciseNumber.js');
 const libInputTemplatedEntityLookup = require('./inputs/Pict-Provider-Input-TemplatedEntityLookup.js');
 
+/** @type {Record<string, any>} */
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-Solver",

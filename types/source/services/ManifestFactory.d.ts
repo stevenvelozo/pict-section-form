@@ -94,6 +94,6 @@ declare class ManifestFactory {
     createManifestsFromTabularArray(pRecords: any): any;
 }
 declare namespace ManifestFactory {
-    let default_configuration: {};
+    let default_configuration: Record<string, any>;
 }
 //# sourceMappingURL=ManifestFactory.d.ts.map

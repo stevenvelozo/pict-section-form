@@ -11,6 +11,6 @@ declare class PictDynamicApplication {
     UUID: string;
 }
 declare namespace PictDynamicApplication {
-    let default_configuration: {};
+    let default_configuration: Record<string, any>;
 }
 //# sourceMappingURL=Pict-Service-DynamicApplication.d.ts.map

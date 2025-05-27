@@ -39,10 +39,6 @@ declare class PictDynamicInput {
 declare namespace PictDynamicInput {
     export { _DefaultProviderConfiguration as default_configuration };
 }
-declare namespace _DefaultProviderConfiguration {
-    let ProviderIdentifier: string;
-    let AutoInitialize: boolean;
-    let AutoInitializeOrdinal: number;
-    let AutoSolveWithApp: boolean;
-}
+/** @type {Record<string, any>} */
+declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-DynamicInput.d.ts.map

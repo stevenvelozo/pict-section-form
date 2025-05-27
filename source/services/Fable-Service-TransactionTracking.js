@@ -93,4 +93,5 @@ class TransactionTracking extends libFableServiceProviderBase
 
 module.exports = TransactionTracking;
 
+/** @type {Record<string, any>} */
 TransactionTracking.default_configuration = { };

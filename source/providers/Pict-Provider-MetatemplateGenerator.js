@@ -2,6 +2,7 @@ const libPictProvider = require('pict-provider');
 
 //const libPictViewDynamicForm = require('../views/Pict-View-DynamicForm.js');
 
+/** @type {Record<string, any>} */
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-Provider-MetatemplateGenerator",

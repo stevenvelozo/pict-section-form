@@ -1,5 +1,6 @@
 const libPictProvider = require('pict-provider');
 
+/** @type {Record<string, any>} */
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-Input",

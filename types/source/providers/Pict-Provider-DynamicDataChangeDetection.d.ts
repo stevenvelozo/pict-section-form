@@ -38,7 +38,7 @@ declare namespace PictDataChangeDetection {
 }
 /**
  * Default configuration for the PictDataChangeDetection provider.
- * @type {Object}
+ * @type {Record<string, any>}
  */
-declare const _DefaultProviderConfiguration: any;
+declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-DynamicDataChangeDetection.d.ts.map

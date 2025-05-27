@@ -732,4 +732,5 @@ class ManifestFactory extends libFableServiceProviderBase
 }
 
 module.exports = ManifestFactory;
+/** @type {Record<string, any>} */
 ManifestFactory.default_configuration = { };

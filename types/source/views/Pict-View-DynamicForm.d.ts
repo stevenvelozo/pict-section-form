@@ -19,66 +19,7 @@ declare class PictViewDynamicForm extends libPictViewClass {
     transactionTracking: import("../services/Fable-Service-TransactionTracking.js");
     /** @type {Object} */
     _PackagePictView: any;
-    _Package: {
-        name: string;
-        version: string;
-        description: string;
-        main: string;
-        directories: {
-            test: string;
-        };
-        repository: {
-            type: string;
-            url: string;
-        };
-        bugs: {
-            url: string;
-        };
-        homepage: string;
-        scripts: {
-            start: string;
-            tests: string;
-            coverage: string;
-            build: string;
-            test: string;
-            lint: string;
-            types: string;
-        };
-        types: string;
-        author: string;
-        license: string;
-        devDependencies: {
-            "@eslint/js": string;
-            "browser-env": string;
-            eslint: string;
-            jquery: string;
-            pict: string;
-            "pict-application": string;
-            "pict-service-commandlineutility": string;
-            quackage: string;
-            "tui-grid": string;
-            typescript: string;
-        };
-        dependencies: {
-            "fable-serviceproviderbase": string;
-            marked: string;
-            "pict-provider": string;
-            "pict-section-tuigrid": string;
-            "pict-template": string;
-            "pict-view": string;
-        };
-        mocha: {
-            diff: boolean;
-            extension: string[];
-            package: string;
-            reporter: string;
-            slow: string;
-            timeout: string;
-            ui: string;
-            "watch-files": string[];
-            "watch-ignore": string[];
-        };
-    };
+    _Package: Record<string, any>;
     sectionDefinition: any;
     sectionManifest: any;
     sectionSolvers: any[];
@@ -399,40 +340,6 @@ declare namespace PictViewDynamicForm {
     export { _DefaultConfiguration as default_configuration };
 }
 import libPictViewClass = require("pict-view");
-declare const _DefaultConfiguration: {
-    AutoRender: boolean;
-    AutoSolveWithApp: boolean;
-    ExecuteSolversWithoutMetacontroller: boolean;
-    IncludeInMetatemplateSectionGeneration: boolean;
-    IncludeInDefaultDynamicRender: boolean;
-    DefaultRenderable: string;
-    DefaultDestinationAddress: string;
-    Renderables: any[];
-    Templates: any[];
-    MacroTemplates: {
-        Section: {
-            HTMLID: string;
-        };
-        Group: {
-            HTMLID: string;
-            PictFormLayout: string;
-            TabularCreateRowFunctionCall: string;
-        };
-        Input: {
-            Informary: string;
-            InformaryTabular: string;
-            HTMLSelector: string;
-            HTMLSelectorTabular: string;
-            RawHTMLID: string;
-            HTMLName: string;
-            HTMLIDAddress: string;
-            HTMLID: string;
-            HTMLForID: string;
-            InputFullProperties: string;
-            InputChangeHandler: string;
-            DataRequestFunction: string;
-        };
-    };
-    TargetElementAddress: string;
-};
+/** @type {Record<string, any>} */
+declare const _DefaultConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-View-DynamicForm.d.ts.map
