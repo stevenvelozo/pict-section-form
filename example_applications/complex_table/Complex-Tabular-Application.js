@@ -79,6 +79,7 @@ module.exports.default_configuration.pict_configuration = {
 					},
 					"RecipeCounterSurfaceArea = RecipeCounterWidth * RecipeCounterDepth",
 					"RecipeCounterVolume = RecipeCounterSurfaceArea * RecipeVerticalClearance",
+					`InspirationLink = CONCAT("https://www.google.com/search?q=", RecipeName, " recipe")`,
 				],
 
 				MetaTemplates:
@@ -148,6 +149,10 @@ module.exports.default_configuration.pict_configuration = {
 								Ordinal: 1,
 								Expression: "ProteinFatRatio = Protein / Fat * 100",
 							},
+							{
+								Ordinal: 2,
+								Expression: `HealthInfoLink = CONCAT("https://www.google.com/search?q=", Family, " health information")`,
+							},
 						],
 
 						PickLists:
@@ -192,6 +197,12 @@ module.exports.default_configuration.pict_configuration = {
 				Hash: "RecipeName",
 				DataType: "String",
 				PictForm: { Section: "Recipe", Group: "Recipe", Row: 1 },
+			},
+			InspirationLink: {
+				Name: "Inspiration",
+				Hash: "InspirationLink",
+				DataType: "String",
+				PictForm: { Section: "Recipe", Group: "Recipe", Row: 1, InputType: "Link" },
 			},
 			RecipeType: {
 				Name: "Recipe Type",
@@ -451,6 +462,9 @@ module.exports.default_configuration.pict_configuration = {
 			"FruitData.FruityVice[].nutritions.calories": {
 				Hash: "FruitNutritionCalories",
 			},
+			"FruitData.FruityVice[].health_info": {
+				Hash: "FruitHealthInfo",
+			},
 			"FruitData.FruityVice[].nutritions.percent_total_fat": {
 				Hash: "FruitPercentTotalFat",
 			},
@@ -562,6 +576,13 @@ module.exports.default_configuration.pict_configuration = {
 						DataType: "String",
 						Default: "(unnamed fruit)",
 						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
+					},
+					health_info: {
+						Name: "Health Info.",
+						Hash: "HealthInfoLink",
+						DataType: "String",
+						Default: "",
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid", "InputType": "Link" },
 					},
 					family: {
 						Name: "Family",

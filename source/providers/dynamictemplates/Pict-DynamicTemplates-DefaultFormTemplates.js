@@ -228,6 +228,15 @@ Glug glug glug Oo... -->
 `
 		},
 		{
+			"HashPostfix": "-Template-Input-InputType-Link",
+			"DefaultInputExtensions": ["Pict-Input-Link"],
+			"Template": /*HTML*/`
+					<!-- InputType Link {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
+					<a id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}">{~D:Record.Name~}</a>
+`
+		},
+		{
 			"HashPostfix": "-Template-Input-InputType-Markdown",
 			"DefaultInputExtensions": ["Pict-Input-Markdown"],
 			"Template": /*HTML*/`
@@ -376,6 +385,17 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span>
 					<span>{~D:Record.PictForm.ExtraDescription~}</span>
 					<input type="text" readonly {~D:Record.Macro.InputFullProperties~}></input>
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-Link",
+			"DefaultInputExtensions": ["Pict-Input-Link"],
+			"Template": /*HTML*/`
+					<!-- InputType Link {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
+					<a {~D:Record.Macro.InputFullProperties~}>{~D:Record.Name~}</a>
 				</div>
 `
 		},
@@ -801,6 +821,19 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-ReadOnly",
 			"Template": /*HTML*/` value="">`
+		},
+
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Link",
+			"DefaultInputExtensions": ["Pict-Input-Link"],
+			"Template": /*HTML*/`
+					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-Link",
+			"Template": /*HTML*/` value="">
+					<a id="TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~}>{~D:Record.Name~}</a>`
 		},
 
 		{
