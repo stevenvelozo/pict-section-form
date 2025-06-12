@@ -8,8 +8,6 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
-    /** @type {any} */
-    log: any;
     /**
      * Generates the HTML ID for a DateTime input element based on the given input HTML ID.
      *

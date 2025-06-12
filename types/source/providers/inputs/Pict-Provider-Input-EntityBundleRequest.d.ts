@@ -43,8 +43,6 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     fable: import("pict") & {
         newAnticipate: () => any;
     };
-    /** @type {any} */
-    log: any;
     gatherEntitySet(fCallback: any, pEntityInformation: any, pView: any, pInput: any, pValue: any): any;
     gatherCustomDataSet(fCallback: any, pCustomRequestInformation: any, pView: any, pInput: any, pValue: any): any;
     /**

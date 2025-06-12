@@ -12,8 +12,6 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     pict: import("pict");
     /** @type {import('pict')} */
     fable: import("pict");
-    /** @type {any} */
-    log: any;
     /**
      * Generates the HTML ID for a select input element.
      *

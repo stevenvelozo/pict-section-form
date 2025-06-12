@@ -3,7 +3,7 @@ export = PictDataChangeDetection;
  * Class representing a data change detection provider for Pict dynamic forms.
  * @extends libPictProvider
  */
-declare class PictDataChangeDetection {
+declare class PictDataChangeDetection extends libPictProvider {
     /**
      * Creates an instance of PictDataChangeDetection.
      * @param {Object} pFable - The Fable object.
@@ -36,6 +36,7 @@ declare class PictDataChangeDetection {
 declare namespace PictDataChangeDetection {
     export { _DefaultProviderConfiguration as default_configuration };
 }
+import libPictProvider = require("pict-provider");
 /**
  * Default configuration for the PictDataChangeDetection provider.
  * @type {Record<string, any>}

@@ -30,8 +30,6 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
-    /** @type {any} */
-    log: any;
     getTriggerGroupConfigurationArray(pInput: any): any;
     autoFillFromAddressList(pView: any, pInput: any, tmpTriggerGroupInfo: any, pHTMLSelector: any): boolean;
     autoFillFromAddressListTabular(pView: any, pInput: any, tmpTriggerGroupInfo: any, pHTMLSelector: any, pRowIndex: any): boolean;

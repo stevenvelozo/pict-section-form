@@ -10,8 +10,6 @@ declare class TuiGridLayout extends libPictSectionGroupLayout {
     options: any;
     /** @type {import('pict')} */
     pict: import("pict");
-    /** @type {any} */
-    log: any;
     viewGridConfigurations: {};
     viewTuiGrids: {};
     viewGridState: {};

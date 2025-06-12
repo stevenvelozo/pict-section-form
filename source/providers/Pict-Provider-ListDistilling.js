@@ -27,7 +27,7 @@ class PictListDistilling extends libPictProvider
 		/** @type {any} */
 		this.log;
 	}
-	
+
 	/*
 	  * This is a sidecar just for making filtration simpler.
 	  *
@@ -48,7 +48,7 @@ class PictListDistilling extends libPictProvider
 	  */
 	/**
 	  * Filter a list of options based on the filtering rules in a dynamic form input.
-	  * 
+	  *
 	  * Example Configuration:
 	  * ...
 			"ListFilterRules": [
@@ -71,11 +71,11 @@ class PictListDistilling extends libPictProvider
 					}
 				],
 	  * ...
-	  * 
+	  *
 	  * @param {Object} pView - The pict view the list is within
 	  * @param {*} pInput - The input within the dynamic forms view
 	  * @param {*} pList - The raw list of options to filter
-	  * @returns 
+	  * @returns
 	  */
 	filterList(pView, pInput, pList)
 	{
@@ -220,10 +220,19 @@ class PictListDistilling extends libPictProvider
 						let tmpIgnoreEmpty = ('IgnoreEmpty' in tmpFilterRule) ? tmpFilterRule.IgnoreEmpty : false;
 
 						let tmpJoinList;
-						
+
 						if (tmpJoinListAddressGlobal)
 						{
-							tmpJoinList = this.pict.manifest.getValueAtAddress({Pict: this.pict, AppData: this.pict.AppData, View: pView}, tmpJoinListAddress);
+							const tmpAddressSpace =
+							{
+								Fable: this.pict,
+								Pict: this.pict,
+								AppData: this.pict.AppData,
+								Bundle: this.pict.Bundle,
+								View: pView,
+							};
+
+							tmpJoinList = this.pict.manifest.getValueAtAddress(tmpAddressSpace, tmpJoinListAddress);
 						}
 						else
 						{

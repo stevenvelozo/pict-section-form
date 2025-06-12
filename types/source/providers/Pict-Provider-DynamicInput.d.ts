@@ -2,7 +2,7 @@ export = PictDynamicInput;
 /**
  * The PictDynamicInput class is a provider that manages data brokering and provider mappings for dynamic inputs.
  */
-declare class PictDynamicInput {
+declare class PictDynamicInput extends libPictProvider {
     /**
      * Creates an instance of the PictDynamicInput class.
      *
@@ -39,6 +39,7 @@ declare class PictDynamicInput {
 declare namespace PictDynamicInput {
     export { _DefaultProviderConfiguration as default_configuration };
 }
+import libPictProvider = require("pict-provider");
 /** @type {Record<string, any>} */
 declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-DynamicInput.d.ts.map

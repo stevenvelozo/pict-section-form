@@ -3,7 +3,7 @@ export = PictDynamicFormsInformary;
  * Represents a provider for dynamic forms in the PICT system.
  * Extends the `libPictProvider` class.
  */
-declare class PictDynamicFormsInformary {
+declare class PictDynamicFormsInformary extends libPictProvider {
     /**
      * Creates an instance of the `PictDynamicFormsInformary` class.
      * @param {object} pFable - The fable object.
@@ -17,8 +17,6 @@ declare class PictDynamicFormsInformary {
     pict: import("pict") & {
         newManyfest: (options: any) => any;
     };
-    /** @type {any} */
-    log: any;
     genericManifest: any;
     /**
      * Retrieves all form elements for a given form hash.
@@ -120,6 +118,7 @@ declare class PictDynamicFormsInformary {
 declare namespace PictDynamicFormsInformary {
     export { _DefaultProviderConfiguration as default_configuration };
 }
+import libPictProvider = require("pict-provider");
 /** @type {Record<string, any>} */
 declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-Informary.d.ts.map

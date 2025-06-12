@@ -14,8 +14,6 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     fable: import("pict") & {
         newAnticipate: () => any;
     };
-    /** @type {any} */
-    log: any;
     /**
      * Generates the HTML ID for a content display input element.
      *

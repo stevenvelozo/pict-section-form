@@ -6,7 +6,7 @@ export = DynamicTabularData;
 /**
  * The DynamicTabularData class is a provider that translates simple list entries into arrays of entries ready to use in drop-down lists and such
  */
-declare class DynamicTabularData {
+declare class DynamicTabularData extends libPictProvider {
     /**
      * Creates an instance of the DynamicTabularData class.
      *
@@ -19,8 +19,6 @@ declare class DynamicTabularData {
     options: any;
     /** @type {import('pict')} */
     pict: import("pict");
-    /** @type {any} */
-    log: any;
     /**
      * Retrieves the tabular record set from the specified view and group index.
      *
@@ -102,6 +100,7 @@ declare class DynamicTabularData {
 declare namespace DynamicTabularData {
     export { _DefaultProviderConfiguration as default_configuration, ElementDescriptor };
 }
+import libPictProvider = require("pict-provider");
 /** @type {Record<string, any>} */
 declare const _DefaultProviderConfiguration: Record<string, any>;
 type ElementDescriptor = {

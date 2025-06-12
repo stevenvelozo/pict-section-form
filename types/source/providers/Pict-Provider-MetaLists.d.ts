@@ -2,7 +2,7 @@ export = PictMetalist;
 /**
  * The PictMetalist class is a provider that translates simple list entries into arrays of entries ready to use in drop-down lists and such
  */
-declare class PictMetalist {
+declare class PictMetalist extends libPictProvider {
     /**
      * Creates an instance of the PictMetalist class.
      *
@@ -17,12 +17,6 @@ declare class PictMetalist {
     pict: import("pict");
     /** @type {import('pict')} */
     fable: import("pict");
-    /** @type {any} */
-    log: any;
-    /** @type {string} */
-    UUID: string;
-    /** @type {string} */
-    Hash: string;
     computedLists: {};
     listDefinitions: {};
     /**
@@ -60,6 +54,7 @@ declare class PictMetalist {
 declare namespace PictMetalist {
     export { _DefaultProviderConfiguration as default_configuration };
 }
+import libPictProvider = require("pict-provider");
 /** @type {Record<string, any>} */
 declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-MetaLists.d.ts.map

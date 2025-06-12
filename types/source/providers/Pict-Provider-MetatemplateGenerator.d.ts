@@ -3,12 +3,10 @@ export = PictMetatemplateGenerator;
  * Class representing a Pict Metatemplate Generator.
  * @extends libPictProvider
  */
-declare class PictMetatemplateGenerator {
+declare class PictMetatemplateGenerator extends libPictProvider {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
-    /** @type {any} */
-    log: any;
     dynamicInputView: boolean;
     baseTemplatePrefix: string;
     onInitializeAsync(fCallback: any): any;
@@ -83,6 +81,7 @@ declare class PictMetatemplateGenerator {
 declare namespace PictMetatemplateGenerator {
     export { _DefaultProviderConfiguration as default_configuration };
 }
+import libPictProvider = require("pict-provider");
 /** @type {Record<string, any>} */
 declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-MetatemplateGenerator.d.ts.map

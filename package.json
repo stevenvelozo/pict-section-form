@@ -1,6 +1,6 @@
 {
     "name": "pict-section-form",
-    "version": "1.0.97",
+    "version": "1.0.98",
     "description": "Pict dynamic form sections",
     "main": "source/Pict-Section-Form.js",
     "directories": {
@@ -31,8 +31,8 @@
         "browser-env": "^3.3.0",
         "eslint": "^9.26.0",
         "jquery": "^3.7.1",
-        "pict": "^1.0.253",
-        "pict-application": "^1.0.25",
+        "pict": "^1.0.272",
+        "pict-application": "^1.0.27",
         "pict-service-commandlineutility": "^1.0.15",
         "quackage": "^1.0.41",
         "tui-grid": "^4.21.22",
@@ -41,10 +41,10 @@
     "dependencies": {
         "fable-serviceproviderbase": "^3.0.15",
         "marked": "^15.0.11",
-        "pict-provider": "^1.0.3",
+        "pict-provider": "^1.0.6",
         "pict-section-tuigrid": "^1.0.27",
-        "pict-template": "^1.0.10",
-        "pict-view": "^1.0.60"
+        "pict-template": "^1.0.11",
+        "pict-view": "^1.0.61"
     },
     "mocha": {
         "diff": true,

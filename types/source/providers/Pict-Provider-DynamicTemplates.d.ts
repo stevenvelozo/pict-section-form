@@ -3,7 +3,7 @@ export = PictDynamicFormsTemplates;
  * Represents a class that provides dynamic templates for the Pict form section provider.
  * @extends libPictProvider
  */
-declare class PictDynamicFormsTemplates {
+declare class PictDynamicFormsTemplates extends libPictProvider {
     /**
      * Constructs a new instance of the PictProviderDynamicTemplates class.
      * @param {Object} pFable - The pFable object.
@@ -15,8 +15,6 @@ declare class PictDynamicFormsTemplates {
     options: any;
     /** @type {import('pict')} */
     pict: import("pict");
-    /** @type {any} */
-    log: any;
     /**
      * Injects a template set into Pict for the Dynamic Form Section Provider.
      *
@@ -43,6 +41,7 @@ declare class PictDynamicFormsTemplates {
 declare namespace PictDynamicFormsTemplates {
     export { _DefaultProviderConfiguration as default_configuration };
 }
+import libPictProvider = require("pict-provider");
 /** @type {Record<string, any>} */
 declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-DynamicTemplates.d.ts.map

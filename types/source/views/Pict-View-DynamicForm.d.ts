@@ -17,9 +17,8 @@ declare class PictViewDynamicForm extends libPictViewClass {
     };
     /** @type {import('../services/Fable-Service-TransactionTracking.js')} */
     transactionTracking: import("../services/Fable-Service-TransactionTracking.js");
-    /** @type {Object} */
-    _PackagePictView: any;
-    _Package: Record<string, any>;
+    /** @type {Record<string, any>} */
+    _PackagePictView: Record<string, any>;
     sectionDefinition: any;
     sectionManifest: any;
     sectionSolvers: any[];
@@ -78,9 +77,9 @@ declare class PictViewDynamicForm extends libPictViewClass {
     /**
      * Retrieves the marshal destination object.  This is where the model data is stored.
      *
-     * @returns {Object} The marshal destination object.
+     * @return {Record<string, any>} The marshal destination object.
      */
-    getMarshalDestinationObject(): any;
+    getMarshalDestinationObject(): Record<string, any>;
     /**
      * Gets a value by hash address.
      * @param {string} pHashAddress

@@ -16,8 +16,6 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     } & {
         DataFormat: any;
     };
-    /** @type {any} */
-    log: any;
     roundValue(pInput: any, pValue: any): any;
     /**
      * Marshals data to the form for the given input.

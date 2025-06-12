@@ -4,7 +4,7 @@ export = PictInputExtensionProvider;
  *
  * Can be mapped in via the PictForm property of a descriptor.
  */
-declare class PictInputExtensionProvider {
+declare class PictInputExtensionProvider extends libPictProvider {
     /**
      * Creates an instance of the PictInputExtensionProvider class.
      *
@@ -147,6 +147,7 @@ declare class PictInputExtensionProvider {
 declare namespace PictInputExtensionProvider {
     export { _DefaultProviderConfiguration as default_configuration };
 }
+import libPictProvider = require("pict-provider");
 /** @type {Record<string, any>} */
 declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-InputExtension.d.ts.map

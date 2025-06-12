@@ -16,8 +16,6 @@ declare class LinkInputHandler extends libPictSectionInputExtension {
     } & {
         DataFormat: any;
     };
-    /** @type {any} */
-    log: any;
     /**
      * Marshals data to the form for the given input.
      *

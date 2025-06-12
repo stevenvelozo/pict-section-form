@@ -74,7 +74,7 @@ class PictViewDynamicForm extends libPictViewClass
 		// Load the dynamic application dependencies if they don't exist
 		this.fable.addAndInstantiateSingletonService('PictDynamicApplication', libPictDynamicApplication.default_configuration, libPictDynamicApplication);
 
-		/** @type {Object} */
+		/** @type {Record<string, any>} */
 		this._PackagePictView = this._Package;
 		this._Package = libPackage;
 
@@ -405,11 +405,11 @@ class PictViewDynamicForm extends libPictViewClass
 	/**
 	 * Retrieves the marshal destination object.  This is where the model data is stored.
 	 *
-	 * @returns {Object} The marshal destination object.
+	 * @return {Record<string, any>} The marshal destination object.
 	 */
 	getMarshalDestinationObject()
 	{
-		let tmpMarshalDestinationObject = false;
+		let tmpMarshalDestinationObject;
 		if (this.viewMarshalDestination)
 		{
 			tmpMarshalDestinationObject = this.sectionManifest.getValueByHash(this, this.viewMarshalDestination);
@@ -429,7 +429,7 @@ class PictViewDynamicForm extends libPictViewClass
 			}
 		}
 
-		if (typeof (tmpMarshalDestinationObject) != 'object')
+		if (typeof (tmpMarshalDestinationObject) !== 'object')
 		{
 			this.log.error(`Marshal destination object is not an object; if you initialize the view yourself you must set the viewMarshalDestination property to a valid address within the view.  Falling back to AppData.`);
 			tmpMarshalDestinationObject = this.pict.AppData;

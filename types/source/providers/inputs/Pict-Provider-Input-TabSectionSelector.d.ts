@@ -12,8 +12,6 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     pict: import("pict");
     /** @type {import('pict')} */
     fable: import("pict");
-    /** @type {any} */
-    log: any;
     /** @type {string} */
     cssHideClass: string;
     cssSelectedTabClass: string;

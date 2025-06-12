@@ -5,7 +5,7 @@ export = PictRecordSet;
  * Record sets are bodies of records that are larger than what we would want to
  * be projected into a view.
  */
-declare class PictRecordSet {
+declare class PictRecordSet extends libPictProvider {
     /**
      * Creates an instance of the PictRecordSet class.
      *
@@ -59,6 +59,7 @@ declare class PictRecordSet {
 declare namespace PictRecordSet {
     export { _DefaultProviderConfiguration as default_configuration };
 }
+import libPictProvider = require("pict-provider");
 /** @type {Record<string, any>} */
 declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-DynamicRecordSet.d.ts.map
