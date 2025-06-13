@@ -26,6 +26,7 @@ declare class PictViewDynamicForm extends libPictViewClass {
     customDefaultTemplatePrefix: any;
     formID: string;
     viewMarshalDestination: any;
+    initialBundleLoaded: boolean;
     /**
      * Returns the default template prefix.
      *

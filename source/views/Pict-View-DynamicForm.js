@@ -123,6 +123,7 @@ class PictViewDynamicForm extends libPictViewClass
 		this.formID = `Pict-Form-${this.Hash}-${this.UUID}`;
 
 		this.viewMarshalDestination = null;
+		this.initialBundleLoaded = false;
 
 		this.fable.ManifestFactory.initializeFormGroups(this);
 
@@ -560,6 +561,55 @@ class PictViewDynamicForm extends libPictViewClass
 			this.marshalToView();
 		}
 		return super.onSolve();
+	}
+
+	/**
+	 * Lifecycle hook that triggers before the view is rendered.
+	 *
+	 * @param {import('pict-view').Renderable} pRenderable - The renderable that will be rendered.
+	 * @param {string} pRenderDestinationAddress - The address where the renderable will be rendered.
+	 * @param {any} pRecord - The record (data) that will be used to render the renderable.
+	 */
+	onBeforeRender(pRenderable, pRenderDestinationAddress, pRecord)
+	{
+		if (!this.initialBundleLoaded)
+		{
+			if (Array.isArray(this.sectionDefinition.InitialBundle))
+			{
+				this.pict.EntityProvider.processBundle(this.sectionDefinition.InitialBundle);
+			}
+			this.initialBundleLoaded = true;
+		}
+		return super.onBeforeRender(pRenderable, pRenderDestinationAddress, pRecord);
+	}
+
+	/**
+	 * Lifecycle hook that triggers before the view is rendered (async flow).
+	 *
+	 * @param {(error?: Error) => void} fCallback - The callback to call when the async operation is complete.
+	 */
+	onBeforeRenderAsync(fCallback)
+	{
+		super.onBeforeRenderAsync((pError) =>
+		{
+			if (!this.initialBundleLoaded)
+			{
+				if (Array.isArray(this.sectionDefinition.InitialBundle))
+				{
+					this.pict.EntityProvider.gatherDataFromServer(this.sectionDefinition.InitialBundle, (pInnerError) =>
+					{
+						if (pInnerError)
+						{
+							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] failed to load initial bundle: ${pInnerError}`);
+						}
+						fCallback(pError);
+					});
+					return;
+				}
+				this.initialBundleLoaded = true;
+			}
+			return fCallback(pError);
+		});
 	}
 
 	/**

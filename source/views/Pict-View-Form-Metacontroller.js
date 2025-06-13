@@ -85,7 +85,7 @@ class PictFormMetacontroller extends libPictViewClass
 
 	/**
 	 * Gets a value by hash address.
-	 * @param {string} pHashAddress 
+	 * @param {string} pHashAddress
 	 */
 	getValueByHash(pHashAddress)
 	{
@@ -114,16 +114,24 @@ class PictFormMetacontroller extends libPictViewClass
 	 */
 	onAfterInitializeAsync(fCallback)
 	{
-		// This is safe -- if there is no settings.DefaultFormManifest configuration, it just doesn't do anything
-		this.bootstrapPictFormViewsFromManifest();
-		// Generate the metatemplate (the container for each section)
-		this.generateMetatemplate();
 
 		return super.onAfterInitializeAsync(
 			function (pError)
 			{
-				this.gatherInitialBundle(fCallback);
-			}.bind(this));		
+				if (pError)
+				{
+					return fCallback(pError);
+				}
+				this.gatherInitialBundle((pError) =>
+				{
+					// This is safe -- if there is no settings.DefaultFormManifest configuration, it just doesn't do anything
+					this.bootstrapPictFormViewsFromManifest();
+					// Generate the metatemplate (the container for each section)
+					this.generateMetatemplate();
+
+					return fCallback(pError);
+				});
+			}.bind(this));
 	}
 
 	/**
