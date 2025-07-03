@@ -106,6 +106,8 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 	 * @param {object} pRecord - The record object to use for rendering the template.
 	 * @param {function} fCallback - The callback function to invoke after rendering the template.
 	 * @param {array} pContextArray - The context array to use for resolving the data.
+	 *
+	 * @return {void}
 	 */
 	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
 	{
@@ -173,7 +175,7 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 		{
 			// No address was provided, just render the template with what this template has.
 			// The async portion of this is a mind bender because of how entry can happen dynamically from templates
-			return this.pict.parseTemplateSetByHash(tmpTemplateFromMapHash, pRecord,
+			this.pict.parseTemplateSetByHash(tmpTemplateFromMapHash, pRecord,
 				(pError, pValue) =>
 				{
 					if (pError)
@@ -182,10 +184,11 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 					}
 					return tmpCallback(null, pValue);
 				}, pContextArray);
+			return;
 		}
 		else
 		{
-			return this.pict.parseTemplateSetByHash(tmpTemplateFromMapHash, tmpData,
+			this.pict.parseTemplateSetByHash(tmpTemplateFromMapHash, tmpData,
 				(pError, pValue) =>
 				{
 					if (pError)
@@ -194,6 +197,7 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 					}
 					return tmpCallback(null, pValue);
 				}, pContextArray);
+			return;
 		}
 	}
 }

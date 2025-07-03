@@ -111,6 +111,16 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 		return this.pict.parseTemplate(tmpTemplate, tmpInput, null, [tmpMetatemplateGenerator.dynamicInputView]);
 	}
 
+	/**
+	 * Renders the PICT Metacontroller Template.  The Record reference is ignored in this template.
+	 *
+	 * @param {string} pTemplateHash - The schema hash of the control.
+	 * @param {object} pRecord - The record object.
+	 * @param {function | null} fCallback - The callback function.
+	 * @param {array} pContextArray - The context array.
+	 *
+	 * @return {void}
+	 */
 	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
 	{
 		let tmpHash = pTemplateHash.trim();
@@ -131,7 +141,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 		if (tmpHashTemplateSeparator.length < 2)
 		{
 			this.log.warn(`MetaTemplateInput template requires at least parameters (Address and DataType) [${tmpHash}]`);
-			return '';
+			return fCallback(null, '');
 		}
 		tmpInputName = tmpHashTemplateSeparator[0];
 		tmpInputAddress = tmpHashTemplateSeparator[1];
@@ -170,7 +180,8 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			{
 				let tmpInput = tmpRow.Inputs[i];
 				let tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`);
-				return this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpMetatemplateGenerator.dynamicInputView]);
+				this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpMetatemplateGenerator.dynamicInputView]);
+				return;
 			}
 		}
 
@@ -184,7 +195,8 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 		// Now generate the metatemplate
 		let tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`);
 
-		return this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpMetatemplateGenerator.dynamicInputView]);
+		this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpMetatemplateGenerator.dynamicInputView]);
+		return;
 	}
 }
 

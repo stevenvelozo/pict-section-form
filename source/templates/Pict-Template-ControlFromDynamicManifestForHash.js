@@ -43,9 +43,9 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 	 *
 	 * @param {string} pTemplateHash - The schema hash of the control.
 	 * @param {object} pRecord - The record object.
-	 * @param {function} fCallback - The callback function.
+	 * @param {function | null} fCallback - The callback function.
 	 * @param {array} pContextArray - The context array.
-	 * @returns {string} - The rendered template.
+	 * @returns {string | undefined} - The rendered template or undefined if callback is provided.
 	 */
 	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
 	{
@@ -59,6 +59,10 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 		if (!descriptor)
 		{
 			this.log.error(`PictTemplateControlFromDynamicManifest: Cannot find descriptor for hash [${tmpHash}]`);
+			if (typeof fCallback === 'function')
+			{
+				return fCallback(null, '');
+			}
 			return '';
 		}
 		const tmpView = this.pict.views[descriptor.PictForm.ViewHash];

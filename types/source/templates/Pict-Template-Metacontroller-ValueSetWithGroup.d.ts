@@ -24,8 +24,10 @@ declare class PictTemplateMetacontrollerValueSet extends libPictTemplate {
      * @param {object} pRecord - The record object to use for rendering the template.
      * @param {function} fCallback - The callback function to invoke after rendering the template.
      * @param {array} pContextArray - The context array to use for resolving the data.
+     *
+     * @return {void}
      */
-    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function, pContextArray: any[]): any;
+    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function, pContextArray: any[]): void;
 }
 import libPictTemplate = require("pict-template");
 //# sourceMappingURL=Pict-Template-Metacontroller-ValueSetWithGroup.d.ts.map

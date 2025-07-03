@@ -55,11 +55,11 @@ declare class PictTemplateControlFromDynamicManifest extends libPictTemplate {
      *
      * @param {string} pTemplateHash - The schema hash of the control.
      * @param {object} pRecord - The record object.
-     * @param {function} fCallback - The callback function.
+     * @param {function | null} fCallback - The callback function.
      * @param {array} pContextArray - The context array.
-     * @returns {string} - The rendered template.
+     * @returns {string | undefined} - The rendered template or undefined if callback is provided.
      */
-    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function, pContextArray: any[]): string;
+    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function | null, pContextArray: any[]): string | undefined;
 }
 declare namespace PictTemplateControlFromDynamicManifest {
     export { Manyfest };
