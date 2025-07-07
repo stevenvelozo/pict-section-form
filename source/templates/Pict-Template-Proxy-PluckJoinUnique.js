@@ -28,9 +28,10 @@ class PictTemplateProviderPluckJoinUnique extends libPictTemplate
 	 * @param {string} pTemplateHash - The template hash.
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
+	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
 	 * @returns {string} - The rendered template.
 	 */
-	render(pTemplateHash, pRecord, pContextArray)
+	render(pTemplateHash, pRecord, pContextArray, pScope)
 	{
 		let tmpHash = pTemplateHash;
 		let tmpData = (typeof (pRecord) === 'object') ? pRecord : {};
@@ -58,7 +59,7 @@ class PictTemplateProviderPluckJoinUnique extends libPictTemplate
 		let tmpValueMap = {};
 		for (let i = 0; i < tmpDataAddresses.length; i++)
 		{
-			let tmpValueSet = this.resolveStateFromAddress(tmpDataAddresses[i], tmpData, pContextArray);
+			let tmpValueSet = this.resolveStateFromAddress(tmpDataAddresses[i], tmpData, pContextArray, null, pScope);
 
 			if (tmpValueSet && Array.isArray(tmpValueSet))
 			{

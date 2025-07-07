@@ -31,11 +31,12 @@ class PictTemplateGetViewSchemaValue extends libPictTemplate
 	 * @param {string} pTemplateHash - The schema hash of the control.
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
+	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
 	 * @returns {string} - The rendered template.
 	 */
-	render(pTemplateHash, pRecord, pContextArray)
+	render(pTemplateHash, pRecord, pContextArray, pScope)
 	{
-		return this.renderAsync(pTemplateHash, pRecord, null, pContextArray);
+		return this.renderAsync(pTemplateHash, pRecord, null, pContextArray, pScope);
 	}
 
 	/**
@@ -45,9 +46,10 @@ class PictTemplateGetViewSchemaValue extends libPictTemplate
 	 * @param {object} pRecord - The record object.
 	 * @param {function | null} fCallback - The callback function.
 	 * @param {array} pContextArray - The context array.
+	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
 	 * @returns {string | undefined} - The rendered template or undefined if callback is provided.
 	 */
-	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
+	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray, pScope)
 	{
 		const [ tmpSchemaAddress, tmpTemplateHash ] = pTemplateHash.trim().split('^');
 		/** @type{import('../views/Pict-View-Form-Metacontroller.js')} */
@@ -74,7 +76,7 @@ class PictTemplateGetViewSchemaValue extends libPictTemplate
 			const tmpRecord = { Value: value, ParentRecord: pRecord, View: tmpView, Descriptor: descriptor };
 			if (typeof fCallback !== 'function')
 			{
-				return this.pict.parseTemplateByHash(tmpTemplateHash, tmpRecord, null, pContextArray);
+				return this.pict.parseTemplateByHash(tmpTemplateHash, tmpRecord, null, pContextArray, pScope);
 			}
 			return this.pict.parseTemplateByHash(tmpTemplateHash, tmpRecord,
 				(pError, pValue) =>
@@ -84,7 +86,7 @@ class PictTemplateGetViewSchemaValue extends libPictTemplate
 						return fCallback(pError, '');
 					}
 					return fCallback(null, pValue);
-				}, pContextArray);
+				}, pContextArray, pScope);
 		}
 
 		if (typeof(fCallback) === 'function')

@@ -33,9 +33,10 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 	 * @param {string} pTemplateHash - The template hash.
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
+	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
 	 * @returns {string} - The rendered template.
 	 */
-	render(pTemplateHash, pRecord, pContextArray)
+	render(pTemplateHash, pRecord, pContextArray, pScope)
 	{
 		let tmpHash = pTemplateHash.trim();
 		let tmpData = (typeof (pRecord) === 'object') ? pRecord : {};
@@ -64,7 +65,7 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 		tmpGroupIndex = tmpHashTemplateSeparator[1];
 		tmpAddressOfData = tmpHashTemplateSeparator[2];
 
-		tmpData = this.resolveStateFromAddress(tmpAddressOfData, tmpData, pContextArray);
+		tmpData = this.resolveStateFromAddress(tmpAddressOfData, tmpData, pContextArray, null, pScope);
 
 		let tmpDataValueSet = [];
 		if (Array.isArray(tmpData))
@@ -91,11 +92,11 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 		if (!tmpData)
 		{
 			// No address was provided, just render the template with what this template has.
-			return this.pict.parseTemplateSetByHash(tmpTemplateHash, pRecord, null, pContextArray);
+			return this.pict.parseTemplateSetByHash(tmpTemplateHash, pRecord, null, pContextArray, pScope);
 		}
 		else
 		{
-			return this.pict.parseTemplateSetByHash(tmpTemplateHash, tmpData, null, pContextArray);
+			return this.pict.parseTemplateSetByHash(tmpTemplateHash, tmpData, null, pContextArray, pScope);
 		}
 	}
 
@@ -106,10 +107,11 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 	 * @param {object} pRecord - The record object to use for rendering the template.
 	 * @param {function} fCallback - The callback function to invoke after rendering the template.
 	 * @param {array} pContextArray - The context array to use for resolving the data.
+	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
 	 *
 	 * @return {void}
 	 */
-	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
+	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray, pScope)
 	{
 		let tmpHash = pTemplateHash.trim();
 		let tmpData = (typeof (pRecord) === 'object') ? pRecord : {};
@@ -147,7 +149,7 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 		}
 
 		// Now resolve the data
-		tmpData = this.resolveStateFromAddress(tmpAddressOfData, tmpData, pContextArray);
+		tmpData = this.resolveStateFromAddress(tmpAddressOfData, tmpData, pContextArray, null, pScope);
 
 		let tmpDataValueSet = [];
 		if (Array.isArray(tmpData))
@@ -183,7 +185,7 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 						return tmpCallback(pError, '');
 					}
 					return tmpCallback(null, pValue);
-				}, pContextArray);
+				}, pContextArray, pScope);
 			return;
 		}
 		else
@@ -196,7 +198,7 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 						return tmpCallback(pError, '');
 					}
 					return tmpCallback(null, pValue);
-				}, pContextArray);
+				}, pContextArray, pScope);
 			return;
 		}
 	}

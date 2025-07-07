@@ -66,11 +66,12 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 	 * @param {string} pTemplateHash - The schema hash of the control.
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
+	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
 	 * @returns {string} - The rendered template.
 	 */
-	render(pTemplateHash, pRecord, pContextArray)
+	render(pTemplateHash, pRecord, pContextArray, pScope)
 	{
-		return this.renderAsync(pTemplateHash, pRecord, null, pContextArray);
+		return this.renderAsync(pTemplateHash, pRecord, null, pContextArray, pScope);
 	}
 
 	/**
@@ -80,9 +81,10 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 	 * @param {object} pRecord - The record object.
 	 * @param {function | null} fCallback - The callback function.
 	 * @param {array} pContextArray - The context array.
+	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
 	 * @returns {string | undefined} - The rendered template or undefined if callback is provided.
 	 */
-	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
+	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray, pScope)
 	{
 		const tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
 		const tmpHash = pTemplateHash.trim();
@@ -101,6 +103,8 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 			return '';
 		}
 		const tmpView = this.pict.views[descriptor.PictForm.ViewHash];
+		const tmpScope = tmpView || pScope;
+		const tmpContextArray = tmpScope ? [ tmpScope ] : (pContextArray || [ this.pict ]);
 
 		this.pict.providers.MetatemplateMacros.buildInputMacros(tmpView, descriptor);
 
@@ -109,7 +113,7 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 			`getInput("${descriptor.PictForm.GroupIndex}","${descriptor.PictForm.RowIndex}","${descriptor.PictForm.InputIndex}")`);
 
 		// Now parse it and return it.
-		return this.pict.parseTemplate(tmpTemplate, descriptor, fCallback, [tmpView]);
+		return this.pict.parseTemplate(tmpTemplate, descriptor, fCallback, tmpContextArray, tmpScope);
 	}
 }
 

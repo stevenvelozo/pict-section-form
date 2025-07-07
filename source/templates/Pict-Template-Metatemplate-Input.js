@@ -33,9 +33,10 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 	 * @param {string} pTemplateHash - The template hash.
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
+	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
 	 * @returns {string} - The rendered template.
 	 */
-	render(pTemplateHash, pRecord, pContextArray)
+	render(pTemplateHash, pRecord, pContextArray, pScope)
 	{
 		let tmpHash = pTemplateHash.trim();
 		let tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
@@ -93,7 +94,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			if (tmpRow.Inputs[i].Hash === tmpInput.Hash)
 			{
 				let tmpInput = tmpRow.Inputs[i];
-				return this.pict.parseTemplate(tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`), tmpInput, null, [tmpMetatemplateGenerator.dynamicInputView]);
+				return this.pict.parseTemplate(tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`), tmpInput, null, [tmpMetatemplateGenerator.dynamicInputView], tmpMetatemplateGenerator.dynamicInputView);
 			}
 		}
 
@@ -108,7 +109,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 		let tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`);
 
 		// Now parse it and return it.
-		return this.pict.parseTemplate(tmpTemplate, tmpInput, null, [tmpMetatemplateGenerator.dynamicInputView]);
+		return this.pict.parseTemplate(tmpTemplate, tmpInput, null, [tmpMetatemplateGenerator.dynamicInputView], tmpMetatemplateGenerator.dynamicInputView);
 	}
 
 	/**
@@ -118,10 +119,11 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 	 * @param {object} pRecord - The record object.
 	 * @param {function | null} fCallback - The callback function.
 	 * @param {array} pContextArray - The context array.
+	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
 	 *
 	 * @return {void}
 	 */
-	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
+	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray, pScope)
 	{
 		let tmpHash = pTemplateHash.trim();
 		let tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
@@ -180,7 +182,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 			{
 				let tmpInput = tmpRow.Inputs[i];
 				let tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`);
-				this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpMetatemplateGenerator.dynamicInputView]);
+				this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpMetatemplateGenerator.dynamicInputView], tmpMetatemplateGenerator.dynamicInputView);
 				return;
 			}
 		}
@@ -195,7 +197,7 @@ class PictTemplateMetatemplateInputTemplate extends libPictTemplate
 		// Now generate the metatemplate
 		let tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpMetatemplateGenerator.dynamicInputView, tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`);
 
-		this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpMetatemplateGenerator.dynamicInputView]);
+		this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpMetatemplateGenerator.dynamicInputView], tmpMetatemplateGenerator.dynamicInputView);
 		return;
 	}
 }

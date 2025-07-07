@@ -24,9 +24,10 @@ declare class PictTemplateControlFromDynamicManifest extends libPictTemplate {
      * @param {object} pRecord - The record object.
      * @param {function | null} fCallback - The callback function.
      * @param {array} pContextArray - The context array.
+     * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
      * @returns {string | undefined} - The rendered template or undefined if callback is provided.
      */
-    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function | null, pContextArray: any[]): string | undefined;
+    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function | null, pContextArray: any[], pScope?: any): string | undefined;
 }
 import libPictTemplate = require("pict-template");
 //# sourceMappingURL=Pict-Template-ControlFromDynamicManifestForHash.d.ts.map

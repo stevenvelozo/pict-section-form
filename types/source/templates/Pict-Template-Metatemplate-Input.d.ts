@@ -25,10 +25,11 @@ declare class PictTemplateMetatemplateInputTemplate extends libPictTemplate {
      * @param {object} pRecord - The record object.
      * @param {function | null} fCallback - The callback function.
      * @param {array} pContextArray - The context array.
+     * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
      *
      * @return {void}
      */
-    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function | null, pContextArray: any[]): void;
+    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function | null, pContextArray: any[], pScope?: any): void;
 }
 import libPictTemplate = require("pict-template");
 //# sourceMappingURL=Pict-Template-Metatemplate-Input.d.ts.map
