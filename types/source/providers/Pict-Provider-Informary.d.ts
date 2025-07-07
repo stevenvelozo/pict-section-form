@@ -15,9 +15,9 @@ declare class PictDynamicFormsInformary extends libPictProvider {
     options: any;
     /** @type {import('pict') & { newManyfest: (options: any) => import('manyfest') }} */
     pict: import("pict") & {
-        newManyfest: (options: any) => any;
+        newManyfest: (options: any) => import("manyfest");
     };
-    genericManifest: any;
+    genericManifest: import("manyfest");
     /**
      * Retrieves all form elements for a given form hash.
      *

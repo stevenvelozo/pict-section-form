@@ -1,5 +1,4 @@
 const libPictView = require('pict-view');
-const { isTemplateSpan } = require('typescript');
 
 const _ViewConfiguration = (
 {
@@ -25,6 +24,8 @@ const _ViewConfiguration = (
 and
 
 {~MTI:Second funny place for the data's storage, yo...:DynamoData.SomeFunnyPlaceForTheDataAsASignatureInputType:String:PostKardSignature~}
+
+{~IWVDA:MyDynamicView:AppData.CustomDescriptor~}
 
 <br />
 
@@ -52,14 +53,47 @@ class PostcardMainApplicationView extends libPictView
 		this.inputCounter = 0;
 	}
 
+	onInitialize()
+	{
+		this.pict.AppData.CustomDescriptor =
+		{
+			Hash: 'CustomPostkardData',
+			Name: 'Custom PostKard Data',
+			Address: 'CustomPostkardData',
+			DataType: 'String',
+			PictForm:
+			{
+				InputType: 'TexaArea',
+				Description: 'This is a custom descriptor for the PostKard application.',
+			},
+		};
+		return super.onInitialize();
+	}
+
 	makeMoreInputs()
 	{
 		let tmpDefectInput = {
 			SpecificDefectHash: this.fable.getUUID(),
 			InputCounter: this.inputCounter++
 		};
+		if (!Array.isArray(this.pict.AppData.CustomDescriptors))
+		{
+			this.pict.AppData.CustomDescriptors = [];
+		}
+		const tmpIndex = this.pict.AppData.CustomDescriptors.length;
+		this.pict.AppData.CustomDescriptors.push(
+		{
+			Hash: `CustomPostkardData${tmpIndex}`,
+			Name: `Custom PostKard Data ${tmpIndex}`,
+			Address: `CustomPostkardData${tmpIndex}`,
+			DataType: 'PreciseNumber',
+			PictForm:
+			{
+				Description: 'This is a custom descriptor for the PostKard application.',
+			},
+		});
 
-		this.pict.parseTemplate('<p>Input Numero {~D:Record.InputCounter~}: {~MTIWHA:Nombre:Record.SpecificDefectHash:String~}</p>', tmpDefectInput, 
+		this.pict.parseTemplate(`<p>Input Numero {~D:Record.InputCounter~}: {~MTIWHA:Nombre:Record.SpecificDefectHash:String~}  {~IWVDA:MyDynamicView:AppData.CustomDescriptors[${tmpIndex}]~}</p>`, tmpDefectInput, 
 			function (pError, pParsedTemplate)
 			{
 				this.pict.ContentAssignment.appendContent('#DynamicInputContainer', pParsedTemplate);
