@@ -3,8 +3,6 @@ const libPictViewClass = require('pict-view');
 /** @type {Record<string, any>} */
 const libPackage = require('../../package.json');
 
-const libPictDynamicApplication = require(`../services/Pict-Service-DynamicApplication.js`);
-
 const libFableServiceTransactionTracking = require(`../services/Fable-Service-TransactionTracking.js`);
 
 /** @type {Record<string, any>} */
@@ -65,14 +63,16 @@ class PictViewDynamicForm extends libPictViewClass
 		/** @type {import('pict') & { PictApplication: import('pict-application'), log: any; instantiateServiceProviderWithoutRegistration: (hash: string) => any; }} */
 		this.pict;
 
+		if (!this.fable.PictDynamicApplication)
+		{
+			throw new Error('PictSectionForm instantiation attempt without a PictDynamicApplication service in fable -- cannot instantiate.');
+		}
+
 		this.fable.addServiceTypeIfNotExists('TransactionTracking', libFableServiceTransactionTracking);
 
 		// Use this to manage transactions
 		/** @type {import('../services/Fable-Service-TransactionTracking.js')} */
 		this.transactionTracking = this.fable.instantiateServiceProviderWithoutRegistration('TransactionTracking');
-
-		// Load the dynamic application dependencies if they don't exist
-		this.fable.addAndInstantiateSingletonService('PictDynamicApplication', libPictDynamicApplication.default_configuration, libPictDynamicApplication);
 
 		/** @type {Record<string, any>} */
 		this._PackagePictView = this._Package;

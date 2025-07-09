@@ -7,7 +7,8 @@ declare class PictMetatemplateGenerator extends libPictProvider {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
-    dynamicInputView: boolean;
+    /** @type {libPictViewDynamicForm} */
+    dynamicInputView: libPictViewDynamicForm;
     baseTemplatePrefix: string;
     onInitializeAsync(fCallback: any): any;
     createOnDemandMetatemplateView(): void;
@@ -82,6 +83,7 @@ declare namespace PictMetatemplateGenerator {
     export { _DefaultProviderConfiguration as default_configuration };
 }
 import libPictProvider = require("pict-provider");
+import libPictViewDynamicForm = require("../views/Pict-View-DynamicForm.js");
 /** @type {Record<string, any>} */
 declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-MetatemplateGenerator.d.ts.map

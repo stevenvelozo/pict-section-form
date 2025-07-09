@@ -124,13 +124,6 @@ declare class PictFormMetacontroller extends libPictViewClass {
      */
     triggerGlobalInputEvent(pEvent: string): void;
     /**
-     * Add a dynamic view to the metacontroller.
-     * @param {string} pViewHash
-     * @param {Object} pViewConfiguration
-     * @return {libPictViewDynamicForm}
-     */
-    addDynamicView(pViewHash: string, pViewConfiguration: any): libPictViewDynamicForm;
-    /**
      * Returns whether the object is a Pict Metacontroller.
      *
      * @returns {boolean} True if the object is a Pict Metacontroller, false otherwise.
@@ -141,7 +134,6 @@ declare namespace PictFormMetacontroller {
     export { default_configuration, SortFunction };
 }
 import libPictViewClass = require("pict-view");
-import libPictViewDynamicForm = require("./Pict-View-DynamicForm.js");
 declare const default_configuration: Record<string, any>;
 type SortFunction = (a: any, b: any) => number;
 //# sourceMappingURL=Pict-View-Form-Metacontroller.d.ts.map

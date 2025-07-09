@@ -1,4 +1,5 @@
 const libPictProvider = require('pict-provider');
+const libPictViewDynamicForm = require('../../../source/views/Pict-View-DynamicForm.js');
 
 const _DEFAULT_PROVIDER_CONFIGURATION =
 {
@@ -52,8 +53,11 @@ class PostcardDynamicSectionProvider extends libPictProvider
 				}
 			}
 		});
-		const tmpViewConfiguration = Object.assign({}, tmpDynamicInputViewSection);
-		this.pict.views.PictFormMetacontroller.addDynamicView(tmpViewConfiguration.ViewHash, tmpViewConfiguration);
+
+		if (!(tmpDynamicInputViewSection.ViewHash in this.pict.views))
+		{
+			this.pict.addView(tmpDynamicInputViewSection.ViewHash, Object.assign({}, tmpDynamicInputViewSection), libPictViewDynamicForm);
+		}
 		this.log.info('PostcardDynamicSectionProvider.onInitializeAsync() called --- loading dynamic section views from "server".');
 		// Load the dynamnic section views from the server
 		this.pict.settings.DefaultFormManifest = require('./PictProvider-Dynamic-Sections-MockServerResponse.json');

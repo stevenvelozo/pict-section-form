@@ -91,7 +91,7 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 		/** @type{import('../views/Pict-View-Form-Metacontroller.js')} */
 		const metacontroller = this.pict.views.PictFormMetacontroller;
 		/** @type {Manyfest} */
-		const manifest = metacontroller.manifest;
+		const manifest = metacontroller ? metacontroller.manifest : this.pict.manifest;
 		const descriptor = manifest.getDescriptor(tmpHash);
 		if (!descriptor)
 		{

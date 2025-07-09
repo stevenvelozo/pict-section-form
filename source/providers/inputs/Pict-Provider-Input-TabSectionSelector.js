@@ -47,7 +47,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 
 	getSectionSelector(pTabViewSectionHash)
 	{
-		return `#Pict-${this.pict.views.PictFormMetacontroller.UUID}-${pTabViewSectionHash}-Wrap`;
+		return `#Pict-${this.UUID}-${pTabViewSectionHash}-Wrap`;
 	}
 
 	selectTabByViewHash(pViewHash, pInputHash, pTabViewHash)

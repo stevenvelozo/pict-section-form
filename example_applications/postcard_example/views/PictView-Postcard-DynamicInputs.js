@@ -44,7 +44,7 @@ and
 		}]
 });
 
-class PostcardMainApplicationView extends libPictView
+class PostcardDynamicInputsView extends libPictView
 {
 	constructor(pFable, pOptions, pServiceHash)
 	{
@@ -68,6 +68,12 @@ class PostcardMainApplicationView extends libPictView
 			},
 		};
 		return super.onInitialize();
+	}
+
+	onAfterRender()
+	{
+		this.pict.PictApplication.marshalToViews();
+		return super.onAfterRender();
 	}
 
 	makeMoreInputs()
@@ -97,10 +103,11 @@ class PostcardMainApplicationView extends libPictView
 			function (pError, pParsedTemplate)
 			{
 				this.pict.ContentAssignment.appendContent('#DynamicInputContainer', pParsedTemplate);
+				this.pict.PictApplication.marshalToViews();
 			}.bind(this));
 	}
 }
 
-module.exports = PostcardMainApplicationView;
+module.exports = PostcardDynamicInputsView;
 
 module.exports.default_configuration = _ViewConfiguration;

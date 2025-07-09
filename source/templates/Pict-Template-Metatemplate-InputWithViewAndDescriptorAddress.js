@@ -16,7 +16,7 @@ class PictTemplateInputWithViewAndDescriptorAddressTemplate extends libPictTempl
 
 		/** @type {import('pict')} */
 		this.pict;
-		/** @type {import('pict') & { ManifestFactory: import('../services/ManifestFactory.js') }} */
+		/** @type {import('pict') & { ManifestFactory: import('../services/ManifestFactory.js'), DataFormat: any }} */
 		this.fable;
 		/** @type {any} */
 		this.log;
@@ -193,7 +193,7 @@ class PictTemplateInputWithViewAndDescriptorAddressTemplate extends libPictTempl
 		}
 		if (!pDescriptor.Hash)
 		{
-			pDescriptor.Hash = pDescriptor.Address;
+			pDescriptor.Hash = this.fable.DataFormat.cleanNonAlphaCharacters(pDescriptor.Address);
 		}
 		if (!pDescriptor.Name)
 		{

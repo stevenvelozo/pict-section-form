@@ -641,23 +641,6 @@ class PictFormMetacontroller extends libPictViewClass
 	}
 
 	/**
-	 * Add a dynamic view to the metacontroller.
-	 * @param {string} pViewHash
-	 * @param {Object} pViewConfiguration
-	 * @return {libPictViewDynamicForm}
-	 */
-	addDynamicView(pViewHash, pViewConfiguration)
-	{
-		if (pViewHash in this.pict.views)
-		{
-			this.log.error(`addDynamicView() called with a view hash that already exists [${pViewHash}].`);
-			return null;
-		}
-
-		return this.pict.addView(pViewHash, pViewConfiguration, libPictViewDynamicForm);
-	}
-
-	/**
 	 * Returns whether the object is a Pict Metacontroller.
 	 *
 	 * @returns {boolean} True if the object is a Pict Metacontroller, false otherwise.

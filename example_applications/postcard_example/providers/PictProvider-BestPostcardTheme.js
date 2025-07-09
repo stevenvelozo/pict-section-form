@@ -76,7 +76,7 @@ Glug glug CUSTOMIZED glug Oo... -->
 				"Template": /*HTML*/`
             <div class="pure-u-1 pure-u-md-1-3">
                 <label {~D:Record.Macro.HTMLForID~}>{~D:Record.Name~}:</label>
-                <input type="text" {~D:Record.Macro.HTMLID~} {~D:Record.Macro.InputFullProperties~} class="pure-u-23-24" />
+                <input type="text" {~D:Record.Macro.HTMLID~} {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} class="pure-u-23-24" />
             </div>
 	`
 			},
@@ -85,7 +85,7 @@ Glug glug CUSTOMIZED glug Oo... -->
 				"Template": /*HTML*/`
             <div class="pure-u-1 pure-u-md-1-3">
                 <label {~D:Record.Macro.HTMLForID~}>{~D:Record.Name~}:</label>
-                <input type="text" {~D:Record.Macro.HTMLID~} {~D:Record.Macro.InputFullProperties~} class="pure-u-23-24" />
+                <input type="text" {~D:Record.Macro.HTMLID~} {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} class="pure-u-23-24" />
             </div>
 	`
 			},
@@ -113,7 +113,7 @@ Glug glug CUSTOMIZED glug Oo... -->
 				"Template": /*HTML*/`
             <div class="pure-u-1 pure-u-md-1-3">
                 <label {~D:Record.Macro.HTMLForID~}><em>{~D:Record.Name~}:</em></label>
-				<input type="text" {~D:Record.Macro.CustomPictSettingsProperty~} {~D:Record.Macro.DirectAssignment~} {~D:Record.Macro.HTMLID~} {~D:Record.Macro.InputFullProperties~} class="pure-u-23-24" />
+				<input type="text" {~D:Record.Macro.CustomPictSettingsProperty~} {~D:Record.Macro.DirectAssignment~} {~D:Record.Macro.HTMLID~} {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} class="pure-u-23-24" />
 				<a href="#" onclick="{~P~}.views['{~D:Context[0].Hash~}'].inputEvent('{~D:Record.Hash~}', 'BestEventEvarrrr')" class="pure-button">Sign</a>
             </div>
 	`

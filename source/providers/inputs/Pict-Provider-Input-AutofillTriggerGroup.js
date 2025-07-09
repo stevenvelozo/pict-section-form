@@ -118,7 +118,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	onDataChange(pView, pInput, pValue, pHTMLSelector)
 	{
 		let tmpTriggerGroupConfigurations = this.getTriggerGroupConfigurationArray(pInput);
-		if (Array.isArray(tmpTriggerGroupConfigurations))
+		if (Array.isArray(tmpTriggerGroupConfigurations) && this.pict.views.PictFormMetacontroller)
 		{
 			for (let i = 0; i < tmpTriggerGroupConfigurations.length; i++)
 			{
@@ -144,7 +144,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
 	{
 		let tmpTriggerGroupConfigurations = this.getTriggerGroupConfigurationArray(pInput);
-		if (Array.isArray(tmpTriggerGroupConfigurations))
+		if (Array.isArray(tmpTriggerGroupConfigurations) && this.pict.views.PictFormMetacontroller)
 		{
 			for (let i = 0; i < tmpTriggerGroupConfigurations.length; i++)
 			{

@@ -1,6 +1,6 @@
 const libPictProvider = require('pict-provider');
 
-//const libPictViewDynamicForm = require('../views/Pict-View-DynamicForm.js');
+const libPictViewDynamicForm = require('../views/Pict-View-DynamicForm.js');
 
 /** @type {Record<string, any>} */
 const _DefaultProviderConfiguration = (
@@ -65,7 +65,8 @@ class PictMetatemplateGenerator extends libPictProvider
 		/** @type {any} */
 		this.log;
 
-		this.dynamicInputView = false;
+		/** @type {libPictViewDynamicForm} */
+		this.dynamicInputView;
 
 		this.baseTemplatePrefix = "Pict-MT-Base";
 	}
@@ -78,12 +79,16 @@ class PictMetatemplateGenerator extends libPictProvider
 
 	createOnDemandMetatemplateView()
 	{
-		let tmpViewConfiguration = JSON.parse(JSON.stringify(_DynamicInputViewSection));
+		const tmpViewConfiguration = JSON.parse(JSON.stringify(_DynamicInputViewSection));
 
-		// TODO: Go back and learn what require is doing oddly here.
-		//this.dynamicInputView = this.pict.addView(tmpViewConfiguration.ViewHash, tmpViewConfiguration, libPictViewDynamicForm);
-		//this.dynamicInputView = this.pict.addView(tmpViewConfiguration.ViewHash, tmpViewConfiguration, require('../views/Pict-View-DynamicForm.js'));
-		this.dynamicInputView = this.pict.views.PictFormMetacontroller.addDynamicView(tmpViewConfiguration.ViewHash, tmpViewConfiguration);
+		if (tmpViewConfiguration.ViewHash in this.pict.views)
+		{
+			this.dynamicInputView = this.pict.views[tmpViewConfiguration.ViewHash];
+		}
+		else
+		{
+			this.dynamicInputView = this.pict.addView(tmpViewConfiguration.ViewHash, tmpViewConfiguration, libPictViewDynamicForm);
+		}
 	}
 
 	/**

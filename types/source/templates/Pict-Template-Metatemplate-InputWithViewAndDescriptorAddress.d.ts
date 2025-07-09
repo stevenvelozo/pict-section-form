@@ -11,9 +11,10 @@ declare class PictTemplateInputWithViewAndDescriptorAddressTemplate extends libP
     constructor(pFable: any, pOptions: any, pServiceHash: string);
     /** @type {import('pict')} */
     pict: import("pict");
-    /** @type {import('pict') & { ManifestFactory: import('../services/ManifestFactory.js') }} */
+    /** @type {import('pict') & { ManifestFactory: import('../services/ManifestFactory.js'), DataFormat: any }} */
     fable: import("pict") & {
         ManifestFactory: import("../services/ManifestFactory.js");
+        DataFormat: any;
     };
     /** @type {any} */
     log: any;
