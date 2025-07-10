@@ -65,7 +65,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 		if (!this.fable.PictDynamicFormDependencyManager)
 		{
-			throw new Error('PictSectionForm instantiation attempt without a PictDynamicApplication service in fable -- cannot instantiate.');
+			throw new Error('PictSectionForm instantiation attempt without a PictDynamicFormDependencyManager service in fable -- cannot instantiate.');
 		}
 
 		this.fable.addServiceTypeIfNotExists('TransactionTracking', libFableServiceTransactionTracking);
