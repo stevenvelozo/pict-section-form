@@ -389,18 +389,7 @@ class PictViewDynamicForm extends libPictViewClass
 	 */
 	getMarshalDestinationAddress()
 	{
-		if (this.viewMarshalDestination)
-		{
-			return this.viewMarshalDestination;
-		}
-		else if (this.pict.views.PictFormMetacontroller && this.pict.views.PictFormMetacontroller.viewMarshalDestination)
-		{
-			return this.pict.views.PictFormMetacontroller.viewMarshalDestination;
-		}
-		else
-		{
-			return 'AppData';
-		}
+		return this.viewMarshalDestination || this.pict.providers.DataBroker.marshalDestination;
 	}
 
 	/**
@@ -410,33 +399,7 @@ class PictViewDynamicForm extends libPictViewClass
 	 */
 	getMarshalDestinationObject()
 	{
-		let tmpMarshalDestinationObject;
-		if (this.viewMarshalDestination)
-		{
-			tmpMarshalDestinationObject = this.sectionManifest.getValueByHash(this, this.viewMarshalDestination);
-		}
-		else if (this.pict.views.PictFormMetacontroller && this.pict.views.PictFormMetacontroller.viewMarshalDestination)
-		{
-			tmpMarshalDestinationObject = this.sectionManifest.getValueByHash(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
-
-			if (!tmpMarshalDestinationObject)
-			{
-				// Try to create an empty object.
-				if (this.sectionManifest.setValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination, {}))
-				{
-					// And try to load it once more!
-					tmpMarshalDestinationObject = this.sectionManifest.getValueByHash(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
-				}
-			}
-		}
-
-		if (typeof (tmpMarshalDestinationObject) !== 'object')
-		{
-			this.log.error(`Marshal destination object is not an object; if you initialize the view yourself you must set the viewMarshalDestination property to a valid address within the view.  Falling back to AppData.`);
-			tmpMarshalDestinationObject = this.pict.AppData;
-		}
-
-		return tmpMarshalDestinationObject;
+		return this.pict.providers.DataBroker.resolveMarshalDestinationObject(this.viewMarshalDestination);
 	}
 
 	/**

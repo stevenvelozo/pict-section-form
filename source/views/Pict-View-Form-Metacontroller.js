@@ -535,6 +535,11 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			let tmpDescriptor = tmpManifest.elementDescriptors[tmpDescriptorKeys[i]];
 
+			if (tmpDescriptor && tmpDescriptor.PictForm)
+			{
+				this.pict.manifest.addDescriptor(tmpDescriptorKeys[i], tmpDescriptor);
+			}
+
 			if (
 					// If there is an object in the descriptor
 					typeof(tmpDescriptor) == 'object' &&
