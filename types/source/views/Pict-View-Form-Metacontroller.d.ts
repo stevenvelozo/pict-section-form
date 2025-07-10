@@ -11,10 +11,11 @@ export = PictFormMetacontroller;
  */
 declare class PictFormMetacontroller extends libPictViewClass {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
-    viewMarshalDestination: string;
     lastRenderedViews: any[];
     formTemplatePrefix: any;
     manifest: any;
+    set viewMarshalDestination(pValue: any);
+    get viewMarshalDestination(): any;
     /**
      * Marshals data from the view to the model, usually AppData (or configured data store).
      *
@@ -27,17 +28,6 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @returns {any} The result of the super.onMarshalToView() method.
      */
     onMarshalToView(): any;
-    /**
-     * Retrieves the marshal destination object.  This is where the model data is stored.
-     *
-     * @returns {Object} The marshal destination object.
-     */
-    getMarshalDestinationObject(): any;
-    /**
-     * Gets a value by hash address.
-     * @param {string} pHashAddress
-     */
-    getValueByHash(pHashAddress: string): any;
     gatherInitialBundle(fCallback: any): any;
     /**
      * Executes after the initialization of the object.

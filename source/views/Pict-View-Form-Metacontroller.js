@@ -28,13 +28,21 @@ class PictFormMetacontroller extends libPictViewClass
 		// Load the dynamic application dependencies if they don't exist
 		this.fable.addAndInstantiateSingletonService('PictDynamicApplication', libPictDynamicApplication.default_configuration, libPictDynamicApplication);
 
-		this.viewMarshalDestination = 'AppData';
-
 		this.lastRenderedViews = [];
 
 		this.formTemplatePrefix = this.pict.providers.MetatemplateGenerator.baseTemplatePrefix;
 
 		this.manifest = this.pict.manifest;
+	}
+
+	get viewMarshalDestination()
+	{
+		return this.pict.providers.DataBroker.marshalDestination;
+	}
+
+	set viewMarshalDestination(pValue)
+	{
+		this.pict.providers.DataBroker.marshalDestination = pValue;
 	}
 
 	/**
@@ -71,25 +79,6 @@ class PictFormMetacontroller extends libPictViewClass
 			}
 		}
 		return super.onMarshalToView();
-	}
-
-	/**
-	 * Retrieves the marshal destination object.  This is where the model data is stored.
-	 *
-	 * @returns {Object} The marshal destination object.
-	 */
-	getMarshalDestinationObject()
-	{
-		return this.manifest.getValueByHash(this, this.viewMarshalDestination);
-	}
-
-	/**
-	 * Gets a value by hash address.
-	 * @param {string} pHashAddress
-	 */
-	getValueByHash(pHashAddress)
-	{
-		return this.manifest.getValueByHash(this.getMarshalDestinationObject(), pHashAddress);
 	}
 
 	gatherInitialBundle(fCallback)
@@ -517,7 +506,7 @@ class PictFormMetacontroller extends libPictViewClass
 		if (this.options.AutoPopulateDefaultObject)
 		{
 			// Fill out the defaults at the marshal location if it doesn't exist
-			let tmpMarshalDestinationObject = tmpManifest.getValueAtAddress(this, this.viewMarshalDestination);
+			const tmpMarshalDestinationObject = this.pict.providers.DataBroker.marshalDestinationObject;
 			if (typeof(tmpMarshalDestinationObject) === 'object')
 			{
 				tmpManifest.populateDefaults(tmpMarshalDestinationObject);
@@ -604,8 +593,6 @@ class PictFormMetacontroller extends libPictViewClass
 				this.pict.providers.DynamicMetaLists.buildList(tmpPickList);
 			}
 		}
-
-		this.manifest = tmpManifest;
 
 		// Now see if there is custom CSS
 		for (let i = 0; i < tmpSectionList.length; i++)
