@@ -1,6 +1,6 @@
 const libPictViewClass = require('pict-view');
 
-const libPictDynamicApplication = require(`../services/Pict-Service-DynamicApplication.js`);
+const libPictDynamicFormDependencyManager = require(`../services/Pict-Service-DynamicFormDependencyManager.js`);
 const libPictViewDynamicForm = require('./Pict-View-DynamicForm.js');
 
 // TODO: Potentially create an internalized list of views for this to manage, separate from the pict.views object
@@ -26,7 +26,7 @@ class PictFormMetacontroller extends libPictViewClass
 		this.serviceType = 'PictFormMetacontroller';
 
 		// Load the dynamic application dependencies if they don't exist
-		this.fable.addAndInstantiateSingletonService('PictDynamicApplication', libPictDynamicApplication.default_configuration, libPictDynamicApplication);
+		this.fable.addAndInstantiateSingletonService('PictDynamicFormDependencyManager', libPictDynamicFormDependencyManager.default_configuration, libPictDynamicFormDependencyManager);
 
 		this.lastRenderedViews = [];
 

@@ -78,7 +78,7 @@ suite
 
 								tmpViewConfiguration.Manifests = { Section: manifestPostcard };
 
-								_Pict.addAndInstantiateSingletonService('PictDynamicApplication', libPictSectionForm.PictDynamicApplicationService.default_configuration, libPictSectionForm.PictDynamicApplicationService);
+								_Pict.addAndInstantiateSingletonService('PictDynamicFormDependencyManager', libPictSectionForm.PictDynamicFormDependencyManager.default_configuration, libPictSectionForm.PictDynamicFormDependencyManager);
 
 								let _PictSectionForm = _Pict.addView(tmpViewHash, tmpViewConfiguration, libPictSectionForm);
 

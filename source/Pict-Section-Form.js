@@ -5,7 +5,7 @@ module.exports = require('./views/Pict-View-DynamicForm.js');
 //module.exports.default_configuration = require('./views/Pict-View-DynamicForm-DefaultConfiguration.json');
 
 // The dynamic application dependencies
-module.exports.PictDynamicApplicationService = require('./services/Pict-Service-DynamicApplication.js');
+module.exports.PictDynamicFormDependencyManager = require('./services/Pict-Service-DynamicFormDependencyManager.js');
 
 // The base provider class for form section templates; meant to be subclassed
 module.exports.PictFormTemplateProvider = require('./providers/Pict-Provider-DynamicTemplates.js');

@@ -63,7 +63,7 @@ class PictViewDynamicForm extends libPictViewClass
 		/** @type {import('pict') & { PictApplication: import('pict-application'), log: any; instantiateServiceProviderWithoutRegistration: (hash: string) => any; }} */
 		this.pict;
 
-		if (!this.fable.PictDynamicApplication)
+		if (!this.fable.PictDynamicFormDependencyManager)
 		{
 			throw new Error('PictSectionForm instantiation attempt without a PictDynamicApplication service in fable -- cannot instantiate.');
 		}

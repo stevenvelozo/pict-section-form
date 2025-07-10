@@ -1,5 +1,5 @@
-export = PictDynamicApplication;
-declare class PictDynamicApplication {
+export = PictDynamicFormDependencyManager;
+declare class PictDynamicFormDependencyManager {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict') & { addAndInstantiateSingletonService: (hash: string, options: any, prototype: any) => any }} */
     fable: import("pict") & {
@@ -10,7 +10,7 @@ declare class PictDynamicApplication {
     /** @type {string} */
     UUID: string;
 }
-declare namespace PictDynamicApplication {
+declare namespace PictDynamicFormDependencyManager {
     let default_configuration: Record<string, any>;
 }
-//# sourceMappingURL=Pict-Service-DynamicApplication.d.ts.map
+//# sourceMappingURL=Pict-Service-DynamicFormDependencyManager.d.ts.map

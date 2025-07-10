@@ -1,7 +1,7 @@
 declare const _exports: {
     new (pFable: any, pOptions: any, pServiceHash: any): import("./views/Pict-View-DynamicForm.js");
     default_configuration: Record<string, any>;
-    PictDynamicApplicationService: typeof import("./services/Pict-Service-DynamicApplication.js");
+    PictDynamicFormDependencyManager: typeof import("./services/Pict-Service-DynamicFormDependencyManager.js");
     PictFormTemplateProvider: typeof import("./providers/Pict-Provider-DynamicTemplates.js");
     PictInputExtensionProvider: typeof import("./providers/Pict-Provider-InputExtension.js");
     PictFormMetacontroller: typeof import("./views/Pict-View-Form-Metacontroller.js");
