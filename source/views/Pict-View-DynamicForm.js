@@ -3,8 +3,6 @@ const libPictViewClass = require('pict-view');
 /** @type {Record<string, any>} */
 const libPackage = require('../../package.json');
 
-const libFableServiceTransactionTracking = require(`../services/Fable-Service-TransactionTracking.js`);
-
 /** @type {Record<string, any>} */
 const _DefaultConfiguration = require('./Pict-View-DynamicForm-DefaultConfiguration.json');
 
@@ -68,11 +66,8 @@ class PictViewDynamicForm extends libPictViewClass
 			throw new Error('PictSectionForm instantiation attempt without a PictDynamicFormDependencyManager service in fable -- cannot instantiate.');
 		}
 
-		this.fable.addServiceTypeIfNotExists('TransactionTracking', libFableServiceTransactionTracking);
-
 		// Use this to manage transactions
-		/** @type {import('../services/Fable-Service-TransactionTracking.js')} */
-		this.transactionTracking = this.fable.instantiateServiceProviderWithoutRegistration('TransactionTracking');
+		this.transactionTracking = this.pict.newTransactionTracker();
 
 		/** @type {Record<string, any>} */
 		this._PackagePictView = this._Package;

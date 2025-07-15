@@ -15,8 +15,7 @@ declare class PictViewDynamicForm extends libPictViewClass {
         log: any;
         instantiateServiceProviderWithoutRegistration: (hash: string) => any;
     };
-    /** @type {import('../services/Fable-Service-TransactionTracking.js')} */
-    transactionTracking: import("../services/Fable-Service-TransactionTracking.js");
+    transactionTracking: import("pict/types/source/services/Fable-Service-TransactionTracking");
     /** @type {Record<string, any>} */
     _PackagePictView: Record<string, any>;
     sectionDefinition: any;
