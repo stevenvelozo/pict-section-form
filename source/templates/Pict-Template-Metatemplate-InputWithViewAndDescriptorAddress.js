@@ -195,7 +195,7 @@ class PictTemplateInputWithViewAndDescriptorAddressTemplate extends libPictTempl
 		}
 		if (!pDescriptor.Hash)
 		{
-			pDescriptor.Hash = this.fable.DataFormat.cleanNonAlphaCharacters(pDescriptor.Address);
+			pDescriptor.Hash = this.fable.DataFormat.sanitizeObjectKey(pDescriptor.Address);
 		}
 		if (!pDescriptor.Name)
 		{
