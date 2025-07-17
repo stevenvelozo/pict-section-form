@@ -34,9 +34,10 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
 	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
+	 * @param {any} [pState] - A catchall state object for plumbing data through template processing.
 	 * @returns {string} - The rendered template.
 	 */
-	render(pTemplateHash, pRecord, pContextArray, pScope)
+	render(pTemplateHash, pRecord, pContextArray, pScope, pState)
 	{
 		let tmpHash = pTemplateHash.trim();
 		let tmpData = (typeof (pRecord) === 'object') ? pRecord : {};
@@ -92,11 +93,11 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 		if (!tmpData)
 		{
 			// No address was provided, just render the template with what this template has.
-			return this.pict.parseTemplateSetByHash(tmpTemplateHash, pRecord, null, pContextArray, pScope);
+			return this.pict.parseTemplateSetByHash(tmpTemplateHash, pRecord, null, pContextArray, pScope, pState);
 		}
 		else
 		{
-			return this.pict.parseTemplateSetByHash(tmpTemplateHash, tmpData, null, pContextArray, pScope);
+			return this.pict.parseTemplateSetByHash(tmpTemplateHash, tmpData, null, pContextArray, pScope, pState);
 		}
 	}
 
@@ -108,10 +109,11 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 	 * @param {function} fCallback - The callback function to invoke after rendering the template.
 	 * @param {array} pContextArray - The context array to use for resolving the data.
 	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
+	 * @param {any} [pState] - A catchall state object for plumbing data through template processing.
 	 *
 	 * @return {void}
 	 */
-	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray, pScope)
+	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray, pScope, pState)
 	{
 		let tmpHash = pTemplateHash.trim();
 		let tmpData = (typeof (pRecord) === 'object') ? pRecord : {};
@@ -185,7 +187,7 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 						return tmpCallback(pError, '');
 					}
 					return tmpCallback(null, pValue);
-				}, pContextArray, pScope);
+				}, pContextArray, pScope, pState);
 			return;
 		}
 		else
@@ -198,7 +200,7 @@ class PictTemplateMetacontrollerValueSet extends libPictTemplate
 						return tmpCallback(pError, '');
 					}
 					return tmpCallback(null, pValue);
-				}, pContextArray, pScope);
+				}, pContextArray, pScope, pState);
 			return;
 		}
 	}

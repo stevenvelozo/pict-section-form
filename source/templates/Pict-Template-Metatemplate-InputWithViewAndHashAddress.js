@@ -34,9 +34,10 @@ class PictTemplateInputWithViewAndHashAddressTemplate extends libPictTemplate
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
 	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
+	 * @param {any} [pState] - A catchall state object for plumbing data through template processing.
 	 * @returns {string} - The rendered template.
 	 */
-	render(pTemplateHash, pRecord, pContextArray, pScope)
+	render(pTemplateHash, pRecord, pContextArray, pScope, pState)
 	{
 		let tmpHash = pTemplateHash.trim();
 		let tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
@@ -113,7 +114,7 @@ class PictTemplateInputWithViewAndHashAddressTemplate extends libPictTemplate
 			{
 				const tmpInput = tmpRow.Inputs[i];
 				return this.pict.parseTemplate(tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpInputView,
-					tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`), tmpInput, null, [tmpInputView], tmpInputView);
+					tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`), tmpInput, null, [tmpInputView], tmpInputView, pState);
 			}
 		}
 
@@ -129,7 +130,7 @@ class PictTemplateInputWithViewAndHashAddressTemplate extends libPictTemplate
 			tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`);
 
 		// Now parse it and return it.
-		return this.pict.parseTemplate(tmpTemplate, tmpInput, null, [tmpInputView], tmpInputView);
+		return this.pict.parseTemplate(tmpTemplate, tmpInput, null, [tmpInputView], tmpInputView, pState);
 	}
 
 	/**
@@ -140,10 +141,11 @@ class PictTemplateInputWithViewAndHashAddressTemplate extends libPictTemplate
 	 * @param {function | null} fCallback - The callback function.
 	 * @param {array} pContextArray - The context array.
 	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
+	 * @param {any} [pState] - A catchall state object for plumbing data through template processing.
 	 *
 	 * @return {void}
 	 */
-	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray, pScope)
+	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray, pScope, pState)
 	{
 		let tmpHash = pTemplateHash.trim();
 		let tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
@@ -220,7 +222,7 @@ class PictTemplateInputWithViewAndHashAddressTemplate extends libPictTemplate
 				let tmpInput = tmpRow.Inputs[i];
 				let tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpInputView,
 					tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`);
-				this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpInputView], tmpInputView);
+				this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpInputView], tmpInputView, pState);
 				return;
 			}
 		}
@@ -236,7 +238,7 @@ class PictTemplateInputWithViewAndHashAddressTemplate extends libPictTemplate
 		const tmpTemplate = tmpMetatemplateGenerator.getInputMetatemplateTemplateReference(tmpInputView,
 			tmpInput.DataType, tmpInput.PictForm.InputType, `getInput("0","0","${tmpInput.PictForm.InputIndex}")`);
 
-		this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpInputView], tmpInputView);
+		this.pict.parseTemplate(tmpTemplate, tmpInput, fCallback, [tmpInputView], tmpInputView, pState);
 		return;
 	}
 }

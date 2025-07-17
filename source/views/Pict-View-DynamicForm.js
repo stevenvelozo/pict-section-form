@@ -58,9 +58,6 @@ class PictViewDynamicForm extends libPictViewClass
 		// Now construct the view.
 		super(pFable, tmpOptions, pServiceHash);
 
-		/** @type {import('pict') & { PictApplication: import('pict-application'), log: any; instantiateServiceProviderWithoutRegistration: (hash: string) => any; }} */
-		this.pict;
-
 		if (!this.fable.PictDynamicFormDependencyManager)
 		{
 			throw new Error('PictSectionForm instantiation attempt without a PictDynamicFormDependencyManager service in fable -- cannot instantiate.');
@@ -525,10 +522,8 @@ class PictViewDynamicForm extends libPictViewClass
 	 * Lifecycle hook that triggers before the view is rendered.
 	 *
 	 * @param {import('pict-view').Renderable} pRenderable - The renderable that will be rendered.
-	 * @param {string} pRenderDestinationAddress - The address where the renderable will be rendered.
-	 * @param {any} pRecord - The record (data) that will be used to render the renderable.
 	 */
-	onBeforeRender(pRenderable, pRenderDestinationAddress, pRecord)
+	onBeforeRender(pRenderable)
 	{
 		if (!this.initialBundleLoaded)
 		{
@@ -538,15 +533,16 @@ class PictViewDynamicForm extends libPictViewClass
 			}
 			this.initialBundleLoaded = true;
 		}
-		return super.onBeforeRender(pRenderable, pRenderDestinationAddress, pRecord);
+		return super.onBeforeRender(pRenderable);
 	}
 
 	/**
 	 * Lifecycle hook that triggers before the view is rendered (async flow).
 	 *
 	 * @param {(error?: Error) => void} fCallback - The callback to call when the async operation is complete.
+	 * @param {import('pict-view').Renderable} pRenderable - The renderable that will be rendered.
 	 */
-	onBeforeRenderAsync(fCallback)
+	onBeforeRenderAsync(fCallback, pRenderable)
 	{
 		super.onBeforeRenderAsync((pError) =>
 		{
@@ -567,25 +563,22 @@ class PictViewDynamicForm extends libPictViewClass
 				this.initialBundleLoaded = true;
 			}
 			return fCallback(pError);
-		});
+		}, pRenderable);
 	}
 
 	/**
 	 * Lifecycle hook that triggers after the view is rendered.
 	 *
-	 * @param {any} [pRenderable] - The renderable that was rendered.
-	 * @param {string} [pRenderDestinationAddress] - The address where the renderable was rendered.
-	 * @param {any} [pRecord] - The record (data) that was used by the renderable.
-	 * @param {string} [pContent] - The content that was rendered.
+	 * @param {import('pict-view').Renderable} pRenderable - The renderable that was rendered.
 	 */
-	onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent)
+	onAfterRender(pRenderable)
 	{
 		let tmpTransactionGUID = this.fable.getUUID();
 		this.transactionTracking.registerTransaction(tmpTransactionGUID);
 
 		this.runLayoutProviderFunctions('onGroupLayoutInitialize', tmpTransactionGUID);
 		this.runInputProviderFunctions('onInputInitialize', null, null, tmpTransactionGUID);
-		return super.onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent);
+		return super.onAfterRender(pRenderable);
 	}
 
 	/**

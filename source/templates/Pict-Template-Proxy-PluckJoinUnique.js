@@ -29,9 +29,10 @@ class PictTemplateProviderPluckJoinUnique extends libPictTemplate
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
 	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
+	 * @param {any} [pState] - A catchall state object for plumbing data through template processing.
 	 * @returns {string} - The rendered template.
 	 */
-	render(pTemplateHash, pRecord, pContextArray, pScope)
+	render(pTemplateHash, pRecord, pContextArray, pScope, pState)
 	{
 		let tmpHash = pTemplateHash;
 		let tmpData = (typeof (pRecord) === 'object') ? pRecord : {};

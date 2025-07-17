@@ -25,9 +25,10 @@ declare class PictTemplateGetViewSchemaValueByHash extends libPictTemplate {
      * @param {function | null} fCallback - The callback function.
      * @param {array} pContextArray - The context array.
      * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
+     * @param {any} [pState] - A catchall state object for plumbing data through template processing.
      * @returns {string | undefined} - The rendered template or undefined if callback is provided.
      */
-    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function | null, pContextArray: any[], pScope?: any): string | undefined;
+    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function | null, pContextArray: any[], pScope?: any, pState?: any): string | undefined;
 }
 import libPictTemplate = require("pict-template");
 //# sourceMappingURL=Pict-Template-DyanmicView-ValueByHash.d.ts.map

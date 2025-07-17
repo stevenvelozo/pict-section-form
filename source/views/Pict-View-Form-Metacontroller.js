@@ -129,14 +129,12 @@ class PictFormMetacontroller extends libPictViewClass
 	 * and optionally populates the form with data.
 	 *
 	 * @param {import('pict-view').Renderable} pRenderable - The renderable that was rendered.
-	 * @param {string} pRenderDestinationAddress - The address where the renderable was rendered.
-	 * @param {any} pRecord - The record (data) that was used by the renderable.
-	 * @param {string} pContent - The content that was rendered.
 	 *
 	 * @return {boolean} The result of the superclass's onAfterRender method.
 	 */
-	onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent)
+	onAfterRender(pRenderable)
 	{
+		const res = super.onAfterRender(pRenderable);
 		this.regenerateFormSectionTemplates();
 		this.renderFormSections();
 
@@ -144,8 +142,7 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			this.marshalToView();
 		}
-
-		return super.onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent);
+		return res;
 	}
 
 	/**

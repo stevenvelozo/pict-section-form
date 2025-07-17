@@ -32,11 +32,12 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
 	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
+	 * @param {any} [pState] - A catchall state object for plumbing data through template processing.
 	 * @returns {string} - The rendered template.
 	 */
-	render(pTemplateHash, pRecord, pContextArray, pScope)
+	render(pTemplateHash, pRecord, pContextArray, pScope, pState)
 	{
-		return this.renderAsync(pTemplateHash, pRecord, null, pContextArray, pScope);
+		return this.renderAsync(pTemplateHash, pRecord, null, pContextArray, pScope, pState);
 	}
 
 	/**
@@ -47,9 +48,10 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 	 * @param {function | null} fCallback - The callback function.
 	 * @param {array} pContextArray - The context array.
 	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
+	 * @param {any} [pState] - A catchall state object for plumbing data through template processing.
 	 * @returns {string | undefined} - The rendered template or undefined if callback is provided.
 	 */
-	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray, pScope)
+	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray, pScope, pState)
 	{
 		const tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
 		const tmpHash = pTemplateHash.trim();
@@ -78,7 +80,7 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 			`getInput("${descriptor.PictForm.GroupIndex}","${descriptor.PictForm.RowIndex}","${descriptor.PictForm.InputIndex}")`);
 
 		// Now parse it and return it.
-		return this.pict.parseTemplate(tmpTemplate, descriptor, fCallback, tmpContextArray, tmpScope);
+		return this.pict.parseTemplate(tmpTemplate, descriptor, fCallback, tmpContextArray, tmpScope, pState);
 	}
 }
 
