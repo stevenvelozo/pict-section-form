@@ -41,7 +41,6 @@ class RecordLayout extends libPictSectionGroupLayout
 
 			tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-Row-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
 
-			// There are three row layouts: Record, Tabular and Columnar
 			for (let k = 0; k < tmpRow.Inputs.length; k++)
 			{
 				let tmpInput = tmpRow.Inputs[k];

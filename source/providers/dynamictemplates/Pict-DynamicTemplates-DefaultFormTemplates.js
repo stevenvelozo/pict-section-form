@@ -560,6 +560,90 @@ Glug glug glug Oo... -->
 
 		/*
 		 *
+		 * [ RecordSet Templates START ]
+		 *
+		 */
+		{
+			"HashPostfix": "-RecordSetTemplate-Group-Prefix",
+			"Template": /*HTML*/`
+			<div {~D:Record.Macro.PictFormLayout~}>
+			<!-- Form RecordSet Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+`
+		},
+		{
+			"HashPostfix": "-RecordSetTemplate-Group-Postfix",
+			"Template": /*HTML*/`
+			<div><a href="#/" onclick="{~D:Record.Macro.TabularCreateRowFunctionCall~}">create</a></div>
+			</div>
+			<!-- Form RecordSet Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+`
+		},
+
+
+		/*
+		 * BEGIN RecordSet Template "Extra" Columns
+		 * these are meant to be easy ways to add controls to the left or right side of a record column
+		 */
+
+		{
+			"HashPostfix": "-RecordSetTemplate-Row-ExtraPrefix",
+			"Template": /*HTML*/`<!-- RecordSetTemplateRow-ExtraPrefix -->`
+		},
+		// by default PICT puts a "delete row" button on the right side of a RecordSet Templateset
+		{
+			"HashPostfix": "-RecordSetTemplate-Row-ExtraPostfix",
+			"Template": /*HTML*/`<!-- RecordSetTemplateRow-ExtraPostfix-->
+					<div class="PictSectionForm-RecordSet-Controls">
+						<a href="#/" onClick="{~P~}.views['{~D:Context[0].Hash~}'].deleteDynamicTableRow({~D:Record.Group~},'{~D:Record.Key~}')">del</a>
+						<a href="#/" onClick="{~P~}.views['{~D:Context[0].Hash~}'].moveDynamicTableRowUp({~D:Record.Group~},'{~D:Record.Key~}')">up</a>
+						<a href="#/" onClick="{~P~}.views['{~D:Context[0].Hash~}'].moveDynamicTableRowDown({~D:Record.Group~},'{~D:Record.Key~}')">down</a>
+					</div>
+`
+		},
+		/*
+		 * END RecordSet Template "Extra" Columns
+		 */
+
+		/*
+		 * BEGIN RecordSet TemplateSet Templates ("row" and "cell" prefix/postfix ... tr/td)
+		 * (these are repeated for each "row" which is a record, and then wrap each "cell" which is a columnar input)
+		 */
+		{
+			"HashPostfix": "-RecordSetTemplate-Row-Prefix",
+			"Template": /*HTML*/`
+					<div class="RecordSetEntry">
+					<!-- RecordSetTemplateRow-Prefix -->
+`
+		},
+		{
+			"HashPostfix": "-RecordSetTemplate-Cell-Prefix",
+			"Template": /*HTML*/`
+						<div style="display:inline;">
+							<!-- RecordSetTemplateCell-Prefix -->
+							<span class="RecordSetInputLabel">{~D:Record.Name~}</span>
+`
+		},
+		{
+			"HashPostfix": "-RecordSetTemplate-Cell-Postfix",
+			"Template": /*HTML*/`
+							<!-- RecordSetTemplateCell-Postfix -->
+						</div>
+`
+		},
+		{
+			"HashPostfix": "-RecordSetTemplate-Row-Postfix",
+			"Template": /*HTML*/`
+					<!-- RecordSetTemplateRow-Postfix -->
+					</div>`
+		},
+		/*
+		 * END RecordSet TemplateSet Templates
+		 */
+
+
+
+		/*
+		 *
 		 * [ Tabular Templates START ]
 		 *
 		 */

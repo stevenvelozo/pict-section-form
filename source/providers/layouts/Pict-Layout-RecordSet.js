@@ -38,54 +38,92 @@ class RecordSetLayout extends libPictSectionGroupLayout
 		let tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
 		let tmpTemplate = '';
 		let tmpTemplateSetRecordRowTemplate = '';
-		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-Group-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
-		// Tabular templates only have one "row" for the header in the standard template, and then a row for each record.
-		// The row for each record happens as a TemplateSet.
-		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-RowHeader-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
-		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-RowHeader-ExtraPrefix`, `getGroup("${pGroup.GroupIndex}")`);
+		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-RecordSetTemplate-Group-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
 
-
-		for (let j = 0; j < pGroup.Rows.length; j++)
+		let tmpMaxRowIndex = 0;
+		for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
 		{
+			let tmpSupportingManifestHash = pGroup.supportingManifest.elementAddresses[k];
+			let tmpInput = pGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
+			// Update the InputIndex to match the current render config
+			if (!('PictForm' in tmpInput))
+			{
+				tmpInput.PictForm = {};
+			}
+			if (tmpInput.PictForm.TabularHidden)
+			{
+				continue;
+			}
+			tmpInput.PictForm.InputIndex = k;
+			tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
+			if (tmpInput.PictForm.Row)
+			{
+				tmpInput.PictForm.RowIndex = tmpInput.PictForm.Row;
+				if (tmpInput.PictForm.RowIndex > tmpMaxRowIndex)
+				{
+					tmpMaxRowIndex = tmpInput.PictForm.RowIndex;
+				}
+			}
+		}
+
+		for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
+		{
+			let tmpSupportingManifestHash = pGroup.supportingManifest.elementAddresses[k];
+			let tmpInput = pGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
+			// Update the InputIndex to match the current render config
+			if (!('PictForm' in tmpInput))
+			{
+				tmpInput.PictForm = {};
+			}
+			if (tmpInput.PictForm.TabularHidden)
+			{
+				continue;
+			}
+			if (!tmpInput.PictForm.RowIndex)
+			{
+				tmpInput.PictForm.RowIndex = tmpMaxRowIndex + 1;
+			}
+		}
+
+		for (let d = 0; d < tmpMaxRowIndex + 1; d++)
+		{
+			tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-Row-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
 			for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
 			{
 				let tmpSupportingManifestHash = pGroup.supportingManifest.elementAddresses[k];
 				let tmpInput = pGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
 				// Update the InputIndex to match the current render config
-				if (!('PictForm' in tmpInput))
+				if (tmpInput.PictForm.TabularHidden)
 				{
-					tmpInput.PictForm = {};
+					continue;
 				}
-				tmpInput.PictForm.InputIndex = k;
-				tmpInput.PictForm.GroupIndex = pGroup.GroupIndex;
-				tmpInput.PictForm.RowIndex = j;
 
-				tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-HeaderCell`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
-
-				tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-Cell-Prefix`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
-				let tmpInputType = (('PictForm' in tmpInput) && tmpInput.PictForm.InputType) ? tmpInput.PictForm.InputType : 'Default';
-				tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getTabularInputMetatemplateTemplateReference(pView, tmpInput.DataType, tmpInputType, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`, pGroup.GroupIndex, k);
-				tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-Cell-Postfix`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
+				// tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-HeaderCell`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
+				if (tmpInput.PictForm.RowIndex == d)
+				{
+					tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-RecordSetTemplate-Cell-Prefix`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
+					let tmpInputType = (('PictForm' in tmpInput) && tmpInput.PictForm.InputType) ? tmpInput.PictForm.InputType : 'Default';
+					tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getTabularInputMetatemplateTemplateReference(pView, tmpInput.DataType, tmpInputType, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`, pGroup.GroupIndex, k);
+					tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-RecordSetTemplate-Cell-Postfix`, `getTabularRecordInput("${pGroup.GroupIndex}","${k}")`);
+				}
 			}
+			tmpTemplateSetRecordRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-Row-Postfix`, `getGroup("${pGroup.GroupIndex}")`);
 		}
-
-		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-RowHeader-ExtraPostfix`, `getGroup("${pGroup.GroupIndex}")`);
-		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-RowHeader-Postfix`, `getGroup("${pGroup.GroupIndex}")`);
 
 		// This is the template by which the tabular template includes the rows.
 		// The template recursion here is difficult to envision without drawing it.
 		// TODO: Consider making this function available in manyfest in some fashion it seems dope.
 		let tmpTemplateSetVirtualRowTemplate = '';
-		tmpTemplateSetVirtualRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-Row-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
-		tmpTemplateSetVirtualRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReferenceRaw(pView, `-TabularTemplate-Row-ExtraPrefix`, `Record`);
+		tmpTemplateSetVirtualRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-RecordSetTemplate-Row-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
+		tmpTemplateSetVirtualRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReferenceRaw(pView, `-RecordSetTemplate-Row-ExtraPrefix`, `Record`);
 		tmpTemplateSetVirtualRowTemplate += `\n\n{~T:${pGroup.SectionTabularRowTemplateHash}:Record~}\n`;
-		tmpTemplateSetVirtualRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReferenceRaw(pView, `-TabularTemplate-Row-ExtraPostfix`, `Record`);
-		tmpTemplateSetVirtualRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-Row-Postfix`, `getGroup("${pGroup.GroupIndex}")`);
+		tmpTemplateSetVirtualRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReferenceRaw(pView, `-RecordSetTemplate-Row-ExtraPostfix`, `Record`);
+		tmpTemplateSetVirtualRowTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-RecordSetTemplate-Row-Postfix`, `getGroup("${pGroup.GroupIndex}")`);
 
 		// This is a custom template expression
 		tmpTemplate += `\n\n{~MTVS:${pGroup.SectionTabularRowVirtualTemplateHash}:${pGroup.GroupIndex}:${pView.getMarshalDestinationAddress()}.${pGroup.RecordSetAddress}~}\n`;
 
-		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-Group-Postfix`, `getGroup("${pGroup.GroupIndex}")`);
+		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-RecordSetTemplate-Group-Postfix`, `getGroup("${pGroup.GroupIndex}")`);
 		// Add the TemplateSetTemplate
 		this.pict.TemplateProvider.addTemplate(pGroup.SectionTabularRowVirtualTemplateHash, tmpTemplateSetVirtualRowTemplate);
 		this.pict.TemplateProvider.addTemplate(pGroup.SectionTabularRowTemplateHash, tmpTemplateSetRecordRowTemplate);
