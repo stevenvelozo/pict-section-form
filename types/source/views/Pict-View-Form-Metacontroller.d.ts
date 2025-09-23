@@ -45,6 +45,39 @@ declare class PictFormMetacontroller extends libPictViewClass {
     onBeforeFilterViews(pViewFilterState: any): any;
     onAfterFilterViews(pViewFilterState: any): any;
     /**
+     * @param {string} pSectionManifestHash - The hash of the section to find.
+     *
+     * @return {Record<string, any>} The section definition object, or undefined if not found.
+     */
+    findDynamicSectionManifestDefinition(pSectionManifestHash: string): Record<string, any>;
+    /**
+     * @param {Record<string, any>} pManifest - The manifest to add
+     * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+     */
+    injectManifest(pManifest: Record<string, any>, pAfterSectionHash?: string): void;
+    /**
+     * Changes:
+     *   * The hashes of each section+group to be globally unique.
+     *   * The data address of each element to map to a unique location.
+     *
+     * @param {Record<string, any>} pManifest - The manifest to create a distinct copy of.
+     * @param {string} [pUUID] - (optional) The UUID to use for uniqueness. If not provided, a new one will be generated.
+     *
+     * @return {Record<string, any>} A distinct copy of the manifest.
+     */
+    createDistinctManifest(pManifest: Record<string, any>, pUUID?: string): Record<string, any>;
+    /**
+     * @param {Array<string>} pManifestHashes - The hashes of the manifests to add.
+     * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+     * @param {string} [pUUID] - (optional) The UUID to use for uniqueness. If not provided, a new one will be generated.
+     */
+    injectManifestsByHash(pManifestHashes: Array<string>, pAfterSectionHash?: string, pUUID?: string): void;
+    /**
+     * @param {Record<string, any>} pSectionsManifest - The section definition object.
+     * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+     */
+    bootstrapAdditiveManifest(pSectionsManifest: Record<string, any>, pAfterSectionHash?: string): any[];
+    /**
      * Filters the views based on the provided filter and sort functions.
      *
      * By default, filters views based on the provided filter function and sorts them based on the provided sort function.
@@ -94,6 +127,15 @@ declare class PictFormMetacontroller extends libPictViewClass {
      */
     generateMetatemplate(fFormSectionFilter?: Function, fSortFunction?: SortFunction): void;
     /**
+     * Generates a meta template for the DynamicForm views managed by this Metacontroller.
+     *
+     * @param {Function} [fFormSectionFilter] - (optional) The filter function to apply on the form section.
+     * @param {SortFunction} [fSortFunction] - (optional) The sort function to apply on the form section.
+     *
+     * @return {void}
+     */
+    updateMetatemplateInDOM(fFormSectionFilter?: Function, fSortFunction?: SortFunction): void;
+    /**
      * Retrieves a safe clone of the section definition for a given manyfest section description object.
      *
      * @param {object} pSectionObject - The section object.
@@ -104,9 +146,12 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * Bootstraps Pict DynamicForm views from a Manyfest description JSON object.
      *
      * @param {Object} pManifestDescription - The manifest description object.
-     * @returns {Array} - An array of section definitions.
+     * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+     *
+     * @returns {Array<Record<string, any>>} - An array of section definitions added.
      */
-    bootstrapPictFormViewsFromManifest(pManifestDescription: any): any[];
+    bootstrapPictFormViewsFromManifest(pManifestDescription: any, pAfterSectionHash?: string): Array<Record<string, any>>;
+    stashedManifestDescription: any;
     manifestDescription: any;
     /**
      * Trigger an event on all inputs on all views.

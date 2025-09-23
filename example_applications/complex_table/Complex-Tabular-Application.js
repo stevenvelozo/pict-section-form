@@ -566,6 +566,39 @@ module.exports.default_configuration.pict_configuration = {
 		},
 
 		ReferenceManifests: {
+			DynamicSection1: {
+				Scope: "DynamicSection1",
+				Descriptors: {
+					DynamicField1: {
+						Name: "Dynamic Field 1",
+						Hash: "DynamicField1",
+						DataType: "String",
+						PictForm: { Section: "DynamicSection1", Group: "DynamicGroup1", Row: 1 },
+					},
+					DynamicField2: {
+						Name: "Dynamic Field 2",
+						Hash: "DynamicField2",
+						DataType: "String",
+						PictForm: { Section: "DynamicSection1", Group: "DynamicGroup2", Row: 1 },
+					},
+				},
+				Sections: [
+					{
+						Hash: "DynamicSection1",
+						Name: "Dynamic Section 1",
+						Groups: [
+							{
+								Hash: "DynamicGroup1",
+								Name: "Dynamic Group 1",
+							},
+							{
+								Hash: "DynamicGroup2",
+								Name: "Dynamic Group 2",
+							}
+						]
+					}
+				]
+			},
 			FruitEditor: {
 				Scope: "FruitEditor",
 
