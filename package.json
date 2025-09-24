@@ -1,6 +1,6 @@
 {
     "name": "pict-section-form",
-    "version": "1.0.113",
+    "version": "1.0.114",
     "description": "Pict dynamic form sections",
     "main": "source/Pict-Section-Form.js",
     "directories": {

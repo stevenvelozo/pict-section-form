@@ -80,6 +80,7 @@ module.exports.default_configuration.pict_configuration = {
 					"RecipeCounterSurfaceArea = RecipeCounterWidth * RecipeCounterDepth",
 					"RecipeCounterVolume = RecipeCounterSurfaceArea * RecipeVerticalClearance",
 					`InspirationLink = CONCAT("https://www.google.com/search?q=", RecipeName, " recipe")`,
+					'cumulativeSummationResult = cumulativeSummation(getvalue("AppData.FruitData.FruityVice"), "nutritions.calories", "SummedCalories")'
 				],
 
 				MetaTemplates:
@@ -648,6 +649,12 @@ module.exports.default_configuration.pict_configuration = {
 						Hash: "Calories",
 						DataType: "Number",
 						PictForm: { Section: "FruitGrid", Group: "FruitGrid"},
+					},
+					"SummedCalories": {
+						Name: "Summed Calories (cumulative)",
+						Hash: "SummedCalories",
+						DataType: "Number",
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
 					},
 					"nutritions.fat": {
 						Name: "Fat",

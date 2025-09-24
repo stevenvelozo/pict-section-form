@@ -20,6 +20,7 @@
 					"ITDRO = Height * Width",
 					"ITPRO = Height * Width",
 					"LoggedValues = logvalues(\"ITPRO\", ITPRO)",
+					"VisibleMarshalingGroup = SetGroupVisibility(\"Area\", \"Help\", if(Height,\"GT\", 99, \"\", 1))",
 					"VisibleMarshalingSection = SetSectionVisibility(\"Marshaling\", if(ITPRO,\"LT\", 10000, \"\", 1))"
 				],
 			"MetaTemplates":

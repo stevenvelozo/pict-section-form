@@ -74,6 +74,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		// Wire up the solver functions.
 		this.addSolverFunction(pExpressionParser, 'logValues', 'fable.providers.DynamicFormSolverBehaviors.logValues', 'Logs a set of values to the console and returns the last one.');
 		this.addSolverFunction(pExpressionParser, 'setSectionVisibility', 'fable.providers.DynamicFormSolverBehaviors.setSectionVisibility', 'Sets a sections visiblity to true or fales based on the second parameter.');
+		this.addSolverFunction(pExpressionParser, 'setGroupVisibility', 'fable.providers.DynamicFormSolverBehaviors.setGroupVisibility', 'Sets a group visiblity to true or fales based on the third parameter.');
 		return false;
 	}
 
