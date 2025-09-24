@@ -18,7 +18,9 @@
 					"DTPN = Height * Width",
 					"ITPNRO = Height * Width",
 					"ITDRO = Height * Width",
-					"ITPRO = Height * Width"
+					"ITPRO = Height * Width",
+					"LoggedValues = logvalues(\"ITPRO\", ITPRO)",
+					"VisibleMarshalingSection = SetSectionVisibility(\"Marshaling\", if(ITPRO,\"LT\", 10000, \"\", 1))"
 				],
 			"MetaTemplates":
 				[
@@ -87,6 +89,16 @@
 					
 					,"PictForm": {"Section":"Area", "Row":4, "Width":2 }
 				},
+
+			"Help.Content":
+				{
+					"Name":"Area of a Rectangle",
+					"Hash":"HelpContent",
+					"DataType":"String",
+					"Default": "<p>To calculate the area of a rectangle, you multiply its length by its width. The length is one side of the rectangle, and the width is the adjacent side at a right angle. Since a rectangle has opposite sides that are equal and all angles are right angles, this simple multiplication gives the total space inside the rectangle, expressed in square units.</p>"
+					,"PictForm": { "InputType": "HTML", "Section":"Area", "Group":"Help" }
+				},
+
 
 			"DTPN":
 				{

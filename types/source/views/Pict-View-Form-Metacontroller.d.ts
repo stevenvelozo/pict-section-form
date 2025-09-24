@@ -142,6 +142,7 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @returns {object|boolean} - The section definition if successful, otherwise false.
      */
     getSectionDefinition(pSectionObject: object): object | boolean;
+    getSectionViewFromHash(pSectionHash: any): any;
     /**
      * Bootstraps Pict DynamicForm views from a Manyfest description JSON object.
      *

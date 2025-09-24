@@ -623,7 +623,7 @@ class ManifestFactory extends libFableServiceProviderBase
 		if (tmpRecord['Equation'])
 		{
 			this.log.trace(`Adding solver to ${tmpRecord.Form} --> ${tmpGroup.Name} for ${tmpRecord['Input Hash']}: ${tmpRecord['Equation']}`);
-			if (tmpGroup.Layout == 'Tabular')
+			if ((tmpGroup.Layout == 'Tabular') || (tmpGroup.Layout == 'RecordSet'))
 			{
 				tmpGroup.RecordSetSolvers.push(tmpRecord['Equation']);
 			}

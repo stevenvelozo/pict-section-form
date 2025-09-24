@@ -1,5 +1,7 @@
 const libPictProvider = require('pict-provider');
 
+const libDynamicFormSolverBehaviors = require('./Pict-Provider-DynamicFormSolverBehaviors.js');
+
 const libListDistilling = require('./Pict-Provider-ListDistilling.js');
 const libDynamicMetaLists = require('./Pict-Provider-MetaLists.js');
 
@@ -57,58 +59,22 @@ class PictDynamicSolver extends libPictProvider
 		// Initialize the solver service if it isn't up
 		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
 
-		if (!this.pict.providers.DynamicMetaLists)
-		{
-			this.pict.addProvider('DynamicMetaLists', libDynamicMetaLists.default_configuration, libDynamicMetaLists);
-		}
-		if (!this.pict.providers.ListDistilling)
-		{
-			this.pict.addProvider('ListDistilling', libListDistilling.default_configuration, libListDistilling);
-		}
-		if (!this.pict.providers['Pict-Input-Select'])
-		{
-			this.pict.addProvider('Pict-Input-Select', libInputSelect.default_configuration, libInputSelect);
-		}
-		if (!this.pict.providers['Pict-Input-DateTime'])
-		{
-			this.pict.addProvider('Pict-Input-DateTime', libInputDateTime.default_configuration, libInputDateTime);
-		}
-		if (!this.pict.providers['Pict-Input-TabGroupSelector'])
-		{
-			this.pict.addProvider('Pict-Input-TabGroupSelector', libInputTabGroupSelector.default_configuration, libInputTabGroupSelector);
-		}
-		if (!this.pict.providers['Pict-Input-TabSectionSelector'])
-		{
-			this.pict.addProvider('Pict-Input-TabSectionSelector', libInputTabSectionSelector.default_configuration, libInputTabSectionSelector);
-		}
-		if (!this.pict.providers['Pict-Input-EntityBundleRequest'])
-		{
-			this.pict.addProvider('Pict-Input-EntityBundleRequest', libInputEntityBundleRequest.default_configuration, libInputEntityBundleRequest);
-		}
-		if (!this.pict.providers['Pict-Input-AutofillTriggerGroup'])
-		{
-			this.pict.addProvider('Pict-Input-AutofillTriggerGroup', libInputAutofillTriggerGroup.default_configuration, libInputAutofillTriggerGroup);
-		}
-		if (!this.pict.providers['Pict-Input-Markdown'])
-		{
-			this.pict.addProvider('Pict-Input-Markdown', libInputMarkdown.default_configuration, libInputMarkdown);
-		}
-		if (!this.pict.providers['Pict-Input-HTML'])
-		{
-			this.pict.addProvider('Pict-Input-HTML', libInputHTML.default_configuration, libInputHTML);
-		}
-		if (!this.pict.providers['Pict-Input-PreciseNumber'])
-		{
-			this.pict.addProvider('Pict-Input-PreciseNumber', libInputPreciseNumber.default_configuration, libInputPreciseNumber);
-		}
-		if (!this.pict.providers['Pict-Input-TemplatedEntityLookup'])
-		{
-			this.pict.addProvider('Pict-Input-TemplatedEntityLookup', libInputTemplatedEntityLookup.default_configuration, libInputTemplatedEntityLookup);
-		}
-		if (!this.pict.providers['Pict-Input-Link'])
-		{
-			this.pict.addProvider('Pict-Input-Link', libInputLink.default_configuration, libInputLink);
-		}
+		this.pict.addProviderSingleton('DynamicFormSolverBehaviors', libDynamicFormSolverBehaviors.default_configuration, libDynamicFormSolverBehaviors);
+		this.pict.providers.DynamicFormSolverBehaviors.injectBehaviors(this.fable.ExpressionParser);
+		this.pict.addProviderSingleton('DynamicMetaLists', libDynamicMetaLists.default_configuration, libDynamicMetaLists);
+		this.pict.addProviderSingleton('ListDistilling', libListDistilling.default_configuration, libListDistilling);
+		this.pict.addProviderSingleton('Pict-Input-Select', libInputSelect.default_configuration, libInputSelect);
+		this.pict.addProviderSingleton('Pict-Input-DateTime', libInputDateTime.default_configuration, libInputDateTime);
+		this.pict.addProviderSingleton('Pict-Input-TabGroupSelector', libInputTabGroupSelector.default_configuration, libInputTabGroupSelector);
+		this.pict.addProviderSingleton('Pict-Input-TabSectionSelector', libInputTabSectionSelector.default_configuration, libInputTabSectionSelector);
+		this.pict.addProviderSingleton('Pict-Input-EntityBundleRequest', libInputEntityBundleRequest.default_configuration, libInputEntityBundleRequest);
+		this.pict.addProviderSingleton('Pict-Input-AutofillTriggerGroup', libInputAutofillTriggerGroup.default_configuration, libInputAutofillTriggerGroup);
+		this.pict.addProviderSingleton('Pict-Input-Markdown', libInputMarkdown.default_configuration, libInputMarkdown);
+		this.pict.addProviderSingleton('Pict-Input-HTML', libInputHTML.default_configuration, libInputHTML);
+		this.pict.addProviderSingleton('Pict-Input-PreciseNumber', libInputPreciseNumber.default_configuration, libInputPreciseNumber);
+		this.pict.addProviderSingleton('Pict-Input-TemplatedEntityLookup', libInputTemplatedEntityLookup.default_configuration, libInputTemplatedEntityLookup);
+		this.pict.addProviderSingleton('Pict-Input-Link', libInputLink.default_configuration, libInputLink);
+		this.pict.addProviderSingleton('Pict-Input-Link', libInputLink.default_configuration, libInputLink);
 	}
 
 	/**

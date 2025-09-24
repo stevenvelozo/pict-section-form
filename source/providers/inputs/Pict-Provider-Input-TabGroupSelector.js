@@ -33,6 +33,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		this.cssHideClass = pCSSHideClass || this.cssHideClass;
 		this.cssSnippet = pCSSSnippet || this.cssSnippet;
 		this.pict.CSSMap.addCSS('Pict-Section-Form-Input-Group-TabSelector', this.cssSnippet, 1001, 'Pict-Input-TabSelector');
+		this.pict.CSSMap.injectCSS();
 	}
 
 	getTabSelector(pView, pInput, pGroupHash)

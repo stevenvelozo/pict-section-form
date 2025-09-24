@@ -704,6 +704,23 @@ class PictFormMetacontroller extends libPictViewClass
 		}
 	}
 
+	getSectionViewFromHash(pSectionHash)
+	{
+		let tmpSectionHash = (typeof(pSectionHash) === 'string') ? pSectionHash : false;
+		if (!tmpSectionHash)
+		{
+			this.log.error('getSectionViewFromHash() called without a valid section hash.');
+			return false;
+		}
+		let tmpViewHash = `PictSectionForm-${tmpSectionHash}`;
+		if (tmpViewHash in this.fable.views)
+		{
+			return this.fable.views[tmpViewHash];
+		}
+		this.log.error(`getSectionViewFromHash() could not find a view for section hash [${tmpSectionHash}].`);
+		return false;
+	}
+
 	/**
 	 * Bootstraps Pict DynamicForm views from a Manyfest description JSON object.
 	 *
