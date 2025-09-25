@@ -39,7 +39,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 					this.log.error(`Error parsing rounding method onDataMarshalToForm for input ${pInput.Hash}`, pError);
 				}
 			}
-			tmpValue = this.fable.Math.roundPrecise(tmpValue, pInput.PictForm.DecimalPrecision, tmpRoundingMethod);
+			tmpValue = this.fable.Math.toFixedPrecise(tmpValue, pInput.PictForm.DecimalPrecision, tmpRoundingMethod);
 		}
 
 		if (('AddCommas' in pInput.PictForm) && pInput.PictForm.AddCommas)
