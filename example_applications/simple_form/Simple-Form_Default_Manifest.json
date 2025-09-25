@@ -20,8 +20,11 @@
 					"ITDRO = Height * Width",
 					"ITPRO = Height * Width",
 					"LoggedValues = logvalues(\"ITPRO\", ITPRO)",
-					"VisibleMarshalingGroup = SetGroupVisibility(\"Area\", \"Help\", if(Height,\"GT\", 99, \"\", 1))",
-					"VisibleMarshalingSection = SetSectionVisibility(\"Marshaling\", if(ITPRO,\"LT\", 10000, \"\", 1))"
+					"SetGroupVisibility(\"Area\", \"Help\", if(Height,\"GT\", 99, 0, 1))",
+					"SetSectionVisibility(\"Marshaling\", if(ITPRO,\"LT\", 10000, 0, 1))",
+					"ColorSectionBackground(\"Marshaling\",\"#FF00FF\", 1)",
+					"ColorGroupBackground(\"Area\", \"Help\", ContentBackgroundColor, 1)"
+					
 				],
 			"MetaTemplates":
 				[
@@ -99,6 +102,15 @@
 					"Default": "<p>To calculate the area of a rectangle, you multiply its length by its width. The length is one side of the rectangle, and the width is the adjacent side at a right angle. Since a rectangle has opposite sides that are equal and all angles are right angles, this simple multiplication gives the total space inside the rectangle, expressed in square units.</p>"
 					,"PictForm": { "InputType": "HTML", "Section":"Area", "Group":"Help" }
 				},
+			"ContentBackgroundColor":
+				{
+					"Name":"Content Background Color",
+					"Hash":"ContentBackgroundColor",
+					"DataType":"String",
+					"Default": "#FFFFEE"
+					,"PictForm": { "InputType": "Color", "Section":"Area", "Group":"Help", "Row":2 }
+				},
+
 
 
 			"DTPN":

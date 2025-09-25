@@ -221,6 +221,20 @@ Glug glug glug Oo... -->
 `
 		},
 		{
+			"HashPostfix": "-Template-Input-InputType-Color",
+			"Template": /*HTML*/`
+					<!-- InputType Color {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <input type="color" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} />
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-DisplayOnly",
+			"Template": /*HTML*/`
+					<!-- InputType DisplayOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <span {~D:Record.Macro.InputFullProperties~}></span>
+`
+		},
+		{
 			"HashPostfix": "-Template-Input-InputType-ReadOnly",
 			"Template": /*HTML*/`
 					<!-- InputType ReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
@@ -374,6 +388,28 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span>
 					<span>{~D:Record.PictForm.ExtraDescription~}</span>
 					<input id="DATETIME-INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}" type="datetime-local" value="" />
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-Color",
+			"Template": /*HTML*/`
+					<!-- InputType Color {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<input type="color" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} />
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-DisplayOnly",
+			"Template": /*HTML*/`
+					<!-- InputType DisplayOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<span {~D:Record.Macro.InputFullProperties~}></span>
 				</div>
 `
 		},
@@ -893,6 +929,30 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-Hidden",
 			"Template": /*HTML*/` value="">
+`
+		},
+
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Color",
+			"Template": /*HTML*/`
+					<!-- InputType Color {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <input type="color" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} {~D:Record.Macro.InformaryTabular~}`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-Color",
+			"Template": /*HTML*/` />
+`
+		},
+
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-DisplayOnly",
+			"Template": /*HTML*/`
+					<!-- InputType DisplayOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <span {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InformaryTabular~}`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-DisplayOnly",
+			"Template": /*HTML*/` ></span>
 `
 		},
 

@@ -73,8 +73,16 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 	{
 		// Wire up the solver functions.
 		this.addSolverFunction(pExpressionParser, 'logValues', 'fable.providers.DynamicFormSolverBehaviors.logValues', 'Logs a set of values to the console and returns the last one.');
+
 		this.addSolverFunction(pExpressionParser, 'setSectionVisibility', 'fable.providers.DynamicFormSolverBehaviors.setSectionVisibility', 'Sets a sections visiblity to true or fales based on the second parameter.');
 		this.addSolverFunction(pExpressionParser, 'setGroupVisibility', 'fable.providers.DynamicFormSolverBehaviors.setGroupVisibility', 'Sets a group visiblity to true or fales based on the third parameter.');
+
+		this.addSolverFunction(pExpressionParser, 'generateHTMLHexColor', 'fable.providers.DynamicFormSolverBehaviors.generateHTMLHexColor', 'Generates a HTML hex color from three integer parameters (red, green, blue).');
+
+		this.addSolverFunction(pExpressionParser, 'colorSectionBackground', 'fable.providers.DynamicFormSolverBehaviors.colorSectionBackground', 'Colors a section background with a HTML hex color (e.g. #FF0000 for red).');
+		this.addSolverFunction(pExpressionParser, 'colorGroupBackground', 'fable.providers.DynamicFormSolverBehaviors.colorGroupBackground', 'Colors a group background with a HTML hex color (e.g. #FF0000 for red).');
+		this.addSolverFunction(pExpressionParser, 'colorInputBackground', 'fable.providers.DynamicFormSolverBehaviors.colorInputBackground', 'Colors an input background with a HTML hex color (e.g. #FF0000 for red).');
+
 		return false;
 	}
 
@@ -85,7 +93,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 
 	setSectionVisibility(pSectionHash, pVisible)
 	{
-		if (pVisible)
+		if (pVisible != "0")
 		{
 			return this.showSection(pSectionHash);
 		}
@@ -186,6 +194,123 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		}
 
 		this.pict.ContentAssignment.removeClass(this.getGroupSelector(tmpGroupView.formID, pGroupHash), this.cssHideGroupClass);
+		return true;
+	}
+
+	generateHTMLHexColor(pRed, pGreen, pBlue)
+	{
+		let tmpRed = (parseInt(pRed) || 0);
+		let tmpGreen = (parseInt(pGreen) || 0);
+		let tmpBlue = (parseInt(pBlue) || 0);
+
+		if (tmpRed < 0) { tmpRed = 0; }
+		if (tmpRed > 255) { tmpRed = 255; }
+		if (tmpGreen < 0) { tmpGreen = 0; }
+		if (tmpGreen > 255) { tmpGreen = 255; }
+		if (tmpBlue < 0) { tmpBlue = 0; }
+		if (tmpBlue > 255) { tmpBlue = 255; }
+
+		let tmpRedHex = tmpRed.toString(16).toUpperCase();
+		if (tmpRedHex.length < 2) { tmpRedHex = `0${tmpRedHex}`; }
+		let tmpGreenHex = tmpGreen.toString(16).toUpperCase();
+		if (tmpGreenHex.length < 2) { tmpGreenHex = `0${tmpGreenHex}`; }
+		let tmpBlueHex = tmpBlue.toString(16).toUpperCase();
+		if (tmpBlueHex.length < 2) { tmpBlueHex = `0${tmpBlueHex}`; }
+
+		return `#${tmpRedHex}${tmpGreenHex}${tmpBlueHex}`;
+	}
+
+	colorSectionBackground(pSectionHash, pColor, pApplyChange)
+	{
+		if (pApplyChange == "0")
+		{
+			return true;
+		}
+
+		let tmpSectionView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash)
+		if (!tmpSectionView)
+		{
+			this.log.warn(`PictDynamicFormsInformary: colorSection could not find section with hash [${pSectionHash}].`);
+			return false;
+		}
+
+		let tmpElementSet = this.pict.ContentAssignment.getElement(this.getSectionSelector(tmpSectionView.formID));
+
+		if (tmpElementSet.length < 1)
+		{
+			this.log.warn(`PictDynamicFormsInformary: colorSection could not find section element with hash [${pSectionHash}] selector [${this.getSectionSelector(tmpSectionView.formID)}].`);
+			return false;
+		}
+
+		let tmpElement = tmpElementSet[0];
+
+		tmpElement.style.backgroundColor = pColor;
+
+		return true;
+	}
+
+	colorGroupBackground(pSectionHash, pGroupHash, pColor, pApplyChange)
+	{
+		if (pApplyChange == "0")
+		{
+			return true;
+		}
+
+		let tmpGroupView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash)
+		if (!tmpGroupView)
+		{
+			this.log.warn(`PictDynamicFormsInformary: colorGroup could not find group with section hash [${pSectionHash}] group [${pGroupHash}].`);
+			return false;
+		}
+
+		let tmpElementSet = this.pict.ContentAssignment.getElement(this.getGroupSelector(tmpGroupView.formID, pGroupHash));
+		
+		if (tmpElementSet.length < 1)
+		{
+			this.log.warn(`PictDynamicFormsInformary: colorGroup could not find group element with section hash [${pSectionHash}] group [${pGroupHash}] selector [${this.getGroupSelector(tmpGroupView.formID, pGroupHash)}].`);
+			return false;
+		}
+
+		let tmpElement = tmpElementSet[0];
+		tmpElement.style.backgroundColor = pColor;
+
+		return true;
+	}
+
+	colorInputBackground(pSectionHash, pInputHash, pColor, pApplyChange)
+	{
+		if (pApplyChange == "0")
+		{
+			return true;
+		}
+
+		let tmpInputView = this.pict.views.PictFormMetacontroller.getInputViewFromHash(pSectionHash)
+
+		if (!tmpInputView)
+		{
+			this.log.warn(`PictDynamicFormsInformary: colorInput could not find input with section hash [${pSectionHash}] input [${pInputHash}].`);
+			return false;
+		}
+
+		let tmpInput = tmpInputView.getInputFromHash(pInputHash);
+
+		if (!tmpInput)
+		{
+			this.log.warn(`PictDynamicFormsInformary: colorInput could not find input with section hash [${pSectionHash}] input [${pInputHash}].`);
+			return false;
+		}
+
+		let tmpElementSet = this.pict.ContentAssignment.getElement(`#INPUT-${tmpInput.formID}`);
+
+		if (tmpElementSet.length < 1)
+		{
+			this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] selector [#INPUT-${tmpInput.formID}].`);
+			return false;
+		}
+
+		let tmpElement = tmpElementSet[0];
+		tmpElement.style.backgroundColor = pColor;
+
 		return true;
 	}
 
