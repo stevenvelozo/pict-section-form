@@ -300,7 +300,8 @@ class PictDynamicFormsInformary extends libPictProvider
 			this.log.error(`Informary failed to marshal data to form because the input view is missing.`);
 			return false;
 		}
-		return this.pict.ContentAssignment.assignContent(`${pInput.Macro.HTMLSelectorTabular}[data-i-index="${pRowIndex}"]`, tmpInputView.getValueByHash(pInput.Hash));
+		return this.pict.ContentAssignment.assignContent(`${pInput.Macro.HTMLSelectorTabular}[data-i-index="${pRowIndex}"]`,
+			tmpInputView.getTabularValueByHash(pInput.PictForm.GroupIndex, pInput.PictForm.InputIndex, pRowIndex));
 	}
 
 	/**

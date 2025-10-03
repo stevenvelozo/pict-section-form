@@ -1,6 +1,6 @@
 {
     "name": "pict-section-form",
-    "version": "1.0.118",
+    "version": "1.0.119",
     "description": "Pict dynamic form sections",
     "main": "source/Pict-Section-Form.js",
     "directories": {
@@ -31,7 +31,7 @@
         "browser-env": "^3.3.0",
         "eslint": "^9.36.0",
         "jquery": "^3.7.1",
-        "pict": "^1.0.305",
+        "pict": "^1.0.306",
         "pict-application": "^1.0.29",
         "pict-service-commandlineutility": "^1.0.15",
         "quackage": "^1.0.42",

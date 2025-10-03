@@ -609,7 +609,7 @@ module.exports.default_configuration.pict_configuration = {
 						Hash: "Name",
 						DataType: "String",
 						Default: "(unnamed fruit)",
-						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
+						PictForm: { Row: "1", Section: "FruitGrid", Group: "FruitGrid" },
 					},
 					health_info: {
 						Name: "Health Info.",
@@ -685,6 +685,23 @@ module.exports.default_configuration.pict_configuration = {
 						Hash: "PercentTotalFat",
 						DataType: "Number",
 						PictForm: { Section: "FruitGrid", Group: "FruitGrid", "InputType": "PreciseNumberReadOnly", "DecimalPrecision": 4 },
+					},
+					"Author.Name": {
+						Name: "Author Name",
+						Hash: "AuthorNameTabular",
+						DataType: "String",
+						PictForm: {
+							Row: "1",
+							Section: "FruitGrid", Group: "FruitGrid",
+							// This performs an entity bundle request whenever a value is selected.
+							Providers: ["Pict-Input-AutofillTriggerGroup"],
+							AutofillTriggerGroup:
+								{
+									TriggerGroupName: "BookTriggerGroup",
+									TriggerAddress: "AppData.CurrentAuthor.Name",
+									MarshalEmptyValues: true
+								}
+						}
 					},
 				},
 			},

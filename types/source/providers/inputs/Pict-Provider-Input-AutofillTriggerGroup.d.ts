@@ -31,8 +31,8 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     /** @type {import('pict')} */
     pict: import("pict");
     getTriggerGroupConfigurationArray(pInput: any): any;
-    autoFillFromAddressList(pView: any, pInput: any, tmpTriggerGroupInfo: any, pHTMLSelector: any): boolean;
-    autoFillFromAddressListTabular(pView: any, pInput: any, tmpTriggerGroupInfo: any, pHTMLSelector: any, pRowIndex: any): boolean;
+    autoFillFromAddressList(pView: any, pInput: any, pTriggerGroupInfo: any, pHTMLSelector: any): boolean;
+    autoFillFromAddressListTabular(pView: any, pInput: any, pTriggerGroupInfo: any, pHTMLSelector: any, pRowIndex: any): boolean;
     /**
      * Handles the change event for the data in the select input.
      *

@@ -78,7 +78,15 @@ declare class PictViewDynamicForm extends libPictViewClass {
      * Gets a value by hash address.
      * @param {string} pHashAddress
      */
-    getValueByHash(pHashAddress: string): any;
+    getValueByHash(pHashAddress: string, pRowIndex: any): any;
+    /**
+     * Gets a value by hash address.
+     *
+     * @param {number} pGroupIndex
+     * @param {number} pInputIndex
+     * @param {number} pRowIndex
+     */
+    getTabularValueByHash(pGroupIndex: number, pInputIndex: number, pRowIndex: number): any;
     /**
      * Marshals data to the view.
      *
@@ -223,11 +231,17 @@ declare class PictViewDynamicForm extends libPictViewClass {
      */
     inputEvent(pInputHash: string, pEvent: string): any;
     /**
-     *
+     * @deprecated
      * @param {string} pEvent - The input event string.
      * @param {Object} pCompletedHashes - the hashes that have already signaled the event
      */
     globalInputEvent(pEvent: string, pCompletedHashes: any): void;
+    /**
+     *
+     * @param {string} pEvent - The input event string.
+     * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     */
+    manifestInputEvent(pEvent: string, pCompletedHashes: any): void;
     /**
      * Triggers a DataRequest event for an Input Provider
      *
@@ -247,6 +261,19 @@ declare class PictViewDynamicForm extends libPictViewClass {
      * @returns {any} - The result of the input event handling.
      */
     inputEventTabular(pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: string): any;
+    /**
+     *
+     * @param {number} pGroupIndex - The index of the group.
+     * @param {string} pEvent - The input event string.
+     * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     */
+    groupInputEvent(pGroupIndex: number, pEvent: string, pCompletedHashes: any): void;
+    /**
+     *
+     * @param {string} pEvent - The input event string.
+     * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     */
+    sectionInputEvent(pEvent: string, pCompletedHashes: any): void;
     /**
      * Get the input object for a specific tabular record group and index.
      *

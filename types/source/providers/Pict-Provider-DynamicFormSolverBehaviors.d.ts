@@ -35,6 +35,10 @@ declare class PictDynamicFormsSolverBehaviors extends libPictProvider {
     setGroupVisibility(pSectionHash: any, pGroupHash: any, pVisible: any): boolean;
     hideGroup(pSectionHash: any, pGroupHash: any): boolean;
     showGroup(pSectionHash: any, pGroupHash: any): boolean;
+    generateHTMLHexColor(pRed: any, pGreen: any, pBlue: any): string;
+    colorSectionBackground(pSectionHash: any, pColor: any, pApplyChange: any): boolean;
+    colorGroupBackground(pSectionHash: any, pGroupHash: any, pColor: any, pApplyChange: any): boolean;
+    colorInputBackground(pSectionHash: any, pInputHash: any, pColor: any, pApplyChange: any): boolean;
     logValues(...args: any[]): any;
 }
 declare namespace PictDynamicFormsSolverBehaviors {

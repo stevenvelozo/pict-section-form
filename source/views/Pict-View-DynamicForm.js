@@ -396,11 +396,25 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Gets a value by hash address.
-	 * @param {string} pHashAddress 
+	 * @param {string} pHashAddress
 	 */
-	getValueByHash(pHashAddress)
+	getValueByHash(pHashAddress, pRowIndex)
 	{
 		return this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), pHashAddress);
+	}
+
+	/**
+	 * Gets a value by hash address.
+	 *
+	 * @param {number} pGroupIndex
+	 * @param {number} pInputIndex
+	 * @param {number} pRowIndex
+	 */
+	getTabularValueByHash(pGroupIndex, pInputIndex, pRowIndex)
+	{
+		const tmpInput = this.getTabularRecordInput(pGroupIndex, pInputIndex);
+		const tmpAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
+		return this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpAddress);
 	}
 
 	/**
@@ -490,7 +504,7 @@ class PictViewDynamicForm extends libPictViewClass
 			let tmpTransactionGUID = this.fable.getUUID();
 			this.transactionTracking.registerTransaction(tmpTransactionGUID);
 			this.runInputProviderFunctions('onAfterMarshalToForm', null, null, tmpTransactionGUID);
-						
+
 		}
 		catch (pError)
 		{
@@ -668,7 +682,7 @@ class PictViewDynamicForm extends libPictViewClass
 					{
 						let tmpInput = tmpRow.Inputs[k];
 						// Now run any providers connected to this input
-						if (tmpInput && tmpInput.PictForm 
+						if (tmpInput && tmpInput.PictForm
 							&& (!pInputHash || (pInputHash === tmpInput.Hash)))
 						{
 							let tmpInputProviderList = this.getInputProviderList(tmpInput);
@@ -976,11 +990,21 @@ class PictViewDynamicForm extends libPictViewClass
 	}
 
 	/**
-	 *
+	 * @deprecated
 	 * @param {string} pEvent - The input event string.
 	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
 	 */
 	globalInputEvent(pEvent, pCompletedHashes)
+	{
+		this.manifestInputEvent(pEvent, pCompletedHashes);
+	}
+
+	/**
+	 *
+	 * @param {string} pEvent - The input event string.
+	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 */
+	manifestInputEvent(pEvent, pCompletedHashes)
 	{
 		const tmpInputHashes = Object.keys(this.sectionManifest.elementHashes);
 
@@ -1019,6 +1043,72 @@ class PictViewDynamicForm extends libPictViewClass
 	inputEventTabular(pGroupIndex, pInputIndex, pRowIndex, pEvent)
 	{
 		return this.pict.providers.DynamicInputEvents.inputEventTabular(this, pGroupIndex, pInputIndex, pRowIndex, pEvent);
+	}
+
+	/**
+	 *
+	 * @param {number} pGroupIndex - The index of the group.
+	 * @param {string} pEvent - The input event string.
+	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 */
+	groupInputEvent(pGroupIndex, pEvent, pCompletedHashes)
+	{
+		const tmpGroup = this.getGroup(pGroupIndex);
+
+		if (!tmpGroup)
+		{
+			this.log.warn(`PICT View Metatemplate Helper subManifestInputEvent ${pGroupIndex} is not a valid group index.`);
+			return;
+		}
+
+		if (tmpGroup.Rows.length < 1)
+		{
+			// tabular
+			const tmpRecordSetRows = this.getTabularRecordSet(pGroupIndex);
+			if (!Array.isArray(tmpRecordSetRows))
+			{
+				return;
+			}
+			for (let i = 0; i < tmpRecordSetRows.length; i++)
+			{
+				for (const tmpInput of Object.values(tmpGroup.supportingManifest.elementDescriptors))
+				{
+					const tmpInputSignature = `${this.Hash}-${tmpGroup.Hash}-${tmpInput.Hash}-${i}`;
+					if (!(tmpInputSignature in pCompletedHashes))
+					{
+						pCompletedHashes[tmpInputSignature] = true;
+						this.inputEventTabular(pGroupIndex, tmpInput.PictForm.InputIndex, i, pEvent);
+					}
+				}
+			}
+		}
+		for (const tmpRow of tmpGroup.Rows || [])
+		{
+			for (const tmpInput of tmpRow.Inputs || [])
+			{
+				const tmpInputSignature = `${this.Hash}-${tmpGroup.Hash}-${tmpInput.Hash}-${tmpRow.Hash}`;
+				if (!(tmpInputSignature in pCompletedHashes))
+				{
+					pCompletedHashes[tmpInputSignature] = true;
+					this.inputEvent(tmpInput.Hash, pEvent);
+				}
+			}
+		}
+	}
+
+	/**
+	 *
+	 * @param {string} pEvent - The input event string.
+	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 */
+	sectionInputEvent(pEvent, pCompletedHashes)
+	{
+		const tmpGroupCount = this.sectionDefinition.Groups.length;
+
+		for (let i = 0; i < tmpGroupCount; i++)
+		{
+			this.groupInputEvent(i, pEvent, pCompletedHashes);
+		}
 	}
 
 	/**

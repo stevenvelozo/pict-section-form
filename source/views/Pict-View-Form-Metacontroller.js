@@ -921,10 +921,11 @@ class PictFormMetacontroller extends libPictViewClass
 		// Filter the views based on the filter function and type
 		for (let i = 0; i < tmpViewHashes.length; i++)
 		{
+			/** @type {import('./Pict-View-DynamicForm.js')} */
 			let tmpView = this.pict.views[tmpViewHashes[i]];
 			if (tmpView.isPictSectionForm)
 			{
-				tmpView.globalInputEvent(tmpEvent, tmpCompletedHashes);
+				tmpView.sectionInputEvent(tmpEvent, tmpCompletedHashes);
 			}
 		}
 	}

@@ -175,7 +175,7 @@ class PictDynamicInputEvents extends libPictProvider
 	inputEventTabular(pView, pGroupIndex, pInputIndex, pRowIndex, pEvent)
 	{
 		let tmpInput = pView.getTabularRecordInput(pGroupIndex, pInputIndex);
-		if (pGroupIndex && pInputIndex && pRowIndex && tmpInput)
+		if (pGroupIndex != null && pInputIndex != null && pRowIndex != null && tmpInput)
 		{
 			try
 			{
@@ -204,14 +204,6 @@ class PictDynamicInputEvents extends libPictProvider
 				pView.log.error(`Dynamic form [${pView.Hash}]::[${pView.UUID}] gross error marshaling specific (${pGroupIndex} | ${pInputIndex} | ${pRowIndex}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in calling inputEvent ${pEvent}: ${pError}`);
 			}
 		}
-		else
-		{
-			// pView is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
-			pView.marshalFromView();
-		}
-		// Run any dynamic input providers for the input hash.
-		pView.pict.PictApplication.solve();
-		pView.marshalToView();
 	}
 }
 

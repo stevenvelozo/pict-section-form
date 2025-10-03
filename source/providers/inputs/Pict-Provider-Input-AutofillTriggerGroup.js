@@ -53,23 +53,23 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return tmpAutoFillTriggerGroups;
 	}
 
-	autoFillFromAddressList(pView, pInput, tmpTriggerGroupInfo, pHTMLSelector)
+	autoFillFromAddressList(pView, pInput, pTriggerGroupInfo, pHTMLSelector)
 	{
 		// First sanity check the triggergroupinfo
-		if (!('TriggerGroupName' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerGroupName) != 'string'))
+		if (!('TriggerGroupName' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerGroupName) != 'string'))
 		{
 			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupName string is not present.`);
 			return false;
 		}
-		if (!('TriggerAddress' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerAddress) != 'string'))
+		if (!('TriggerAddress' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerAddress) != 'string'))
 		{
 			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerAddress string is not present.`);
 			return false;
 		}
 
-		let tmpValue = this.pict.manifest.getValueByHash(this.pict, tmpTriggerGroupInfo.TriggerAddress);
+		let tmpValue = this.pict.manifest.getValueByHash(this.pict, pTriggerGroupInfo.TriggerAddress);
 
-		if ((!tmpValue) && !tmpTriggerGroupInfo.MarshalEmptyValues)
+		if ((!tmpValue) && !pTriggerGroupInfo.MarshalEmptyValues)
 		{
 			return false;
 		}
@@ -79,29 +79,29 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return true;
 	}
 
-	autoFillFromAddressListTabular(pView, pInput, tmpTriggerGroupInfo, pHTMLSelector, pRowIndex)
+	autoFillFromAddressListTabular(pView, pInput, pTriggerGroupInfo, pHTMLSelector, pRowIndex)
 	{
 		// First sanity check the triggergroupinfo
-		if (!('TriggerGroupName' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerGroupName) != 'string'))
+		if (!('TriggerGroupName' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerGroupName) != 'string'))
 		{
 			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupName string is not present.`);
 			return false;
 		}
-		if (!('TriggerAddress' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerAddress) != 'string'))
+		if (!('TriggerAddress' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerAddress) != 'string'))
 		{
 			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerAddress string is not present.`);
 			return false;
 		}
 
-		let tmpValue = this.pict.manifest.getValueByHash(this.pict, tmpTriggerGroupInfo.TriggerAddress);
+		let tmpValue = this.pict.manifest.getValueByHash(this.pict, pTriggerGroupInfo.TriggerAddress);
 
-		if ((!tmpValue) && !tmpTriggerGroupInfo.MarshalEmptyValues)
+		if ((!tmpValue) && !pTriggerGroupInfo.MarshalEmptyValues)
 		{
 			return false;
 		}
 		// Setting data is in the view intentionally, to allow triggered events.  Probabbly needs to be a separate provider.
-		pView.setDataByInputTabular(pInput.PictForm.GroupIndex, pInput.Hash, pRowIndex, tmpValue);
-		pView.manualMarshalDataToViewByInput(pInput);
+		pView.setDataTabularByHash(pInput.PictForm.GroupIndex, pInput.Hash, pRowIndex, tmpValue);
+		pView.manualMarshalTabularDataToViewByInput(pInput, pRowIndex);
 		return true;
 	}
 
@@ -176,6 +176,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		{
 			let tmpAutoFillTriggerGroup = tmpAutoFillTriggerGroups[i];
 
+			//FIXME: why is this check here? revisit
 			if ('TriggerAddress' in tmpAutoFillTriggerGroup)
 			{
 				// Autofill based on the address list as it isn't a select option
@@ -203,16 +204,22 @@ class CustomInputHandler extends libPictSectionInputExtension
 		if (!pInput.PictForm.hasOwnProperty('AutofillTriggerGroup'))
 		{
 			// Do nothing for now -- this is the triggering element
+			return;
 		}
-		else if (pInput.PictForm.hasOwnProperty('AutofillTriggerGroup') && 
-			(!('SelectOptionsRefresh' in pInput.PictForm.AutofillTriggerGroup) || !pInput.PictForm.AutofillTriggerGroup.SelectOptionsRefresh))
+		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
+		if (!Array.isArray(tmpAutoFillTriggerGroups))
 		{
-			// Autofill based on the address list as it isn't a select option
-			this.autoFillFromAddressListTabular(pView, pInput, pHTMLSelector, pRowIndex);
+			tmpAutoFillTriggerGroups = [tmpAutoFillTriggerGroups];
 		}
-		else if (pInput.PictForm.AutofillTriggerGroup.SelectOptionsRefresh)
+		for (const tmpAutoFillTriggerGroup of tmpAutoFillTriggerGroups)
 		{
-			if (!pInput.PictForm.SelectOptionsPickList)
+			//FIXME: why is this flow different from non-tabular? revisit
+			if (!tmpAutoFillTriggerGroup.SelectOptionsRefresh)
+			{
+				// Autofill based on the address list as it isn't a select option
+				this.autoFillFromAddressListTabular(pView, pInput, tmpAutoFillTriggerGroup, pHTMLSelector, pRowIndex);
+			}
+			else if (!pInput.PictForm.SelectOptionsPickList)
 			{
 				// There is no select options picklist so we can't auto refresh it.
 			}
