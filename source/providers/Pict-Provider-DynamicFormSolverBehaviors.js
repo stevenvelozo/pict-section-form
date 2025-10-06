@@ -300,11 +300,11 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return false;
 		}
 
-		let tmpElementSet = this.pict.ContentAssignment.getElement(`#INPUT-${tmpInput.formID}`);
+		let tmpElementSet = this.pict.ContentAssignment.getElement(`#INPUT-${tmpInput.Macro.RawHTMLID}`);
 
 		if (tmpElementSet.length < 1)
 		{
-			this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] selector [#INPUT-${tmpInput.formID}].`);
+			this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] selector [#INPUT-${tmpInput.Macro.RawHTMLID}].`);
 			return false;
 		}
 
