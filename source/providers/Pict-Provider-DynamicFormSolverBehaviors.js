@@ -299,7 +299,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			this.log.warn(`PictDynamicFormsInformary: colorInput could not find input with section hash [${pSectionHash}] input [${pInputHash}].`);
 			return false;
 		}
-		// check for both input and select
+
 		let tmpElementSet = this.pict.ContentAssignment.getElement(`#${tmpInput.Macro.RawHTMLID}`);
 
 		if (tmpElementSet.length < 1)
@@ -308,7 +308,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return false;
 		}
 
-		// if there's a parent element, use that instead and we can color the whole input container and cascade the color down as needed in templates
+		// if there's a parent element, use that instead and we can color the whole input container area
 		if (tmpElementSet[0].parentElement)
 		{
 			tmpElementSet = [ tmpElementSet[0].parentElement ];
