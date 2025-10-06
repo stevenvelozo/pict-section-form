@@ -277,7 +277,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		return true;
 	}
 
-	colorInputBackground(pSectionHash, pInputHash, pColor, pApplyChange)
+	colorInputBackground(pSectionHash, pInputHash, pColor, pApplyChange, pClassTarget)
 	{
 		if (pApplyChange == "0")
 		{
@@ -308,11 +308,28 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return false;
 		}
 
-		// if there's a parent element, use that instead and we can color the whole input container area
-		if (tmpElementSet[0].parentElement)
+		if (pClassTarget)
 		{
-			tmpElementSet = [ tmpElementSet[0].parentElement ];
+			const parentElements = [];
+			// try to find the parent element with the target class
+			while ((tmpElementSet[0] = tmpElementSet[0].parentNode) && tmpElementSet[0] !== document)
+			{
+				if (!pClassTarget || tmpElementSet[0]?.classList?.contains(pClassTarget))
+				{
+					parentElements.push(tmpElementSet[0]);
+				}
+			}
+			if (parentElements.length > 0)
+			{
+				tmpElementSet = [ parentElements[0] ];
+			}
+			else
+			{
+				this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] class target [${pClassTarget}].`);
+				return false;
+			}
 		}
+
 		let tmpElement = tmpElementSet[0];
 		tmpElement.style.backgroundColor = pColor;
 
