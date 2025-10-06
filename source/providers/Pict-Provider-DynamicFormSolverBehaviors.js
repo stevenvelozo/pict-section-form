@@ -284,7 +284,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return true;
 		}
 
-		let tmpInputView = this.pict.views.PictFormMetacontroller.getInputViewFromHash(pSectionHash)
+		let tmpInputView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash)
 
 		if (!tmpInputView)
 		{
@@ -300,14 +300,19 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return false;
 		}
 
-		let tmpElementSet = this.pict.ContentAssignment.getElement(`#INPUT-${tmpInput.formID}`);
+		let tmpElementSet = this.pict.ContentAssignment.getElement(`#${tmpInput.Macro.RawHTMLID}`);
 
 		if (tmpElementSet.length < 1)
 		{
-			this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] selector [#INPUT-${tmpInput.formID}].`);
+			this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] selector [${ tmpElementSet[0].id}].`);
 			return false;
 		}
 
+		// if there's a parent element, use that instead and we can color the whole input container area
+		if (tmpElementSet[0].parentElement)
+		{
+			tmpElementSet = [ tmpElementSet[0].parentElement ];
+		}
 		let tmpElement = tmpElementSet[0];
 		tmpElement.style.backgroundColor = pColor;
 
