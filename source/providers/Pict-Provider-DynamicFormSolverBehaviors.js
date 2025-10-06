@@ -284,7 +284,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return true;
 		}
 
-		let tmpInputView = this.pict.views.PictFormMetacontroller.getInputViewFromHash(pSectionHash)
+		let tmpInputView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash)
 
 		if (!tmpInputView)
 		{
