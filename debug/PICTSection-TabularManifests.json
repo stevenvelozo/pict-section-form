@@ -507,7 +507,7 @@
                         "Pict-Input-AutofillTriggerGroup"
                     ],
                     "AutofillTriggerGroup": {
-                        "TriggerGroup": "Box",
+                        "TriggerGroupHash": "Box",
                         "MarshalEmptyValues": false,
                         "SelectOptionsRefresh": true
                     },
@@ -756,7 +756,7 @@
                                 "Pict-Input-AutofillTriggerGroup"
                             ],
                             "AutofillTriggerGroup": {
-                                "TriggerGroup": "Box",
+                                "TriggerGroupHash": "Box",
                                 "MarshalEmptyValues": false,
                                 "TriggerAllInputs": true
                             },
@@ -829,7 +829,7 @@
                                 "Pict-Input-AutofillTriggerGroup"
                             ],
                             "AutofillTriggerGroup": {
-                                "TriggerGroup": "Box",
+                                "TriggerGroupHash": "Box",
                                 "MarshalEmptyValues": false,
                                 "TriggerAllInputs": true
                             },

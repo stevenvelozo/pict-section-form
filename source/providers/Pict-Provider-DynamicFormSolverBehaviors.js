@@ -149,7 +149,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 
 	setGroupVisibility(pSectionHash, pGroupHash, pVisible)
 	{
-		if (pVisible)
+		if (pVisible != "0")
 		{
 			return this.showGroup(pSectionHash, pGroupHash);
 		}

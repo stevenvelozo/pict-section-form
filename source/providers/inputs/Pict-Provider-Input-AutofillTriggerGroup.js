@@ -15,7 +15,7 @@ const libPictSectionInputExtension = require('../Pict-Provider-InputExtension.js
 	Providers: ["Pict-Input-AutofillTriggerGroup"],
 	AutofillTriggerGroup:
 		{
-			TriggerGroupName: "Author",
+			TriggerGroupHash: "Author",
 			TriggerAddress: "AppData.CurrentAuthor.Name",
 			MarshalEmptyValues: true
 		}
@@ -56,9 +56,9 @@ class CustomInputHandler extends libPictSectionInputExtension
 	autoFillFromAddressList(pView, pInput, pTriggerGroupInfo, pHTMLSelector)
 	{
 		// First sanity check the triggergroupinfo
-		if (!('TriggerGroupName' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerGroupName) != 'string'))
+		if (!('TriggerGroupHash' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerGroupHash) != 'string'))
 		{
-			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupName string is not present.`);
+			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupHash string is not present.`);
 			return false;
 		}
 		if (!('TriggerAddress' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerAddress) != 'string'))
@@ -82,9 +82,9 @@ class CustomInputHandler extends libPictSectionInputExtension
 	autoFillFromAddressListTabular(pView, pInput, pTriggerGroupInfo, pHTMLSelector, pRowIndex)
 	{
 		// First sanity check the triggergroupinfo
-		if (!('TriggerGroupName' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerGroupName) != 'string'))
+		if (!('TriggerGroupHash' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerGroupHash) != 'string'))
 		{
-			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupName string is not present.`);
+			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupHash string is not present.`);
 			return false;
 		}
 		if (!('TriggerAddress' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerAddress) != 'string'))
@@ -122,9 +122,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 		{
 			for (let i = 0; i < tmpTriggerGroupConfigurations.length; i++)
 			{
-				if (tmpTriggerGroupConfigurations[i].TriggerAllInputs)
+				const tmpGroupConfig = tmpTriggerGroupConfigurations[i];
+				if (tmpGroupConfig.TriggerAllInputs)
 				{
-					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`AFTG-ODC-${this.pict.getUUID()}`);
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`TriggerGroup:${tmpGroupConfig.TriggerGroupHash}:DataChange:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`);
 				}
 			}
 		}
@@ -148,9 +149,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 		{
 			for (let i = 0; i < tmpTriggerGroupConfigurations.length; i++)
 			{
-				if (tmpTriggerGroupConfigurations[i].TriggerAllInputs)
+				const tmpGroupConfig = tmpTriggerGroupConfigurations[i];
+				if (tmpGroupConfig.TriggerAllInputs)
 				{
-					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`AFTG-ODC-${this.pict.getUUID()}`);
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`TriggerGroup:${tmpGroupConfig.TriggerGroupHash}:DataChange:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`);
 				}
 			}
 		}
@@ -160,11 +162,15 @@ class CustomInputHandler extends libPictSectionInputExtension
 	// This input extension only responds to events
 	onEvent(pView, pInput, pValue, pHTMLSelector, pEvent)
 	{
-		// Get all inputs that are in this autofill trigger group
-		let tmpEventGUID = (typeof(pEvent) === 'string') ? pEvent : this.pict.getUUID();
+		const tmpPayload = typeof pValue === 'string' ? pEvent : '';
+		let [ tmpType, tmpGroupHash, tmpEvent, tmpInputHash, tmpEventGUID ] = tmpPayload.split(':');
+		if (!tmpEventGUID)
+		{
+			tmpEventGUID = this.pict.getUUID();
+		}
 
 		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
-		if (!tmpAutoFillTriggerGroups)
+		if (!tmpAutoFillTriggerGroups || tmpType !== 'TriggerGroup' || (pInput.Hash || pInput.DataAddress) == tmpInputHash)
 		{
 			return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);			
 		}
@@ -175,6 +181,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 		for (let i = 0; i < tmpAutoFillTriggerGroups.length; i++)
 		{
 			let tmpAutoFillTriggerGroup = tmpAutoFillTriggerGroups[i];
+			if (tmpAutoFillTriggerGroup.TriggerGroupHash !== tmpGroupHash)
+			{
+				continue;
+			}
 
 			//FIXME: why is this check here? revisit
 			if ('TriggerAddress' in tmpAutoFillTriggerGroup)
@@ -199,12 +209,17 @@ class CustomInputHandler extends libPictSectionInputExtension
 
 	onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent)
 	{
-		let tmpEventGUID = (typeof(pEvent) === 'string') ? pEvent : this.pict.getUUID();
+		const tmpPayload = typeof pValue === 'string' ? pEvent : '';
+		let [ tmpType, tmpGroupHash, tmpEvent, tmpInputHash, tmpEventGUID ] = tmpPayload.split(':');
+		if (!tmpEventGUID)
+		{
+			tmpEventGUID = this.pict.getUUID();
+		}
 
-		if (!pInput.PictForm.hasOwnProperty('AutofillTriggerGroup'))
+		if (!pInput.PictForm.AutofillTriggerGroup || tmpType !== 'TriggerGroup' || (pInput.Hash || pInput.DataAddress) == tmpInputHash)
 		{
 			// Do nothing for now -- this is the triggering element
-			return;
+			return super.onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent);
 		}
 		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
 		if (!Array.isArray(tmpAutoFillTriggerGroups))
@@ -213,6 +228,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 		}
 		for (const tmpAutoFillTriggerGroup of tmpAutoFillTriggerGroups)
 		{
+			if (tmpAutoFillTriggerGroup.TriggerGroupHash !== tmpGroupHash)
+			{
+				continue;
+			}
 			//FIXME: why is this flow different from non-tabular? revisit
 			if (!tmpAutoFillTriggerGroup.SelectOptionsRefresh)
 			{

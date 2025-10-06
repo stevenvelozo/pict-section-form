@@ -202,7 +202,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 				let tmpGeneratedTriggerGroup = (
 					{
 						// This is the trigger group name used to bind all the inputs together
-						TriggerGroup: tmpGeneratedTriggerGroupName,
+						TriggerGroupHash: tmpGeneratedTriggerGroupName,
 						// This flags the input to update other inputs when the value changes
 						TriggerAllInputs: true
 					});

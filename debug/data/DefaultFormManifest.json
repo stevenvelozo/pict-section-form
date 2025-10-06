@@ -524,7 +524,7 @@
                 ],
                 "AutofillTriggerGroup": [
                     {
-                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Colors.csv",
+                        "TriggerGroupHash": "AutoTriggerGroup-FruitSelection-Colors.csv",
                         "TriggerAllInputs": true,
                         "SelectOptionsRefresh": true
                     }
@@ -556,7 +556,7 @@
                     "Pict-Input-AutofillTriggerGroup"
                 ],
                 "AutofillTriggerGroup": {
-                    "TriggerGroup": "Box",
+                    "TriggerGroupHash": "Box",
                     "MarshalEmptyValues": false,
                     "SelectOptionsRefresh": true
                 },
@@ -607,12 +607,12 @@
                 ],
                 "AutofillTriggerGroup": [
                     {
-                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Colors.csv",
+                        "TriggerGroupHash": "AutoTriggerGroup-FruitSelection-Colors.csv",
                         "TriggerAllInputs": true,
                         "SelectOptionsRefresh": true
                     },
                     {
-                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Stones.csv",
+                        "TriggerGroupHash": "AutoTriggerGroup-FruitSelection-Stones.csv",
                         "TriggerAllInputs": true,
                         "SelectOptionsRefresh": true
                     }
@@ -671,7 +671,7 @@
                 ],
                 "AutofillTriggerGroup": [
                     {
-                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Stones.csv",
+                        "TriggerGroupHash": "AutoTriggerGroup-FruitSelection-Stones.csv",
                         "TriggerAllInputs": true,
                         "SelectOptionsRefresh": true
                     }
@@ -1475,7 +1475,7 @@
                             "Pict-Input-AutofillTriggerGroup"
                         ],
                         "AutofillTriggerGroup": {
-                            "TriggerGroup": "Box",
+                            "TriggerGroupHash": "Box",
                             "MarshalEmptyValues": false,
                             "TriggerAllInputs": true
                         },
@@ -1548,7 +1548,7 @@
                             "Pict-Input-AutofillTriggerGroup"
                         ],
                         "AutofillTriggerGroup": {
-                            "TriggerGroup": "Box",
+                            "TriggerGroupHash": "Box",
                             "MarshalEmptyValues": false,
                             "TriggerAllInputs": true
                         },

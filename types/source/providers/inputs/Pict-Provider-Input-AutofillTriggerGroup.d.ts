@@ -14,7 +14,7 @@ export = CustomInputHandler;
     Providers: ["Pict-Input-AutofillTriggerGroup"],
     AutofillTriggerGroup:
         {
-            TriggerGroupName: "Author",
+            TriggerGroupHash: "Author",
             TriggerAddress: "AppData.CurrentAuthor.Name",
             MarshalEmptyValues: true
         }

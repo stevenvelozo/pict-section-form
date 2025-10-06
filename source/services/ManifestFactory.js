@@ -446,7 +446,7 @@ class ManifestFactory extends libFableServiceProviderBase
 			tmpDescriptor.PictForm.Providers.push('Pict-Input-AutofillTriggerGroup');
 			tmpDescriptor.PictForm.AutofillTriggerGroup = (
 				{
-					TriggerGroup: tmpRecord.TriggerGroup,
+					TriggerGroupHash: tmpRecord.TriggerGroup,
 					MarshalEmptyValues: tmpRecord.MarshalEmptyValues ? true : false
 				});
 

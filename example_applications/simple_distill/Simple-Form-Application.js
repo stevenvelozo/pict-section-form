@@ -122,7 +122,7 @@ module.exports.default_configuration.pict_configuration = (
 						Providers: ["Pict-Input-AutofillTriggerGroup"],
 						AutofillTriggerGroup:
 						{
-							TriggerGroupName: "BookTriggerGroup",
+							TriggerGroupHash: "BookTriggerGroup",
 							TriggerAddress: "AppData.CurrentAuthor.Name",
 							MarshalEmptyValues: true
 						}
@@ -149,7 +149,7 @@ module.exports.default_configuration.pict_configuration = (
 						Providers: ["Pict-Input-Select", "Pict-Input-AutofillTriggerGroup"],
 						AutofillTriggerGroup:
 						{
-							TriggerGroupName: "BookTriggerGroup",
+							TriggerGroupHash: "BookTriggerGroup",
 							SelectOptionsRefresh: true
 						}
 					}
