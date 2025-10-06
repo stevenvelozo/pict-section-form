@@ -300,31 +300,18 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return false;
 		}
 		// check for both input and select
-		let tmpElementSet = this.pict.ContentAssignment.getElement(`#INPUT-${tmpInput.Macro.RawHTMLID}`);
+		let tmpElementSet = this.pict.ContentAssignment.getElement(`#${tmpInput.Macro.RawHTMLID}`);
 
 		if (tmpElementSet.length < 1)
 		{
 			this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] selector [${ tmpElementSet[0].id}].`);
 			return false;
 		}
-		// if select, we need to step into the next select2 container, then go down one more layer to the child .select2-selection div
-		if (tmpElementSet[0].tagName.toLowerCase() === 'select')
+
+		// if there's a parent element, use that instead and we can color the whole input container and cascade the color down as needed in templates
+		if (tmpElementSet[0].parentElement)
 		{
-			let tmpSelect2Container = tmpElementSet[0].nextElementSibling;
-			if (tmpSelect2Container && tmpSelect2Container.classList.contains('select2'))
-			{
-				tmpElementSet = [ tmpSelect2Container ];
-				// go one more layer down to the .select2-selection div
-				if (tmpElementSet[0].firstElementChild)
-				{
-					tmpElementSet = [ tmpElementSet[0].firstElementChild ];
-					// go one more layer down to the .select2-selection div
-					if (tmpElementSet[0].firstElementChild)
-					{
-						tmpElementSet = [ tmpElementSet[0].firstElementChild ];
-					}
-				}
-			}
+			tmpElementSet = [ tmpElementSet[0].parentElement ];
 		}
 		let tmpElement = tmpElementSet[0];
 		tmpElement.style.backgroundColor = pColor;
