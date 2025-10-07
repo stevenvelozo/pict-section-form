@@ -30,6 +30,11 @@ pushd simple_form
 npm install && npm run build
 popd
 
+# Building simple_distill
+pushd simple_distill
+npm install && npm run build
+popd
+
 # Building simple_table
 pushd simple_table
 npm install && npm run build

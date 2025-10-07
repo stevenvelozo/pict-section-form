@@ -264,7 +264,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		}
 
 		let tmpElementSet = this.pict.ContentAssignment.getElement(this.getGroupSelector(tmpGroupView.formID, pGroupHash));
-		
+
 		if (tmpElementSet.length < 1)
 		{
 			this.log.warn(`PictDynamicFormsInformary: colorGroup could not find group element with section hash [${pSectionHash}] group [${pGroupHash}] selector [${this.getGroupSelector(tmpGroupView.formID, pGroupHash)}].`);
@@ -335,7 +335,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 				}
 			}
 		}
-		
+
 		tmpElement.style.backgroundColor = pColor;
 
 		return true;
