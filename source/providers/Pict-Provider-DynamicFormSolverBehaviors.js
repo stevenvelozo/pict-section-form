@@ -308,29 +308,34 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return false;
 		}
 
+		let tmpElement = tmpElementSet[0];
+
+		// if we passed a class target, find the closest element with that class and apply the color to it
+		// otherwise, just apply it to the input element itself
 		if (pClassTarget)
 		{
-			const parentElements = [];
-			// try to find the parent element with the target class
-			while ((tmpElementSet[0] = tmpElementSet[0].parentNode) && tmpElementSet[0] !== document)
+			const tmpClosestTarget = [];
+			// find closest target by class name and if we find it, immediately break out of the loop
+			for (let i = 0; i < tmpElementSet.length; i++)
 			{
-				if (!pClassTarget || tmpElementSet[0]?.classList?.contains(pClassTarget))
+				const element = tmpElementSet[i];
+				const closest = element.closest(`.${pClassTarget}`);
+				if (closest)
 				{
-					parentElements.push(tmpElementSet[0]);
+					tmpClosestTarget.push(closest);
+					break;
 				}
 			}
-			if (parentElements.length > 0)
+	
+			if (tmpClosestTarget.length < 1)
 			{
-				tmpElementSet = [ parentElements[0] ];
-			}
-			else
-			{
-				this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] class target [${pClassTarget}].`);
+				this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] selector [${ tmpElementSet[0].id}] class target [${pClassTarget}].`);
 				return false;
 			}
+			// If we found a closest target, use it
+			tmpElement = tmpClosestTarget[0];
 		}
 
-		let tmpElement = tmpElementSet[0];
 		tmpElement.style.backgroundColor = pColor;
 
 		return true;
