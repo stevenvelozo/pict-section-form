@@ -314,7 +314,6 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		// otherwise, just apply it to the input element itself
 		if (pClassTarget)
 		{
-			const tmpClosestTarget = [];
 			// find closest target by class name and if we find it, immediately break out of the loop
 			for (let i = 0; i < tmpElementSet.length; i++)
 			{
@@ -322,20 +321,12 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 				const closest = element.closest(`.${pClassTarget}`);
 				if (closest)
 				{
-					tmpClosestTarget.push(closest);
+					tmpElement = closest;
 					break;
 				}
 			}
-	
-			if (tmpClosestTarget.length < 1)
-			{
-				this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] selector [${ tmpElementSet[0].id}] class target [${pClassTarget}].`);
-				return false;
-			}
-			// If we found a closest target, use it
-			tmpElement = tmpClosestTarget[0];
 		}
-
+		
 		tmpElement.style.backgroundColor = pColor;
 
 		return true;
