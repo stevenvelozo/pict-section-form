@@ -277,6 +277,15 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		return true;
 	}
 
+	/**
+	 * Colors an input background or its container with a HTML hex color (e.g. #FF0000 for red).
+	 * @param {string} pSectionHash - The hash of the section containing the input.
+	 * @param {string} pInputHash - The hash of the input to color.
+	 * @param {string} pColor - The HTML hex color to apply (e.g. #FF0000 for red).
+	 * @param {string} pApplyChange - If "0", the change will not be applied.
+	 * @param {string} [pClassTarget] - Optional. If provided, the color will be applied to the closest element with this class instead of the input itself.
+	 * @returns {boolean} - Returns true if the color was applied successfully, false otherwise.
+	 */
 	colorInputBackground(pSectionHash, pInputHash, pColor, pApplyChange, pClassTarget)
 	{
 		if (pApplyChange == "0")
