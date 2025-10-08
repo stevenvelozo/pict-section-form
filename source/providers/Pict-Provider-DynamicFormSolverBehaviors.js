@@ -277,7 +277,16 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		return true;
 	}
 
-	colorInputBackground(pSectionHash, pInputHash, pColor, pApplyChange)
+	/**
+	 * Colors an input background or its container with a HTML hex color (e.g. #FF0000 for red).
+	 * @param {string} pSectionHash - The hash of the section containing the input.
+	 * @param {string} pInputHash - The hash of the input to color.
+	 * @param {string} pColor - The HTML hex color to apply (e.g. #FF0000 for red).
+	 * @param {string} pApplyChange - If "0", the change will not be applied.
+	 * @param {string} [pClassTarget] - Optional. If provided, the color will be applied to the closest element with this class instead of the input itself.
+	 * @returns {boolean} - Returns true if the color was applied successfully or if the change was skipped for pApplyChange equal to "0", false otherwise.
+	 */
+	colorInputBackground(pSectionHash, pInputHash, pColor, pApplyChange, pClassTarget)
 	{
 		if (pApplyChange == "0")
 		{
@@ -308,12 +317,25 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return false;
 		}
 
-		// if there's a parent element, use that instead and we can color the whole input container area
-		if (tmpElementSet[0].parentElement)
-		{
-			tmpElementSet = [ tmpElementSet[0].parentElement ];
-		}
 		let tmpElement = tmpElementSet[0];
+
+		// if we passed a class target, find the closest element with that class and apply the color to it
+		// otherwise, just apply it to the input element itself
+		if (pClassTarget)
+		{
+			// find closest target by class name and if we find it, immediately break out of the loop
+			for (let i = 0; i < tmpElementSet.length; i++)
+			{
+				const element = tmpElementSet[i];
+				const closest = element.closest(`.${pClassTarget}`);
+				if (closest)
+				{
+					tmpElement = closest;
+					break;
+				}
+			}
+		}
+		
 		tmpElement.style.backgroundColor = pColor;
 
 		return true;
