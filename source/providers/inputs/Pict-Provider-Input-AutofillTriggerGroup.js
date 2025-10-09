@@ -113,9 +113,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The new value of the input.
 	 * @param {string} pHTMLSelector - The HTML selector of the input.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
 	 * @returns {any} - The result of the super.onDataChange method.
 	 */
-	onDataChange(pView, pInput, pValue, pHTMLSelector)
+	onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		let tmpTriggerGroupConfigurations = this.getTriggerGroupConfigurationArray(pInput);
 		if (Array.isArray(tmpTriggerGroupConfigurations) && this.pict.views.PictFormMetacontroller)
@@ -125,11 +126,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 				const tmpGroupConfig = tmpTriggerGroupConfigurations[i];
 				if (tmpGroupConfig.TriggerAllInputs)
 				{
-					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`TriggerGroup:${tmpGroupConfig.TriggerGroupHash}:DataChange:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`);
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(
+						`TriggerGroup:${tmpGroupConfig.TriggerGroupHash}:DataChange:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`,
+						pTransactionGUID);
 				}
 			}
 		}
-		return super.onDataChange(pView, pInput, pValue, pHTMLSelector);
+		return super.onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
@@ -140,9 +143,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The new value.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {number} pRowIndex - The index of the row.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
 	 * @returns {any} - The result of the super method.
 	 */
-	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
+	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
 		let tmpTriggerGroupConfigurations = this.getTriggerGroupConfigurationArray(pInput);
 		if (Array.isArray(tmpTriggerGroupConfigurations) && this.pict.views.PictFormMetacontroller)
@@ -152,15 +156,27 @@ class CustomInputHandler extends libPictSectionInputExtension
 				const tmpGroupConfig = tmpTriggerGroupConfigurations[i];
 				if (tmpGroupConfig.TriggerAllInputs)
 				{
-					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`TriggerGroup:${tmpGroupConfig.TriggerGroupHash}:DataChange:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`);
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(
+						`TriggerGroup:${tmpGroupConfig.TriggerGroupHash}:DataChange:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`,
+						pTransactionGUID);
 				}
 			}
 		}
-		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex);
+		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 
-	// This input extension only responds to events
-	onEvent(pView, pInput, pValue, pHTMLSelector, pEvent)
+	/**
+	 * This input extension only responds to events
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value from AppData.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
+	 * @returns {boolean} - Returns true.
+	 */
+	onEvent(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID)
 	{
 		const tmpPayload = typeof pValue === 'string' ? pEvent : '';
 		let [ tmpType, tmpGroupHash, tmpEvent, tmpInputHash, tmpEventGUID ] = tmpPayload.split(':');
@@ -172,7 +188,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
 		if (!tmpAutoFillTriggerGroups || tmpType !== 'TriggerGroup' || (pInput.Hash || pInput.DataAddress) == tmpInputHash)
 		{
-			return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);			
+			return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
 		}
 		if (!Array.isArray(tmpAutoFillTriggerGroups))
 		{
@@ -204,10 +220,22 @@ class CustomInputHandler extends libPictSectionInputExtension
 			}
 		}
 
-		return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);
+		return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
 	}
 
-	onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent)
+	/**
+	 * Handles events for the Pict-Provider-InputExtension.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value from AppData.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {number} pRowIndex - The row index of the tabular data.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
+	 * @returns {boolean} - Returns true.
+	 */
+	onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID)
 	{
 		const tmpPayload = typeof pValue === 'string' ? pEvent : '';
 		let [ tmpType, tmpGroupHash, tmpEvent, tmpInputHash, tmpEventGUID ] = tmpPayload.split(':');
@@ -219,7 +247,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		if (!pInput.PictForm.AutofillTriggerGroup || tmpType !== 'TriggerGroup' || (pInput.Hash || pInput.DataAddress) == tmpInputHash)
 		{
 			// Do nothing for now -- this is the triggering element
-			return super.onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent);
+			return super.onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID);
 		}
 		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
 		if (!Array.isArray(tmpAutoFillTriggerGroups))
@@ -254,7 +282,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			}
 		}
 
-		return super.onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent);
+		return super.onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID);
 	}
 }
 

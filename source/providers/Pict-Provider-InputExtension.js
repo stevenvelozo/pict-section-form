@@ -65,9 +65,10 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {Object} pRow - The Row index.
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The value of the input object
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @param {string} pHTMLSelector - The HTML selector for the input object
 	 */
-	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
+	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		return true;
 	}
@@ -82,9 +83,10 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The value of the input object
 	 * @param {string} pHTMLSelector - The HTML selector for the input object (it will return an array).
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @param {number} pRowIndex - The row index of the tabular data
 	 */
-	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
+	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
 		return true;
 	}
@@ -98,8 +100,9 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The new value of the input object
 	 * @param {string} pHTMLSelector - The HTML selector for the input object
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 */
-	onDataChange(pView, pInput, pValue, pHTMLSelector)
+	onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		return true;
 	}
@@ -112,8 +115,9 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {any} pValue - The new value of the input object
 	 * @param {string} pHTMLSelector - The HTML selector for the input object
 	 * @param {number} pRowIndex - The row index of the tabular data
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 */
-	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
+	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
 		return true;
 	}
@@ -127,9 +131,10 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The value to marshal.
 	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {boolean} - Returns true if the data was successfully marshaled to the form.
 	 */
-	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
+	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		return true;
 	}
@@ -143,9 +148,10 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {any} pValue - The value to marshal.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {number} pRowIndex - The index of the input in the row columns.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {boolean} - Returns true if the data was successfully marshaled to the form.
 	 */
-	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
+	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
 		return true;
 	}
@@ -188,9 +194,26 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {any} pValue - The value from AppData.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
 	 * @returns {boolean} - Returns true.
 	 */
-	onEvent(pView, pInput, pValue, pHTMLSelector, pEvent)
+	onEvent(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID)
+	{
+		return true;
+	}
+
+	/**
+	 * Handles events for the Pict-Provider-InputExtension.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value from AppData.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
+	 * @returns {boolean} - Returns true.
+	 */
+	onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID)
 	{
 		return true;
 	}
@@ -204,9 +227,27 @@ class PictInputExtensionProvider extends libPictProvider
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {number} pRowIndex - The row index of the tabular data.
 	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
 	 * @returns {boolean} - Returns true.
 	 */
-	onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent)
+	onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID)
+	{
+		return true;
+	}
+
+	/**
+	 * Handles events for the Pict-Provider-InputExtension.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value from AppData.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {number} pRowIndex - The row index of the tabular data.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
+	 * @returns {boolean} - Returns true.
+	 */
+	onAfterEventTabularCompletion(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID)
 	{
 		return true;
 	}

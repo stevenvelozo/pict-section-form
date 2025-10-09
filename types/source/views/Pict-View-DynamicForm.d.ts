@@ -47,6 +47,8 @@ declare class PictViewDynamicForm extends libPictViewClass {
     /**
      * Sets the data in a specific form input based on the provided input object
      *
+     * FIXME: does this need to have a transaction GUID passed in?
+     *
      * @param {object} pInput - The input object.
      * @param {any} pValue - The value to set.
      * @returns {boolean} Returns true if the data was set successfully, false otherwise.
@@ -54,6 +56,8 @@ declare class PictViewDynamicForm extends libPictViewClass {
     setDataByInput(pInput: object, pValue: any): boolean;
     /**
      * Sets the data in a specific tabular form input based on the provided hash, group and row.
+     *
+     * FIXME: does this need to have a transaction GUID passed in?
      *
      * @param {number} pGroupIndex - The index of the group.
      * @param {string} pInputHash - The hash of the input.
@@ -227,21 +231,24 @@ declare class PictViewDynamicForm extends libPictViewClass {
      *
      * @param {String} pInputHash - The input hash object.
      * @param {string} pEvent - The input event string.
+     * @param {string} [pTransactionGUID] - The transaction GUID.
      * @returns {any} - The result of the input event handling.
      */
-    inputEvent(pInputHash: string, pEvent: string): any;
+    inputEvent(pInputHash: string, pEvent: string, pTransactionGUID?: string): any;
     /**
      * @deprecated
      * @param {string} pEvent - The input event string.
      * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     * @param {string} [pTransactionGUID] - The transaction GUID.
      */
-    globalInputEvent(pEvent: string, pCompletedHashes: any): void;
+    globalInputEvent(pEvent: string, pCompletedHashes: any, pTransactionGUID?: string): void;
     /**
      *
      * @param {string} pEvent - The input event string.
      * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     * @param {string} [pTransactionGUID] - The transaction GUID.
      */
-    manifestInputEvent(pEvent: string, pCompletedHashes: any): void;
+    manifestInputEvent(pEvent: string, pCompletedHashes: any, pTransactionGUID?: string): void;
     /**
      * Triggers a DataRequest event for an Input Provider
      *
@@ -258,22 +265,48 @@ declare class PictViewDynamicForm extends libPictViewClass {
      * @param {number} pInputIndex - The index of the input.
      * @param {number} pRowIndex - The index of the row.
      * @param {string} pEvent - The input event object.
+     * @param {string} [pTransactionGUID] - The transaction GUID.
      * @returns {any} - The result of the input event handling.
      */
-    inputEventTabular(pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: string): any;
+    inputEventTabular(pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: string, pTransactionGUID?: string): any;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {string} pAsyncOperationHash - The hash of the async operation.
+     */
+    registerEventTransactionAsyncOperation(pTransactionGUID: string, pAsyncOperationHash: string): void;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {string} pAsyncOperationHash - The hash of the async operation.
+     *
+     * @return {boolean} - Returns true if the async operation was found and marked as complete, otherwise false.
+     */
+    eventTransactionAsyncOperationComplete(pTransactionGUID: string, pAsyncOperationHash: string): boolean;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     *
+     * @return {boolean} - Returns true if the transaction was found and able to be finalized, otherwise false.
+     */
+    finalizeTransaction(pTransactionGUID: string): boolean;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {Function} fCallback - The callback to call when the transaction is complete.
+     */
+    registerOnTransactionCompleteCallback(pTransactionGUID: string, fCallback: Function): void;
     /**
      *
      * @param {number} pGroupIndex - The index of the group.
      * @param {string} pEvent - The input event string.
      * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     * @param {string} [pTransactionGUID] - The transaction GUID.
      */
-    groupInputEvent(pGroupIndex: number, pEvent: string, pCompletedHashes: any): void;
+    groupInputEvent(pGroupIndex: number, pEvent: string, pCompletedHashes: any, pTransactionGUID?: string): void;
     /**
      *
      * @param {string} pEvent - The input event string.
      * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     * @param {string} [pTransactionGUID] - The transaction GUID.
      */
-    sectionInputEvent(pEvent: string, pCompletedHashes: any): void;
+    sectionInputEvent(pEvent: string, pCompletedHashes: any, pTransactionGUID?: string): void;
     /**
      * Get the input object for a specific tabular record group and index.
      *

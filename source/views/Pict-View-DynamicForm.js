@@ -6,6 +6,10 @@ const libPackage = require('../../package.json');
 /** @type {Record<string, any>} */
 const _DefaultConfiguration = require('./Pict-View-DynamicForm-DefaultConfiguration.json');
 
+const PENDING_ASYNC_OPERATION_TYPE = 'PendingAsyncOperation';
+const TRANSACTION_COMPLETE_CALLBACK_TYPE = 'onTransactionComplete';
+const READY_TO_FINALIZE_TYPE = 'ReadyToFinalize';
+
 /**
  * Represents a dynamic form view for the Pict application.
  *
@@ -172,11 +176,12 @@ class PictViewDynamicForm extends libPictViewClass
 				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
 
 				let tmpInputProviderList = this.getInputProviderList(tmpInput);
+				const tmpTransactionGUID = this.fable.getUUID();
 				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						this.pict.providers[tmpInputProviderList[i]].onDataChange(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+						this.pict.providers[tmpInputProviderList[i]].onDataChange(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, tmpTransactionGUID);
 					}
 					else
 					{
@@ -233,11 +238,12 @@ class PictViewDynamicForm extends libPictViewClass
 				// Each row has a distinct address!
 				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular + `[data-i-index="${pRowIndex}"]`;
 				let tmpInputProviderList = this.getInputProviderList(tmpInput);
+				const tmpTransactionGUID = this.fable.getUUID();
 				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						this.pict.providers[tmpInputProviderList[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
+						this.pict.providers[tmpInputProviderList[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex, tmpTransactionGUID);
 					}
 					else
 					{
@@ -263,6 +269,8 @@ class PictViewDynamicForm extends libPictViewClass
 	/**
 	 * Sets the data in a specific form input based on the provided input object
 	 *
+	 * FIXME: does this need to have a transaction GUID passed in?
+	 *
 	 * @param {object} pInput - The input object.
 	 * @param {any} pValue - The value to set.
 	 * @returns {boolean} Returns true if the data was set successfully, false otherwise.
@@ -278,17 +286,19 @@ class PictViewDynamicForm extends libPictViewClass
 			// Each row has a distinct address!
 			let tmpVirtualInformaryHTMLSelector = pInput.Macro.HTMLSelector;
 			let tmpInputProviderList = this.getInputProviderList(pInput);
+			const tmpTransactionGUID = this.fable.getUUID();
 			for (let i = 0; i < tmpInputProviderList.length; i++)
 			{
 				if (this.pict.providers[tmpInputProviderList[i]])
 				{
-					this.pict.providers[tmpInputProviderList[i]].onDataChange(this, pInput, tmpValue, tmpVirtualInformaryHTMLSelector);
+					this.pict.providers[tmpInputProviderList[i]].onDataChange(this, pInput, tmpValue, tmpVirtualInformaryHTMLSelector, tmpTransactionGUID);
 				}
 				else
 				{
 					this.log.error(`Dynamic form setDataByInput [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${pInput.Hash}].`);
 				}
 			}
+			this.finalizeTransaction(tmpTransactionGUID);
 		}
 		catch (pError)
 		{
@@ -300,6 +310,8 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Sets the data in a specific tabular form input based on the provided hash, group and row.
+	 *
+	 * FIXME: does this need to have a transaction GUID passed in?
 	 *
 	 * @param {number} pGroupIndex - The index of the group.
 	 * @param {string} pInputHash - The hash of the input.
@@ -353,17 +365,19 @@ class PictViewDynamicForm extends libPictViewClass
 				// Each row has a distinct address!
 				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular + `[data-i-index="${pRowIndex}"]`;
 				let tmpInputProviderList = this.getInputProviderList(tmpInput);
+				const tmpTransactionGUID = this.fable.getUUID();
 				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						this.pict.providers[tmpInputProviderList[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
+						this.pict.providers[tmpInputProviderList[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex, tmpTransactionGUID);
 					}
 					else
 					{
 						this.log.error(`Dynamic form setDataTabularByHash [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
 					}
 				}
+				this.finalizeTransaction(tmpTransactionGUID);
 			}
 			catch (pError)
 			{
@@ -773,6 +787,7 @@ class PictViewDynamicForm extends libPictViewClass
 				}
 			}
 		}
+		this.finalizeTransaction(tmpTransactionGUID);
 	}
 
 	/**
@@ -982,30 +997,34 @@ class PictViewDynamicForm extends libPictViewClass
 	 *
 	 * @param {String} pInputHash - The input hash object.
 	 * @param {string} pEvent - The input event string.
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
 	 * @returns {any} - The result of the input event handling.
 	 */
-	inputEvent(pInputHash, pEvent)
+	inputEvent(pInputHash, pEvent, pTransactionGUID)
 	{
-		return this.pict.providers.DynamicInputEvents.inputEvent(this, pInputHash, pEvent);
+		return this.pict.providers.DynamicInputEvents.inputEvent(this, pInputHash, pEvent, pTransactionGUID);
 	}
 
 	/**
 	 * @deprecated
 	 * @param {string} pEvent - The input event string.
 	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
 	 */
-	globalInputEvent(pEvent, pCompletedHashes)
+	globalInputEvent(pEvent, pCompletedHashes, pTransactionGUID)
 	{
-		this.manifestInputEvent(pEvent, pCompletedHashes);
+		this.manifestInputEvent(pEvent, pCompletedHashes, pTransactionGUID);
 	}
 
 	/**
 	 *
 	 * @param {string} pEvent - The input event string.
 	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
 	 */
-	manifestInputEvent(pEvent, pCompletedHashes)
+	manifestInputEvent(pEvent, pCompletedHashes, pTransactionGUID)
 	{
+		const tmpTransactionGUID = (pTransactionGUID && typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
 		const tmpInputHashes = Object.keys(this.sectionManifest.elementHashes);
 
 		for (let i = 0; i < tmpInputHashes.length; i++)
@@ -1013,8 +1032,13 @@ class PictViewDynamicForm extends libPictViewClass
 			if (!(tmpInputHashes[i] in pCompletedHashes))
 			{
 				pCompletedHashes[tmpInputHashes[i]] = true;
-				this.inputEvent(tmpInputHashes[i], pEvent);
+				this.inputEvent(tmpInputHashes[i], pEvent, pTransactionGUID);
 			}
+		}
+		if (pTransactionGUID !== tmpTransactionGUID)
+		{
+			// We created a transaction, so finalize it.
+			this.finalizeTransaction(tmpTransactionGUID);
 		}
 	}
 
@@ -1038,11 +1062,150 @@ class PictViewDynamicForm extends libPictViewClass
 	 * @param {number} pInputIndex - The index of the input.
 	 * @param {number} pRowIndex - The index of the row.
 	 * @param {string} pEvent - The input event object.
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
 	 * @returns {any} - The result of the input event handling.
 	 */
-	inputEventTabular(pGroupIndex, pInputIndex, pRowIndex, pEvent)
+	inputEventTabular(pGroupIndex, pInputIndex, pRowIndex, pEvent, pTransactionGUID)
 	{
-		return this.pict.providers.DynamicInputEvents.inputEventTabular(this, pGroupIndex, pInputIndex, pRowIndex, pEvent);
+		return this.pict.providers.DynamicInputEvents.inputEventTabular(this, pGroupIndex, pInputIndex, pRowIndex, pEvent, pTransactionGUID);
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {string} pAsyncOperationHash - The hash of the async operation.
+	 */
+	registerEventTransactionAsyncOperation(pTransactionGUID, pAsyncOperationHash)
+	{
+		this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, pAsyncOperationHash, PENDING_ASYNC_OPERATION_TYPE);
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {string} pAsyncOperationHash - The hash of the async operation.
+	 *
+	 * @return {boolean} - Returns true if the async operation was found and marked as complete, otherwise false.
+	 */
+	eventTransactionAsyncOperationComplete(pTransactionGUID, pAsyncOperationHash)
+	{
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpPendingAsyncOperationCount = 0;
+		let tmpMarkedOperationCount = 0;
+		let tmpFinalized = false;
+		for (let i = 0; i < tmpQueue.length; i++)
+		{
+			const tmpQueueItem = tmpQueue[i];
+			if (tmpQueueItem.Type === PENDING_ASYNC_OPERATION_TYPE)
+			{
+				if (tmpQueueItem.Data === pAsyncOperationHash)
+				{
+					tmpQueue.splice(i, 1);
+					++tmpMarkedOperationCount;
+					--i;
+				}
+				else
+				{
+					++tmpPendingAsyncOperationCount;
+				}
+			}
+			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
+			{
+				tmpFinalized = true;
+			}
+		}
+		if (tmpPendingAsyncOperationCount === 0)
+		{
+			for (const tmpQueueItem of tmpQueue)
+			{
+				if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
+				{
+					if (typeof tmpQueueItem.Data !== 'function')
+					{
+						this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
+						continue;
+					}
+					try
+					{
+						tmpQueueItem.Data();
+					}
+					catch (pError)
+					{
+						this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback error: ${pError}`, { Stack: pError.stack });
+					}
+				}
+			}
+		}
+		return tmpMarkedOperationCount > 0;
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 *
+	 * @return {boolean} - Returns true if the transaction was found and able to be finalized, otherwise false.
+	 */
+	finalizeTransaction(pTransactionGUID)
+	{
+		this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, null, READY_TO_FINALIZE_TYPE);
+
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpPendingAsyncOperationCount = 0;
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === PENDING_ASYNC_OPERATION_TYPE)
+			{
+				++tmpPendingAsyncOperationCount;
+			}
+		}
+		if (tmpPendingAsyncOperationCount > 0)
+		{
+			this.pict.log.info(`PICT View Metatemplate Helper finalizeTransaction ${pTransactionGUID} is waiting on ${tmpPendingAsyncOperationCount} pending async operations.`);
+			return false;
+		}
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
+			{
+				if (typeof tmpQueueItem.Data !== 'function')
+				{
+					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
+					continue;
+				}
+				try
+				{
+					tmpQueueItem.Data();
+				}
+				catch (pError)
+				{
+					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback error: ${pError}`, { Stack: pError.stack });
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {Function} fCallback - The callback to call when the transaction is complete.
+	 */
+	registerOnTransactionCompleteCallback(pTransactionGUID, fCallback)
+	{
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpFinalized = false;
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
+			{
+				tmpFinalized = true;
+				break;
+			}
+		}
+		if (tmpFinalized)
+		{
+			fCallback();
+		}
+		else
+		{
+			this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, fCallback, TRANSACTION_COMPLETE_CALLBACK_TYPE);
+		}
 	}
 
 	/**
@@ -1050,9 +1213,11 @@ class PictViewDynamicForm extends libPictViewClass
 	 * @param {number} pGroupIndex - The index of the group.
 	 * @param {string} pEvent - The input event string.
 	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
 	 */
-	groupInputEvent(pGroupIndex, pEvent, pCompletedHashes)
+	groupInputEvent(pGroupIndex, pEvent, pCompletedHashes, pTransactionGUID)
 	{
+		const tmpTransactionGUID = (pTransactionGUID && typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
 		const tmpGroup = this.getGroup(pGroupIndex);
 
 		if (!tmpGroup)
@@ -1077,7 +1242,7 @@ class PictViewDynamicForm extends libPictViewClass
 					if (!(tmpInputSignature in pCompletedHashes))
 					{
 						pCompletedHashes[tmpInputSignature] = true;
-						this.inputEventTabular(pGroupIndex, tmpInput.PictForm.InputIndex, i, pEvent);
+						this.inputEventTabular(pGroupIndex, tmpInput.PictForm.InputIndex, i, pEvent, tmpTransactionGUID);
 					}
 				}
 			}
@@ -1090,9 +1255,14 @@ class PictViewDynamicForm extends libPictViewClass
 				if (!(tmpInputSignature in pCompletedHashes))
 				{
 					pCompletedHashes[tmpInputSignature] = true;
-					this.inputEvent(tmpInput.Hash, pEvent);
+					this.inputEvent(tmpInput.Hash, pEvent, tmpTransactionGUID);
 				}
 			}
+		}
+		if (pTransactionGUID !== tmpTransactionGUID)
+		{
+			// We created a transaction, so finalize it.
+			this.finalizeTransaction(tmpTransactionGUID);
 		}
 	}
 
@@ -1100,14 +1270,15 @@ class PictViewDynamicForm extends libPictViewClass
 	 *
 	 * @param {string} pEvent - The input event string.
 	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
 	 */
-	sectionInputEvent(pEvent, pCompletedHashes)
+	sectionInputEvent(pEvent, pCompletedHashes, pTransactionGUID)
 	{
 		const tmpGroupCount = this.sectionDefinition.Groups.length;
 
 		for (let i = 0; i < tmpGroupCount; i++)
 		{
-			this.groupInputEvent(i, pEvent, pCompletedHashes);
+			this.groupInputEvent(i, pEvent, pCompletedHashes, pTransactionGUID);
 		}
 	}
 

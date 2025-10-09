@@ -55,7 +55,7 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @param {string} pHTMLSelector - The HTML selector.
      * @param {number} pRowIndex
      */
-    refreshSelectListTabular(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): boolean;
+    refreshSelectListTabular(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): void;
     /**
      * Initializes a tabular input element.
      *
@@ -65,9 +65,10 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @param {any} pValue - The input value.
      * @param {string} pHTMLSelector - The HTML selector.
      * @param {number} pRowIndex - The index of the row.
+     * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
      * @returns {any} - The result of the initialization.
      */
-    onInputInitializeTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): any;
+    onInputInitializeTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number, pTransactionGUID: string): any;
     /**
      * Handles the change event for the data in the select input.
      *
@@ -75,9 +76,10 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @param {Object} pInput - The input object.
      * @param {any} pValue - The new value of the input.
      * @param {string} pHTMLSelector - The HTML selector of the input.
+     * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
      * @returns {any} - The result of the super.onDataChange method.
      */
-    onDataChange(pView: any, pInput: any, pValue: any, pHTMLSelector: string): any;
+    onDataChange(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pTransactionGUID: string): any;
     /**
      * Handles the change event for tabular data.
      *
@@ -86,9 +88,10 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @param {any} pValue - The new value.
      * @param {string} pHTMLSelector - The HTML selector.
      * @param {number} pRowIndex - The index of the row.
+     * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
      * @returns {any} - The result of the super method.
      */
-    onDataChangeTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): any;
+    onDataChangeTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number, pTransactionGUID: string): any;
     /**
      * Marshals data to the form for the given input.
      *
@@ -98,9 +101,10 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @param {Object} pInput - The input object.
      * @param {any} pValue - The value to be marshaled.
      * @param {string} pHTMLSelector - The HTML selector.
+     * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
      * @returns {boolean} - Returns true if the value is successfully marshaled to the form, otherwise false.
      */
-    onDataMarshalToForm(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string): boolean;
+    onDataMarshalToForm(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string, pTransactionGUID: string): boolean;
     /**
      * Marshals data to a form in tabular format.
      *
@@ -110,9 +114,10 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @param {any} pValue - The value parameter.
      * @param {string} pHTMLSelector - The HTML selector parameter.
      * @param {number} pRowIndex - The row index parameter.
+     * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
      * @returns {any} - The result of the data marshaling.
      */
-    onDataMarshalToFormTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): any;
+    onDataMarshalToFormTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number, pTransactionGUID: string): any;
     /**
      * Handles the data request event for a select input in the PictProviderInputSelect class.
      *

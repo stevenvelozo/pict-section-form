@@ -24,8 +24,9 @@ declare class PictDynamicInputEvents extends libPictProvider {
      * @param {Object} pView - The view object.
      * @param {string} pInputHash - The input hash.
      * @param {string} pEvent - The input event.
+     * @param {string} [pTransactionGUID] - (optional) The active transaction GUID.
      */
-    inputEvent(pView: any, pInputHash: string, pEvent: string): void;
+    inputEvent(pView: any, pInputHash: string, pEvent: string, pTransactionGUID?: string): void;
     /**
      * Requests input data for a tabular record.
      *
@@ -43,8 +44,9 @@ declare class PictDynamicInputEvents extends libPictProvider {
      * @param {number} pInputIndex - The index of the input.
      * @param {number} pRowIndex - The index of the row.
      * @param {string} pEvent - The input event.
+     * @param {string} [pTransactionGUID] - (optional) The active transaction GUID.
      */
-    inputEventTabular(pView: any, pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: string): void;
+    inputEventTabular(pView: any, pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: string, pTransactionGUID?: string): void;
 }
 declare namespace PictDynamicInputEvents {
     export { _DefaultProviderConfiguration as default_configuration };

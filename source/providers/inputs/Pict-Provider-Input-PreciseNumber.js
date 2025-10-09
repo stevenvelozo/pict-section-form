@@ -68,12 +68,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The value to be marshaled.
 	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {boolean} - Returns true if the value is successfully marshaled to the form, otherwise false.
 	 */
-	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
+	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		this.pict.ContentAssignment.assignContent(this.getInputHTMLID(pInput.Macro.RawHTMLID), this.roundValue(pInput, pValue));
-		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
+		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
@@ -85,13 +86,14 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The value parameter.
 	 * @param {string} pHTMLSelector - The HTML selector parameter.
 	 * @param {number} pRowIndex - The row index parameter.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {any} - The result of the data marshaling.
 	 */
-	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
+	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
 		this.pict.ContentAssignment.assignContent('PRECISE-' + this.getTabularInputHTMLID(pInput.Macro.RawHTMLID, pRowIndex), pValue);
 		this.pict.ContentAssignment.assignContent(this.getTabularInputHTMLID(pInput.Macro.RawHTMLID, pRowIndex), this.roundValue(pInput, pValue));
-		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
+		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 }
 

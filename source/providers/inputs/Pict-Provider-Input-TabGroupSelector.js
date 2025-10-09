@@ -107,9 +107,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The input value.
 	 * @param {string} pHTMLTabSelector - The HTML selector.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {boolean} - Returns true if the input element is successfully initialized, false otherwise.
 	 */
-	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector)
+	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector, pTransactionGUID)
 	{
 		let tmpTabSet = pInput.PictForm?.TabGroupSet;
 
@@ -137,7 +138,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		let tmpDefaultTabGroupHash = pInput.PictForm?.DefaultTabGroupHash || tmpTabSet[0];
 		this.selectTabByViewHash(pView.Hash, pInput.Hash, tmpDefaultTabGroupHash);
 
-		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector);
+		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector, pTransactionGUID);
 	}
 }
 

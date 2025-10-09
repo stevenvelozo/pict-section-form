@@ -912,12 +912,16 @@ class PictFormMetacontroller extends libPictViewClass
 	/**
 	 * Trigger an event on all inputs on all views.
 	 * @param {string} pEvent - The event to trigger
+	 * @param {string} [pTransactionGUID] - (optional) The transaction GUID to use for the event.
 	 */
-	triggerGlobalInputEvent(pEvent)
+	triggerGlobalInputEvent(pEvent, pTransactionGUID)
 	{
+		const tmpTransactionGUID = (pTransactionGUID && typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
 		let tmpEvent = (typeof(pEvent) === 'string') ? pEvent : this.fable.getUUID();
 		let tmpViewHashes = Object.keys(this.pict.views);
 		let tmpCompletedHashes = {};
+		/** @type {import('./Pict-View-DynamicForm.js')} */
+		let tmpFinalizeView = null;
 		// Filter the views based on the filter function and type
 		for (let i = 0; i < tmpViewHashes.length; i++)
 		{
@@ -925,8 +929,14 @@ class PictFormMetacontroller extends libPictViewClass
 			let tmpView = this.pict.views[tmpViewHashes[i]];
 			if (tmpView.isPictSectionForm)
 			{
-				tmpView.sectionInputEvent(tmpEvent, tmpCompletedHashes);
+				tmpFinalizeView = tmpView;
+				tmpView.sectionInputEvent(tmpEvent, tmpCompletedHashes, tmpTransactionGUID);
 			}
+		}
+		if (pTransactionGUID !== tmpTransactionGUID && tmpFinalizeView)
+		{
+			// If we created the transaction GUID, we need to finalize it
+			tmpFinalizeView.finalizeTransaction(tmpTransactionGUID);
 		}
 	}
 

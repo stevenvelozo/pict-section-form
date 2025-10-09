@@ -25,9 +25,10 @@ declare class LinkInputHandler extends libPictSectionInputExtension {
      * @param {Object} pInput - The input object.
      * @param {any} pValue - The value to be marshaled.
      * @param {string} pHTMLSelector - The HTML selector.
+     * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
      * @returns {boolean} - Returns true if the value is successfully marshaled to the form, otherwise false.
      */
-    onDataMarshalToForm(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string): boolean;
+    onDataMarshalToForm(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string, pTransactionGUID: string): boolean;
     /**
      * Marshals data to a form in tabular format.
      *
@@ -37,9 +38,10 @@ declare class LinkInputHandler extends libPictSectionInputExtension {
      * @param {any} pValue - The value parameter.
      * @param {string} pHTMLSelector - The HTML selector parameter.
      * @param {number} pRowIndex - The row index parameter.
+     * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
      * @returns {any} - The result of the data marshaling.
      */
-    onDataMarshalToFormTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): any;
+    onDataMarshalToFormTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number, pTransactionGUID: string): any;
 }
 import libPictSectionInputExtension = require("../Pict-Provider-InputExtension.js");
 //# sourceMappingURL=Pict-Provider-Input-Link.d.ts.map

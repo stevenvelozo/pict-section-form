@@ -72,16 +72,17 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The input value.
 	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {boolean} - Returns true if the input element is successfully initialized, false otherwise.
 	 */
-	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
+	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		let tmpContent = this.getInputContent(pInput, pValue);
 		if (tmpContent)
 		{
 			this.pict.ContentAssignment.assignContent(this.getContentDisplayHTMLID(pInput.Macro.RawHTMLID), tmpContent);
 		}
-		return super.onInputInitialize(pView, pGroup, pRow, pInput, tmpContent, pHTMLSelector);
+		return super.onInputInitialize(pView, pGroup, pRow, pInput, tmpContent, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
@@ -93,16 +94,17 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The input value.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {number} pRowIndex - The index of the row.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {any} - The result of the initialization.
 	 */
-	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
+	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
 		let tmpContent = this.getInputContent(pInput, pValue);
 		if (tmpContent)
 		{
 			this.pict.ContentAssignment.assignContent(this.getTabularContentDisplayInputID(pInput.Macro.RawHTMLID, pRowIndex), tmpContent);
 		}
-		return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
+		return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 
 	/**
@@ -114,16 +116,17 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The value to be marshaled.
 	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {boolean} - Returns true if the value is successfully marshaled to the form, otherwise false.
 	 */
-	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
+	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		let tmpContent = this.getInputContent(pInput, pValue);
 		if (tmpContent)
 		{
 			this.pict.ContentAssignment.assignContent(this.getContentDisplayHTMLID(pInput.Macro.RawHTMLID), tmpContent);
 		}
-		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
+		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
@@ -135,16 +138,17 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The value parameter.
 	 * @param {string} pHTMLSelector - The HTML selector parameter.
 	 * @param {number} pRowIndex - The row index parameter.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {any} - The result of the data marshaling.
 	 */
-	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
+	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
 		let tmpContent = this.getInputContent(pInput, pValue);
 		if (tmpContent)
 		{
 			this.pict.ContentAssignment.assignContent(this.getTabularContentDisplayInputID(pInput.Macro.RawHTMLID, pRowIndex), tmpContent);
 		}
-		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
+		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 }
 

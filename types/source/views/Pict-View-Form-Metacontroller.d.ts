@@ -157,8 +157,9 @@ declare class PictFormMetacontroller extends libPictViewClass {
     /**
      * Trigger an event on all inputs on all views.
      * @param {string} pEvent - The event to trigger
+     * @param {string} [pTransactionGUID] - (optional) The transaction GUID to use for the event.
      */
-    triggerGlobalInputEvent(pEvent: string): void;
+    triggerGlobalInputEvent(pEvent: string, pTransactionGUID?: string): void;
     /**
      * Returns whether the object is a Pict Metacontroller.
      *

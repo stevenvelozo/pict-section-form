@@ -42,9 +42,10 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @param {Object} pInput - The input object.
      * @param {any} pValue - The value to be assigned.
      * @param {string} pHTMLSelector - The HTML selector.
+     * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
      * @returns {any} - The result of the super method call.
      */
-    onDataMarshalToForm(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string): any;
+    onDataMarshalToForm(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: string, pTransactionGUID: string): any;
     /**
      * Marshals data to the form in a tabular format.
      *
@@ -54,9 +55,10 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @param {any} pValue - The value to be assigned.
      * @param {string} pHTMLSelector - The HTML selector.
      * @param {number} pRowIndex - The index of the row.
+     * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
      * @returns {any} - The result of the data marshaling.
      */
-    onDataMarshalToFormTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): any;
+    onDataMarshalToFormTabular(pView: any, pGroup: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number, pTransactionGUID: string): any;
 }
 import libPictSectionInputExtension = require("../Pict-Provider-InputExtension.js");
 //# sourceMappingURL=Pict-Provider-Input-DateTime.d.ts.map

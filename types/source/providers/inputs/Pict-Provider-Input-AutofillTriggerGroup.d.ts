@@ -40,9 +40,10 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @param {Object} pInput - The input object.
      * @param {any} pValue - The new value of the input.
      * @param {string} pHTMLSelector - The HTML selector of the input.
+     * @param {string} pTransactionGUID - The transaction GUID, if any.
      * @returns {any} - The result of the super.onDataChange method.
      */
-    onDataChange(pView: any, pInput: any, pValue: any, pHTMLSelector: string): any;
+    onDataChange(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pTransactionGUID: string): any;
     /**
      * Handles the change event for tabular data.
      *
@@ -51,11 +52,10 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @param {any} pValue - The new value.
      * @param {string} pHTMLSelector - The HTML selector.
      * @param {number} pRowIndex - The index of the row.
+     * @param {string} pTransactionGUID - The transaction GUID, if any.
      * @returns {any} - The result of the super method.
      */
-    onDataChangeTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number): any;
-    onEvent(pView: any, pInput: any, pValue: any, pHTMLSelector: any, pEvent: any): boolean;
-    onEventTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: any, pRowIndex: any, pEvent: any): boolean;
+    onDataChangeTabular(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pRowIndex: number, pTransactionGUID: string): any;
 }
 import libPictSectionInputExtension = require("../Pict-Provider-InputExtension.js");
 //# sourceMappingURL=Pict-Provider-Input-AutofillTriggerGroup.d.ts.map
