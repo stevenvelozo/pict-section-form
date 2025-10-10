@@ -320,10 +320,12 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 
 										if (tmpOptionsRow['Option Value'] || tmpOptionsRow['Option Text'])
 										{
+											// strip quotes and trim whitespace
+											const tmpCleanText = tmpOptionsRow['Option Text'].trim().replace(/&quot;/g, '"').replace(/&#39;/g, "'");
 											tmpPickListConfig.DefaultListData.push(
 												{
 													id: tmpOptionsRow['Option Value'],
-													text: tmpOptionsRow['Option Text']
+													text: tmpCleanText,
 												});
 										}
 									}
