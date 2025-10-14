@@ -199,10 +199,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The value of the input.
 	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} [pTransactionGUID] - (optional) The transaction GUID for the event dispatch.
 	 *
-	 * @return {Promise<any>} - Returns a promise that resolves when the data has been gathered.
+	 * @return {Promise<Error?>} - Returns a promise that resolves when the data has been gathered.
 	 */
-	async gatherDataFromServer(pView, pInput, pValue, pHTMLSelector)
+	async gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		// Gather data from the server
 		// These have to date not been asyncronous.  Now they will be...
@@ -212,6 +213,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 			return null;
 		}
 
+		const tmpLoadGUID = `BundleLoad-${this.pict.getUUID()}`;
+		if (pTransactionGUID)
+		{
+			pView.registerEventTransactionAsyncOperation(pTransactionGUID, tmpLoadGUID);
+		}
 		let tmpInput = pInput;
 		let tmpValue = pValue;
 		let tmpAnticipate = this.fable.newAnticipate();
@@ -248,7 +254,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 				if (tmpInput.PictForm.EntityBundleTriggerGroup && this.pict.views.PictFormMetacontroller)
 				{
 					// Trigger the autofill global event
-					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`TriggerGroup:${tmpInput.PictForm.EntityBundleTriggerGroup}:BundleLoad:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`);
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`TriggerGroup:${tmpInput.PictForm.EntityBundleTriggerGroup}:BundleLoad:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`, pTransactionGUID);
 				}
 				if (tmpInput.PictForm.EntityBundleTriggerMetacontrollerSolve && this.pict.views.PictFormMetacontroller)
 				{
@@ -274,6 +280,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 					{
 						this.log.error(`EntityBundleRequest error gathering entity set: ${pError}`, pError);
 					}
+					//TODO: close the async operation if we have a transaction GUID
+					if (pTransactionGUID)
+					{
+						pView.eventTransactionAsyncOperationComplete(pTransactionGUID, tmpLoadGUID);
+					}
 
 					return pResolve(pError);
 				});
@@ -298,7 +309,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		if (pValue && pInput.PictForm && pInput.PictForm.EntityBundleTriggerOnInitialize)
 		{
 			// This is a request on initial load
-			this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector);
+			this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
 		}
 		// This is in case we need to do a request on initial load!
 		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID);
@@ -333,7 +344,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
-		this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector);
+		this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
 		return super.onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
@@ -350,7 +361,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
-		this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector);
+		this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
 		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 

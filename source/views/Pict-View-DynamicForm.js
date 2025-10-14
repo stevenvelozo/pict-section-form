@@ -68,7 +68,8 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 
 		// Use this to manage transactions
-		this.transactionTracking = this.pict.newTransactionTracker();
+		//FIXME: should we have these sioled??
+		//this.transactionTracking = this.pict.newTransactionTracker();
 
 		/** @type {Record<string, any>} */
 		this._PackagePictView = this._Package;
@@ -177,6 +178,7 @@ class PictViewDynamicForm extends libPictViewClass
 
 				let tmpInputProviderList = this.getInputProviderList(tmpInput);
 				const tmpTransactionGUID = this.fable.getUUID();
+				this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
@@ -239,6 +241,7 @@ class PictViewDynamicForm extends libPictViewClass
 				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular + `[data-i-index="${pRowIndex}"]`;
 				let tmpInputProviderList = this.getInputProviderList(tmpInput);
 				const tmpTransactionGUID = this.fable.getUUID();
+				this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
@@ -287,6 +290,7 @@ class PictViewDynamicForm extends libPictViewClass
 			let tmpVirtualInformaryHTMLSelector = pInput.Macro.HTMLSelector;
 			let tmpInputProviderList = this.getInputProviderList(pInput);
 			const tmpTransactionGUID = this.fable.getUUID();
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			for (let i = 0; i < tmpInputProviderList.length; i++)
 			{
 				if (this.pict.providers[tmpInputProviderList[i]])
@@ -366,6 +370,7 @@ class PictViewDynamicForm extends libPictViewClass
 				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular + `[data-i-index="${pRowIndex}"]`;
 				let tmpInputProviderList = this.getInputProviderList(tmpInput);
 				const tmpTransactionGUID = this.fable.getUUID();
+				this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
@@ -442,7 +447,7 @@ class PictViewDynamicForm extends libPictViewClass
 		try
 		{
 			let tmpTransactionGUID = this.fable.getUUID();
-			this.transactionTracking.registerTransaction(tmpTransactionGUID);
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
 			// TODO: Add optional transaction awareness to informary
 			this.pict.providers.Informary.marshalDataToForm(tmpMarshalDestinationObject, this.formID, this.sectionManifest);
@@ -461,7 +466,7 @@ class PictViewDynamicForm extends libPictViewClass
 		try
 		{
 			let tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
-			this.transactionTracking.registerTransaction(tmpTransactionGUID);
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			this.pict.providers.Informary.manualMarshalDataToFormByInput(pInput);
 			this.runLayoutProviderFunctions('onDataMarshalToForm', tmpTransactionGUID);
 			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash, null, tmpTransactionGUID);
@@ -477,7 +482,7 @@ class PictViewDynamicForm extends libPictViewClass
 		try
 		{
 			let tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
-			this.transactionTracking.registerTransaction(tmpTransactionGUID);
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			this.pict.providers.Informary.manualMarshalTabularDataToFormByInput(pInput, pRowIndex);
 			this.runLayoutProviderFunctions('onDataMarshalToForm', tmpTransactionGUID);
 			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash, pRowIndex, tmpTransactionGUID);
@@ -516,7 +521,7 @@ class PictViewDynamicForm extends libPictViewClass
 		try
 		{
 			let tmpTransactionGUID = this.fable.getUUID();
-			this.transactionTracking.registerTransaction(tmpTransactionGUID);
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			this.runInputProviderFunctions('onAfterMarshalToForm', null, null, tmpTransactionGUID);
 
 		}
@@ -602,7 +607,7 @@ class PictViewDynamicForm extends libPictViewClass
 	onAfterRender(pRenderable)
 	{
 		let tmpTransactionGUID = this.fable.getUUID();
-		this.transactionTracking.registerTransaction(tmpTransactionGUID);
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 
 		this.runLayoutProviderFunctions('onGroupLayoutInitialize', tmpTransactionGUID);
 		this.runInputProviderFunctions('onInputInitialize', null, null, tmpTransactionGUID);
@@ -628,7 +633,7 @@ class PictViewDynamicForm extends libPictViewClass
 	runLayoutProviderFunctions(pFunctionName, pTransactionGUID)
 	{
 		const tmpTransactionGUID = (typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
-		const tmpTransaction = this.transactionTracking.registerTransaction(tmpTransactionGUID);
+		const tmpTransaction = this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 
 		// Check to see if there are any hooks set from the input templates
 		let tmpLayoutProviders = this.pict.ContentAssignment.getElement(`${this.sectionDefinition.DefaultDestinationAddress} [data-i-pictdynamiclayout="true"]`);
@@ -660,7 +665,7 @@ class PictViewDynamicForm extends libPictViewClass
 			if (tmpLayoutProvider && (pFunctionName in tmpLayoutProvider))
 			{
 				let tmpFunction = tmpLayoutProvider[pFunctionName];
-				if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `G${tmpGroupIndex}-L${tmpLayout}`, pFunctionName))
+				if (this.pict.TransactionTracking.checkEvent(tmpTransaction.TransactionKey, `G${tmpGroupIndex}-L${tmpLayout}`, pFunctionName))
 				{
 					tmpFunction.call(tmpLayoutProvider, this, tmpGroup);
 				}
@@ -679,7 +684,7 @@ class PictViewDynamicForm extends libPictViewClass
 	runInputProviderFunctions(pFunctionName, pInputHash, pRowIndex, pTransactionGUID)
 	{
 		const tmpTransactionGUID = (typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
-		const tmpTransaction = this.transactionTracking.registerTransaction(tmpTransactionGUID);
+		const tmpTransaction = this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 
 		// Check to see if there are any hooks set from the input templates
 		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
@@ -713,8 +718,8 @@ class PictViewDynamicForm extends libPictViewClass
 											this.log.trace(`Dynamic form [${this.Hash}]::[${this.UUID}] running provider [${tmpInputProviderList[l]}] function [${pFunctionName}] for input [${tmpInput.Hash}].`);
 										}
 										// TODO: Right now the Option input requires this bug to work
-										//if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
-										if ((tmpInput.PictForm.InputType == 'Option') || this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
+										//if (this.pict.TransactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
+										if ((tmpInput.PictForm.InputType == 'Option') || this.pict.TransactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
 										{
 											this.pict.providers[tmpInputProviderList[l]][pFunctionName](this, tmpGroup, j, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
 										}
@@ -766,7 +771,7 @@ class PictViewDynamicForm extends libPictViewClass
 										let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
 										try
 										{
-											if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `TI${tmpInput.Hash}-P${tmpInputProviderList[l]}-R${r}`, pFunctionName))
+											if (this.pict.TransactionTracking.checkEvent(tmpTransaction.TransactionKey, `TI${tmpInput.Hash}-P${tmpInputProviderList[l]}-R${r}`, pFunctionName))
 											{
 												this.pict.providers[tmpInputProviderList[l]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r);
 											}

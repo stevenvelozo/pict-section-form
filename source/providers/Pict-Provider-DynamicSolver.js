@@ -47,7 +47,7 @@ class PictDynamicSolver extends libPictProvider
 
 		/** @type {import('pict')} */
 		this.pict;
-		/** @type {import('pict') & { instantiateServiceProviderIfNotExists: (hash: string) => any }} */
+		/** @type {import('pict') & { instantiateServiceProviderIfNotExists: (hash: string) => any, ExpressionParser: any }} */
 		this.fable;
 		/** @type {any} */
 		this.log;

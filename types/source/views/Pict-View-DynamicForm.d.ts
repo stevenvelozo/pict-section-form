@@ -9,7 +9,6 @@ export = PictViewDynamicForm;
  */
 declare class PictViewDynamicForm extends libPictViewClass {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
-    transactionTracking: import("pict/types/source/services/Fable-Service-TransactionTracking");
     /** @type {Record<string, any>} */
     _PackagePictView: Record<string, any>;
     sectionDefinition: any;

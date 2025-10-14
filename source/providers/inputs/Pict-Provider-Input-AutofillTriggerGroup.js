@@ -176,9 +176,9 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {string} pTransactionGUID - The transaction GUID, if any.
 	 * @returns {boolean} - Returns true.
 	 */
-	onEvent(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID)
+	onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID)
 	{
-		const tmpPayload = typeof pValue === 'string' ? pEvent : '';
+		const tmpPayload = typeof pEvent === 'string' ? pEvent : '';
 		let [ tmpType, tmpGroupHash, tmpEvent, tmpInputHash, tmpEventGUID ] = tmpPayload.split(':');
 		if (!tmpEventGUID)
 		{
@@ -188,7 +188,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
 		if (!tmpAutoFillTriggerGroups || tmpType !== 'TriggerGroup' || (pInput.Hash || pInput.DataAddress) == tmpInputHash)
 		{
-			return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
+			return super.onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
 		}
 		if (!Array.isArray(tmpAutoFillTriggerGroups))
 		{
@@ -220,7 +220,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			}
 		}
 
-		return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
+		return super.onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
 	}
 
 	/**
@@ -235,9 +235,9 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {string} pTransactionGUID - The transaction GUID, if any.
 	 * @returns {boolean} - Returns true.
 	 */
-	onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID)
+	onAfterEventTabularCompletion(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID)
 	{
-		const tmpPayload = typeof pValue === 'string' ? pEvent : '';
+		const tmpPayload = typeof pEvent === 'string' ? pEvent : '';
 		let [ tmpType, tmpGroupHash, tmpEvent, tmpInputHash, tmpEventGUID ] = tmpPayload.split(':');
 		if (!tmpEventGUID)
 		{
@@ -247,7 +247,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		if (!pInput.PictForm.AutofillTriggerGroup || tmpType !== 'TriggerGroup' || (pInput.Hash || pInput.DataAddress) == tmpInputHash)
 		{
 			// Do nothing for now -- this is the triggering element
-			return super.onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID);
+			return super.onAfterEventTabularCompletion(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID);
 		}
 		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
 		if (!Array.isArray(tmpAutoFillTriggerGroups))
@@ -282,7 +282,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			}
 		}
 
-		return super.onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID);
+		return super.onAfterEventTabularCompletion(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID);
 	}
 }
 

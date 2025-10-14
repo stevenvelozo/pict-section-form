@@ -13,9 +13,10 @@ declare class PictDynamicSolver extends libPictProvider {
     constructor(pFable: object, pOptions: object, pServiceHash: object);
     /** @type {import('pict')} */
     pict: import("pict");
-    /** @type {import('pict') & { instantiateServiceProviderIfNotExists: (hash: string) => any }} */
+    /** @type {import('pict') & { instantiateServiceProviderIfNotExists: (hash: string) => any, ExpressionParser: any }} */
     fable: import("pict") & {
         instantiateServiceProviderIfNotExists: (hash: string) => any;
+        ExpressionParser: any;
     };
     /**
      * Checks the solver and returns the solver object if it passes the checks.
