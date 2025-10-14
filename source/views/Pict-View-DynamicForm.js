@@ -169,6 +169,8 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
 			let tmpHashAddress = this.sectionManifest.resolveHashAddress(pInputHash);
+			const tmpTransactionGUID = this.fable.getUUID();
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			try
 			{
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
@@ -177,8 +179,6 @@ class PictViewDynamicForm extends libPictViewClass
 				let tmpValue = this.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpHashAddress);
 
 				let tmpInputProviderList = this.getInputProviderList(tmpInput);
-				const tmpTransactionGUID = this.fable.getUUID();
-				this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
@@ -194,6 +194,10 @@ class PictViewDynamicForm extends libPictViewClass
 			catch (pError)
 			{
 				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) data from view in dataChanged event: ${pError}`);
+			}
+			finally
+			{
+				this.finalizeTransaction(tmpTransactionGUID);
 			}
 		}
 		else
@@ -229,6 +233,8 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
 			let tmpHashAddress = tmpInput.Address;
+			const tmpTransactionGUID = this.fable.getUUID();
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			try
 			{
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
@@ -240,8 +246,6 @@ class PictViewDynamicForm extends libPictViewClass
 				// Each row has a distinct address!
 				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular + `[data-i-index="${pRowIndex}"]`;
 				let tmpInputProviderList = this.getInputProviderList(tmpInput);
-				const tmpTransactionGUID = this.fable.getUUID();
-				this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
@@ -257,6 +261,10 @@ class PictViewDynamicForm extends libPictViewClass
 			catch (pError)
 			{
 				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${tmpInput.Hash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
+			}
+			finally
+			{
+				this.finalizeTransaction(tmpTransactionGUID);
 			}
 		}
 		else
@@ -280,6 +288,8 @@ class PictViewDynamicForm extends libPictViewClass
 	 */
 	setDataByInput(pInput, pValue)
 	{
+		const tmpTransactionGUID = this.fable.getUUID();
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 		try
 		{
 			this.sectionManifest.setValueByHash(this.getMarshalDestinationObject(), pInput.Hash, pValue)
@@ -289,8 +299,6 @@ class PictViewDynamicForm extends libPictViewClass
 			// Each row has a distinct address!
 			let tmpVirtualInformaryHTMLSelector = pInput.Macro.HTMLSelector;
 			let tmpInputProviderList = this.getInputProviderList(pInput);
-			const tmpTransactionGUID = this.fable.getUUID();
-			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			for (let i = 0; i < tmpInputProviderList.length; i++)
 			{
 				if (this.pict.providers[tmpInputProviderList[i]])
@@ -302,11 +310,14 @@ class PictViewDynamicForm extends libPictViewClass
 					this.log.error(`Dynamic form setDataByInput [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${pInput.Hash}].`);
 				}
 			}
-			this.finalizeTransaction(tmpTransactionGUID);
 		}
 		catch (pError)
 		{
 			this.log.error(`Dynamic form setDataByInput [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInput.Hash}) from view in dataChanged event: ${pError}`);
+		}
+		finally
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
 		}
 
 		return false;
@@ -358,6 +369,8 @@ class PictViewDynamicForm extends libPictViewClass
 		)
 		{
 			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
+			const tmpTransactionGUID = this.fable.getUUID();
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			try
 			{
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
@@ -369,8 +382,6 @@ class PictViewDynamicForm extends libPictViewClass
 				// Each row has a distinct address!
 				let tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular + `[data-i-index="${pRowIndex}"]`;
 				let tmpInputProviderList = this.getInputProviderList(tmpInput);
-				const tmpTransactionGUID = this.fable.getUUID();
-				this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 				for (let i = 0; i < tmpInputProviderList.length; i++)
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
@@ -382,11 +393,14 @@ class PictViewDynamicForm extends libPictViewClass
 						this.log.error(`Dynamic form setDataTabularByHash [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}] row ${pRowIndex}.`);
 					}
 				}
-				this.finalizeTransaction(tmpTransactionGUID);
 			}
 			catch (pError)
 			{
 				this.log.error(`Dynamic form setDataTabularByHash [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
+			}
+			finally
+			{
+				this.finalizeTransaction(tmpTransactionGUID);
 			}
 		}
 
@@ -444,10 +458,10 @@ class PictViewDynamicForm extends libPictViewClass
 	onMarshalToView()
 	{
 		// TODO: Only marshal data that has changed since the last marshal.  Thought experiment: who decides what changes happened?
+		const tmpTransactionGUID = this.fable.getUUID();
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 		try
 		{
-			let tmpTransactionGUID = this.fable.getUUID();
-			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
 			// TODO: Add optional transaction awareness to informary
 			this.pict.providers.Informary.marshalDataToForm(tmpMarshalDestinationObject, this.formID, this.sectionManifest);
@@ -458,15 +472,19 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			this.log.error(`Gross error marshaling data to view: ${pError}`);
 		}
+		finally
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
+		}
 		return super.onMarshalToView();
 	}
 
 	manualMarshalDataToViewByInput(pInput, pTransactionGUID)
 	{
+		const tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 		try
 		{
-			let tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
-			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			this.pict.providers.Informary.manualMarshalDataToFormByInput(pInput);
 			this.runLayoutProviderFunctions('onDataMarshalToForm', tmpTransactionGUID);
 			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash, null, tmpTransactionGUID);
@@ -475,14 +493,21 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			this.log.error(`Gross error marshaling data to view: ${pError}`);
 		}
+		finally
+		{
+			if (tmpTransactionGUID !== pTransactionGUID)
+			{
+				this.finalizeTransaction(tmpTransactionGUID);
+			}
+		}
 	}
 
 	manualMarshalTabularDataToViewByInput(pInput, pRowIndex, pTransactionGUID)
 	{
+		const tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 		try
 		{
-			let tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
-			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			this.pict.providers.Informary.manualMarshalTabularDataToFormByInput(pInput, pRowIndex);
 			this.runLayoutProviderFunctions('onDataMarshalToForm', tmpTransactionGUID);
 			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash, pRowIndex, tmpTransactionGUID);
@@ -490,6 +515,13 @@ class PictViewDynamicForm extends libPictViewClass
 		catch (pError)
 		{
 			this.log.error(`Gross error marshaling tabular data to view: ${pError}`);
+		}
+		finally
+		{
+			if (tmpTransactionGUID !== pTransactionGUID)
+			{
+				this.finalizeTransaction(tmpTransactionGUID);
+			}
 		}
 	}
 
@@ -518,16 +550,20 @@ class PictViewDynamicForm extends libPictViewClass
 	onAfterMarshalToForm()
 	{
 		// Check to see if there are any hooks set from the input templates
+		const tmpTransactionGUID = this.fable.getUUID();
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 		try
 		{
-			let tmpTransactionGUID = this.fable.getUUID();
-			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			this.runInputProviderFunctions('onAfterMarshalToForm', null, null, tmpTransactionGUID);
 
 		}
 		catch (pError)
 		{
 			this.log.error(`Gross error running after marshal to form: ${pError}`);
+		}
+		finally
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
 		}
 	}
 
@@ -609,8 +645,19 @@ class PictViewDynamicForm extends libPictViewClass
 		let tmpTransactionGUID = this.fable.getUUID();
 		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 
-		this.runLayoutProviderFunctions('onGroupLayoutInitialize', tmpTransactionGUID);
-		this.runInputProviderFunctions('onInputInitialize', null, null, tmpTransactionGUID);
+		try
+		{
+			this.runLayoutProviderFunctions('onGroupLayoutInitialize', tmpTransactionGUID);
+			this.runInputProviderFunctions('onInputInitialize', null, null, tmpTransactionGUID);
+		}
+		catch (pError)
+		{
+			this.log.error(`Gross error running after render: ${pError.message || pError}`);
+		}
+		finally
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
+		}
 		return super.onAfterRender(pRenderable);
 	}
 
@@ -670,6 +717,10 @@ class PictViewDynamicForm extends libPictViewClass
 					tmpFunction.call(tmpLayoutProvider, this, tmpGroup);
 				}
 			}
+		}
+		if (tmpTransactionGUID !== pTransactionGUID)
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
 		}
 	}
 
@@ -792,7 +843,10 @@ class PictViewDynamicForm extends libPictViewClass
 				}
 			}
 		}
-		this.finalizeTransaction(tmpTransactionGUID);
+		if (pTransactionGUID !== tmpTransactionGUID)
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
+		}
 	}
 
 	/**
@@ -1184,6 +1238,8 @@ class PictViewDynamicForm extends libPictViewClass
 				}
 			}
 		}
+		//TODO: figure out how to safely clean up old transactions
+		//delete this.pict.TransactionTracking.transactions[pTransactionGUID];
 		return true;
 	}
 
