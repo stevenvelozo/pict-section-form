@@ -283,10 +283,10 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 	 * @param {string} pInputHash - The hash of the input to color.
 	 * @param {string} pColor - The HTML hex color to apply (e.g. #FF0000 for red).
 	 * @param {string} pApplyChange - If "0", the change will not be applied.
-	 * @param {string} [pClassTarget] - Optional. If provided, the color will be applied to the closest element with this class instead of the input itself.
+	 * @param {string} [pElementTarget] - Optional. If provided, the color will be applied to the closest element instead of the input itself.
 	 * @returns {boolean} - Returns true if the color was applied successfully or if the change was skipped for pApplyChange equal to "0", false otherwise.
 	 */
-	colorInputBackground(pSectionHash, pInputHash, pColor, pApplyChange, pClassTarget)
+	colorInputBackground(pSectionHash, pInputHash, pColor, pApplyChange, pElementTarget)
 	{
 		if (pApplyChange == "0")
 		{
@@ -321,13 +321,13 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 
 		// if we passed a class target, find the closest element with that class and apply the color to it
 		// otherwise, just apply it to the input element itself
-		if (pClassTarget)
+		if (pElementTarget)
 		{
 			// find closest target by class name and if we find it, immediately break out of the loop
 			for (let i = 0; i < tmpElementSet.length; i++)
 			{
 				const element = tmpElementSet[i];
-				const closest = element.closest(`.${pClassTarget}`);
+				const closest = element.closest(`${pElementTarget}`);
 				if (closest)
 				{
 					tmpElement = closest;
