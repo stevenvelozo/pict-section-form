@@ -44,10 +44,10 @@ declare class PictDynamicFormsSolverBehaviors extends libPictProvider {
      * @param {string} pInputHash - The hash of the input to color.
      * @param {string} pColor - The HTML hex color to apply (e.g. #FF0000 for red).
      * @param {string} pApplyChange - If "0", the change will not be applied.
-     * @param {string} [pClassTarget] - Optional. If provided, the color will be applied to the closest element with this class instead of the input itself.
+     * @param {string} [pCSSSelector] - Optional. If provided, the color will be applied to the closest element matching this selector instead of the input itself.
      * @returns {boolean} - Returns true if the color was applied successfully or if the change was skipped for pApplyChange equal to "0", false otherwise.
      */
-    colorInputBackground(pSectionHash: string, pInputHash: string, pColor: string, pApplyChange: string, pClassTarget?: string): boolean;
+    colorInputBackground(pSectionHash: string, pInputHash: string, pColor: string, pApplyChange: string, pCSSSelector?: string): boolean;
     logValues(...args: any[]): any;
 }
 declare namespace PictDynamicFormsSolverBehaviors {

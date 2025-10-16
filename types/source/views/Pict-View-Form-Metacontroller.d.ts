@@ -161,6 +161,29 @@ declare class PictFormMetacontroller extends libPictViewClass {
      */
     triggerGlobalInputEvent(pEvent: string, pTransactionGUID?: string): void;
     /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {string} pAsyncOperationHash - The hash of the async operation.
+     */
+    registerEventTransactionAsyncOperation(pTransactionGUID: string, pAsyncOperationHash: string): void;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {string} pAsyncOperationHash - The hash of the async operation.
+     *
+     * @return {boolean} - Returns true if the async operation was found and marked as complete, otherwise false.
+     */
+    eventTransactionAsyncOperationComplete(pTransactionGUID: string, pAsyncOperationHash: string): boolean;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     *
+     * @return {boolean} - Returns true if the transaction was found and able to be finalized, otherwise false.
+     */
+    finalizeTransaction(pTransactionGUID: string): boolean;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {Function} fCallback - The callback to call when the transaction is complete.
+     */
+    registerOnTransactionCompleteCallback(pTransactionGUID: string, fCallback: Function): void;
+    /**
      * Returns whether the object is a Pict Metacontroller.
      *
      * @returns {boolean} True if the object is a Pict Metacontroller, false otherwise.

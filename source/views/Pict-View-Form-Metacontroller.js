@@ -7,6 +7,10 @@ const libPictViewDynamicForm = require('./Pict-View-DynamicForm.js');
 // TODO: Manage view lifecycle internally, including destruction of views if they are flagged to not be needed.
 // Why?  This allows us to dynamically add and remove sections without having to reload the application.
 
+const PENDING_ASYNC_OPERATION_TYPE = 'PendingAsyncOperation';
+const TRANSACTION_COMPLETE_CALLBACK_TYPE = 'onTransactionComplete';
+const READY_TO_FINALIZE_TYPE = 'ReadyToFinalize';
+
 /**
  * @typedef {(a: any, b: any) => number} SortFunction
  */
@@ -937,6 +941,146 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			// If we created the transaction GUID, we need to finalize it
 			tmpFinalizeView.finalizeTransaction(tmpTransactionGUID);
+		}
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {string} pAsyncOperationHash - The hash of the async operation.
+	 */
+	registerEventTransactionAsyncOperation(pTransactionGUID, pAsyncOperationHash)
+	{
+		this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, pAsyncOperationHash, PENDING_ASYNC_OPERATION_TYPE);
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {string} pAsyncOperationHash - The hash of the async operation.
+	 *
+	 * @return {boolean} - Returns true if the async operation was found and marked as complete, otherwise false.
+	 */
+	eventTransactionAsyncOperationComplete(pTransactionGUID, pAsyncOperationHash)
+	{
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpPendingAsyncOperationCount = 0;
+		let tmpMarkedOperationCount = 0;
+		let tmpFinalized = false;
+		for (let i = 0; i < tmpQueue.length; i++)
+		{
+			const tmpQueueItem = tmpQueue[i];
+			if (tmpQueueItem.Type === PENDING_ASYNC_OPERATION_TYPE)
+			{
+				if (tmpQueueItem.Data === pAsyncOperationHash)
+				{
+					tmpQueue.splice(i, 1);
+					++tmpMarkedOperationCount;
+					--i;
+				}
+				else
+				{
+					++tmpPendingAsyncOperationCount;
+				}
+			}
+			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
+			{
+				tmpFinalized = true;
+			}
+		}
+		if (tmpPendingAsyncOperationCount === 0)
+		{
+			for (const tmpQueueItem of tmpQueue)
+			{
+				if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
+				{
+					if (typeof tmpQueueItem.Data !== 'function')
+					{
+						this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
+						continue;
+					}
+					try
+					{
+						tmpQueueItem.Data();
+					}
+					catch (pError)
+					{
+						this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback error: ${pError}`, { Stack: pError.stack });
+					}
+				}
+			}
+		}
+		return tmpMarkedOperationCount > 0;
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 *
+	 * @return {boolean} - Returns true if the transaction was found and able to be finalized, otherwise false.
+	 */
+	finalizeTransaction(pTransactionGUID)
+	{
+		this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, null, READY_TO_FINALIZE_TYPE);
+
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpPendingAsyncOperationCount = 0;
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === PENDING_ASYNC_OPERATION_TYPE)
+			{
+				++tmpPendingAsyncOperationCount;
+			}
+		}
+		if (tmpPendingAsyncOperationCount > 0)
+		{
+			this.pict.log.info(`PICT View Metatemplate Helper finalizeTransaction ${pTransactionGUID} is waiting on ${tmpPendingAsyncOperationCount} pending async operations.`);
+			return false;
+		}
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
+			{
+				if (typeof tmpQueueItem.Data !== 'function')
+				{
+					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
+					continue;
+				}
+				try
+				{
+					tmpQueueItem.Data();
+				}
+				catch (pError)
+				{
+					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback error: ${pError}`, { Stack: pError.stack });
+				}
+			}
+		}
+		//TODO: figure out how to safely clean up old transactions
+		//delete this.pict.TransactionTracking.transactions[pTransactionGUID];
+		return true;
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {Function} fCallback - The callback to call when the transaction is complete.
+	 */
+	registerOnTransactionCompleteCallback(pTransactionGUID, fCallback)
+	{
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpFinalized = false;
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
+			{
+				tmpFinalized = true;
+				break;
+			}
+		}
+		if (tmpFinalized)
+		{
+			fCallback();
+		}
+		else
+		{
+			this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, fCallback, TRANSACTION_COMPLETE_CALLBACK_TYPE);
 		}
 	}
 
