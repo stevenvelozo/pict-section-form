@@ -27,6 +27,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 		// Parse the CSV file
 		const tmpRecords = [];
 		const tmpCSVParser = this.fable.instantiateServiceProvider('CSVParser');
+		tmpCSVParser.EscapedQuoteString = '"';
 		this.fable.log.info(`Parsing CSV file [${pFilePath}]...`);
 
 		const tmpReadline = libReadline.createInterface(
@@ -59,6 +60,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 		// Parse the CSV file
 		const tmpRecords = [];
 		const tmpCSVParser = this.fable.instantiateServiceProvider('CSVParser');
+		tmpCSVParser.EscapedQuoteString = '"';
 		this.fable.log.info(`Parsing Options CSV file [${pFilePath}]...`);
 
 		const tmpReadline = libReadline.createInterface(

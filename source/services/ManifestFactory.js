@@ -624,7 +624,7 @@ class ManifestFactory extends libFableServiceProviderBase
 		{
 			// Clean up the equation a bit to remove any leading/trailing spaces and replace HTML quotes
 			// that may have been added by the CSV or other source.
-			const tmpCleanEquation = tmpRecord['Equation'].trim().replace(/&quot;/g, '"');
+			const tmpCleanEquation = tmpRecord['Equation'].trim();
 			this.log.trace(`Adding solver to ${tmpRecord.Form} --> ${tmpGroup.Name} for ${tmpRecord['Input Hash']}: ${tmpRecord['Equation']}`);
 			if ((tmpGroup.Layout == 'Tabular') || (tmpGroup.Layout == 'RecordSet'))
 			{
