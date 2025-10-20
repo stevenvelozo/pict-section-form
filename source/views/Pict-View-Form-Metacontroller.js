@@ -37,6 +37,12 @@ class PictFormMetacontroller extends libPictViewClass
 		this.formTemplatePrefix = this.pict.providers.MetatemplateGenerator.baseTemplatePrefix;
 
 		this.manifest = this.pict.manifest;
+
+		this.SupportViewPrototypes = (
+		{
+			LifecycleVisualization: require('./support/Pict-View-PSF-LifeCycle-Visualization.js'),
+			DebugViewer: require('./support/Pict-View-PSF-DebugViewer.js')
+		});
 	}
 
 	get viewMarshalDestination()
@@ -1082,6 +1088,23 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, fCallback, TRANSACTION_COMPLETE_CALLBACK_TYPE);
 		}
+	}
+
+	showSupportViewInlineEditor()
+	{
+		// 1. See if the Inline Editor support view is loaded
+		if (!("Pict-Form-DebugViewer" in this.pict.views))
+		{
+			// 2. Load the support view if it isn't
+			this.pict.addView("Pict-Form-DebugViewer", {}, this.SupportViewPrototypes.DebugViewer);
+		}
+	
+		// 3. See if the container for the support view is loaded
+		// 4. Render the container for the support view if it isn't loaded
+		this.pict.views["Pict-Form-DebugViewer"].bootstrapContainer();
+	
+		// 5. Render the support view into the container
+		this.pict.views["Pict-Form-DebugViewer"].render();
 	}
 
 	/**

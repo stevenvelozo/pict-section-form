@@ -24,3 +24,11 @@ module.exports.PictDynamicLayoutProvider = require('./providers/Pict-Provider-Dy
 
 // The ManifestFactory, for when we want to convert tabular data to configuration
 module.exports.ManifestFactory = require('./services/ManifestFactory.js');
+
+
+// The extension views
+module.exports.ExtensionViews = (
+	{
+		LifecycleVisualization: require('./views/support/Pict-View-PSF-LifeCycle-Visualization.js'),
+		DebugViewer: require('./views/support/Pict-View-PSF-DebugViewer.js')
+	});
