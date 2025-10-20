@@ -14,6 +14,10 @@ declare class PictFormMetacontroller extends libPictViewClass {
     lastRenderedViews: any[];
     formTemplatePrefix: any;
     manifest: any;
+    SupportViewPrototypes: {
+        LifecycleVisualization: typeof import("./support/Pict-View-PSF-LifeCycle-Visualization.js");
+        DebugViewer: typeof import("./support/Pict-View-PSF-DebugViewer.js");
+    };
     set viewMarshalDestination(pValue: any);
     get viewMarshalDestination(): any;
     /**
@@ -183,6 +187,7 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @param {Function} fCallback - The callback to call when the transaction is complete.
      */
     registerOnTransactionCompleteCallback(pTransactionGUID: string, fCallback: Function): void;
+    showSupportViewInlineEditor(): void;
     /**
      * Returns whether the object is a Pict Metacontroller.
      *
