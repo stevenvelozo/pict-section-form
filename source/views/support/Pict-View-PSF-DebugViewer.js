@@ -23,13 +23,6 @@ const defaultViewConfiguration = (
 		--PSFDV-Section-DynamicInput-button-color: #2b89a4;
 		--PSFDV-Section-DynamicInput-button-text-color: #D8D7E5;
 	}
-	#Pict-Form-Extensions-Container { 
-		color: var(--PSFDV-Global-text-color);
-		background-color: var(--PSFDV-Global-background-color);
-		padding: var(--PSFDV-gutter-size);
-		font-family: Arial, sans-serif;
-		font-size: 14px;
-	}
 	.PSFDV-Extension-Header {
 		font-size: 10px;
 		font-weight: bold;

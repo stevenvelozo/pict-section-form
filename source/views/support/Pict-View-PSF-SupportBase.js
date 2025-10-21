@@ -28,6 +28,10 @@ class PictFormsSupportBase extends libPictView
 		{
 			this.pict.CSSMap.addCSS('Pict-Support',
 				/*css*/`
+					:root{
+						--PSF-Global-background-color: #dcdce5;
+						--PSF-Global-text-color: #333333;
+					}
 					#Pict-Form-Extensions-Wrap {
 						position: absolute;
 						left: 50%;
@@ -41,7 +45,17 @@ class PictFormsSupportBase extends libPictView
 						cursor: move;
 						padding: 2px 4px;
 						border-radius: 3px;
-						
+					}
+					#Pict-Form-Extensions-Container { 
+						color: var(--PSF-Global-text-color);
+						background-color: var(--PSF-Global-background-color);
+						padding: 10px;
+						border: 4px double #111;
+						border-radius: 8px;
+						box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+						font-size: 14px;
+						font-family: Arial, sans-serif;
+						font-size: 14px;
 					}
 				`, 1000, 'Pict-Form-SupportBase');
 		}
