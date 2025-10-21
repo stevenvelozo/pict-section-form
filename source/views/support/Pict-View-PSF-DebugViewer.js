@@ -272,6 +272,9 @@ class PictFormsInlineEditor extends libPictViewFormSupportBase
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
+
+		this.DisplayShortName = 'IE';
+		this.DisplayLongName = 'InlineEditor';
 	}
 }
 

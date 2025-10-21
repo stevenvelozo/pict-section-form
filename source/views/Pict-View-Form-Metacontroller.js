@@ -41,7 +41,10 @@ class PictFormMetacontroller extends libPictViewClass
 		this.SupportViewPrototypes = (
 		{
 			LifecycleVisualization: require('./support/Pict-View-PSF-LifeCycle-Visualization.js'),
-			DebugViewer: require('./support/Pict-View-PSF-DebugViewer.js')
+			DebugViewer: require('./support/Pict-View-PSF-DebugViewer.js'),
+			AppDataViewer: require('./support/Pict-View-PSF-AppData-Visualization.js'),
+			SolverVisualization: require('./support/Pict-View-PSF-Solver-Visualization.js'),
+			SpecificSolveVisualization: require('./support/Pict-View-PSF-SpecificSolve-Visualization.js'),
 		});
 	}
 
@@ -1113,12 +1116,13 @@ class PictFormMetacontroller extends libPictViewClass
 
 	showSupportViewInlineEditor()
 	{
-		// 1. See if the Inline Editor support view is loaded
-		if (!("Pict-Form-DebugViewer" in this.pict.views))
-		{
-			// 2. Load the support view if it isn't
-			this.pict.addView("Pict-Form-DebugViewer", {}, this.SupportViewPrototypes.DebugViewer);
-		}
+		// 1. See if the Support views are loaded
+		// 2. Load the support view if it isn't
+		this.pict.addViewSingleton("Pict-Form-DebugViewer", {}, this.SupportViewPrototypes.DebugViewer);
+		this.pict.addViewSingleton("Pict-Form-AppDataViewer", {}, this.SupportViewPrototypes.AppDataViewer);
+		this.pict.addViewSingleton("Pict-Form-LifecycleVisualization", {}, this.SupportViewPrototypes.LifecycleVisualization);
+		this.pict.addViewSingleton("Pict-Form-SolverVisualization", {}, this.SupportViewPrototypes.SolverVisualization);
+		this.pict.addViewSingleton("Pict-Form-SpecificSolveVisualization", {}, this.SupportViewPrototypes.SpecificSolveVisualization);
 	
 		// 3. See if the container for the support view is loaded
 		// 4. Render the container for the support view if it isn't loaded

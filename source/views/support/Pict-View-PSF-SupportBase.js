@@ -1,5 +1,7 @@
 const libPictView = require(`pict-view`);
 
+const libPictSupportProvider = require('./Pict-Provider-PSF-Support.js');
+
 const defaultViewConfiguration = (
 {
 	ViewIdentifier: "Pict-Form-SupportBase",
@@ -23,53 +25,14 @@ class PictFormsSupportBase extends libPictView
 	{
 		super(pFable, pOptions, pServiceHash);
 
-		// Only add this css if it doesn't exist
-		if (!('Pict-Support' in this.pict.CSSMap.inlineCSSMap))
-		{
-			this.pict.CSSMap.addCSS('Pict-Support',
-				/*css*/`
-					:root{
-						--PSF-Global-background-color: #dcdce5;
-						--PSF-Global-text-color: #333333;
-					}
-					#Pict-Form-Extensions-Wrap {
-						position: absolute;
-						left: 50%;
-						top: 0px;
-						width: 50vw;
-						max-height: 75vh;
-						overflow: auto;
-					}
-					#Pict-Form-Extension-DragControl {
-						background-color: #eae;
-						cursor: move;
-						padding: 2px 4px;
-						border-radius: 3px;
-					}
-					#Pict-Form-Extensions-Container { 
-						color: var(--PSF-Global-text-color);
-						background-color: var(--PSF-Global-background-color);
-						padding: 10px;
-						border: 4px double #111;
-						border-radius: 8px;
-						box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-						font-size: 14px;
-						font-family: Arial, sans-serif;
-						font-size: 14px;
-					}
-				`, 1000, 'Pict-Form-SupportBase');
-		}
-		// Only add this template if it doesn't exist
-		if (this.pict.TemplateProvider.getTemplate('Pict-Form-Support-Container') == null)
-		{
-			this.pict.TemplateProvider.addTemplate('Pict-Form-Support-Container',
-				/*html*/`
-			<div id="Pict-Form-Extensions-Wrap">
-				<p class="PSFDV-Extension-Header"><span id="Pict-Form-Extension-DragControl" class="PSDV-Extension-Header-Controlbar">Pict.Extensions <a href="javascript:void(0);" onclick="{~P~}.views.PictFormMetacontroller.showSupportViewInlineEditor()">reload</a> <a href="javascript:void(0);" onclick="{~P~}.ContentAssignment.toggleClass('#Pict-Form-Extensions-Container', 'PSFDV-Hidden')">toggle</a></span></p>
-				<div id="Pict-Form-Extensions-Container"></div>
-			</div>
-				`);
-		}
+		// Add the support provider if it doesn't exist
+		this.pict.addProviderSingleton("Pict-Form-SupportExtensions", {}, libPictSupportProvider);
+
+		this.DisplayShortName = 'U';
+		this.DisplayLongName = 'UNDEFINED';
+
+		// Register this with the support provider
+		this.pict.providers["Pict-Form-SupportExtensions"].registerSupportView(this);
 	}
 
 	getDynamicState()

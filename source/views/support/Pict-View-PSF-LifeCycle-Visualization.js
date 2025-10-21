@@ -1,36 +1,45 @@
-const libPictView = require(`pict-view`);
+const libPictViewFormSupportBase = require(`./Pict-View-PSF-SupportBase.js`);
 
 const defaultViewConfiguration = (
 {
-	ViewIdentifier: "PictSectionForm-Visualization-Lifecycle",
+	ViewIdentifier: "Pict-Form-LifeCycle",
 
-	DefaultRenderable: 'PSF-Visualization-Lifecycle-Renderable',
-	DefaultDestinationAddress: "#PictSectionForm-Extensions-Container",
+	DefaultRenderable: 'Pict-Form-LifeCycle-Renderable',
+	DefaultDestinationAddress: "#Pict-Form-Extensions-Container",
 
 	RenderOnLoad: false,
 
+	CSS: /*css*/``,
+
 	Templates: [
 		{
-			Hash: "PictSectionForm-Visualization-Lifecycle-Content",
-			Template: /*html*/``
+			Hash: "Pict-Form-LifeCycle-Content",
+			Template: /*html*/`
+<div id="Pict-Form-LifeCycle-Content">
+	<h2 class="PSFLC-Global-Header">Pict LifeCycle Visualization</h2>
+</div>
+`
 		}
 	],
 	Renderables: [
 		{
-			RenderableHash: "PictSectionForm-Visualization-Lifecycle-Renderable",
-			TemplateHash: "PictSectionForm-Visualization-Lifecycle-Content"
+			RenderableHash: "Pict-Form-LifeCycle-Renderable",
+			TemplateHash: "Pict-Form-LifeCycle-Content"
 		}
 	]
 });
 
-class PictSectionFormsLifecycleVisualization extends libPictView
+class PictFormsLifeCycle extends libPictViewFormSupportBase
 {
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
+
+		this.DisplayShortName = 'LV';
+		this.DisplayLongName = 'LifecycleVisulization';
 	}
 }
 
-module.exports = PictSectionFormsLifecycleVisualization;
+module.exports = PictFormsLifeCycle;
 
 module.exports.default_configuration = defaultViewConfiguration;
