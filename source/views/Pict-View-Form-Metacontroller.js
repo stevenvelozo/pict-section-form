@@ -490,6 +490,27 @@ class PictFormMetacontroller extends libPictViewClass
 	}
 
 	/**
+	 * Marshals data to the form sections based on the provided filter and sort functions
+	 *
+	 * If no filter and sort functions are provided, render all form sections.
+	 *
+	 * @param {Function} [fFilterFunction] - The filter function used to filter the views.
+	 * @param {SortFunction} [fSortFunction] - The sort function used to sort the views.
+	 */
+	marshalFormSections(fFilterFunction, fSortFunction)
+	{
+		let tmpViewList = this.filterViews(fFilterFunction, fSortFunction);
+		for (let i = 0; i < tmpViewList.length; i++)
+		{
+			if (tmpViewList[i] === this)
+			{
+				continue;
+			}
+			tmpViewList[i].marshalToView();
+		}
+	}
+
+	/**
 	 * Regenerates the DyunamicForm section templates based on the provided filter and sort function.
 	 *
 	 * @param {Function} [fFormSectionFilter] - (optional) The filter function used to determine which views to include in the regeneration.

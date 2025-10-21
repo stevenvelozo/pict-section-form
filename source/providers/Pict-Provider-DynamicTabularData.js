@@ -172,7 +172,8 @@ class DynamicTabularData extends libPictProvider
 				{
 					tmpRowPrototype = JSON.parse(JSON.stringify(tmpGroup.DefaultRows[tmpDestinationObject.length]));
 				}
-				tmpDestinationObject.push(tmpGroup.supportingManifest.populateDefaults(tmpRowPrototype))
+				tmpDestinationObject.push(tmpGroup.supportingManifest.populateDefaults(tmpRowPrototype));
+				this.pict.providers.DynamicSolver.solveViews();
 				pView.render();
 				pView.marshalToView();
 			}
@@ -180,6 +181,7 @@ class DynamicTabularData extends libPictProvider
 			{
 				let tmpRowIndex = pView.fable.getUUID();
 				tmpDestinationObject[tmpRowIndex] = tmpGroup.supportingManifest.populateDefaults({});
+				this.pict.providers.DynamicSolver.solveViews();
 				pView.render();
 				pView.marshalToView();
 			}
@@ -253,8 +255,11 @@ class DynamicTabularData extends libPictProvider
 				}
 				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
 				tmpDestinationObject.splice(tmpNewRowIndex, 0, tmpElementToBeMoved[0]);
+				this.pict.providers.DynamicSolver.solveViews();
 				pView.render();
-				pView.marshalToView();
+				//pView.marshalToView();
+				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
+				this.pict.views.PictFormMetacontroller.marshalFormSections();
 			}
 			else if (typeof(tmpDestinationObject) === 'object')
 			{
@@ -289,8 +294,11 @@ class DynamicTabularData extends libPictProvider
 				}
 				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
 				tmpDestinationObject.splice(tmpRowIndex + 1, 0, tmpElementToBeMoved[0]);
+				this.pict.providers.DynamicSolver.solveViews();
 				pView.render();
-				pView.marshalToView();
+				//pView.marshalToView();
+				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
+				this.pict.views.PictFormMetacontroller.marshalFormSections();
 			}
 			else if (typeof(tmpDestinationObject) === 'object')
 			{
@@ -330,8 +338,11 @@ class DynamicTabularData extends libPictProvider
 				}
 				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
 				tmpDestinationObject.splice(tmpRowIndex - 1, 0, tmpElementToBeMoved[0]);
+				this.pict.providers.DynamicSolver.solveViews();
 				pView.render();
-				pView.marshalToView();
+				//pView.marshalToView();
+				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
+				this.pict.views.PictFormMetacontroller.marshalFormSections();
 			}
 			else if (typeof(tmpDestinationObject) === 'object')
 			{
@@ -372,8 +383,11 @@ class DynamicTabularData extends libPictProvider
 					return false;
 				}
 				tmpDestinationObject.splice(tmpRowIndex, 1);
+				this.pict.providers.DynamicSolver.solveViews();
 				pView.render();
-				pView.marshalToView();
+				//pView.marshalToView();
+				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
+				this.pict.views.PictFormMetacontroller.marshalFormSections();
 			}
 			else if (typeof(tmpDestinationObject) === 'object')
 			{
@@ -384,8 +398,11 @@ class DynamicTabularData extends libPictProvider
 					return false;
 				}
 				delete tmpDestinationObject[tmpRowIndex]
+				this.pict.providers.DynamicSolver.solveViews();
 				pView.render();
-				pView.marshalToView();
+				//pView.marshalToView();
+				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
+				this.pict.views.PictFormMetacontroller.marshalFormSections();
 			}
 		}
 	}
