@@ -13,48 +13,60 @@ const defaultViewConfiguration = (
 	:root{
 		--PSFDV-gutter-size: 5px;
 		--PSFDV-indentation-size: calc(2 * var(--PSFDV-gutter-size));
-		--PSFDV-Global-background-color: #dcdce5;
+		--PSFDV-Global-background-color: #dedede;
 		--PSFDV-Global-text-color: #333333;
-		--PSFDV-Section-background-color: #cacae8;
+		--PSFDV-Section-background-color: #efefef;
 		--PSFDV-Section-button-color: #5A52A3;
 		--PSFDV-Section-button-text-color: #D8D7E5;
-		--PSFDV-Section-Data-background-color: #e2e2f0;
+		--PSFDV-Section-label-color: #999;
+		--PSFDV-Section-Data-background-color: #fafafa;
+		--PSFDV-Section-Group-Header-background-color: #ebebff;
+		--PSFDV-Section-Group-Row-Header-background-color: #dcf0f0;
+		--PSFDV-Solver-Entry-text-color: #bb4a9c;
 		--PSFDV-Section-DynamicInput-background-color: #a3ccd8;
 		--PSFDV-Section-DynamicInput-button-color: #2b89a4;
 		--PSFDV-Section-DynamicInput-button-text-color: #D8D7E5;
 	}
+	/** Headers	*/
 	.PSFDV-Extension-Header {
 		font-size: 10px;
 		font-weight: bold;
 		margin-bottom: var(--PSFDV-gutter-size);
 	}
 	.PSFDV-Global-Header {
-		margin: var(--PSFDV-gutter-size);
+		padding: var(--PSFDV-gutter-size);
+		margin: 0;
 	}
 	.PSFDV-Section-Header {
-		margin: var(--PSFDV-gutter-size);
+		padding: var(--PSFDV-gutter-size);
+		margin: 0;
 	}
 	.PSFDV-Content-Header {
-		margin: var(--PSFDV-gutter-size);
+		padding: var(--PSFDV-gutter-size);
+		margin: 0;
+		background-color: var(--PSFDV-Section-background-color);
 	}
-	#PSFDV-SectionList .PSFDV-Section { 
+	.PSFDV-Data-Header {
+		font-weight: bold;
+		border-bottom: 1px dotted #ccc;
+		padding: var(--PSFDV-gutter-size);
+	}
+	/** Section content */
+	.PSFDV-Section { 
 		margin: var(--PSFDV-gutter-size);
 		padding: var(--PSFDV-gutter-size);
 		background-color: var(--PSFDV-Section-background-color);
 	}
 	.PSFDV-Section-Descriptors { 
-		border-left: 5px solid var(--PSFDV-Section-background-color);
-		background-color: #ffffff;
 		padding: var(--PSFDV-gutter-size) 0;
 	}
 	.PSFDV-Section-Group { 
-		border-left: 5px solid var(--PSFDV-Section-button-color);
 		padding: var(--PSFDV-gutter-size);
-		background-color: #efefef;
 	}
 	.PSFDV-Section-Buttons {
 		list-style-type: none;
 		padding: 0;
+		padding-bottom: var(--PSFDV-gutter-size);
 		margin: calc(var(--PSFDV-gutter-size) * 2) var(--PSFDV-gutter-size);
 	}
 	.PSFDV-Section-Button { 
@@ -72,43 +84,38 @@ const defaultViewConfiguration = (
 	.PSFDV-Section-Button a:hover { 
 		text-decoration: underline;
 	}
+	.PSFDV-Section-Solver-Entry:not(:last-child) {
+		border-bottom: 1px solid #ccc;
+	}
 	.PSFDV-Solver-Entry { 
-		padding-left: var(--PSFDV-indentation-size);
-		margin-left: var(--PSFDV-gutter-size);
 		font-family: "Courier New", "Lucida Console", monospace;
-		white-space: nowrap;
-		overflow: scroll;
+		font-weight: bold;
+		margin-top: var(--PSFDV-gutter-size);
+		padding: var(--PSFDV-gutter-size);
+		line-height: 1.2;
+		color: var(--PSFDV-Solver-Entry-text-color);
+		border-bottom: 1px dotted #ccc;
 	}
 	.PSFDV-Solver-Result { 
 		font-family: "Courier New", "Lucida Console", monospace;
-		background-color: #dedede;
-		border: 1px solid #cccccc;
 		font-weight: bold;
-		border-radius: var(--PSFDV-gutter-size);
 		margin-top: var(--PSFDV-gutter-size);
-		display: inline-block;
-		white-space: nowrap;
-		overflow: scroll;
-		padding: var(--PSFDV-gutter-size);
-	}
-	.PSFDV-DataHeader {
-		font-weight: bold;
-		background-color: #f0f0f0;
-		padding: var(--PSFDV-gutter-size);
+		padding: 0 var(--PSFDV-gutter-size);
+		line-height: 1.2;
 	}
 	.PSFDV-Section-ExtraData {
-		margin-top: var(--PSFDV-gutter-size);
-		padding: var(--PSFDV-gutter-size);
+		padding-top: var(--PSFDV-gutter-size);
 		background-color: var(--PSFDV-Section-Data-background-color);
 	}
-	.PSFDV-Section .PSFDV-DeEmphasize
-	{
-		color: var(--PSFDV-Section-button-color);
+	.PSFDV-Section-Group .PSFDV-Content-Header.PSFDV-Section-Group-Header {
+		background-color: var(--PSFDV-Section-Group-Header-background-color);
+	}
+	.PSFDV-Section-Group .PSFDV-Content-Header.PSFDV-Section-Group-Row-Header {
+		background-color: var(--PSFDV-Section-Group-Row-Header-background-color);
 	}
 	.PSFDV-DeEmphasize { 
-		font-weight: light;
+		color: var(--PSFDV-Section-label-color);
 		font-size: smaller;
-		display: block;
 	}
 	.PSFDV-Data { 
 		margin-left: var(--PSFDV-indentation-size);
@@ -116,11 +123,12 @@ const defaultViewConfiguration = (
 		font-size: smaller;
 	}
 	.PSFDV-Label { 
-		font-weight: light;
 		min-width: 15%;
-		display: block;
-		color: var(--PSFDV-Section-button-color);
+		color: var(--PSFDV-Section-label-color);
 		margin: var(--PSFDV-gutter-size) 0;
+	}
+	.PSFDV-Label::after {
+		content: ": ";
 	}
 	.PSFDV-Hidden { 
 		display: none;
@@ -128,6 +136,30 @@ const defaultViewConfiguration = (
 	.PSFDV-Section-Solver-DynamicInput {
 		background-color: #ffffff;
 	}
+	
+	/** empty states */
+	.PSFDV-Section-Solvers:empty::before {
+		content: "No Section Solvers Defined";
+		font-style: italic;
+		color: var(--PSFDV-Section-label-color);
+		margin-left: var(--PSFDV-indentation-size);
+		text-align: center;
+		padding: var(--PSFDV-gutter-size);
+		display: block;
+		font-size: smaller;
+	}
+	.PSFDV-Group-Solvers:empty::before {
+		content: "No Group/RecordSet Solvers Defined";
+		font-style: italic;
+		color: var(--PSFDV-Section-label-color);
+		margin-left: var(--PSFDV-indentation-size);
+		text-align: center;
+		padding: var(--PSFDV-gutter-size);
+		display: block;
+		font-size: smaller;
+	}
+
+	/** Dynamic Input Section */
 	#PSFDV-DynamicInputSection .PSFDV-Section { 
 		margin: var(--PSFDV-gutter-size);
 		padding: var(--PSFDV-gutter-size);
@@ -186,22 +218,18 @@ const defaultViewConfiguration = (
 		</ul>
 		<div id="PSFDV-{~D:Record.View.Hash~}-Extra" class="PSFDV-Hidden PSFDV-Section-ExtraData">
 			<p class="PSFDV-Data">
-				<span class="PSFDV-Label">Description:</span> {~D:Record.sectionDefinition.Description~}
+				<span class="PSFDV-Label">Description</span> {~D:Record.sectionDefinition.Description~}
 			</p>
 			<p class="PSFDV-Data">
-				<span class="PSFDV-Label">Hash:</span> {~D:Record.View.Hash~}
+				<span class="PSFDV-Label">Hash</span> {~D:Record.View.Hash~}
 			</p>
 			<p class="PSFDV-Data">
-				<span class="PSFDV-Label">HTML ID:</span> {~D:Record.View.sectionDefinition.Macro.HTMLID~}
+				<span class="PSFDV-Label">HTML ID</span> {~D:Record.View.sectionDefinition.Macro.HTMLID~}
 			</p>
 			<h4 class="PSFDV-Content-Header">Section Solvers:</h4>
-			<div class="PSFDV-Section-Solvers">
-				{~TS:Pict-Form-DebugViewer-SolverEntry:Record.Solvers[]<<~?ExpressionScope,==,Section?~>>~}
-			</div>
+			<div class="PSFDV-Section-Solvers">{~TS:Pict-Form-DebugViewer-SolverEntry:Record.Solvers[]<<~?ExpressionScope,==,Section?~>>~}</div>
 			<h4 class="PSFDV-Content-Header">Tabular/RecordSet Solvers:</h4>
-			<div class="PSFDV-Group-Solvers">
-				{~TS:Pict-Form-DebugViewer-SolverEntry:Record.Solvers[]<<~?ExpressionScope,==,Group?~>>~}
-			</div>
+			<div class="PSFDV-Group-Solvers">{~TS:Pict-Form-DebugViewer-SolverEntry:Record.Solvers[]<<~?ExpressionScope,==,Group?~>>~}</div>
 			<h4 class="PSFDV-Content-Header">Inputs:</h4>
 			<div class="PSFDV-Section-Solver-DynamicInput">
 				{~TS:Pict-Form-DebugViewer-GroupContainer:Record.View.sectionDefinition.Groups~}
@@ -227,8 +255,10 @@ const defaultViewConfiguration = (
 			Hash: "Pict-Form-DebugViewer-GroupContainer",
 			Template: /*html*/`
 			<div class="PSFDV-Section-Group">
-				<h5 class="PSFDV-Content-Header"><span class="PSFDV-DeEmphasize">Group:</span> {~D:Record.Name~} [idx <em>{~D:Record.GroupIndex~}</em>]</h5>
-				<p class="PSFDV-Data"><span class="PSFDV-Label">Layout:</span> {~D:Record.Layout~}</p>
+				<h5 class="PSFDV-Content-Header PSFDV-Section-Group-Header">
+					<span class="PSFDV-DeEmphasize">Group:</span> {~D:Record.Name~} [idx <em>{~D:Record.GroupIndex~}</em>]
+				</h5>
+				<p class="PSFDV-Data"><span class="PSFDV-Label">Layout</span> {~D:Record.Layout~}</p>
 				<div class="PSFDV-Section-Rows">
 					{~TS:Pict-Form-DebugViewer-RowContainer:Record.Rows~}
 				</div>
@@ -239,7 +269,9 @@ const defaultViewConfiguration = (
 			Hash: "Pict-Form-DebugViewer-RowContainer",
 			Template: /*html*/`
 					<div class="PSFDV-Section-Descriptors">
-						<h6 class="PSFDV-Content-Header">Row {~D:Record.Hash~}</h6>
+						<h6 class="PSFDV-Content-Header PSFDV-Section-Group-Row-Header">
+							<span class="PSFDV-DeEmphasize">Row:</span> {~D:Record.Hash~}
+						</h6>
 						{~TS:Pict-Form-DebugViewer-DescriptorContainer:Record.Inputs~}
 					</div>
 `
@@ -248,7 +280,7 @@ const defaultViewConfiguration = (
 			Hash: "Pict-Form-DebugViewer-DescriptorContainer",
 			Template: /*html*/`
 						<div class="PSFDV-Section-Descriptor">
-							<p class="PSFDV-DataHeader"><span class="PSFDV-DeEmphasize">Input:</span> {~D:Record.Name~}</p>
+							<p class="PSFDV-Data-Header"><span class="PSFDV-DeEmphasize">Input:</span> {~D:Record.Name~}</p>
 							<p class="PSFDV-Data"><span class="PSFDV-Label">Hash</span> {~D:Record.Hash~}</p>
 							<p class="PSFDV-Data"><span class="PSFDV-Label">DataType</span> {~D:Record.DataType~}</p>
 							<p class="PSFDV-Data"><span class="PSFDV-Label">InputType</span> {~D:Record.PictForm.InputType~}</p>
