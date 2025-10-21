@@ -24,18 +24,16 @@ const defaultViewConfiguration = (
 		--PSFDV-Section-DynamicInput-button-text-color: #D8D7E5;
 	}
 	#Pict-Form-Extensions-Container { 
-		position: absolute;
-		left: 50%;
-		top: 0px;
-		width: 50vw;
-		height: 100vh;
 		color: var(--PSFDV-Global-text-color);
 		background-color: var(--PSFDV-Global-background-color);
 		padding: var(--PSFDV-gutter-size);
-		overflow: auto;
-		max-height: 100vh;
 		font-family: Arial, sans-serif;
 		font-size: 14px;
+	}
+	.PSFDV-Extension-Header {
+		font-size: 10px;
+		font-weight: bold;
+		margin-bottom: var(--PSFDV-gutter-size);
 	}
 	.PSFDV-Global-Header {
 		margin: var(--PSFDV-gutter-size);
@@ -166,7 +164,7 @@ const defaultViewConfiguration = (
 			Hash: "Pict-Form-DebugViewer-Content",
 			Template: /*html*/`
 <div id="Pict-Form-DebugViewer-Content">
-	<h2 class="PSFDV-Global-Header">Pict Inline Form Tool</h2>
+	<h2 class="PSFDV-Global-Header">Pict Inline Form Editing Tool</h2>
 	{~T:Pict-Form-DebugViewer-MetacontrollerContainer~}
 </div>`
 		},
@@ -189,9 +187,9 @@ const defaultViewConfiguration = (
 	<div id="PSFDV-Section-{~D:Record.Hash~}" class="PSFDV-Section">
 		<h3 class="PSFDV-Section-Header"><span class="PSFDV-DeEmphasize">Section:</span> {~D:Record.sectionDefinition.Name~}</h3>
 		<ul class="PSFDV-Section-Buttons">
-			<li class="PSFDV-Section-Button"><a  href="javascript:void(0);" onclick="{~P~}.views['{~D:Record.View.Hash~}'].render()">Render</a></li>
-			<li class="PSFDV-Section-Button"><a  href="javascript:void(0);" onclick="{~P~}.ContentAssignment.assignContent('{~D:Record.View.options.DefaultDestinationAddress~}','')">Clear</a></li>
-			<li class="PSFDV-Section-Button"><a  href="javascript:void(0);" onclick="{~P~}.ContentAssignment.removeClass('#PSFDV-{~D:Record.View.Hash~}-Extra', 'PSFDV-Hidden')">Extra Data</a></li>
+			<li class="PSFDV-Section-Button"><a href="javascript:void(0);" onclick="{~P~}.views['{~D:Record.View.Hash~}'].render()">Render</a></li>
+			<li class="PSFDV-Section-Button"><a href="javascript:void(0);" onclick="{~P~}.ContentAssignment.assignContent('{~D:Record.View.options.DefaultDestinationAddress~}','')">Clear</a></li>
+			<li class="PSFDV-Section-Button"><a href="javascript:void(0);" onclick="{~P~}.ContentAssignment.removeClass('#PSFDV-{~D:Record.View.Hash~}-Extra', 'PSFDV-Hidden')">Extra Data</a></li>
 		</ul>
 		<div id="PSFDV-{~D:Record.View.Hash~}-Extra" class="PSFDV-Hidden PSFDV-Section-ExtraData">
 			<p class="PSFDV-Data">
@@ -266,23 +264,12 @@ const defaultViewConfiguration = (
 							<p class="PSFDV-Data"><span class="PSFDV-Label">HTML ID</span> {~D:Record.PictForm.Macro.HTMLID~}</p>
 						</div>
 					`
-		},
-		{
-			Hash: "Pict-Form-DebugViewer-Container",
-			Template: /*html*/`<div id="Pict-Form-Extensions-Container"></div>`
 		}
 	],
 	Renderables: [
 		{
 			RenderableHash: "Pict-Form-DebugViewer-Renderable",
 			TemplateHash: "Pict-Form-DebugViewer-Content"
-		},
-		{
-			RenderableHash: "Pict-Form-DebugViewer-Container",
-			TemplateHash: "Pict-Form-DebugViewer-Container",
-			ContentDestinationAddress: 'body',
-			RenderMethod: 'append_once',
-			TestAddress: "#Pict-Form-Extensions-Container",
 		}
 	]
 });

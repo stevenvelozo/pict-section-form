@@ -22,6 +22,40 @@ class PictFormsSupportBase extends libPictView
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
+
+		// Only add this css if it doesn't exist
+		if (!('Pict-Support' in this.pict.CSSMap.inlineCSSMap))
+		{
+			this.pict.CSSMap.addCSS('Pict-Support',
+				/*css*/`
+					#Pict-Form-Extensions-Wrap {
+						position: absolute;
+						left: 50%;
+						top: 0px;
+						width: 50vw;
+						max-height: 75vh;
+						overflow: auto;
+					}
+					#Pict-Form-Extension-DragControl {
+						background-color: #eae;
+						cursor: move;
+						padding: 2px 4px;
+						border-radius: 3px;
+						
+					}
+				`, 1000, 'Pict-Form-SupportBase');
+		}
+		// Only add this template if it doesn't exist
+		if (this.pict.TemplateProvider.getTemplate('Pict-Form-Support-Container') == null)
+		{
+			this.pict.TemplateProvider.addTemplate('Pict-Form-Support-Container',
+				/*html*/`
+			<div id="Pict-Form-Extensions-Wrap">
+				<p class="PSFDV-Extension-Header"><span id="Pict-Form-Extension-DragControl" class="PSDV-Extension-Header-Controlbar">Pict.Extensions <a href="javascript:void(0);" onclick="{~P~}.views.PictFormMetacontroller.showSupportViewInlineEditor()">reload</a> <a href="javascript:void(0);" onclick="{~P~}.ContentAssignment.toggleClass('#Pict-Form-Extensions-Container', 'PSFDV-Hidden')">toggle</a></span></p>
+				<div id="Pict-Form-Extensions-Container"></div>
+			</div>
+				`);
+		}
 	}
 
 	getDynamicState()
@@ -229,10 +263,68 @@ class PictFormsSupportBase extends libPictView
 		}
 
 		// 4. Render the container for the support view if it isn't loaded
-		let tmpContainerRenderableHash = 'Pict-Form-DebugViewer-Container';
+		let tmpContainerRenderableHash = 'Pict-Form-Support-Container';
+
+		// Check if the renderable exists -- if not, create it dynamically
+		// This just appends itself to the body once, and creates a simple container for extensions to load into.
+		if (!(tmpContainerRenderableHash in this.renderables))
+		{
+			this.renderables[tmpContainerRenderableHash] = (
+				{
+					RenderableHash: "Pict-Form-Support-Container",
+					TemplateHash: "Pict-Form-Support-Container",
+					ContentDestinationAddress: 'body',
+					RenderMethod: 'append_once',
+					TestAddress: "#Pict-Form-Extensions-Container",
+				});
+		}
+
 		this.renderables[tmpContainerRenderableHash].TestAddress = tmpContainerTest;
 		this.pict.CSSMap.injectCSS();
+
 		this.render(tmpContainerRenderableHash);
+
+		// 5. Make the container draggable
+		// Setup the draggable behavior for the window
+		let tmpDraggableElement = document.getElementById('Pict-Form-Extensions-Wrap'); // What we are dragging
+		let tmpDragInteractiveControl = document.getElementById('Pict-Form-Extension-DragControl'); // The control you click on to drag
+		if (tmpDraggableElement && tmpDragInteractiveControl)
+		{
+			tmpDragInteractiveControl.addEventListener('mousedown',
+				/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+				* BEGIN of browser event code block
+				*
+				* The below code is meant to run in response to a browser event.
+				* --> Therefore the "this" context is the element that fired the event.
+				* --> Happy trails.
+				*/
+				function (pEvent)
+				{
+					let tmpOffsetX = pEvent.offsetX + tmpDragInteractiveControl.clientLeft;
+					let tmpOffsetY = pEvent.offsetY + tmpDragInteractiveControl.clientTop;
+					function dragHandler(pEvent)
+					{
+						pEvent.stopPropagation();
+						
+						tmpDraggableElement.style.left = (pEvent.clientX - tmpOffsetX) + 'px';
+						tmpDraggableElement.style.top = (pEvent.clientY - tmpOffsetY) + 'px';
+					}
+					function dragStop(pEvent)
+					{
+						window.removeEventListener('pointermove', dragHandler);
+						window.removeEventListener('pointerup', dragStop);
+					}
+					window.addEventListener('pointermove', dragHandler);
+					window.addEventListener('pointerup', dragStop);
+
+					// Prevent janky selection behaviors in the browser
+					pEvent.preventDefault();
+				});
+				/*
+				* END of browser event code block
+				* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		}
+
 	}
 }
 
