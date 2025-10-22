@@ -60,8 +60,18 @@ declare class PictFormMetacontroller extends libPictViewClass {
     /**
      * @param {Record<string, any>} pManifest - The manifest to add
      * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+     * @param {string} [pUUID] - (optional) The UUID to use for uniqueness. If not provided, a new one will be generated.
+     *
+     * @return {Array<import('./Pict-View-DynamicForm.js')>} the views that correspond to the newly added sections
      */
-    injectManifest(pManifest: Record<string, any>, pAfterSectionHash?: string): void;
+    injectManifestAndRender(pManifest: Record<string, any>, pAfterSectionHash?: string, pUUID?: string): Array<import("./Pict-View-DynamicForm.js")>;
+    /**
+     * @param {Record<string, any>} pManifest - The manifest to add
+     * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+     *
+     * @return {Array<import('./Pict-View-DynamicForm.js')>} the views that correspond to the newly added sections; note that these views are NOT rendered yet
+     */
+    injectManifest(pManifest: Record<string, any>, pAfterSectionHash?: string): Array<import("./Pict-View-DynamicForm.js")>;
     /**
      * Changes:
      *   * The hashes of each section+group to be globally unique.

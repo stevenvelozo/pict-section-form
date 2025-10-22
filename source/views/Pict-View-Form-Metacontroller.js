@@ -198,11 +198,38 @@ class PictFormMetacontroller extends libPictViewClass
 	/**
 	 * @param {Record<string, any>} pManifest - The manifest to add
 	 * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+	 * @param {string} [pUUID] - (optional) The UUID to use for uniqueness. If not provided, a new one will be generated.
+	 *
+	 * @return {Array<import('./Pict-View-DynamicForm.js')>} the views that correspond to the newly added sections
+	 */
+	injectManifestAndRender(pManifest, pAfterSectionHash, pUUID)
+	{
+		const tmpManifest = pUUID ? this.createDistinctManifest(pManifest, pUUID) : pManifest;
+		const tmpViewsToRender = this.injectManifest(tmpManifest, pAfterSectionHash);
+		this.updateMetatemplateInDOM();
+		//FIXME: for some reason, DOM append is not synchronous, so we need to delay the render....................?
+		setTimeout(() =>
+		{
+			for (const tmpViewToRender of tmpViewsToRender)
+			{
+				tmpViewToRender.render();
+			}
+		}, 0);
+
+		return tmpViewsToRender;
+	}
+
+	/**
+	 * @param {Record<string, any>} pManifest - The manifest to add
+	 * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+	 *
+	 * @return {Array<import('./Pict-View-DynamicForm.js')>} the views that correspond to the newly added sections; note that these views are NOT rendered yet
 	 */
 	injectManifest(pManifest, pAfterSectionHash)
 	{
+		const tmpAfterSectionHash = pAfterSectionHash ? (pAfterSectionHash.startsWith('PictSectionForm-') ? pAfterSectionHash : `PictSectionForm-${pAfterSectionHash}`) : null;
 		const tmpAllViewKeys = Object.keys(this.pict.views);
-		const tmpReferenceManifestViewIndex = pAfterSectionHash ? tmpAllViewKeys.indexOf(`PictSectionForm-${pAfterSectionHash}`) : -1;
+		const tmpReferenceManifestViewIndex = tmpAfterSectionHash ? tmpAllViewKeys.indexOf(tmpAfterSectionHash) : -1;
 		const tmpViewsToShift = [];
 		if (tmpReferenceManifestViewIndex >= 0)
 		{
@@ -214,22 +241,20 @@ class PictFormMetacontroller extends libPictViewClass
 				delete this.pict.views[tmpKey];
 			}
 		}
-		const tmpViewsToRender = this.bootstrapAdditiveManifest(pManifest, pAfterSectionHash);
+		const tmpViewsToRender = this.bootstrapAdditiveManifest(pManifest, tmpAfterSectionHash);
 		for (const tmpViewToShift of tmpViewsToShift)
 		{
 			this.pict.views[tmpViewToShift.key] = tmpViewToShift.view;
 		}
 		// this ensures if we re-render everything, we have the new sections in the template
 		this.generateMetatemplate();
-		this.regenerateFormSectionTemplates();
-		//FIXME: for some reason, DOM append is not synchronous, so we need to delay the render....................?
-		setTimeout(() =>
+		for (const tmpViewToRender of tmpViewsToRender)
 		{
-			for (const tmpViewToRender of tmpViewsToRender)
-			{
-				tmpViewToRender.render();
-			}
-		}, 0);
+			tmpViewToRender.rebuildCustomTemplate();
+		}
+		this.pict.CSSMap.injectCSS();
+
+		return tmpViewsToRender;
 	}
 
 	/**
@@ -287,15 +312,25 @@ class PictFormMetacontroller extends libPictViewClass
 	 */
 	injectManifestsByHash(pManifestHashes, pAfterSectionHash, pUUID)
 	{
+		let tmpViewsToRender = [];
 		for (const tmpManifestHash of pManifestHashes)
 		{
 			const tmpManifest = this.findDynamicSectionManifestDefinition(tmpManifestHash);
 			if (tmpManifest)
 			{
 				const tmpUniqueManifest = this.createDistinctManifest(tmpManifest, pUUID);
-				this.injectManifest(tmpUniqueManifest, pAfterSectionHash);
+				const tmpViews = this.injectManifest(tmpUniqueManifest, pAfterSectionHash);
+				tmpViewsToRender = tmpViewsToRender.concat(tmpViews);
 			}
 		}
+		this.updateMetatemplateInDOM();
+		setTimeout(() =>
+		{
+			for (const tmpViewToRender of tmpViewsToRender)
+			{
+				tmpViewToRender.render();
+			}
+		}, 0);
 	}
 
 	/**
