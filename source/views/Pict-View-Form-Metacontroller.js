@@ -709,7 +709,7 @@ class PictFormMetacontroller extends libPictViewClass
 			{
 				this.pict.ContentAssignment.insertContentAfter(`#${tmpPrevDiv.id}`, tmpFormDivContent);
 				tmpFormDivs = this.pict.ContentAssignment.getElement(`#${tmpFormDivID}`);
-				tmpPrevDiv = tmpFormDivs;
+				tmpPrevDiv = tmpFormDivs[0];
 				continue;
 			}
 			tmpDeferredDivID = tmpFormDivID;
