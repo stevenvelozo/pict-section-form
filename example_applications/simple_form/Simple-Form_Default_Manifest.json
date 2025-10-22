@@ -30,7 +30,7 @@
 				[
 					{
 						"HashPostfix": "-Template-Wrap-Prefix",
-						"Template": "<h1>Rectangular Area Solver Micro-app</h1><div><a href=\"#\" onclick=\"{~P~}.PictApplication.solve()\">[ solve ]</a> <a href=\"#\" onclick=\"{~P~}.views.PictFormMetacontroller.showSupportViewInlineEditor()\">[ editor ]</a></div><hr />"
+						"Template": "<h1>Rectangular Area Solver Micro-app</h1><div><a href=\"#\" onclick=\"{~P~}.PictApplication.solve()\">[ solve ]</a> <a href=\"#\" onclick=\"{~P~}.views.PictFormMetacontroller.showSupportViewInlineEditor()\">[ debug ]</a></div><hr />"
 					}
 				]
 		}

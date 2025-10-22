@@ -1120,9 +1120,9 @@ class PictFormMetacontroller extends libPictViewClass
 		// 2. Load the support view if it isn't
 		this.pict.addViewSingleton("Pict-Form-DebugViewer", {}, this.SupportViewPrototypes.DebugViewer);
 		this.pict.addViewSingleton("Pict-Form-AppDataViewer", {}, this.SupportViewPrototypes.AppDataViewer);
-		this.pict.addViewSingleton("Pict-Form-LifecycleVisualization", {}, this.SupportViewPrototypes.LifecycleVisualization);
+//		this.pict.addViewSingleton("Pict-Form-LifecycleVisualization", {}, this.SupportViewPrototypes.LifecycleVisualization);
 		this.pict.addViewSingleton("Pict-Form-SolverVisualization", {}, this.SupportViewPrototypes.SolverVisualization);
-		this.pict.addViewSingleton("Pict-Form-SpecificSolveVisualization", {}, this.SupportViewPrototypes.SpecificSolveVisualization);
+//		this.pict.addViewSingleton("Pict-Form-SpecificSolveVisualization", {}, this.SupportViewPrototypes.SpecificSolveVisualization);
 	
 		// 3. See if the container for the support view is loaded
 		// 4. Render the container for the support view if it isn't loaded

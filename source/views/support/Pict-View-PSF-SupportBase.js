@@ -152,17 +152,29 @@ class PictFormsSupportBase extends libPictView
 				}
 			}
 
-			// Now sort the solvers by Ordinal and then Index
+			// Now sort the solvers by Ordinal, then Group/Section and then Index
 			tmpSectionViewSolvers.sort((pLeftValue, pRightValue) => 
 			{
 				if (pLeftValue.Ordinal < pRightValue.Ordinal) return -1;
 				if (pLeftValue.Ordinal > pRightValue.Ordinal) return 1;
+				if (pLeftValue.ExpressionScope == 'Group' && pRightValue.ExpressionScope == 'Section') return -1;
+				if (pLeftValue.ExpressionScope == 'Section' && pRightValue.ExpressionScope == 'Group') return 1;
 				if (pLeftValue.Index < pRightValue.Index) return -1;
 				if (pLeftValue.Index > pRightValue.Index) return 1;
 				return 0;
 			});
 		}
 
+		tmpDynamicState.Solvers.sort((pLeftValue, pRightValue) => 
+			{
+				if (pLeftValue.Ordinal < pRightValue.Ordinal) return -1;
+				if (pLeftValue.Ordinal > pRightValue.Ordinal) return 1;
+				if (pLeftValue.ExpressionScope == 'Group' && pRightValue.ExpressionScope == 'Section') return -1;
+				if (pLeftValue.ExpressionScope == 'Section' && pRightValue.ExpressionScope == 'Group') return 1;
+				if (pLeftValue.Index < pRightValue.Index) return -1;
+				if (pLeftValue.Index > pRightValue.Index) return 1;
+				return 0;
+			});
 		// Get the *full* last solve outcome object
 		tmpDynamicState.LastSolveOutcome = this.pict.providers.DynamicSolver.lastSolveOutcome;
 
@@ -187,7 +199,8 @@ class PictFormsSupportBase extends libPictView
 								{
 									// We have a match -- assign the result to the solver entry
 									tmpSolverEntry.LastResult = tmpPotentialResultEntry.Solver.ResultsObject.RawResult;
-									tmpSolverEntry.LastResultsObject = tmpPotentialResultEntry.ResultsObject;
+									tmpSolverEntry.Value = tmpPotentialResultEntry.Solver.ResultsObject.RawResult;
+									tmpSolverEntry.LastResultsObject = tmpPotentialResultEntry.Solver.ResultsObject;
 								}
 							}
 						}
@@ -223,9 +236,148 @@ class PictFormsSupportBase extends libPictView
 		return tmpSectionSolvers;
 	}
 
-	writeSolver(pIdentifierHash, pSolver)
-	{
 
+	downloadJSONObjectAsFile(pAddress)
+	{
+		try
+		{
+			const tmpJSONData = this.pict.resolveStateFromAddress(pAddress);
+			const tmpJSONFileName = `PICT_JSON_${pAddress.replace('.','_')}.json`;
+			const tmpJSONString = JSON.stringify(tmpJSONData, null, 4);
+
+			if (!URL || !Blob)
+			{
+				this.pict.log.error(`Browser does not support required features for downloading JSON object from address ${pAddress}.`);
+				return;
+			}
+
+			// Synthesize a file, URL and link to facilitate a file download
+			const tmpAbstractFileBlob = new Blob([tmpJSONString], { type: "application/json" });
+			const tmpAbstractFileURL = URL.createObjectURL(tmpAbstractFileBlob);
+			const tmpAbstractAnchorElement = document.createElement("a");
+			tmpAbstractAnchorElement.href = tmpAbstractFileURL;
+			tmpAbstractAnchorElement.download = tmpJSONFileName;
+			// Trigger the download
+			tmpAbstractAnchorElement.click();
+			// Clean up the URL from memory
+			URL.revokeObjectURL(tmpAbstractFileURL);
+		}
+		catch (pError)
+		{
+			this.pict.log.error(`Error downloading JSON object from address ${pAddress}: ${pError.message}`);
+		}
+	}
+
+	updateExpressionFromElement(pExpressionElementAddress, pExpressionScope, pSectionViewHash, pSectionOrdinal, pSolverIndex, pExpressionElementRepresentationAddress)
+	{
+		// 1. Get the expression from the element
+		let tmpExpressionElementValue = this.pict.ContentAssignment.readContent(pExpressionElementAddress);
+
+		if (!tmpExpressionElementValue)
+		{
+			this.pict.log.warn(`No expression found in element at address ${pExpressionElementAddress}; cannot update ${pExpressionScope} solver Ordinal ${pSectionOrdinal} Index ${pSolverIndex}.`);
+			return;
+		}
+		// 2. Go through the enumeration of solvers to find if this expression exists
+		let tmpMetacontroller = this.pict.views.PictFormMetacontroller;
+		let tmpDynamicState = (
+			{
+				// TODO: The way the metacontroller pulls in the manifest and bootstraps the description is putting "DEFAULT" into the actual manifest; fix this.
+				"Scope": tmpMetacontroller.manifestDescription.Scope,
+				"Description": ``,
+				"Manifest": tmpMetacontroller.manifest,
+				"ManifestDescription": tmpMetacontroller.manifestDescription,
+				"AllViews": tmpMetacontroller.filterViews(),
+				"SectionViews": [],
+				"DynamicInputView": false,
+				"Solvers": []
+			});
+
+		for (let i = 0; i < tmpDynamicState.AllViews.length; i++)
+		{
+			let tmpSectionView = tmpDynamicState.AllViews[i];
+			if (tmpSectionView.isPictSectionForm && (tmpSectionView.Hash == 'PictFormMetacontroller-DynamicInputs'))
+			{
+				// This is the special Dynamic Input section -- it goes in its own place.
+				tmpDynamicState.DynamicInputView = tmpSectionView;
+			}
+			else if (tmpSectionView.isPictSectionForm)
+			{
+				tmpDynamicState.SectionViews.push(
+					{
+						View: tmpSectionView,
+						sectionDefinition: tmpSectionView.sectionDefinition,
+						Solvers: []
+					});
+			}
+		}
+
+		// Now get the solvers for each section view
+		for (let i = 0; i < tmpDynamicState.SectionViews.length; i++)
+		{
+			let tmpSectionView = tmpDynamicState.SectionViews[i].View;
+			let tmpSectionViewSolvers = tmpDynamicState.SectionViews[i].Solvers;
+			// Find the view representation in the 
+			if (tmpSectionView.isPictSectionForm && Array.isArray(tmpSectionView.sectionDefinition.Solvers))
+			{
+				for (let j = 0; j < tmpSectionView.sectionDefinition.Solvers.length; j++)
+				{
+					let tmpSolver = tmpSectionView.sectionDefinition.Solvers[j];
+
+					// 3a. Update the expression in the solver definition
+					if (pExpressionScope == 'Section' && i == pSectionOrdinal && j == pSolverIndex && tmpSectionView.Hash == pSectionViewHash)
+					{
+						// This is the solver we are updating
+						if (typeof(tmpSolver) === 'string')
+						{
+							// Simple solver -- just a string
+							tmpSectionView.sectionDefinition.Solvers[j] = tmpExpressionElementValue;
+						}
+						else if (typeof(tmpSolver) === 'object')
+						{
+							// Complex solver -- update the expression property
+							tmpSectionView.sectionDefinition.Solvers[j].Expression = tmpExpressionElementValue;
+						}
+					}
+				}
+			}
+
+			// Now get all the Group solvers
+			// These guards are here because the metacontroller view masquerades as a section form view but isn't one.
+			for (let j = 0; j < tmpSectionView.sectionDefinition.Groups.length; j++)
+			{
+				let tmpGroup = tmpSectionView.getGroup(j);
+				if (`RecordSetSolvers` in tmpGroup)
+				{
+					for (let k = 0; k < tmpGroup.RecordSetSolvers.length; k++)
+					{
+						let tmpSolver = tmpGroup.RecordSetSolvers[k];
+	
+						// 3b. Update the expression in the solver definition
+						if (pExpressionScope == 'Group' && i == pSectionOrdinal && j == pSolverIndex && tmpSectionView.Hash == pSectionViewHash)
+						{
+							// This is the solver we are updating
+							if (typeof(tmpSolver) === 'string')
+							{
+								// Simple solver -- just a string
+								tmpSectionView.sectionDefinition.Solvers[j] = tmpExpressionElementValue;
+							}
+							else if (typeof(tmpSolver) === 'object')
+							{
+								// Complex solver -- update the expression property
+								tmpSectionView.sectionDefinition.Solvers[j].Expression = tmpExpressionElementValue;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// 4. Write the updated expression to it's representation element, if provided
+		if (pExpressionElementRepresentationAddress)
+		{
+			this.pict.ContentAssignment.assignContent(pExpressionElementRepresentationAddress, tmpExpressionElementValue);
+		}
 	}
 
 	bootstrapContainer()
@@ -293,6 +445,61 @@ class PictFormsSupportBase extends libPictView
 					}
 					window.addEventListener('pointermove', dragHandler);
 					window.addEventListener('pointerup', dragStop);
+
+					// Prevent janky selection behaviors in the browser
+					pEvent.preventDefault();
+				});
+				/*
+				* END of browser event code block
+				* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		}
+
+		// 6. Make the container resizable
+		// Setup the draggable behavior for the window
+		let tmpResizableElement = document.getElementById('Pict-Form-Extensions-Wrap'); // What we are resizing
+		let tmpResizableControl = document.getElementById('Pict-Form-Extension-ResizeControl'); // The control you click on to drag
+		if (tmpResizableElement && tmpResizableControl)
+		{
+			tmpResizableControl.addEventListener('mousedown',
+				/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+				* BEGIN of browser event code block
+				*
+				* The below code is meant to run in response to a browser event.
+				* --> Therefore the "this" context is the element that fired the event.
+				* --> Happy trails.
+				*/
+				function (pEvent)
+				{
+					function dragResizeHandler(pEvent)
+					{
+						pEvent.stopPropagation();
+						
+						let tmpNewWidth = pEvent.clientX - tmpResizableElement.getBoundingClientRect().left;
+						let tmpNewHeight = pEvent.clientY - tmpResizableElement.getBoundingClientRect().top;
+
+						// Check the CSS for minimum width and height, and set these to those if we go under
+						let tmpComputedStyle = getComputedStyle(tmpResizableElement);
+						let tmpMinWidth = parseInt(tmpComputedStyle.minWidth, 10);
+						let tmpMinHeight = parseInt(tmpComputedStyle.minHeight, 10);
+
+						if (tmpNewWidth < tmpMinWidth)
+						{
+							tmpNewWidth = tmpMinWidth;
+						}
+						if (tmpNewHeight < tmpMinHeight)
+						{
+							tmpNewHeight = tmpMinHeight;
+						}
+						tmpResizableElement.style.width = tmpNewWidth + 'px';
+						tmpResizableElement.style.height = tmpNewHeight + 'px';
+					}
+					function dragResizeStop(pEvent)
+					{
+						window.removeEventListener('pointermove', dragResizeHandler);
+						window.removeEventListener('pointerup', dragResizeStop);
+					}
+					window.addEventListener('pointermove', dragResizeHandler);
+					window.addEventListener('pointerup', dragResizeStop);
 
 					// Prevent janky selection behaviors in the browser
 					pEvent.preventDefault();
