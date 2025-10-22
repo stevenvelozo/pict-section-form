@@ -1,6 +1,8 @@
 export = PictFormsSupportBase;
 declare class PictFormsSupportBase extends libPictView {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
+    DisplayShortName: string;
+    DisplayLongName: string;
     getDynamicState(): {
         Scope: any;
         Description: string;
@@ -17,7 +19,8 @@ declare class PictFormsSupportBase extends libPictView {
         Sections: any[];
     };
     getSectionSolvers(pSectionViewHash: any): any;
-    writeSolver(pIdentifierHash: any, pSolver: any): void;
+    downloadJSONObjectAsFile(pAddress: any): void;
+    updateExpressionFromElement(pExpressionElementAddress: any, pExpressionScope: any, pSectionViewHash: any, pSectionOrdinal: any, pSolverIndex: any, pExpressionElementRepresentationAddress: any): void;
     bootstrapContainer(): boolean;
 }
 declare namespace PictFormsSupportBase {

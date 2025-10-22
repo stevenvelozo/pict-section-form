@@ -1,7 +1,10 @@
-export = PictFormsLifeCycle;
-declare class PictFormsLifeCycle extends libPictViewFormSupportBase {
+export = PictFormsAppData;
+declare class PictFormsAppData extends libPictViewFormSupportBase {
+    flattenMarshalDestination(): any;
+    flattenAppData(): any;
+    flattenAddress(pAddress: any): any;
 }
-declare namespace PictFormsLifeCycle {
+declare namespace PictFormsAppData {
     export { defaultViewConfiguration as default_configuration };
 }
 import libPictViewFormSupportBase = require("./Pict-View-PSF-SupportBase.js");
@@ -20,4 +23,4 @@ declare namespace defaultViewConfiguration {
         TemplateHash: string;
     }[];
 }
-//# sourceMappingURL=Pict-View-PSF-LifeCycle-Visualization.d.ts.map
+//# sourceMappingURL=Pict-View-PSF-AppData-Visualization.d.ts.map

@@ -15,18 +15,9 @@ declare namespace defaultViewConfiguration {
         Hash: string;
         Template: string;
     }[];
-    let Renderables: ({
+    let Renderables: {
         RenderableHash: string;
         TemplateHash: string;
-        ContentDestinationAddress?: undefined;
-        RenderMethod?: undefined;
-        TestAddress?: undefined;
-    } | {
-        RenderableHash: string;
-        TemplateHash: string;
-        ContentDestinationAddress: string;
-        RenderMethod: string;
-        TestAddress: string;
-    })[];
+    }[];
 }
 //# sourceMappingURL=Pict-View-PSF-DebugViewer.d.ts.map

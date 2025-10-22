@@ -17,6 +17,9 @@ declare class PictFormMetacontroller extends libPictViewClass {
     SupportViewPrototypes: {
         LifecycleVisualization: typeof import("./support/Pict-View-PSF-LifeCycle-Visualization.js");
         DebugViewer: typeof import("./support/Pict-View-PSF-DebugViewer.js");
+        AppDataViewer: typeof import("./support/Pict-View-PSF-AppData-Visualization.js");
+        SolverVisualization: typeof import("./support/Pict-View-PSF-Solver-Visualization.js");
+        SpecificSolveVisualization: typeof import("./support/Pict-View-PSF-SpecificSolve-Visualization.js");
     };
     set viewMarshalDestination(pValue: any);
     get viewMarshalDestination(): any;
@@ -115,6 +118,15 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @param {SortFunction} [fSortFunction] - The sort function used to sort the views.
      */
     renderFormSections(fFilterFunction?: Function, fSortFunction?: SortFunction): void;
+    /**
+     * Marshals data to the form sections based on the provided filter and sort functions
+     *
+     * If no filter and sort functions are provided, render all form sections.
+     *
+     * @param {Function} [fFilterFunction] - The filter function used to filter the views.
+     * @param {SortFunction} [fSortFunction] - The sort function used to sort the views.
+     */
+    marshalFormSections(fFilterFunction?: Function, fSortFunction?: SortFunction): void;
     /**
      * Regenerates the DyunamicForm section templates based on the provided filter and sort function.
      *

@@ -1,7 +1,7 @@
-export = PictFormsLifeCycle;
-declare class PictFormsLifeCycle extends libPictViewFormSupportBase {
+export = PictFormsSpecificSolve;
+declare class PictFormsSpecificSolve extends libPictViewFormSupportBase {
 }
-declare namespace PictFormsLifeCycle {
+declare namespace PictFormsSpecificSolve {
     export { defaultViewConfiguration as default_configuration };
 }
 import libPictViewFormSupportBase = require("./Pict-View-PSF-SupportBase.js");
@@ -20,4 +20,4 @@ declare namespace defaultViewConfiguration {
         TemplateHash: string;
     }[];
 }
-//# sourceMappingURL=Pict-View-PSF-LifeCycle-Visualization.d.ts.map
+//# sourceMappingURL=Pict-View-PSF-SpecificSolve-Visualization.d.ts.map
