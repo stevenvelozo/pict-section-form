@@ -52,9 +52,9 @@ class DynamicTabularData extends libPictProvider
 	{
 		// The neat thing about how the tabular groups work is that we can make it clever about whether it's an object or an array.
 		let tmpGroup = pView.getGroup(pGroupIndex);
-		if (!tmpGroup)
+		if (!tmpGroup || !tmpGroup?.RecordSetAddress)
 		{
-			this.log.warn(`PICT View Metatemplate Helper getTabularRecordSet ${pGroupIndex} was not a valid group.`);
+			this.log.warn(`PICT View Metatemplate Helper getTabularRecordSet ${pGroupIndex} was not a valid group or did not have a valid RecordSetAddress.`);
 			return false;
 		}
 
