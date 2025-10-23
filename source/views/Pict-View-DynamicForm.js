@@ -772,7 +772,7 @@ class PictViewDynamicForm extends libPictViewClass
 										//if (this.pict.TransactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
 										if ((tmpInput.PictForm.InputType == 'Option') || this.pict.TransactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
 										{
-											this.pict.providers[tmpInputProviderList[l]][pFunctionName](this, tmpGroup, j, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+											this.pict.providers[tmpInputProviderList[l]][pFunctionName](this, tmpGroup, j, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, tmpTransactionGUID);
 										}
 									}
 									catch (pError)
@@ -824,7 +824,7 @@ class PictViewDynamicForm extends libPictViewClass
 										{
 											if (this.pict.TransactionTracking.checkEvent(tmpTransaction.TransactionKey, `TI${tmpInput.Hash}-P${tmpInputProviderList[l]}-R${r}`, pFunctionName))
 											{
-												this.pict.providers[tmpInputProviderList[l]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r);
+												this.pict.providers[tmpInputProviderList[l]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r, tmpTransactionGUID);
 											}
 										}
 										catch (pError)
