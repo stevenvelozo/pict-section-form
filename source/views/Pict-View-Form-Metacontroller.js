@@ -214,6 +214,13 @@ class PictFormMetacontroller extends libPictViewClass
 			{
 				tmpViewToRender.render();
 			}
+			if (this.options.AutoPopulateAfterRender)
+			{
+				for (const tmpViewToRender of tmpViewsToRender)
+				{
+					tmpViewToRender.marshalToView();
+				}
+			}
 		}, 0);
 
 		return tmpViewsToRender;
