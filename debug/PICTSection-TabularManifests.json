@@ -76,6 +76,19 @@
                     "Group": "General_Info"
                 }
             },
+            "Header.WarehouseVolume": {
+                "Hash": "WarehouseVolume",
+                "Name": "Warehouse Volume",
+                "DataAddress": "Header.WarehouseVolume",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "4",
+                    "Width": "12",
+                    "Section": "Header",
+                    "Group": "General_Info"
+                },
+                "Default": "50000"
+            },
             "BridgeData.IDBridge": {
                 "Hash": "CurrentIDBridge",
                 "Name": "IDBridge",
@@ -636,6 +649,7 @@
                 "Name": "Box Summary Data",
                 "Hash": "Box_Summary_Data",
                 "Solvers": [
+                    "SUBTRACTINGSUMMATION(Boxes, \"Volume\", \"WarehouseSpaceLeft\", GETVALUE(\"AppData.Header.WarehouseVolume\"))",
                     "BoxesCount = COUNT(BoxesFloorspaceSet)",
                     "BoxesAverageFloorspace = AVG(BoxesFloorspaceSet)",
                     "BoxesTotalFloorspace = SUM(BoxesFloorspaceSet)",
@@ -696,7 +710,7 @@
                         "Hash": "Rectangle_Set",
                         "Rows": [],
                         "RecordSetSolvers": [
-                            "RectangleArea = RectangleWidth + RectangleHeight"
+                            "RectangleArea = RectangleWidth * RectangleHeight"
                         ],
                         "MinimumRowCount": 20,
                         "ShowTitle": false,
@@ -729,7 +743,9 @@
             {
                 "Name": "List Topia",
                 "Hash": "Listopia",
-                "Solvers": [],
+                "Solvers": [
+                    "SUBTRACTINGSUMMATION(Rectangles, \"Area\", \"AreaDegredation\")"
+                ],
                 "Groups": [
                     {
                         "Name": "Occlusion Lists",
@@ -837,6 +853,27 @@
                             "Group": "BoxCollGrp"
                         },
                         "IsTabular": true
+                    },
+                    "WarehouseSpaceLeft": {
+                        "Hash": "WarehouseSpaceLeft",
+                        "Name": "Warehouse Space Left",
+                        "DataAddress": "WarehouseSpaceLeft",
+                        "DataType": "Number",
+                        "PictForm": {
+                            "Row": "1",
+                            "Width": "1",
+                            "Providers": [
+                                "Pict-Input-AutofillTriggerGroup"
+                            ],
+                            "AutofillTriggerGroup": {
+                                "TriggerGroupHash": "Box",
+                                "MarshalEmptyValues": false,
+                                "TriggerAllInputs": true
+                            },
+                            "Section": "BoxCollSec",
+                            "Group": "BoxCollGrp"
+                        },
+                        "IsTabular": true
                     }
                 },
                 "Sections": [],
@@ -888,6 +925,19 @@
                         "Hash": "RectangleArea",
                         "Name": "Area",
                         "DataAddress": "Area",
+                        "DataType": "Number",
+                        "PictForm": {
+                            "Row": "1",
+                            "Width": "1",
+                            "Section": "Rectangle_Aggregation",
+                            "Group": "Rectangle_Set"
+                        },
+                        "IsTabular": true
+                    },
+                    "AreaDegredation": {
+                        "Hash": "AreaDegredation",
+                        "Name": "Degredation (first minus each subsequent)",
+                        "DataAddress": "AreaDegredation",
                         "DataType": "Number",
                         "PictForm": {
                             "Row": "1",

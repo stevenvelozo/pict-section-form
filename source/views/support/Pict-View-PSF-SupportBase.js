@@ -216,8 +216,14 @@ class PictFormsSupportBase extends libPictView
 								if ((tmpPotentialResultEntry.ViewHash == tmpSolverEntry.ViewHash) && (tmpPotentialResultEntry.Solver.Expression == tmpSolverEntry.Expression))
 								{
 									// We have a match -- assign the result to the solver entry
-									tmpSolverEntry.LastResult = tmpPotentialResultEntry.Solver.ResultsObject.RawResult;
-									tmpSolverEntry.LastResultsObject = tmpPotentialResultEntry.Solver.ResultsObject;
+									if (tmpPotentialResultEntry.Solver && ('ResultsObject' in tmpPotentialResultEntry.Solver))
+									{
+										tmpSolverEntry.LastResult = tmpPotentialResultEntry.Solver.ResultsObject.RawResult;
+									}
+									if (tmpPotentialResultEntry.Solver && ('ResultsObject' in tmpPotentialResultEntry.Solver))
+									{
+										tmpSolverEntry.LastResultsObject = tmpPotentialResultEntry.Solver.ResultsObject;
+									}
 								}
 							}
 						}
