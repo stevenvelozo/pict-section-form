@@ -20,7 +20,524 @@ class CustomInputHandler extends libPictSectionInputExtension
 		/** @type {any} */
 		this.log;
 
+		// Manage the the configuration parsing configurations -- these can be overridden in the object or even per-input
+		if (!this.options.DefaultCoreParsingConfiguration || !Array.isArray(this.options.DefaultCoreParsingConfiguration))
+		{
+			this.options.DefaultCoreParsingConfiguration = (
+				{
+					AddressInObject: '',
+					ObjectType: 'object',
+					MergeMethod: 'Object',
+					Steps: [
+						{
+							InputProperty: false,
+							Method: `Initialize`,
+							Merge: false
+						},
+						{
+							InputProperty: 'PictForm.ChartConfigCorePrototypeRaw',
+							Method: `Raw`,
+							Merge: true
+						},
+						{
+							InputProperty: 'PictForm.ChartConfigCorePrototypeAddress',
+							Method: `Address`,
+							Merge: true
+						},
+						{
+							InputProperty: `PictForm.ChartConfigCorePrototype`,
+							Method: 'SingleSolver',
+							Merge: true
+						}
+					]
+				});
+		}
+		this.defaultCoreParsingConfiguration = JSON.parse(JSON.stringify(this.options.DefaultCoreParsingConfiguration));
+
+		if (typeof (this.options.DefaultLabelParsingConfiguration) !== 'object' || !Array.isArray(this.options.DefaultLabelParsingConfiguration.Steps))
+		{
+			this.options.DefaultLabelParsingConfiguration = (
+				{
+					AddressInObject: 'data.labels',
+					ObjectType: 'array',
+					MergeMethod: 'Array',
+					Steps: [
+						{
+							InputProperty: false,
+							Method: `Initialize`,
+							Merge: false
+						},
+						{
+							InputProperty: 'PictForm.ChartLabelsRaw',
+							Method: `Raw`,
+							Merge: false
+						},
+						{
+							InputProperty: 'PictForm.ChartLabelsAddress',
+							Method: `Address`,
+							Merge: false
+						},
+						{
+							InputProperty: `PictForm.ChartLabelsSolver`,
+							Method: 'SingleSolver',
+							Merge: false
+						}
+					]
+				});
+		}
+		this.defaultLabelParsingConfiguration = JSON.parse(JSON.stringify(this.options.DefaultLabelParsingConfiguration));
+
+		if (typeof (this.options.DefaultDataParsingConfiguration) !== 'object' || !Array.isArray(this.options.DefaultDataParsingConfiguration.Steps))
+		{
+			this.options.DefaultDataParsingConfiguration = (
+				{
+					AddressInObject: 'data.datasets',
+					ObjectType: 'array',
+					MergeMethod: 'Array',
+					Steps: [
+						{
+							InputProperty: false,
+							Method: `Initialize`,
+							Merge: false
+						},
+						{
+							InputProperty: 'PictForm.ChartDatasetsRaw',
+							Method: `Raw`,
+							Merge: false
+						},
+						{
+							InputProperty: 'PictForm.ChartDatasetsAddress',
+							Method: `Address`,
+							Merge: false
+						},
+						{
+							InputProperty: 'PictForm.ChartDatasetsSolvers',
+							Method: `ArrayOfSolvers`,
+							Merge: true
+						}
+					]
+				});
+		}
+		this.defaultDataParsingConfiguration = JSON.parse(JSON.stringify(this.options.DefaultDataParsingConfiguration));
+
 		this.currentChartObjects = {};
+	}
+
+	/**
+	 * 
+	 * @param {Object} pInput - The PictForm input object
+	 * @param {*} pChartConfiguration - The current configuration object for the form
+	 * @param {*} pParsingConfiguration - The parsing configuration to apply
+	 * @param {*} pInputParsingConfigurationScope - The input-specific parsing configuration string address for additional configuration
+	 * @returns 
+	 */
+	applyInputParsingConfiguration(pInput, pChartConfiguration, pParsingConfiguration, pInputParsingConfigurationScope)
+	{
+		// TODO: There is a ton of DRY to be had in this function when we break it out to the base class
+		let tmpInput = pInput;
+		let tmpInputParsingConfigurationScope = pInputParsingConfigurationScope;
+
+		let tmpChartConfiguration = pChartConfiguration;
+		let tmpParsingConfiguration = pParsingConfiguration;
+
+		if (typeof (pInput) !== 'object')
+		{
+			return false;
+		}
+		if (typeof (pInputParsingConfigurationScope) !== 'string' || (pInputParsingConfigurationScope.length < 1))
+		{
+			return false;
+		}
+		if (typeof (tmpParsingConfiguration) !== 'object')
+		{
+			return false;
+		}
+
+		if (typeof (tmpChartConfiguration) !== 'object')
+		{
+			tmpChartConfiguration = {};
+		}
+
+		// 1. Check if there is any custom configurtion for how to parse the config for this input (dynamic dynamic)
+		let tmpInputCustomConfiguration = this.pict.manifest.getValueByHash(tmpInput, tmpInputParsingConfigurationScope);
+		if (typeof (tmpInputCustomConfiguration) === 'object')
+		{
+			// Merge the custom configuration into the base configuration
+			tmpParsingConfiguration = Object.assign(tmpParsingConfiguration, tmpInputCustomConfiguration);
+		}
+
+		// Get existing data
+		let tmpExistingData;
+		if (!tmpParsingConfiguration.AddressInObject || (tmpParsingConfiguration.AddressInObject == ''))
+		{
+			tmpExistingData = tmpChartConfiguration;
+		}
+		else
+		{
+			tmpExistingData = this.pict.manifest.getValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject);
+		}
+
+		// 2. Enumerate through each step and apply them consistently
+		for (let i = 0; i < tmpParsingConfiguration.Steps.length; i++)
+		{
+			let tmpCurrentStep = tmpParsingConfiguration.Steps[i];
+
+			switch (tmpCurrentStep.Method)
+			{
+				case 'Initialize':
+					// Do nothing, already initialized
+					if (tmpParsingConfiguration.AddressInObject && (typeof (tmpParsingConfiguration.AddressInObject) === 'string') && (tmpParsingConfiguration.AddressInObject.length > 0))
+					{
+						let tmpCurrentStepData = this.pict.manifest.getValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject);
+						// see if the address exists and if it's the type we expect
+						if (tmpParsingConfiguration.ObjectType === 'array')
+						{
+							if (!tmpCurrentStepData || !Array.isArray(tmpCurrentStepData))
+							{
+								this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, []);
+							}
+						}
+						else if (tmpParsingConfiguration.ObjectType === 'object')
+						{
+							if (!tmpCurrentStepData || (typeof (tmpCurrentStepData) !== 'object'))
+							{
+								this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, {});
+							}
+						}
+						else
+						{
+							this.pict.log.warn(`Unsupported ObjectType ${tmpParsingConfiguration.ObjectType} parsing chart Initialize configuration for input ${tmpInput.Macro.RawHTMLID}`);
+						}
+					}
+					break;
+				case 'Raw':
+					// Check if the Raw is in there
+					let tmpRawDataExists = this.pict.manifest.checkAddressExists(tmpInput, tmpCurrentStep.InputProperty);
+					if (!tmpRawDataExists)
+					{
+						break;
+					}
+
+					// Get the raw data from the input
+					let tmpRawData = this.pict.manifest.getValueByHash(tmpInput, tmpCurrentStep.InputProperty);
+					let tmpRawDataType = typeof(tmpRawData);
+
+					// We only support objects as configuration
+					if (tmpRawDataType !== 'object')
+					{
+						break;
+					}
+
+					if (tmpParsingConfiguration.ObjectType === 'array')
+					{
+						if (Array.isArray(tmpRawData))
+						{
+							if (tmpCurrentStep.Merge)
+							{
+								// Get existing data
+								if (!Array.isArray(tmpExistingData))
+								{
+									tmpExistingData = [];
+								}
+								// Merge in the arrays
+								let tmpMergedData = tmpExistingData.concat(tmpRawData);
+								this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpMergedData);
+							}
+							else
+							{
+								// Just set the value
+								this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpRawData);
+							}
+						}
+					}
+					else if (tmpParsingConfiguration.ObjectType === 'object')
+					{
+						if (tmpCurrentStep.Merge)
+						{
+							if (!tmpParsingConfiguration.AddressInObject || (tmpParsingConfiguration.AddressInObject == ''))
+							{
+								// This is the "root" object, so we need to merge or set directly
+								if (tmpCurrentStep.Merge)
+								{
+									tmpChartConfiguration = Object.assign(tmpChartConfiguration, tmpRawData);
+								}
+								else
+								{
+									tmpChartConfiguration = tmpRawData;
+								}
+							}
+							else
+							{
+								if ((typeof(tmpExistingData) != 'object') || (tmpExistingData == null))
+								{
+									tmpExistingData = {};
+								}
+								if (tmpCurrentStep.Merge)
+								{
+									// Merge the objects
+									let tmpMergedData = Object.assign(tmpExistingData, tmpRawData);
+									this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpMergedData);
+								}
+								else
+								{
+									// Just set the value
+									this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpRawData);
+								}
+							}
+						}
+						else
+						{
+							// Just set the value?
+							this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpRawData);
+						}
+					}
+					break;
+				case 'Address':
+					let tmpAddress = this.pict.manifest.getValueByHash(tmpInput, tmpCurrentStep.InputProperty);
+					// Input is the Record in the resolution chain
+					if (!tmpAddress)
+					{
+						break;
+					}
+
+					let tmpPotentialConfigurationObject = this.pict.resolveStateFromAddress(tmpAddress, pInput);
+
+					if (typeof (tmpPotentialConfigurationObject) !== 'object')
+					{
+						break;
+					}
+
+					if (tmpParsingConfiguration.ObjectType === 'array')
+					{
+						if (Array.isArray(tmpRawData))
+						{
+							if (tmpCurrentStep.Merge)
+							{
+								// Get existing data
+								if (!Array.isArray(tmpExistingData))
+								{
+									tmpExistingData = [];
+								}
+								// Merge in the arrays
+								let tmpMergedData = tmpExistingData.concat(tmpRawData);
+								this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpMergedData);
+							}
+							else
+							{
+								// Just set the value
+								this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpRawData);
+							}
+						}
+					}
+					else if (tmpParsingConfiguration.ObjectType === 'object')
+					{
+						if (tmpCurrentStep.Merge)
+						{
+							if (!tmpParsingConfiguration.AddressInObject || (tmpParsingConfiguration.AddressInObject == ''))
+							{
+								// This is the "root" object, so we need to merge or set directly
+								if (tmpCurrentStep.Merge)
+								{
+									tmpChartConfiguration = Object.assign(tmpChartConfiguration, tmpRawData);
+								}
+								else
+								{
+									tmpChartConfiguration = tmpRawData;
+								}
+							}
+							else
+							{
+								if ((typeof(tmpExistingData) != 'object') || (tmpExistingData == null))
+								{
+									tmpExistingData = {};
+								}
+								if (tmpCurrentStep.Merge)
+								{
+									// Merge the objects
+									let tmpMergedData = Object.assign(tmpExistingData, tmpRawData);
+									this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpMergedData);
+								}
+								else
+								{
+									// Just set the value
+									this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpRawData);
+								}
+							}
+						}
+						else
+						{
+							// Just set the value?
+							this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpRawData);
+						}
+					}
+					break;
+				case 'SingleSolver':
+					let tmpSolverExpression = this.pict.manifest.getValueByHash(tmpInput, tmpCurrentStep.InputProperty);
+					// Check that the expression is a string
+					if (typeof (tmpSolverExpression) !== 'string')
+					{
+						break;
+					}
+
+					let tmpSolvedConfiguration = this.pict.providers.DynamicSolver.runSolver(tmpSolverExpression);
+
+					if (tmpParsingConfiguration.ObjectType === 'array')
+					{
+						if (Array.isArray(tmpSolvedConfiguration))
+						{
+							if (tmpCurrentStep.Merge)
+							{
+								// Get existing data
+								if (!Array.isArray(tmpExistingData))
+								{
+									tmpExistingData = [];
+								}
+								// Merge in the arrays
+								let tmpMergedData = tmpExistingData.concat(tmpSolvedConfiguration);
+								this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpMergedData);
+							}
+							else
+							{
+								// Just set the value
+								this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpSolvedConfiguration);
+							}
+						}
+					}
+					else if (tmpParsingConfiguration.ObjectType === 'object')
+					{
+						if (tmpCurrentStep.Merge)
+						{
+							if (!tmpParsingConfiguration.AddressInObject || (tmpParsingConfiguration.AddressInObject == ''))
+							{
+								// This is the "root" object, so we need to merge or set directly
+								if (tmpCurrentStep.Merge)
+								{
+									tmpChartConfiguration = Object.assign(tmpChartConfiguration, tmpSolvedConfiguration);
+								}
+								else
+								{
+									tmpChartConfiguration = tmpSolvedConfiguration;
+								}
+							}
+							else
+							{
+								if ((typeof(tmpExistingData) != 'object') || (tmpExistingData == null))
+								{
+									tmpExistingData = {};
+								}
+								if (tmpCurrentStep.Merge)
+								{
+									// Merge the objects
+									let tmpMergedData = Object.assign(tmpExistingData, tmpSolvedConfiguration);
+									this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpMergedData);
+								}
+								else
+								{
+									// Just set the value
+									this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpRawData);
+								}
+							}
+						}
+						else
+						{
+							// Just set the value?
+							this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpRawData);
+						}
+					}
+					break;
+
+				case 'ArrayOfSolvers':
+					let tmpSolverExpressionList = this.pict.manifest.getValueByHash(tmpInput, tmpCurrentStep.InputProperty);
+
+					// Check that the expression is a string
+					if (!Array.isArray(tmpSolverExpressionList))
+					{
+						break;
+					}
+
+					for (let i = 0; i < tmpSolverExpressionList.length; i++)
+					{
+						let tmpCurrentSolverExpression = tmpSolverExpressionList[i];
+						if (typeof(tmpCurrentSolverExpression) !== 'object')
+						{
+							continue;
+						}
+
+						let tmpSolverLabel = tmpCurrentSolverExpression.Label;
+						let tmpSolverExpression = tmpCurrentSolverExpression.DataSolver;
+						let tmpSolvedDataSet = this.pict.providers.DynamicSolver.runSolver(tmpSolverExpression);
+
+						let tmpDataObject = (
+							{
+								label: tmpSolverLabel,
+								data: (Array.isArray(tmpSolvedDataSet)) ? tmpSolvedDataSet : []
+							});
+
+						if (tmpParsingConfiguration.ObjectType === 'array')
+						{
+							if (Array.isArray(tmpSolvedDataSet))
+							{
+								if (tmpCurrentStep.Merge)
+								{
+									// Get existing data
+									if (!Array.isArray(tmpExistingData))
+									{
+										tmpExistingData = [];
+									}
+									tmpExistingData.push(tmpDataObject);
+									this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpExistingData);
+								}
+								else
+								{
+									this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, [tmpDataObject]);
+								}
+							}
+						}
+						else if (tmpParsingConfiguration.ObjectType === 'object')
+						{
+							if (tmpCurrentStep.Merge)
+							{
+								if (!tmpParsingConfiguration.AddressInObject || (tmpParsingConfiguration.AddressInObject == ''))
+								{
+									// This is the "root" object, so we need to merge or set directly
+									if (tmpCurrentStep.Merge)
+									{
+										tmpChartConfiguration = Object.assign(tmpChartConfiguration, tmpSolvedDataSet);
+									}
+									else
+									{
+										tmpChartConfiguration = tmpSolvedDataSet;
+									}
+								}
+								else
+								{
+									if ((typeof(tmpExistingData) != 'object') || (tmpExistingData == null))
+									{
+										tmpExistingData = {};
+									}
+									if (tmpCurrentStep.Merge)
+									{
+										// Merge the objects
+										let tmpMergedData = Object.assign(tmpExistingData, tmpSolvedDataSet);
+										this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpMergedData);
+									}
+									else
+									{
+										// Just set the value
+										this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpRawData);
+									}
+								}
+							}
+							else
+							{
+								// Just set the value?
+								this.pict.manifest.setValueByHash(tmpChartConfiguration, tmpParsingConfiguration.AddressInObject, tmpRawData);
+							}
+						}
+					}
+					break;
+			}
+		}
 	}
 
 	getInputChartConfiguration(pView, pInput, pValue)
@@ -36,70 +553,15 @@ class CustomInputHandler extends libPictSectionInputExtension
 
 		let tmpPictform = pInput.PictForm;
 
-		let tmpChartConfiguration = (typeof(tmpPictform.ChartJSOptionsCorePrototype) === 'object') ? tmpPictform.ChartJSOptionsCorePrototype : {};
+		let tmpChartConfiguration = (typeof (tmpPictform.ChartJSOptionsCorePrototype) === 'object') ? tmpPictform.ChartJSOptionsCorePrototype : {};
 
-		// Vet the most important two properties for defaults
+		this.applyInputParsingConfiguration(pInput, tmpChartConfiguration, this.defaultCoreParsingConfiguration, 'PictForm.ChartConfigCoreParsingConfigurationOverride');
 		if (!('type' in tmpChartConfiguration))
 		{
-			tmpChartConfiguration.type = (typeof(tmpPictform.ChartType) === 'string') ? tmpPictform.ChartType : 'bar';
+			tmpChartConfiguration.type = (typeof (tmpPictform.ChartType) === 'string') ? tmpPictform.ChartType : 'bar';
 		}
-		if (!('data' in tmpChartConfiguration))
-		{
-			tmpChartConfiguration.data = {};
-		}
-
-		// See if there is a data solution configuration
-
-		// Start with Raw / defaults for labels and data
-		if (!('labels' in tmpChartConfiguration))
-		{
-			tmpChartConfiguration.data.labels = [];
-
-			if (Array.isArray(tmpPictform.ChartLabelsRaw))
-			{
-				tmpChartConfiguration.data.labels = tmpPictform.ChartLabelsRaw;
-			}
-			// Now do the configuration-based population behaviors
-
-			if (`ChartLabelsSolver` in tmpPictform)
-			{
-				let tmpSolvedLabels = this.pict.providers.DynamicSolver.runSolver(tmpPictform.ChartLabelsSolver);
-				if (Array.isArray(tmpSolvedLabels))
-				{
-					// TODO: This may need to get complex for multiple sets of labels?
-					tmpChartConfiguration.data.labels = tmpSolvedLabels;
-				}
-			}
-		}
-		if (!('datasets' in tmpChartConfiguration))
-		{
-			tmpChartConfiguration.data.datasets = [];
-			
-			if (Array.isArray(tmpPictform.ChartDatasetsRaw))
-			{
-				tmpChartConfiguration.data.datasets = tmpChartConfiguration.data.datasets.concat(tmpPictform.ChartDatasetsRaw);
-			}
-
-			// Now see if there are any non-raw datasets to add
-			if (`ChartDataSolvers` in tmpPictform)
-			{
-				for (let i = 0; i < tmpPictform.ChartDataSolvers.length; i++)
-				{
-					let tmpDatasetSolverConfig = tmpPictform.ChartDataSolvers[i];
-					// TODO: Cache and check if it's changed before making it initialize data in the control again
-					let tmpDataSetSolved = this.pict.providers.DynamicSolver.runSolver(tmpDatasetSolverConfig.DataSolver);
-					if (!'Label' in tmpDatasetSolverConfig)
-					{
-						tmpDatasetSolverConfig.Label = `Dataset ${i+1}`;
-					}
-					let tmpNewDataset = {
-						label: tmpDatasetSolverConfig.Label,
-						data: (Array.isArray(tmpDataSetSolved)) ? tmpDataSetSolved : []
-					};
-					tmpChartConfiguration.data.datasets.push(tmpNewDataset);
-				}
-			}
-		}
+		this.applyInputParsingConfiguration(pInput, tmpChartConfiguration, this.defaultLabelParsingConfiguration, 'PictForm.ChartLabelsParsingConfigurationOverride');
+		this.applyInputParsingConfiguration(pInput, tmpChartConfiguration, this.defaultDataParsingConfiguration, 'PictForm.ChartDataParsingConfigurationOverride');
 
 		return tmpChartConfiguration;
 	}
@@ -121,7 +583,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		tmpChartCanvasElement = tmpChartCanvasElement[0]
 
 		// Check if there is a window.Chart which is the Chart.js library
-		if (typeof(window.Chart) !== 'function')
+		if (typeof (window.Chart) !== 'function')
 		{
 			this.log.warn(`Chart.js library not loaded for input ${tmpChartCanvasElementSelector}`);
 		}

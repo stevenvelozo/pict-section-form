@@ -354,7 +354,7 @@ module.exports.default_configuration.pict_configuration = {
 						]
 					}],
 
-					ChartJSOptionsCorePrototype:
+					ChartConfigCorePrototypeRaw:
 					{
 						type: 'polarArea'
 					}
@@ -379,7 +379,7 @@ module.exports.default_configuration.pict_configuration = {
 
 					ChartType: "bar",
 					ChartLabelsSolver: `objectkeystoarray(aggregationhistogrambyobject(FruitGrid, "name", "nutritions.calories"))`,
-					ChartDataSolvers: 
+					ChartDatasetsSolvers:
 						[
 							{
 								Label: 'Calories',
@@ -407,7 +407,7 @@ module.exports.default_configuration.pict_configuration = {
 
 					ChartType: "bar",
 					ChartLabelsSolver: `objectkeystoarray(aggregationhistogrambyobject(FruitGrid, "name", "nutritions.fat"))`,
-					ChartDataSolvers: 
+					ChartDatasetsSolvers: 
 						[
 							{
 								Label: 'Fat',
@@ -441,30 +441,8 @@ module.exports.default_configuration.pict_configuration = {
 					Width: 12,
 					InputType: "Chart",
 
-					//ChartType: "Bar",
-
-					// This allows you to scope data for the chart separately from appdata
-					ChartDataScope: "Form",
-
-					ChartDataAddress: "FruitData.FruityVice",
-
-					ChartLabelsAddress: "FruitData.FruityVice",
 					ChartLabelsRaw: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
 
-					ChartDatasetsAddress: "FruitData.FruityVice",
-					ChartDatasetsConfig:
-					{
-						Calories:
-						{
-							ChartLabel: "Calories",
-							DataSolver: "Data = {~D:Record.nutritions.calories~}",
-							DataTemplate: "{~D:Record.SolverResult~}", // Could also be something from the solver postfix stack
-							DataCorePrototype:
-							{
-								borderWidth: 1
-							}
-						}
-					},
 					ChartDatasetsRaw: [
 						{
 							label: 'Awesomeness',
@@ -472,7 +450,7 @@ module.exports.default_configuration.pict_configuration = {
 						}],
 
 					// Do anything you want here!!
-					ChartJSOptionsCorePrototype:
+					ChartConfigCorePrototypeRaw:
 					{
 						type: 'bar',
 						options: {
