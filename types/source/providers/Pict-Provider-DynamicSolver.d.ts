@@ -18,6 +18,7 @@ declare class PictDynamicSolver extends libPictProvider {
         instantiateServiceProviderIfNotExists: (hash: string) => any;
         ExpressionParser: any;
     };
+    runSolver(pSolverExpression: any): any;
     /**
      * Checks the solver and returns the solver object if it passes the checks.
      *
