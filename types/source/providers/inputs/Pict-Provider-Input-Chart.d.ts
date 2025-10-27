@@ -12,7 +12,19 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     pict: import("pict");
     /** @type {import('pict')} */
     fable: import("pict");
+    defaultCoreParsingConfiguration: any;
+    defaultLabelParsingConfiguration: any;
+    defaultDataParsingConfiguration: any;
     currentChartObjects: {};
+    /**
+     *
+     * @param {Object} pInput - The PictForm input object
+     * @param {*} pChartConfiguration - The current configuration object for the form
+     * @param {*} pParsingConfiguration - The parsing configuration to apply
+     * @param {*} pInputParsingConfigurationScope - The input-specific parsing configuration string address for additional configuration
+     * @returns
+     */
+    applyInputParsingConfiguration(pInput: any, pChartConfiguration: any, pParsingConfiguration: any, pInputParsingConfigurationScope: any): boolean;
     getInputChartConfiguration(pView: any, pInput: any, pValue: any): any;
     initializeChartVisualization(pView: any, pGroup: any, pRow: any, pInput: any, pValue: any, pHTMLSelector: any): boolean;
     /**
