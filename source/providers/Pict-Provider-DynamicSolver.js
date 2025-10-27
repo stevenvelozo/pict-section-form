@@ -16,6 +16,7 @@ const libInputHTML = require('./inputs/Pict-Provider-Input-HTML.js');
 const libInputPreciseNumber = require('./inputs/Pict-Provider-Input-PreciseNumber.js');
 const libInputLink = require('./inputs/Pict-Provider-Input-Link.js');
 const libInputTemplatedEntityLookup = require('./inputs/Pict-Provider-Input-TemplatedEntityLookup.js');
+const libInputChart = require('./inputs/Pict-Provider-Input-Chart.js');
 
 /** @type {Record<string, any>} */
 const _DefaultProviderConfiguration = (
@@ -74,7 +75,22 @@ class PictDynamicSolver extends libPictProvider
 		this.pict.addProviderSingleton('Pict-Input-PreciseNumber', libInputPreciseNumber.default_configuration, libInputPreciseNumber);
 		this.pict.addProviderSingleton('Pict-Input-TemplatedEntityLookup', libInputTemplatedEntityLookup.default_configuration, libInputTemplatedEntityLookup);
 		this.pict.addProviderSingleton('Pict-Input-Link', libInputLink.default_configuration, libInputLink);
-		this.pict.addProviderSingleton('Pict-Input-Link', libInputLink.default_configuration, libInputLink);
+		this.pict.addProviderSingleton('Pict-Input-Chart', libInputChart.default_configuration, libInputChart);
+	}
+
+	runSolver(pSolverExpression)
+	{
+		let tmpViewMarshalDestinationObject = this.pict.resolveStateFromAddress(this.pict.views.PictFormMetacontroller.viewMarshalDestination);
+
+		if ((typeof(tmpViewMarshalDestinationObject) !== 'object') || (tmpViewMarshalDestinationObject === null))
+		{
+			tmpViewMarshalDestinationObject = this.pict.AppData;
+		}
+
+		let tmpResultsObject = {};
+		let tmpSolutionValue = this.fable.ExpressionParser.solve(pSolverExpression, tmpViewMarshalDestinationObject, tmpResultsObject,this.pict.manifest);
+
+		return tmpSolutionValue;
 	}
 
 	/**

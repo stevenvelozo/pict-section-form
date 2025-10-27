@@ -903,7 +903,7 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			let tmpDescriptor = tmpManifest.elementDescriptors[tmpDescriptorKeys[i]];
 
-			if (tmpDescriptor && tmpDescriptor.PictForm)
+			if (tmpDescriptor)
 			{
 				this.pict.manifest.addDescriptor(tmpDescriptorKeys[i], tmpDescriptor);
 			}

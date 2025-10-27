@@ -251,6 +251,18 @@ Glug glug glug Oo... -->
 `
 		},
 		{
+			"HashPostfix": "-Template-Input-InputType-Chart",
+			"DefaultInputExtensions": ["Pict-Input-Chart"],
+			"Template": /*HTML*/`
+					<!-- InputType Chart {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<div style="width:{~DWAF:Record.PictForm.QuantizedWidth:100~}%; display:inline-block;">
+						<input type="hidden" id="CONFIG-FOR-{~D:Record.Macro.RawHTMLID~}" value="">
+						<h3><span>{~D:Record.Name~}:</span></h3>
+						<div style="width:100%;"><canvas id="CANVAS-FOR-{~D:Record.Macro.RawHTMLID~}" {~D:Record.Macro.InputFullProperties~}></canvas></div>
+					</div>
+`
+		},
+		{
 			"HashPostfix": "-Template-Input-InputType-Markdown",
 			"DefaultInputExtensions": ["Pict-Input-Markdown"],
 			"Template": /*HTML*/`
