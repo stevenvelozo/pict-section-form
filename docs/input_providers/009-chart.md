@@ -80,6 +80,8 @@ whatever came from these.
 
 You can control this though!  It's controlled by configuration.
 
+
+
 ### Purely Raw Data
 
 You can hard code any chart right into the form.  There are three places
@@ -95,11 +97,11 @@ decorate in the `labels` and `data` objects from their raw entries.
 
 ### Purely Raw, Hard-coded Data and Labels
 
-
+This is hard-coded config.  It takes whatever is in the "Raw" configuration and
+puts it into the chart config.
 
 ```json
 {
-	"SimpleGraphExampleRawData":
 	"SimpleGraphExampleRawDataOne":
 	{
 		Name: "SimpleGraphExampleOne",
@@ -142,3 +144,66 @@ decorate in the `labels` and `data` objects from their raw entries.
 
 ### Configurability via Solvers
 
+This is configuration based on solvers.
+
+```json
+{
+	"SimpleGraphExampleRawDataTwo":
+	{
+		Name: "SimpleGraphExampleTwo",
+		Hash: "SimpleGraphExampleTwo",
+
+		DataType: "Object",
+		PictForm:
+		{
+			Section: "Chart",
+			Group: "SimpleChart",
+
+			Row: 2,
+			Width: 6,
+
+			InputType: "Chart",
+
+			ChartType: "bar",
+			ChartLabelsSolver: `objectkeystoarray(aggregationhistogrambyobject(FruitGrid, "name", "nutritions.calories"))`,
+			ChartDatasetsSolvers:
+				[
+					{
+						Label: 'Calories',
+						DataSolver: `objectvaluestoarray(aggregationhistogrambyobject(FruitGrid, "name", "nutritions.calories"))` 
+					}
+				]
+		}
+	}
+}
+```
+
+### Configurability via Address
+
+This is configuration based on solvers.
+
+```json
+{
+	"SimpleGraphExampleRawDataTwo":
+	{
+		Name: "SimpleGraphExampleTwo",
+		Hash: "SimpleGraphExampleTwo",
+
+		DataType: "Object",
+		PictForm:
+		{
+			Section: "Chart",
+			Group: "SimpleChart",
+
+			Row: 2,
+			Width: 6,
+
+			InputType: "Chart",
+
+			ChartType: "bar",
+			ChartLabelsAddress: `AppData.Chart.LabelsArray`,
+			ChartDatasetsAddress: `AppData.Chart.Datasets`
+		}
+	}
+}
+```
