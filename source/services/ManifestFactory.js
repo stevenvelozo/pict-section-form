@@ -625,14 +625,40 @@ class ManifestFactory extends libFableServiceProviderBase
 			// Clean up the equation a bit to remove any leading/trailing spaces and replace HTML quotes
 			// that may have been added by the CSV or other source.
 			const tmpCleanEquation = tmpRecord['Equation'].trim();
-			this.log.trace(`Adding solver to ${tmpRecord.Form} --> ${tmpGroup.Name} for ${tmpRecord['Input Hash']}: ${tmpRecord['Equation']}`);
+			let tmpEquationOrdinal = 1;
+			if (tmpRecord['Equation Ordinal'])
+			{
+				try
+				{
+					tmpEquationOrdinal = parseInt(tmpRecord['Equation Ordinal']);
+				}
+				catch (pError)
+				{
+					this.log.error(`Failed to parse Equation Ordinal for ${tmpRecord['Input Hash']}: ${pError}`);
+				}
+			}
+			this.log.trace(`Adding solver to ${tmpRecord.Form} --> ${tmpGroup.Name} for ${tmpRecord['Input Hash']} Ordinal ${tmpEquationOrdinal}: ${tmpRecord['Equation']}`);
 			if ((tmpGroup.Layout == 'Tabular') || (tmpGroup.Layout == 'RecordSet'))
 			{
-				tmpGroup.RecordSetSolvers.push(tmpCleanEquation);
+				if (tmpEquationOrdinal == 1)
+				{
+					tmpGroup.RecordSetSolvers.push(tmpCleanEquation);
+				}
+				else
+				{
+					tmpGroup.RecordSetSolvers.push({ Ordinal: tmpEquationOrdinal, Expression: tmpCleanEquation });
+				}
 			}
 			else
 			{
-				tmpSection.Solvers.push(tmpCleanEquation);
+				if (tmpEquationOrdinal == 1)
+				{
+					tmpSection.Solvers.push(tmpCleanEquation);
+				}
+				else
+				{
+					tmpSection.Solvers.push({ Ordinal: tmpEquationOrdinal, Expression: tmpCleanEquation });
+				}
 			}
 		}
 
@@ -641,6 +667,44 @@ class ManifestFactory extends libFableServiceProviderBase
 		if (tmpRecord.DataOnly && tmpDescriptor.PictForm)
 		{
 			delete tmpDescriptor.PictForm;
+		}
+
+		if ((tmpRecord.InputType == 'Chart') && (tmpDescriptor.PictForm))
+		{
+			// Charts will pull in five extra pieces of config if they exist: ChartType, ChartLabelsAddress, ChartLabelsSolver, ChartDatasetsAddress, ChartDatasetsSolver
+			if (tmpRecord.ChartType)
+			{
+				tmpDescriptor.PictForm.ChartType = tmpRecord.ChartType;
+			}
+			if (tmpRecord.ChartLabelsAddress)
+			{
+				tmpDescriptor.PictForm.ChartLabelsAddress = tmpRecord.ChartLabelsAddress;
+			}
+			if (tmpRecord.ChartLabelsSolver)
+			{
+				tmpDescriptor.PictForm.ChartLabelsSolver = tmpRecord.ChartLabelsSolver;
+			}
+			if (tmpRecord.ChartDatasetsAddress)
+			{
+				tmpDescriptor.PictForm.ChartDatasetsAddress = tmpRecord.ChartDatasetsAddress;
+			}
+			if (tmpRecord.ChartDatasetsSolver)
+			{
+				let tmpSolverEntry = { DataSolver: tmpRecord.ChartDatasetsSolver };
+				if (!tmpRecord.ChartDatasetsLabel)
+				{
+					tmpSolverEntry.Label = 'Data';
+				}
+				else
+				{
+					tmpSolverEntry.Label = tmpRecord.ChartDatasetsLabel;
+				}
+				if (!tmpDescriptor.PictForm.ChartDatasetsSolvers || !Array.isArray(tmpDescriptor.PictForm.ChartDatasetsSolvers))
+				{
+					tmpDescriptor.PictForm.ChartDatasetsSolvers = [];
+				}
+				tmpDescriptor.PictForm.ChartDatasetsSolvers.push(tmpSolverEntry);
+			}
 		}
 
 		if (tmpRecord.InputType != 'TabularAddress')

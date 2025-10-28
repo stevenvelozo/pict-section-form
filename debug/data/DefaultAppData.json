@@ -1,13 +1,13 @@
 {
 	"Boxes":
 		[
-			{ "Identifier":"Small Moving Box", "Width":"16.375", "Depth":"12.625", "Height":"12.625" },
-			{ "Identifier":"Medium Moving Box", "Width":"18.125", "Depth":"18.0", "Height":"16.0" },
-			{ "Identifier":"Large Moving Box", "Width":"18.0", "Depth":"18.0", "Height":"24.0" },
-			{ "Identifier":"Dish Saver Kit", "Width":"24.125", "Depth":"12.0", "Height":"11.0" },
-			{ "Identifier":"Book Box", "Width":"12.0", "Depth":"12.0", "Height":"12.0" },
-			{ "Identifier":"Glass Pack Kit", "Width":"24.125", "Depth":"12.0", "Height":"11.0" },
-			{ "Identifier":"Medium Wardrobe Box", "Width":"18.0", "Depth":"18.0", "Height":"46.0" },
-			{ "Identifier":"Mirror and Picture Box", "Width":"37.0", "Depth":"4.0", "Height":"27.0" }
+			{ "Identifier":"Small Moving Box", "BoxCategory":"Moving", "Width":"16.375", "Depth":"12.625", "Height":"12.625" },
+			{ "Identifier":"Medium Moving Box", "BoxCategory":"Moving", "Width":"18.125", "Depth":"18.0", "Height":"16.0" },
+			{ "Identifier":"Large Moving Box", "BoxCategory":"Moving", "Width":"18.0", "Depth":"18.0", "Height":"24.0" },
+			{ "Identifier":"Dish Saver Kit", "BoxCategory":"Storage", "Width":"24.125", "Depth":"12.0", "Height":"11.0" },
+			{ "Identifier":"Book Box", "BoxCategory":"Storage", "Width":"12.0", "Depth":"12.0", "Height":"12.0" },
+			{ "Identifier":"Glass Pack Kit", "BoxCategory":"Storage", "Width":"24.125", "Depth":"12.0", "Height":"11.0" },
+			{ "Identifier":"Medium Wardrobe Box", "BoxCategory":"Storage", "Width":"18.0", "Depth":"18.0", "Height":"46.0" },
+			{ "Identifier":"Mirror and Picture Box", "BoxCategory":"Storage", "Width":"37.0", "Depth":"4.0", "Height":"27.0" }
 		]
 }

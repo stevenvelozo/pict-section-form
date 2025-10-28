@@ -25,6 +25,10 @@
             "to": "./dist/"
         },
         {
+            "from": "../../node_modules/chart.js/dist/*",
+            "to": "./dist/"
+        },
+        {
             "from": "./dist/**",
             "to": "../../example_applications/debug"
         }

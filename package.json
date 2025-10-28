@@ -1,6 +1,6 @@
 {
     "name": "pict-section-form",
-    "version": "1.0.142",
+    "version": "1.0.143",
     "description": "Pict dynamic form sections",
     "main": "source/Pict-Section-Form.js",
     "directories": {
@@ -39,6 +39,7 @@
         "typescript": "^5.9.3"
     },
     "dependencies": {
+        "chart.js": "^4.5.1",
         "fable-serviceproviderbase": "^3.0.15",
         "marked": "^15.0.12",
         "pict-provider": "^1.0.6",

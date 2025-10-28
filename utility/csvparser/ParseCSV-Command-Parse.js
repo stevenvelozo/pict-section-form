@@ -83,7 +83,7 @@ class ImportCSVCommand extends libPictCommandLineUtility.ServiceCommandLineComma
 				const tmpRecord = tmpCSVParser.parseCSVLine(pLine);
 				if (tmpRecord)
 				{
-					tmpRecord.Equation = tmpRecord.Equation.replace(/&quot;/g, '"');
+					//tmpRecord.Equation = tmpRecord.Equation.replace(/&quot;/g, '"');
 					tmpRecords.push(tmpRecord);
 				}
 			});

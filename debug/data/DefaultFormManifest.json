@@ -394,6 +394,69 @@
                 "Group": "Box_Summary_Data"
             }
         },
+        "BoxChart_Sizes": {
+            "Hash": "BoxChart_Sizes",
+            "Name": "Box Category Volume Comparison",
+            "DataAddress": "BoxChart_Sizes",
+            "DataType": "Object",
+            "PictForm": {
+                "InputType": "Chart",
+                "Row": "5",
+                "Width": "4",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data",
+                "ChartType": "pie",
+                "ChartLabelsSolver": "objectkeystoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Volume\"))",
+                "ChartDatasetsSolvers": [
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Volume\"))",
+                        "Label": "Box Categories"
+                    }
+                ]
+            }
+        },
+        "BoxChart_Size_Details": {
+            "Hash": "BoxChart_Size_Details",
+            "Name": "Box Size Comparison",
+            "DataAddress": "BoxChart_Size_Details",
+            "DataType": "Object",
+            "PictForm": {
+                "InputType": "Chart",
+                "Row": "5",
+                "Width": "4",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data",
+                "ChartType": "bar",
+                "ChartLabelsSolver": "objectkeystoarray(aggregationhistogrambyobject(Boxes, \"Identifier\", \"Volume\"))",
+                "ChartDatasetsSolvers": [
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"Identifier\", \"Volume\"))",
+                        "Label": "Box Categories"
+                    }
+                ]
+            }
+        },
+        "BoxChart_Scatter": {
+            "Hash": "BoxChart_Dimensions",
+            "Name": "Box Width x Height Scatter",
+            "DataAddress": "BoxChart_Scatter",
+            "DataType": "Object",
+            "PictForm": {
+                "InputType": "Chart",
+                "Row": "5",
+                "Width": "4",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data",
+                "ChartType": "radar",
+                "ChartLabelsSolver": "objectkeystoarray(aggregationhistogrambyobject(Boxes, \"Identifier\", \"Floorspace\"))",
+                "ChartDatasetsSolvers": [
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"Identifier\", \"Floorspace\"))",
+                        "Label": "Box Categories"
+                    }
+                ]
+            }
+        },
         "HelpContent.Cuboid": {
             "Hash": "CuboidHelpContent",
             "Name": "How to Cuboid Math",
@@ -798,7 +861,10 @@
             "Name": "Box Summary Data",
             "Hash": "Box_Summary_Data",
             "Solvers": [
-                "SUBTRACTINGSUMMATION(Boxes, \"Volume\", \"WarehouseSpaceLeft\", GETVALUE(\"AppData.Header.WarehouseVolume\"))",
+                {
+                    "Ordinal": 10,
+                    "Expression": "SUBTRACTINGSUMMATION(Boxes, \"Volume\", \"WarehouseSpaceLeft\", GETVALUE(\"AppData.Header.WarehouseVolume\"))"
+                },
                 "BoxesCount = COUNT(BoxesFloorspaceSet)",
                 "BoxesAverageFloorspace = AVG(BoxesFloorspaceSet)",
                 "BoxesTotalFloorspace = SUM(BoxesFloorspaceSet)",
@@ -1483,6 +1549,27 @@
                     "Hash": "BoxIdentifier",
                     "Name": "Identifier",
                     "DataAddress": "Identifier",
+                    "DataType": "String",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroupHash": "Box",
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
+                        },
+                        "Section": "BoxCollSec",
+                        "Group": "BoxCollGrp"
+                    },
+                    "IsTabular": true
+                },
+                "BoxCategory": {
+                    "Hash": "BoxCategory",
+                    "Name": "Category",
+                    "DataAddress": "BoxCategory",
                     "DataType": "String",
                     "PictForm": {
                         "Row": "1",
