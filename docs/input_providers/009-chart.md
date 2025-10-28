@@ -180,7 +180,9 @@ This is configuration based on solvers.
 
 ### Configurability via Address
 
-This is configuration based on solvers.
+This is configuration based on pre-formatted data at specific locations...
+technically the inline solvers above can be run as a part of any form solve
+and store their data in a location the chart can read from.
 
 ```json
 {
