@@ -121,6 +121,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		this.defaultDataParsingConfiguration = JSON.parse(JSON.stringify(this.options.DefaultDataParsingConfiguration));
 
 		this.currentChartObjects = {};
+		this.currentChartDataObjects = {};
 	}
 
 	/**
@@ -590,6 +591,8 @@ class CustomInputHandler extends libPictSectionInputExtension
 		else
 		{
 			this.currentChartObjects[`Object-For-${pInput.Macro.RawHTMLID}`] = new window.Chart(tmpChartCanvasElement, tmpChartConfiguration);
+			// TODO: Make this invalidation better.
+			this.currentChartDataObjects[`Data-For-${pInput.Macro.RawHTMLID}`] = JSON.stringify(tmpChartConfiguration.data);
 		}
 	}
 
@@ -673,6 +676,21 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
+		if (!this.currentChartObjects[`Object-For-${pInput.Macro.RawHTMLID}`])
+		{
+			this.initializeChartVisualization(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
+		}
+		else
+		{
+			let tmpChartConfiguration = this.getInputChartConfiguration(pView, pInput, pValue);
+			let tmpNewChartDataString = JSON.stringify(tmpChartConfiguration.data);
+			if (this.currentChartDataObjects[`Data-For-${pInput.Macro.RawHTMLID}`] !== tmpNewChartDataString)
+			{
+				this.currentChartObjects[`Object-For-${pInput.Macro.RawHTMLID}`].data = tmpChartConfiguration.data;
+				this.currentChartObjects[`Object-For-${pInput.Macro.RawHTMLID}`].update();
+				this.currentChartDataObjects[`Data-For-${pInput.Macro.RawHTMLID}`] = tmpNewChartDataString;
+			}
+		}
 		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
