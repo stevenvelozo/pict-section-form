@@ -431,7 +431,7 @@
                     "ChartDatasetsSolvers": [
                         {
                             "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"Identifier\", \"Volume\"))",
-                            "Label": "Box Categories"
+                            "Label": "Box Volumes"
                         }
                     ]
                 }
@@ -452,7 +452,7 @@
                     "ChartDatasetsSolvers": [
                         {
                             "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"Identifier\", \"Floorspace\"))",
-                            "Label": "Box Categories"
+                            "Label": "Box Floorspace Usage"
                         }
                     ]
                 }
