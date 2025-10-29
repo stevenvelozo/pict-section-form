@@ -280,9 +280,11 @@ class PictFormMetacontroller extends libPictViewClass
 		const tmpManifest = JSON.parse(JSON.stringify(pManifest));
 		for (const tmpSection of tmpManifest.Sections || [])
 		{
+			tmpSection.OriginalHash = tmpSection.Hash;
 			tmpSection.Hash = `${tmpSection.Hash}_${tmpUUID}`;
 			for (const tmpGroup of tmpSection.Groups || [])
 			{
+				tmpGroup.OriginalHash = tmpGroup.Hash;
 				tmpGroup.Hash = `${tmpGroup.Hash}_${tmpUUID}`;
 			}
 		}
@@ -293,6 +295,7 @@ class PictFormMetacontroller extends libPictViewClass
 			tmpDescriptor.DataAddress = `${tmpDescriptor.DataAddress || tmpKey}_${tmpUUID}`;
 			if (tmpDescriptor.Hash)
 			{
+				tmpDescriptor.OriginalHash = tmpDescriptor.Hash;
 				tmpDescriptor.Hash = `${tmpDescriptor.Hash}_${tmpUUID}`;
 			}
 			if (tmpDescriptor.PictForm)

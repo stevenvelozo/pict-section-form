@@ -16,6 +16,7 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     defaultLabelParsingConfiguration: any;
     defaultDataParsingConfiguration: any;
     currentChartObjects: {};
+    currentChartDataObjects: {};
     /**
      *
      * @param {Object} pInput - The PictForm input object
