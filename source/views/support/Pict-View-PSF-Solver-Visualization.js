@@ -75,7 +75,7 @@ const defaultViewConfiguration = (
 			Hash: "Pict-Form-RecordValueDisplayComplex",
 			Template: /*html*/`
 			<!-- Complex Value -->
-			{~TBT:Record.Value:array:Pict-Form-RecordValueDisplayObject:Record:Pict-Form-RecordValueDisplayArray~}
+			{~TBT:Record.Value:array:Pict-Form-RecordValueDisplayArray:Record:Pict-Form-RecordValueDisplayObject~}
 `
 		},
 		{
@@ -88,6 +88,7 @@ const defaultViewConfiguration = (
 		{
 			Hash: "Pict-Form-RecordValueDisplayArray",
 			Template: /*html*/`JSON Array ({~D:Record.Value.length~} items)
+{~Breakpoint~}
 			<!-- RAW Array
 {~DJ:Record.Value~}
 			-->`
