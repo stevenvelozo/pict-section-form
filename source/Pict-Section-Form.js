@@ -24,6 +24,7 @@ module.exports.PictDynamicLayoutProvider = require('./providers/Pict-Provider-Dy
 
 // The ManifestFactory, for when we want to convert tabular data to configuration
 module.exports.ManifestFactory = require('./services/ManifestFactory.js');
+module.exports.ManifestConversionToCSV = require('./services/ManifestConversionToCSV.js');
 
 
 // The extension views
