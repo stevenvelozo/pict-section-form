@@ -369,6 +369,21 @@ class ManifestFactory extends libFableServiceProviderBase
 			tmpDescriptor.PictForm.SpreadsheetNotes = tmpRecord['Input Notes'];
 		}
 
+		if (tmpRecord['Description'])
+		{
+			tmpDescriptor.Description = tmpRecord['Description'];
+		}
+
+		if (tmpRecord['Units'])
+		{
+			tmpDescriptor.PictForm.Units = tmpRecord['Units'];
+		}
+
+		if (tmpRecord['Tooltip'])
+		{
+			tmpDescriptor.PictForm.Tooltip = tmpRecord['Tooltip'];
+		}
+
 		if ((tmpDescriptor.PictForm.InputType == 'Option') && (tmpRecord['Input Extra']))
 		{
 			let tmpOptionSet = [];
@@ -666,6 +681,14 @@ class ManifestFactory extends libFableServiceProviderBase
 
 		if (tmpRecord.DataOnly && tmpDescriptor.PictForm)
 		{
+			if (tmpDescriptor.PictForm.Group)
+			{
+				tmpDescriptor.FormGroup = tmpDescriptor.PictForm.Group;
+			}
+			if (tmpDescriptor.PictForm.Section)
+			{
+				tmpDescriptor.FormSection = tmpDescriptor.PictForm.Section;
+			}
 			delete tmpDescriptor.PictForm;
 		}
 
@@ -778,7 +801,7 @@ class ManifestFactory extends libFableServiceProviderBase
 			// Check if there is a Form Name to be set
 			if (tmpRecord['Form Name'])
 			{
-				tmpManifest.FormName = tmpRecord['Form Name'];
+				tmpManifest.manifest.FormName = tmpRecord['Form Name'];
 			}
 			if (tmpRecord['Input Hash'])
 			{

@@ -4,6 +4,7 @@
 node ./Step-1-GenerateJSON.js
 node ./Step-2-InjectContent.js
 node ./Step-3-BuildDistilling.js
+node ./Step-4-ConvertToCSV.js
 
 # Navigate to the data folder
 cd data

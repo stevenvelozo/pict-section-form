@@ -21,7 +21,10 @@
         "build": "npx quack build",
         "test": "npx mocha -u tdd -R spec",
         "lint": "eslint source/**",
-        "types": "tsc -p ."
+        "types": "tsc -p .",
+        "docker-dev-build": "docker build ./ -f Dockerfile_LUXURYCode -t pict-section-form-image:local",
+        "docker-dev-run": "docker run -it -d --name pict-section-form-dev -p 48888:8080 -p 49999:9999 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-section-form\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-section-form-image:local",
+        "docker-dev-shell": "docker exec -it pict-section-form-dev /bin/bash"
     },
     "types": "types/source/Pict-Section-Form.d.ts",
     "author": "steven velozo <steven@velozo.com>",
@@ -31,10 +34,10 @@
         "browser-env": "^3.3.0",
         "eslint": "^9.38.0",
         "jquery": "^3.7.1",
-        "pict": "^1.0.320",
+        "pict": "^1.0.321",
         "pict-application": "^1.0.29",
         "pict-service-commandlineutility": "^1.0.15",
-        "quackage": "^1.0.42",
+        "quackage": "^1.0.44",
         "tui-grid": "^4.21.22",
         "typescript": "^5.9.3"
     },
