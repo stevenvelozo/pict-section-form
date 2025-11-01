@@ -169,6 +169,11 @@ class PictFormMetacontroller extends libPictViewClass
 		return super.onSolve();
 	}
 
+	runSolver(pExpression)
+	{
+		this.pict.providers.DynamicSolver.runSolver(pExpression);
+	}
+
 	onBeforeFilterViews(pViewFilterState)
 	{
 		return pViewFilterState;

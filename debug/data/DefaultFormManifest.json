@@ -289,6 +289,30 @@
             "FormGroup": "BoxDecorationGroup",
             "FormSection": "BoxDecroations"
         },
+        "Boxes[].Floorspace": {
+            "Hash": "BoxesFloorspaceSet",
+            "Name": "BoxesFloorSpaceSet",
+            "DataAddress": "Boxes[].Floorspace",
+            "DataType": "Object",
+            "FormGroup": "Box_Summary_Data",
+            "FormSection": "Box_Summary_Data"
+        },
+        "Boxes[].Volume": {
+            "Hash": "BoxesVolumeSet",
+            "Name": "BoxesVolumeSet",
+            "DataAddress": "Boxes[].Volume",
+            "DataType": "Object",
+            "FormGroup": "Box_Summary_Data",
+            "FormSection": "Box_Summary_Data"
+        },
+        "Boxes[].Depth": {
+            "Hash": "BoxesDepthSet",
+            "Name": "BoxesDepthSet",
+            "DataAddress": "Boxes[].Depth",
+            "DataType": "Object",
+            "FormGroup": "Box_Summary_Data",
+            "FormSection": "Box_Summary_Data"
+        },
         "BoxAggregate.Count": {
             "Hash": "BoxesCount",
             "Name": "Box Count",

@@ -88,7 +88,9 @@ class PictDynamicSolver extends libPictProvider
 		}
 
 		let tmpResultsObject = {};
-		let tmpSolutionValue = this.fable.ExpressionParser.solve(pSolverExpression, tmpViewMarshalDestinationObject, tmpResultsObject,this.pict.manifest);
+		let tmpSolutionValue = this.fable.ExpressionParser.solve(pSolverExpression, tmpViewMarshalDestinationObject, tmpResultsObject, this.pict.manifest);
+
+		this.pict.log.trace(`Manual solve executed for expression: ${pSolverExpression}`, tmpResultsObject);
 
 		return tmpSolutionValue;
 	}
@@ -226,7 +228,8 @@ class PictDynamicSolver extends libPictProvider
 				tmpView.log.trace(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] solving equation ${i} ordinal ${tmpSolver.Ordinal} [${tmpView.options.Solvers[i]}]`);
 			}
 			tmpSolver.ResultsObject = {};
-			let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpView.getMarshalDestinationObject(), tmpSolver.ResultsObject, tmpView.sectionManifest, tmpView.getMarshalDestinationObject());
+			let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpView.getMarshalDestinationObject(), tmpSolver.ResultsObject, this.pict.manifest, tmpView.getMarshalDestinationObject());
+			//let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpView.getMarshalDestinationObject(), tmpSolver.ResultsObject, tmpView.sectionManifest, tmpView.getMarshalDestinationObject());
 			if (this.pict.LogNoisiness > 1)
 			{
 				tmpView.log.trace(`[${tmpSolver.Expression}] result was ${tmpSolutionValue}`);
