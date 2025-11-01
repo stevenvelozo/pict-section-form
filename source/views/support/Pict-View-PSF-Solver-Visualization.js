@@ -28,23 +28,27 @@ const defaultViewConfiguration = (
 			Hash: "Pict-Form-Solver-Entries",
 			Template: /*html*/`
 	<div id="PSFExt-Section-{~D:Record.Hash~}" class="PSFExt-Section">
-		<h3 class="PSFExt-Section-Header"><span class="PSFExt-DeEmphasize">{~D:Record.ExpressionScope~} Ord</span>{~D:Record.Ordinal~} <span class="PSFExt-DeEmphasize">Ind</span>{~D:Record.Index~} [ <a href="javascript:void(0);" onclick="{~P~}.ContentAssignment.removeClass('#PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-{~D:Record.SectionOrdinal~}-{~D:Record.Index~}-ExpressionContainer', 'PSFExt-Hidden');">Edit</a> ] [ <a href="javascript:void(0);" onclick="{~P~}.ContentAssignment.removeClass('#PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-{~D:Record.SectionOrdinal~}-{~D:Record.Index~}-ExtraDataContainer', 'PSFExt-Hidden');">More</a> ]</h3>
+		<h3 class="PSFExt-Section-Header">
+			<span class="PSFExt-DeEmphasize">{~D:Record.ExpressionScope~} {~D:Record.SectionOrdinal~}.G.{~D:Record.GroupOrdinal~}</span> Ord</span>{~D:Record.Ordinal~} <span class="PSFExt-DeEmphasize">Ind</span>{~D:Record.Index~}
+			[ <a href="javascript:void(0);" onclick="{~P~}.ContentAssignment.toggleClass('#PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-S{~D:Record.SectionOrdinal~}-G{~D:Record.GroupOrdinal~}-{~D:Record.Index~}-ExpressionContainer', 'PSFExt-Hidden');">Edit</a> ]
+			[ <a href="javascript:void(0);" onclick="{~P~}.ContentAssignment.toggleClass('#PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-S{~D:Record.SectionOrdinal~}-G{~D:Record.GroupOrdinal~}-{~D:Record.Index~}-ExtraDataContainer', 'PSFExt-Hidden');">More</a> ]
+		</h3>
 		
-		<div id="PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-{~D:Record.SectionOrdinal~}-{~D:Record.Index~}-ExpressionContainer" class="PSFExt-Hidden">
+		<div id="PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-S{~D:Record.SectionOrdinal~}-G{~D:Record.GroupOrdinal~}-{~D:Record.Index~}-ExpressionContainer" class="PSFExt-Hidden">
 			<p class="PSFExt-Data">
-				<textarea id="PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-{~D:Record.SectionOrdinal~}-{~D:Record.Index~}-ExpressionEditbox" class="PSFExt-ExpressionEditbox">{~D:Record.Expression~}</textarea>
+				<textarea id="PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-S{~D:Record.SectionOrdinal~}-G{~D:Record.GroupOrdinal~}-{~D:Record.Index~}-ExpressionEditbox" class="PSFExt-ExpressionEditbox">{~D:Record.Expression~}</textarea>
 			</p>
 			<ul class="PSFExt-Section-Buttons">
-				<li class="PSFExt-Section-Button"><a href="javascript:void(0);" onclick="{~P~}.views['{~D:Context[0].Hash~}'].updateExpressionFromElement('#PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-{~D:Record.SectionOrdinal~}-{~D:Record.Index~}-ExpressionEditbox', '{~D:Record.ExpressionScope~}', '{~D:Record.ViewHash~}', {~D:Record.SectionOrdinal~}, {~D:Record.Index~}, '#PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-{~D:Record.SectionOrdinal~}-{~D:Record.Index~}-Display'); {~P~}.ContentAssignment.addClass('#PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-{~D:Record.SectionOrdinal~}-{~D:Record.Index~}-ExpressionContainer', 'PSFExt-Hidden');">Apply</a></li>
+				<li class="PSFExt-Section-Button"><a href="javascript:void(0);" onclick="{~P~}.views['{~D:Context[0].Hash~}'].updateExpressionFromElement('#PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-S{~D:Record.SectionOrdinal~}-G{~D:Record.GroupOrdinal~}-{~D:Record.Index~}-ExpressionEditbox', '{~D:Record.ExpressionScope~}', '{~D:Record.ViewHash~}', {~D:Record.SectionOrdinal~}, {~D:Record.Index~}, '#PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-S{~D:Record.SectionOrdinal~}-G{~D:Record.GroupOrdinal~}-{~D:Record.Index~}-Display'); {~P~}.ContentAssignment.addClass('#PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-S{~D:Record.SectionOrdinal~}-G{~D:Record.GroupOrdinal~}-{~D:Record.Index~}-ExpressionContainer', 'PSFExt-Hidden');">Apply</a></li>
 			</ul>
 		</div>
-		<div id="PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-{~D:Record.SectionOrdinal~}-{~D:Record.Index~}-Extra" class="PSFExt-Section-ExtraData">
-			<p class="PSFExt-Solver-Entry" id="PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-{~D:Record.SectionOrdinal~}-{~D:Record.Index~}-Display">{~D:Record.Expression~}</p>
+		<div id="PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-S{~D:Record.SectionOrdinal~}-G{~D:Record.GroupOrdinal~}-{~D:Record.Index~}-Extra" class="PSFExt-Section-ExtraData">
+			<p class="PSFExt-Solver-Entry" id="PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-S{~D:Record.SectionOrdinal~}-G{~D:Record.GroupOrdinal~}-{~D:Record.Index~}-Display">{~D:Record.Expression~}</p>
 			<p class="PSFExt-Data">
 				<span class="PSFExt-Label">Value</span> {~TBT:Record.Value:object,array:Pict-Form-RecordValueDisplayComplex:Record:Pict-Form-RecordValueDisplaySimple~}
 			</p>
 		</div>
-		<div id="PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-{~D:Record.SectionOrdinal~}-{~D:Record.Index~}-ExtraDataContainer" class="PSFExt-Section-ExtraData PSFExt-Hidden">
+		<div id="PSFExt-{~D:Record.ExpressionScope~}-{~D:Record.ViewHash~}-S{~D:Record.SectionOrdinal~}-G{~D:Record.GroupOrdinal~}-{~D:Record.Index~}-ExtraDataContainer" class="PSFExt-Section-ExtraData PSFExt-Hidden">
 			<h5 class="PSFExt-Content-Header PSFExt-Section-Group-Header">{~D:Record.LastResultsObject.PostfixTokenObjects.length~} Postfix Tokens</h5>
 			{~TS:Pict-Form-Solver-PostfixToken:Record.LastResultsObject.PostfixTokenObjects~}
 			<h5 class="PSFExt-Content-Header PSFExt-Section-Group-Header">Virtual Symbols</h5>
@@ -88,7 +92,6 @@ const defaultViewConfiguration = (
 		{
 			Hash: "Pict-Form-RecordValueDisplayArray",
 			Template: /*html*/`JSON Array ({~D:Record.Value.length~} items)
-{~Breakpoint~}
 			<!-- RAW Array
 {~DJ:Record.Value~}
 			-->`

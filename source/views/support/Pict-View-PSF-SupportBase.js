@@ -93,7 +93,7 @@ class PictFormsSupportBase extends libPictView
 				{
 					let tmpSolver = tmpSectionView.sectionDefinition.Solvers[j];
 
-					let tmpSolverEntry = { ViewHash: tmpSectionView.Hash, SectionOrdinal: i, Ordinal: 1, Index: j, Expression: '', ExpressionType: 'Unknown', ExpressionScope: 'Section'}
+					let tmpSolverEntry = { ViewHash: tmpSectionView.Hash, SectionOrdinal: i, GroupOrdinal: -1, Ordinal: 1, Index: j, Expression: '', ExpressionType: 'Unknown', ExpressionScope: 'Section'}
 					if (typeof(tmpSolver) === 'string')
 					{
 						tmpSolverEntry.Expression = tmpSolver;
@@ -126,7 +126,7 @@ class PictFormsSupportBase extends libPictView
 					{
 						let tmpSolver = tmpGroup.RecordSetSolvers[k];
 	
-						let tmpSolverEntry = { ViewHash: tmpSectionView.Hash, SectionOrdinal: i, Ordinal: 1, Index: j, Expression: '', ExpressionType: 'Unknown', ExpressionScope: 'Group'}
+						let tmpSolverEntry = { ViewHash: tmpSectionView.Hash, SectionOrdinal: i, GroupOrdinal: j, Ordinal: 1, Index: k, Expression: '', ExpressionType: 'Unknown', ExpressionScope: 'Group'}
 						if (tmpSolver)
 						{
 							if (typeof(tmpSolver) === 'string')
