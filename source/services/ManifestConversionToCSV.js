@@ -17,6 +17,8 @@ class ManifestConversionToCSV extends libFableServiceProviderBase
             "Form",
             "Form Name",
             "SubManifest",
+			"HideTabularEditingControls",
+			"GroupRecordSetAddress",
             "DataOnly",
             "Section Name",
             "Section Hash",
@@ -351,6 +353,8 @@ class ManifestConversionToCSV extends libFableServiceProviderBase
 
 								// Set the SubManifest on the placeholder row
 								tmpRow[this.CSV_COLUMN_MAP["SubManifest"]] = tmpGroup.RecordManifest;
+								tmpRow[this.CSV_COLUMN_MAP["GroupRecordSetAddress"]] = tmpGroup.RecordSetAddress;
+								tmpRow[this.CSV_COLUMN_MAP["HideTabularEditingControls"]] = tmpGroup.HideTabularEditingControls;
 
 								// Now set the Minimum and Maximum Row Counts
 								if (tmpGroup.MinimumRowCount)

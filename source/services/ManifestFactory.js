@@ -597,6 +597,10 @@ class ManifestFactory extends libFableServiceProviderBase
 				this.log.error(`Failed to parse Maximum Row Count for ${tmpRecord['Input Hash']}: ${pError}`);
 			}
 		}
+		if (tmpRecord['HideTabularEditingControls'] && ((tmpRecord['HideTabularEditingControls'] == '1') || (tmpRecord['HideTabularEditingControls'].toLowerCase() == 'true') || (tmpRecord['HideTabularEditingControls'].toLowerCase() == 't') || (tmpRecord['HideTabularEditingControls'].toLowerCase() == 'y')))
+		{
+			tmpGroup.HideTabularEditingControls = true;
+		}
 		if (tmpRecord['Group Show Title'] && (tmpRecord['Group Show Title'] != ''))
 		{
 			switch(tmpRecord['Group Show Title'].toLowerCase())
@@ -631,7 +635,17 @@ class ManifestFactory extends libFableServiceProviderBase
 		if (tmpRecord.InputType == 'TabularAddress')
 		{
 			tmpGroup.Layout = 'Tabular';
-			tmpGroup.RecordSetAddress = tmpDescriptor.DataAddress;
+			// If the csv defines the GroupRecordSetAddress, use that explicitly
+			console.log(`Group ${tmpGroup.Hash} RSA ${tmpRecord['GroupRecordSetAddress']} -> Descriptor ${tmpDescriptor.DataAddress}`)
+			if (tmpRecord['GroupRecordSetAddress'] && (typeof(tmpRecord.GroupRecordSetAddress == 'string')) && (tmpRecord.GroupRecordSetAddress.length > 0))
+			{
+				tmpGroup.RecordSetAddress = tmpRecord.GroupRecordSetAddress;
+			}
+			else
+			{
+				tmpGroup.RecordSetAddress = tmpDescriptor.DataAddress;
+			}
+			// Otherwise fall back to the DataAddress
 			tmpGroup.RecordManifest = tmpRecord.SubManifest;
 		}
 

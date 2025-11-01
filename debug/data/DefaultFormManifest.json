@@ -281,29 +281,13 @@
             "FormGroup": "BoxCollGrp",
             "FormSection": "BoxCollSec"
         },
-        "Boxes[].Floorspace": {
-            "Hash": "BoxesFloorspaceSet",
-            "Name": "BoxesFloorspaceSet",
-            "DataAddress": "Boxes[].Floorspace",
-            "DataType": "Number",
-            "FormGroup": "Box_Summary_Data",
-            "FormSection": "Box_Summary_Data"
-        },
-        "Boxes[].Volume": {
-            "Hash": "BoxesVolumeSet",
-            "Name": "BoxesVolumeSet",
-            "DataAddress": "Boxes[].Volume",
-            "DataType": "Number",
-            "FormGroup": "Box_Summary_Data",
-            "FormSection": "Box_Summary_Data"
-        },
-        "Boxes[].Depth": {
-            "Hash": "BoxesDepthSet",
-            "Name": "BoxesDepthSet",
-            "DataAddress": "Boxes[].Depth",
-            "DataType": "Number",
-            "FormGroup": "Box_Summary_Data",
-            "FormSection": "Box_Summary_Data"
+        "BoxDecorationSet": {
+            "Hash": "BoxDecorationSet",
+            "Name": "BoxDecorationSet",
+            "DataAddress": "BoxDecorationSet",
+            "DataType": "Array",
+            "FormGroup": "BoxDecorationGroup",
+            "FormSection": "BoxDecroations"
         },
         "BoxAggregate.Count": {
             "Hash": "BoxesCount",
@@ -896,13 +880,40 @@
             ]
         },
         {
+            "Name": "Box Decoration",
+            "Hash": "BoxDecroations",
+            "Solvers": [],
+            "Groups": [
+                {
+                    "Name": "Box Decorations",
+                    "Hash": "BoxDecorationGroup",
+                    "Rows": [],
+                    "RecordSetSolvers": [],
+                    "HideTabularEditingControls": true,
+                    "ShowTitle": true,
+                    "Layout": "Tabular",
+                    "RecordSetAddress": "Boxes",
+                    "RecordManifest": "BoxCollectionSecondaryTable"
+                }
+            ]
+        },
+        {
+            "Name": "Box Decoration",
+            "Hash": "BoxDecorations",
+            "Solvers": [],
+            "Groups": [
+                {
+                    "Name": "Box Decorations",
+                    "Hash": "BoxDecorationGroup",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                }
+            ]
+        },
+        {
             "Name": "Box Summary Data",
             "Hash": "Box_Summary_Data",
             "Solvers": [
-                {
-                    "Ordinal": 10,
-                    "Expression": "SUBTRACTINGSUMMATION(Boxes, \"Volume\", \"WarehouseSpaceLeft\", GETVALUE(\"AppData.Header.WarehouseVolume\"))"
-                },
                 "BoxesCount = COUNT(BoxesFloorspaceSet)",
                 "BoxesAverageFloorspace = AVG(BoxesFloorspaceSet)",
                 "BoxesTotalFloorspace = SUM(BoxesFloorspaceSet)",
@@ -1717,6 +1728,78 @@
                         },
                         "Section": "BoxCollSec",
                         "Group": "BoxCollGrp"
+                    },
+                    "IsTabular": true
+                }
+            },
+            "Sections": [],
+            "ReferenceManifests": {}
+        },
+        "BoxCollectionSecondaryTable": {
+            "Scope": "BoxCollectionSecondaryTable",
+            "Descriptors": {
+                "Identifier": {
+                    "Hash": "BoxIdentifier",
+                    "Name": "Identifier",
+                    "DataAddress": "Identifier",
+                    "DataType": "String",
+                    "PictForm": {
+                        "InputType": "DataOnly",
+                        "Row": "1",
+                        "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroupHash": "Box",
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
+                        },
+                        "Section": "BoxDecorations",
+                        "Group": "BoxDecorationGroup"
+                    },
+                    "IsTabular": true
+                },
+                "Volume": {
+                    "Hash": "BoxVolume",
+                    "Name": "Volume",
+                    "DataAddress": "Volume",
+                    "DataType": "PreciseNumber",
+                    "PictForm": {
+                        "InputType": "DataOnly",
+                        "Row": "1",
+                        "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroupHash": "Box",
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
+                        },
+                        "Section": "BoxDecorations",
+                        "Group": "BoxDecorationGroup"
+                    },
+                    "IsTabular": true
+                },
+                "DecorativeText": {
+                    "Hash": "DecorativeText",
+                    "Name": "Decorative Text",
+                    "DataAddress": "DecorativeText",
+                    "DataType": "String",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroupHash": "Box",
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
+                        },
+                        "Section": "BoxDecorations",
+                        "Group": "BoxDecorationGroup"
                     },
                     "IsTabular": true
                 }
