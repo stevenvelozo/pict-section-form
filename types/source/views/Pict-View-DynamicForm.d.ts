@@ -179,6 +179,11 @@ declare class PictViewDynamicForm extends libPictViewClass {
      */
     getGroup(pGroupIndex: number): object | boolean;
     /**
+     * Returns all groups in the section.
+     * @returns {Array}
+     */
+    getGroups(): any[];
+    /**
      * Get a row for an input form group.
      *
      * Rows are a horizontal collection of inputs.

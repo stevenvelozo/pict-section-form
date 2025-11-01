@@ -123,7 +123,6 @@ class PictViewDynamicForm extends libPictViewClass
 		this.initialBundleLoaded = false;
 
 		this.fable.ManifestFactory.initializeFormGroups(this);
-
 	}
 
 	/**
@@ -923,6 +922,19 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 
 		return this.sectionDefinition.Groups[pGroupIndex];
+	}
+
+	/**
+	 * Returns all groups in the section.
+	 * @returns {Array}
+	 */
+	getGroups()
+	{
+		if (!Array.isArray(this.sectionDefinition.Groups))
+		{
+			return [];
+		}
+		return this.sectionDefinition.Groups;
 	}
 
 	/**

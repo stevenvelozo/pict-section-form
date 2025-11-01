@@ -173,17 +173,39 @@ class DynamicTabularData extends libPictProvider
 					tmpRowPrototype = JSON.parse(JSON.stringify(tmpGroup.DefaultRows[tmpDestinationObject.length]));
 				}
 				tmpDestinationObject.push(tmpGroup.supportingManifest.populateDefaults(tmpRowPrototype));
+				// Run the solver
 				this.pict.providers.DynamicSolver.solveViews();
-				pView.render();
-				pView.marshalToView();
-			}
-			else if (typeof(tmpDestinationObject) === 'object')
-			{
-				let tmpRowIndex = pView.fable.getUUID();
-				tmpDestinationObject[tmpRowIndex] = tmpGroup.supportingManifest.populateDefaults({});
-				this.pict.providers.DynamicSolver.solveViews();
-				pView.render();
-				pView.marshalToView();
+
+				// Also render any other views that have this as the RecordSetAddress
+				// Filter the views by each Group.RecordSetAddress and find the ones with this RecordSetAddress
+				let tmpViewsToRender = this.pict.views.PictFormMetacontroller.filterViews(
+					(pViewToTestForGroup) =>
+					{
+						if (!pViewToTestForGroup.isPictSectionForm)
+						{
+							return false;
+						}
+						let tmpGroupsToTest = pViewToTestForGroup.getGroups();
+						for (let i = 0; i < tmpGroupsToTest.length; i++)
+						{
+							if (tmpGroupsToTest[i].RecordSetAddress == tmpGroup.RecordSetAddress)
+							{
+								return true;
+							}
+						}
+						return false;
+					}
+				)
+				// We expect this view to be in the set.
+				for (let i = 0; i < tmpViewsToRender.length; i++)
+				{
+					tmpViewsToRender[i].render();
+				}
+
+				//pView.render();
+				//pView.marshalToView();
+				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
+				this.pict.views.PictFormMetacontroller.marshalFormSections();
 			}
 		}
 	}
@@ -218,11 +240,6 @@ class DynamicTabularData extends libPictProvider
 				console.log(tmpRowPrototype);
 				console.log(tmpGroup.supportingManifest.populateDefaults(tmpRowPrototype));
 				tmpDestinationObject.push(tmpGroup.supportingManifest.populateDefaults(tmpRowPrototype))
-			}
-			else if (typeof(tmpDestinationObject) === 'object')
-			{
-				let tmpRowIndex = pView.fable.getUUID();
-				tmpDestinationObject[tmpRowIndex] = tmpGroup.supportingManifest.populateDefaults({});
 			}
 		}
 	}
@@ -261,10 +278,6 @@ class DynamicTabularData extends libPictProvider
 				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
 				this.pict.views.PictFormMetacontroller.marshalFormSections();
 			}
-			else if (typeof(tmpDestinationObject) === 'object')
-			{
-				this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] to [${pNewRowIndex}] but it's an object not an array; order isn't controllable.`);
-			}
 		}
 	}
 
@@ -299,10 +312,6 @@ class DynamicTabularData extends libPictProvider
 				//pView.marshalToView();
 				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
 				this.pict.views.PictFormMetacontroller.marshalFormSections();
-			}
-			else if (typeof(tmpDestinationObject) === 'object')
-			{
-				this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but it's an object not an array; order isn't controllable.`);
 			}
 		}
 	}
@@ -344,10 +353,6 @@ class DynamicTabularData extends libPictProvider
 				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
 				this.pict.views.PictFormMetacontroller.marshalFormSections();
 			}
-			else if (typeof(tmpDestinationObject) === 'object')
-			{
-				this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but it's an object not an array; order isn't controllable.`);
-			}
 		}
 	}
 
@@ -383,23 +388,37 @@ class DynamicTabularData extends libPictProvider
 					return false;
 				}
 				tmpDestinationObject.splice(tmpRowIndex, 1);
+
+				// Run the solver
 				this.pict.providers.DynamicSolver.solveViews();
-				pView.render();
-				//pView.marshalToView();
-				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
-				this.pict.views.PictFormMetacontroller.marshalFormSections();
-			}
-			else if (typeof(tmpDestinationObject) === 'object')
-			{
-				let tmpRowIndex = pRowIndex.toString();
-				if (!(tmpRowIndex in tmpDestinationObject))
+
+				// Also render any other views that have this as the RecordSetAddress
+				// Filter the views by each Group.RecordSetAddress and find the ones with this RecordSetAddress
+				let tmpViewsToRender = this.pict.views.PictFormMetacontroller.filterViews(
+					(pViewToTestForGroup) =>
+					{
+						if (!pViewToTestForGroup.isPictSectionForm)
+						{
+							return false;
+						}
+						let tmpGroupsToTest = pViewToTestForGroup.getGroups();
+						for (let i = 0; i < tmpGroupsToTest.length; i++)
+						{
+							if (tmpGroupsToTest[i].RecordSetAddress == tmpGroup.RecordSetAddress)
+							{
+								return true;
+							}
+						}
+						return false;
+					}
+				)
+				// We expect this view to be in the set.
+				for (let i = 0; i < tmpViewsToRender.length; i++)
 				{
-					this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to delete row [${pRowIndex}] but the object does not contain pView entry.`);
-					return false;
+					tmpViewsToRender[i].render();
 				}
-				delete tmpDestinationObject[tmpRowIndex]
-				this.pict.providers.DynamicSolver.solveViews();
-				pView.render();
+
+				//pView.render();
 				//pView.marshalToView();
 				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
 				this.pict.views.PictFormMetacontroller.marshalFormSections();
