@@ -26,6 +26,9 @@ module.exports.PictDynamicLayoutProvider = require('./providers/Pict-Provider-Dy
 module.exports.ManifestFactory = require('./services/ManifestFactory.js');
 module.exports.ManifestConversionToCSV = require('./services/ManifestConversionToCSV.js');
 
+// Reveal the support base class
+module.exports.PictFormSupportBase = require('./views/support/Pict-View-PSF-SupportBase.js');
+
 
 // The extension views
 module.exports.ExtensionViews = (
