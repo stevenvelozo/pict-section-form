@@ -75,6 +75,12 @@
                 "Units": "planetary",
                 "Section": "Header",
                 "Group": "General_Info"
+            },
+            "AnotherObject": {
+                "NotPictForm": {
+                    "x": 15.2,
+                    "y": 17
+                }
             }
         },
         "Header.WarehouseVolume": {
@@ -112,6 +118,11 @@
                 ],
                 "Section": "REST_Request",
                 "Group": "Book_Data"
+            },
+            "AnotherObject": {
+                "NotPictForm": {
+                    "x": 86
+                }
             }
         },
         "HelpContent.Math": {
@@ -139,7 +150,13 @@
                 "Section": "Basic_Geometry",
                 "Group": "BasicGeoGrp"
             },
-            "Default": "7.25"
+            "Default": "7.25",
+            "AnotherObject": {
+                "NotPictForm": {
+                    "x": 11,
+                    "y": 190
+                }
+            }
         },
         "Geometry.Rectangle.Height": {
             "Hash": "RectangleHeight",
@@ -152,7 +169,12 @@
                 "Section": "Basic_Geometry",
                 "Group": "BasicGeoGrp"
             },
-            "Default": "10.3571"
+            "Default": "10.3571",
+            "AnotherObject": {
+                "NotPictForm": {
+                    "y": 22
+                }
+            }
         },
         "Geometry.Rectangle.Area": {
             "Hash": "RectangleArea",
@@ -164,7 +186,8 @@
                 "Width": "3",
                 "Units": "unrounded",
                 "Section": "Basic_Geometry",
-                "Group": "BasicGeoGrp"
+                "Group": "BasicGeoGrp",
+                "RandomData": "This is a test for random data injection."
             },
             "Description": "Area of the Rectangle."
         },
@@ -217,7 +240,8 @@
                 "Width": "12",
                 "DecimalPrecision": 4,
                 "Section": "Basic_Geometry",
-                "Group": "Circle"
+                "Group": "Circle",
+                "RandomData": "Sparse..."
             },
             "Default": "85.523"
         },
@@ -496,6 +520,35 @@
                 ]
             }
         },
+        "BoxChart_DataAll": {
+            "Hash": "BoxChart_DataComparison",
+            "Name": "Box Data Comparison",
+            "DataAddress": "BoxChart_DataAll",
+            "DataType": "Object",
+            "PictForm": {
+                "InputType": "Chart",
+                "Row": "5",
+                "Width": "4",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data",
+                "ChartType": "bar",
+                "ChartLabelsSolver": "objectkeystoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Volume\"))",
+                "ChartDatasetsSolvers": [
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Width\"))",
+                        "Label": "Width"
+                    },
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Depth\"))",
+                        "Label": "Data"
+                    },
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Height\"))",
+                        "Label": "Data"
+                    }
+                ]
+            }
+        },
         "HelpContent.Cuboid": {
             "Hash": "CuboidHelpContent",
             "Name": "How to Cuboid Math",
@@ -504,7 +557,7 @@
             "PictForm": {
                 "InputType": "Markdown",
                 "Row": "1",
-                "Width": "1",
+                "Width": "12",
                 "Section": "Rectangular_Area_Help",
                 "Group": "Rectangular_Area_Help"
             },
@@ -517,7 +570,7 @@
             "DataType": "Number",
             "PictForm": {
                 "Row": "1",
-                "Width": "4",
+                "Width": "6",
                 "Tooltip": "The PR is *very* important.",
                 "Section": "Complex_Equation",
                 "Group": "Complex_Equation"

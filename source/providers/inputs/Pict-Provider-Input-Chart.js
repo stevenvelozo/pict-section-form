@@ -474,6 +474,41 @@ class CustomInputHandler extends libPictSectionInputExtension
 								data: (Array.isArray(tmpSolvedDataSet)) ? tmpSolvedDataSet : []
 							});
 
+						if (tmpCurrentSolverExpression.ChartType)
+						{
+							tmpDataObject.type = tmpCurrentSolverExpression.ChartType;
+						}
+
+						// Add in any custom Y axis ID
+						if (tmpCurrentSolverExpression.CustomYAxisID)
+						{
+							tmpDataObject.yAxisID = tmpCurrentSolverExpression.CustomYAxisID;
+						}
+
+						// Add in any custom X axis ID
+						if (tmpCurrentSolverExpression.CustomXAxisID)
+						{
+							tmpDataObject.xAxisID = tmpCurrentSolverExpression.CustomXAxisID;
+						}
+
+						// Add in a custom Tension
+						if (tmpCurrentSolverExpression.Tension)
+						{
+							tmpDataObject.tension = tmpCurrentSolverExpression.Tension;
+						}
+						
+						// Add in a custom pointRadius
+						if (tmpCurrentSolverExpression.PointRadius)
+						{
+							tmpDataObject.pointRadius = tmpCurrentSolverExpression.PointRadius;
+						}
+
+						// Check if this has a stack defined (for stacked bar charts and such)
+						if (tmpCurrentSolverExpression.StackGroup)
+						{
+							tmpDataObject.stack = tmpCurrentSolverExpression.StackGroup;
+						}
+
 						if (tmpParsingConfiguration.ObjectType === 'array')
 						{
 							if (Array.isArray(tmpSolvedDataSet))
