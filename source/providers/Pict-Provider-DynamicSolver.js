@@ -90,6 +90,11 @@ class PictDynamicSolver extends libPictProvider
 		let tmpResultsObject = {};
 		let tmpSolutionValue = this.fable.ExpressionParser.solve(pSolverExpression, tmpViewMarshalDestinationObject, tmpResultsObject, this.pict.manifest);
 
+		if (tmpResultsObject.fable)
+		{
+			delete tmpResultsObject.fable;
+		}
+
 		this.pict.log.trace(`Manual solve executed for expression: ${pSolverExpression}`, tmpResultsObject);
 
 		return tmpSolutionValue;
