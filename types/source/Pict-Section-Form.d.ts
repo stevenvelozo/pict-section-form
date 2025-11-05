@@ -9,6 +9,7 @@ declare const _exports: {
     PictDynamicLayoutProvider: typeof import("./providers/Pict-Provider-DynamicLayout.js");
     ManifestFactory: typeof import("./services/ManifestFactory.js");
     ManifestConversionToCSV: typeof import("./services/ManifestConversionToCSV.js");
+    PictFormSupportBase: typeof import("./views/support/Pict-View-PSF-SupportBase.js");
     ExtensionViews: {
         LifecycleVisualization: typeof import("./views/support/Pict-View-PSF-LifeCycle-Visualization.js");
         DebugViewer: typeof import("./views/support/Pict-View-PSF-DebugViewer.js");

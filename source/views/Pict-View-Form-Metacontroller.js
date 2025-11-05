@@ -38,6 +38,9 @@ class PictFormMetacontroller extends libPictViewClass
 
 		this.manifest = this.pict.manifest;
 
+		this.AutoSolveOnFirstRender = true;
+		this.FirstRenderCompleted = false;
+
 		this.SupportViewPrototypes = (
 		{
 			LifecycleVisualization: require('./support/Pict-View-PSF-LifeCycle-Visualization.js'),
@@ -150,6 +153,12 @@ class PictFormMetacontroller extends libPictViewClass
 		const res = super.onAfterRender(pRenderable);
 		this.regenerateFormSectionTemplates();
 		this.renderFormSections();
+
+		if (this.AutoSolveOnFirstRender && !this.FirstRenderCompleted)
+		{
+			this.FirstRenderCompleted = true;
+			this.pict.providers.DynamicSolver.solveViews();
+		}
 
 		if (this.options.AutoPopulateAfterRender)
 		{

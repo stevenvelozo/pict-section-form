@@ -64,6 +64,7 @@ declare class ManifestFactory {
      * @returns {boolean} - Returns true if the record is valid, false otherwise.
      */
     tabularRowLint(pRecord: any): boolean;
+    decorateChartDescriptorFromTabularRow(pRecord: any, pDescriptor: any, pPostfix: any): void;
     /**
      * Add a manifest descriptor from a tabular row.
      *

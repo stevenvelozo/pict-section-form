@@ -14,6 +14,8 @@ declare class PictFormMetacontroller extends libPictViewClass {
     lastRenderedViews: any[];
     formTemplatePrefix: any;
     manifest: any;
+    AutoSolveOnFirstRender: boolean;
+    FirstRenderCompleted: boolean;
     SupportViewPrototypes: {
         LifecycleVisualization: typeof import("./support/Pict-View-PSF-LifeCycle-Visualization.js");
         DebugViewer: typeof import("./support/Pict-View-PSF-DebugViewer.js");
