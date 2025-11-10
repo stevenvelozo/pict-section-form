@@ -198,11 +198,11 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 				// Now decorate the descriptor with the data
 				pFileToLoad.IntersectionOutcome = tmpIntersectionOutcome;
 				// Name the trigger group with the file
-				let tmpGeneratedTriggerGroupName = `AutoTriggerGroup-${pFileToLoad.FileName}`;
+				let tmpGeneratedTriggerGroupHash = `AutoTriggerGroup-${pFileToLoad.FileName}`;
 				let tmpGeneratedTriggerGroup = (
 					{
 						// This is the trigger group name used to bind all the inputs together
-						TriggerGroup: tmpGeneratedTriggerGroupName,
+						TriggerGroupHash: tmpGeneratedTriggerGroupHash,
 						// This flags the input to update other inputs when the value changes
 						TriggerAllInputs: true
 					});
@@ -224,7 +224,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 				*/
 				let tmpFilterStanzaPrototype = (
 					{
-						"Filter": `${tmpGeneratedTriggerGroupName} List Distilling Filter`,
+						"Filter": `${tmpGeneratedTriggerGroupHash} List Distilling Filter`,
 						"FilterType": "CrossMap",
 						"JoinListAddressGlobal": true,
 						"IgnoreEmpty": true

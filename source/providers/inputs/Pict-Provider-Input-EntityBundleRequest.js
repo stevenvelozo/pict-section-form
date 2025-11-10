@@ -70,6 +70,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 		}
 
 		const tmpFilterTemplateRecord = { Value:pValue, Input:pInput, View:pView };
+		let tmpRecordStartCursor = null;
+		let tmpRecordCount = null;
+		if (pEntityInformation.RecordCount)
+		{
+			tmpRecordStartCursor = pEntityInformation.RecordStartCursor != null ? pEntityInformation.RecordStartCursor : 0;
+			tmpRecordCount = pEntityInformation.RecordCount != null ? pEntityInformation.RecordCount : null;
+		}
 		// Parse the filter template
 		const tmpFilterString = this.pict.parseTemplate(pEntityInformation.Filter, tmpFilterTemplateRecord);
 		if (tmpFilterString == '')
@@ -79,49 +86,138 @@ class CustomInputHandler extends libPictSectionInputExtension
 		}
 
 		// Now get the records
-		this.pict.EntityProvider.getEntitySet(pEntityInformation.Entity, tmpFilterString,
-			function (pError, pRecordSet)
+		const callback = (pError, pRecordSet) =>
+		{
+			if (pError)
 			{
-				if (pError)
-				{
-					this.log.error(`EntityBundleRequest request Error getting entity set for [${pEntityInformation.Entity}] with filter [${tmpFilterString}]: ${pError}`, pError);
-					return fCallback(pError, '');
-				}
+				this.log.error(`EntityBundleRequest request Error getting entity set for [${pEntityInformation.Entity}] with filter [${tmpFilterString}]: ${pError}`, pError);
+				return fCallback(pError, '');
+			}
 
-				this.log.trace(`EntityBundleRequest found ${pRecordSet.length} records for ${pEntityInformation.Entity} filtered to [${tmpFilterString}]`);
+			this.log.trace(`EntityBundleRequest found ${pRecordSet.length} records for ${pEntityInformation.Entity} filtered to [${tmpFilterString}]`);
 
-				// Now assign it back to the destination; because this is not view specific it doesn't use the manifests from them (to deal with scope overlap with subgrids).
-				if (pEntityInformation.SingleRecord)
+			// Now assign it back to the destination; because this is not view specific it doesn't use the manifests from them (to deal with scope overlap with subgrids).
+			if (pEntityInformation.SingleRecord)
+			{
+				if (pRecordSet.length > 1)
 				{
-					if (pRecordSet.length > 1)
-					{
-						this.log.warn(`EntityBundleRequest found more than one record for ${pEntityInformation.Entity} filtered to [${tmpFilterString}] but SingleRecord is true; setting the first record.`);
-					}
-					if (pRecordSet.length < 1)
-					{
-						this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, false);
-					}
-					this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, pRecordSet[0]);
+					this.log.warn(`EntityBundleRequest found more than one record for ${pEntityInformation.Entity} filtered to [${tmpFilterString}] but SingleRecord is true; setting the first record.`);
 				}
-				else
+				if (pRecordSet.length < 1)
 				{
-					this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, pRecordSet);
+					this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, false);
 				}
+				this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, pRecordSet[0]);
+			}
+			else
+			{
+				this.pict.manifest.setValueByHash(this.pict, pEntityInformation.Destination, pRecordSet);
+			}
 
-				return fCallback();
-			}.bind(this));
+			return fCallback();
+		};
+		if (tmpRecordCount)
+		{
+			this.pict.EntityProvider.getEntitySetPage(pEntityInformation.Entity, tmpFilterString, tmpRecordStartCursor, tmpRecordCount, callback);
+		}
+		else
+		{
+			this.pict.EntityProvider.getEntitySet(pEntityInformation.Entity, tmpFilterString, callback);
+		}
 	}
 
-	gatherDataFromServer(pView, pInput, pValue, pHTMLSelector)
+	gatherCustomDataSet(fCallback, pCustomRequestInformation, pView, pInput, pValue)
+	{
+		// First sanity check the pCustomRequestInformation
+		if (!('URL' in pCustomRequestInformation) || (typeof(pCustomRequestInformation.URL) != 'string'))
+		{
+			this.log.warn(`EntityBundleRequest failed to parse custom data request because the stanza did not contain a URL string.`);
+			return fCallback();
+		}
+
+		const tmpURLTemplateRecord = { Value:pValue, Input:pInput, View:pView };
+		// Parse the filter template
+		const tmpURLTemplateString = this.pict.parseTemplate(pCustomRequestInformation.URL, tmpURLTemplateRecord);
+		if (tmpURLTemplateString == '')
+		{
+			// We may want to continue, but for now let's say nah and nope out.
+			this.log.warn(`EntityBundleRequest failed to parse custom data request because the entity Filter did not return a string for FilterBy`)
+		}
+
+		let tmpURLPrefix = '';
+		// This will only be true if the "Host" is set.
+		const tmpCustomURIHost = pCustomRequestInformation.Host ? pCustomRequestInformation.Host : false;
+		// If "Host" is set, protocol and port are optional.
+		const tmpCustomURIProtocol = pCustomRequestInformation.Protocol ? pCustomRequestInformation.Protocol : 'https';
+		const tmpCustomURIPort = pCustomRequestInformation.Port ? pCustomRequestInformation.Port : false;
+
+		if (tmpCustomURIHost)
+		{
+			tmpURLPrefix = `${tmpCustomURIProtocol}://${tmpCustomURIHost}`;
+			if (tmpCustomURIPort)
+			{
+				tmpURLPrefix += `:${tmpCustomURIPort}`;
+			}
+		}
+		else
+		{
+			tmpURLPrefix = this.pict.EntityProvider.options.urlPrefix;
+		}
+
+		// Now get the records
+		const callback = (pError, pResponse, pData) =>
+		{
+			if (pError)
+			{
+				this.log.error(`EntityBundleRequest request Error getting data set for [${pCustomRequestInformation.Entity}] with filter [${tmpURLTemplateString}]: ${pError}`, pError);
+				return fCallback(pError, '');
+			}
+
+			this.log.trace(`EntityBundleRequest completed request for ${pCustomRequestInformation.Entity} filtered to [${tmpURLTemplateString}]`);
+
+			// Since this is a templated endpoint it can be used for logging etc.
+			if (pCustomRequestInformation.Destination)
+			{
+				this.pict.manifest.setValueByHash(this.pict, pCustomRequestInformation.Destination, pData);
+			}
+
+			return fCallback();
+		};
+
+		let tmpOptions = (
+			{
+				url: `${tmpURLPrefix}${tmpURLTemplateString}`
+			});
+		tmpOptions = this.pict.EntityProvider.prepareRequestOptions(tmpOptions);
+		return this.pict.EntityProvider.restClient.getJSON(tmpOptions, callback);
+	}
+
+	/**
+	 * TODO: I added a proise return here to know when this data load is done for the dashboard usecase. Could use a revisit.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value of the input.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} [pTransactionGUID] - (optional) The transaction GUID for the event dispatch.
+	 *
+	 * @return {Promise<Error?>} - Returns a promise that resolves when the data has been gathered.
+	 */
+	async gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		// Gather data from the server
 		// These have to date not been asyncronous.  Now they will be...
 		if ((typeof(pInput) !== 'object') || !('PictForm' in pInput) || !('EntitiesBundle' in pInput.PictForm) || !Array.isArray(pInput.PictForm.EntitiesBundle))
 		{
 			this.log.warn(`Input at ${pHTMLSelector} is set as an EntityBundleRequest input but no array of entity requests was found`);
-			return false;
+			return null;
 		}
 
+		const tmpLoadGUID = `BundleLoad-${this.pict.getUUID()}`;
+		if (pTransactionGUID)
+		{
+			pView.registerEventTransactionAsyncOperation(pTransactionGUID, tmpLoadGUID);
+		}
 		let tmpInput = pInput;
 		let tmpValue = pValue;
 		let tmpAnticipate = this.fable.newAnticipate();
@@ -130,36 +226,69 @@ class CustomInputHandler extends libPictSectionInputExtension
 		{
 			let tmpEntityBundleEntry = tmpInput.PictForm.EntitiesBundle[i];
 			tmpAnticipate.anticipate(
-				function (fNext)
+				(fNext) =>
 				{
 					try
 					{
-						return this.gatherEntitySet(fNext, tmpEntityBundleEntry, pView, tmpInput, tmpValue);
+						switch (tmpEntityBundleEntry.Type)
+						{
+							case 'Custom':
+								return this.gatherCustomDataSet(fNext, tmpEntityBundleEntry, pView, tmpInput, tmpValue);
+							// This is the default case, for a meadow entity set or single entity
+							case 'MeadowEntity':
+							default:
+								return this.gatherEntitySet(fNext, tmpEntityBundleEntry, pView, tmpInput, tmpValue);
+						}
 					}
 					catch (pError)
 					{
 						this.log.error(`EntityBundleRequest error gathering entity set: ${pError}`, pError);
-						return fNext();
 					}
-				}.bind(this));
+					return fNext();
+				});
 		}
 
 		tmpAnticipate.anticipate(
-			function (fNext)
+			(fNext) =>
 			{
-				if (tmpInput.PictForm.EntityBundleTriggerGroup)
+				if (tmpInput.PictForm.EntityBundleTriggerGroup && this.pict.views.PictFormMetacontroller)
 				{
 					// Trigger the autofill global event
-					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`AutoFill-${tmpInput.PictForm.EntityBundleTriggerGroup}`);
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`TriggerGroup:${tmpInput.PictForm.EntityBundleTriggerGroup}:BundleLoad:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`, pTransactionGUID);
 				}
-			}.bind(this))
+				if (tmpInput.PictForm.EntityBundleTriggerMetacontrollerSolve && this.pict.views.PictFormMetacontroller)
+				{
+					// Trigger the solve global event
+					this.pict.views.PictFormMetacontroller.solve();
+				}
+				if (tmpInput.PictForm.EntityBundleTriggerMetacontrollerRender && this.pict.views.PictFormMetacontroller)
+				{
+					// Trigger the render
+					this.pict.views.PictFormMetacontroller.render();
+				}
+				fNext();
+			});
 
-		// Now fire the "autofilldata" event for the groups.
-		tmpAnticipate.wait(
-			function (pError)
-			{
-				return true;
-			}.bind(this));
+		return new Promise((pResolve, pReject) =>
+		{
+			// Now fire the "autofilldata" event for the groups.
+			tmpAnticipate.wait(
+				(pError) =>
+				{
+					//FIXME: should we be ignoring this error? rejecting here is unsafe since the result isn't guaranteed to be handled, so will crash stuff currently
+					if (pError)
+					{
+						this.log.error(`EntityBundleRequest error gathering entity set: ${pError}`, pError);
+					}
+					//TODO: close the async operation if we have a transaction GUID
+					if (pTransactionGUID)
+					{
+						pView.eventTransactionAsyncOperationComplete(pTransactionGUID, tmpLoadGUID);
+					}
+
+					return pResolve(pError);
+				});
+		});
 	}
 
 	/**
@@ -171,13 +300,19 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The input value.
 	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {boolean} - Returns true if the input element is successfully initialized, false otherwise.
 	 */
-	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
+	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		// Try to get the input element
+		if (pValue && pInput.PictForm && pInput.PictForm.EntityBundleTriggerOnInitialize)
+		{
+			// This is a request on initial load
+			this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
+		}
 		// This is in case we need to do a request on initial load!
-		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
+		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
@@ -189,11 +324,12 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The input value.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {number} pRowIndex - The index of the row.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {any} - The result of the initialization.
 	 */
-	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
+	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
-		return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
+		return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 
 	/**
@@ -203,12 +339,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The new value of the input.
 	 * @param {string} pHTMLSelector - The HTML selector of the input.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {any} - The result of the super.onDataChange method.
 	 */
-	onDataChange(pView, pInput, pValue, pHTMLSelector)
+	onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
-		this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector);
-		return super.onDataChange(pView, pInput, pValue, pHTMLSelector);
+		this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
+		return super.onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
@@ -219,12 +356,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The new value.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {number} pRowIndex - The index of the row.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {any} - The result of the super method.
 	 */
-	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
+	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
-		this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector);
-		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex);
+		this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
+		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 
 	/**
@@ -236,11 +374,12 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The value to be marshaled.
 	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {boolean} - Returns true if the value is successfully marshaled to the form, otherwise false.
 	 */
-	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
+	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
-		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
+		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
@@ -252,11 +391,12 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The value parameter.
 	 * @param {string} pHTMLSelector - The HTML selector parameter.
 	 * @param {number} pRowIndex - The row index parameter.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {any} - The result of the data marshaling.
 	 */
-	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
+	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
-		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
+		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 }
 

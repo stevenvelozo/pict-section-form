@@ -8,17 +8,29 @@
 			"Name": "Rectangular Area Calculator",
 			"Description": "Calculate the area of a Rectangle",
 
+			"CustomCSS": "h3 { color: #ff00ff; font-size: 1.5em; }",
+
 			"Solvers":
 				[
 					"Area = Height * Width",
 					"WidthCubeArea = Width ^ 3",
-					"HeightCubeArea = Height ^ 3"
+					"HeightCubeArea = Height ^ 3",
+					"DTPN = Height * Width",
+					"ITPNRO = Height * Width",
+					"ITDRO = Height * Width",
+					"ITPRO = Height * Width",
+					"LoggedValues = logvalues(\"ITPRO\", ITPRO)",
+					"SetGroupVisibility(\"Area\", \"Help\", if(Height,\"GT\", 99, 0, 1))",
+					"SetSectionVisibility(\"Marshaling\", if(ITPRO,\"LT\", 10000, 0, 1))",
+					"ColorSectionBackground(\"Marshaling\",\"#FF00FF\", 1)",
+					"ColorGroupBackground(\"Area\", \"Help\", ContentBackgroundColor, 1)"
+					
 				],
 			"MetaTemplates":
 				[
 					{
 						"HashPostfix": "-Template-Wrap-Prefix",
-						"Template": "<h1>Rectangular Area Solver Micro-app</h1><div><a href=\"#\" onclick=\"{~P~}.PictApplication.solve()\">[ solve ]</a></div><hr />"
+						"Template": "<h1>Rectangular Area Solver Micro-app</h1><div><a href=\"#\" onclick=\"{~P~}.PictApplication.solve()\">[ solve ]</a> <a href=\"#\" onclick=\"{~P~}.views.PictFormMetacontroller.showSupportViewInlineEditor()\">[ debug ]</a></div><hr />"
 					}
 				]
 		}
@@ -77,8 +89,50 @@
 				{
 					"Name":"Area of Rectangle",
 					"Hash":"Area",
-					"DataType":"Number"
-					,"PictForm": { "Section":"Area", "Row":4, "Width":2 }
+					"DataType":"PreciseNumber"
+					
+					,"PictForm": {"Section":"Area", "Row":4, "Width":2 }
+				},
+
+			"Help.Content":
+				{
+					"Name":"Area of a Rectangle",
+					"Hash":"HelpContent",
+					"DataType":"String",
+					"Default": "<p>To calculate the area of a rectangle, you multiply its length by its width. The length is one side of the rectangle, and the width is the adjacent side at a right angle. Since a rectangle has opposite sides that are equal and all angles are right angles, this simple multiplication gives the total space inside the rectangle, expressed in square units.</p>"
+					,"PictForm": { "InputType": "HTML", "Section":"Area", "Group":"Help" }
+				},
+			"ContentBackgroundColor":
+				{
+					"Name":"Content Background Color",
+					"Hash":"ContentBackgroundColor",
+					"DataType":"String",
+					"Default": "#FFFFEE"
+					,"PictForm": { "InputType": "Color", "Section":"Area", "Group":"Help", "Row":2 }
+				},
+
+
+
+			"DTPN":
+				{
+					"Name":"DataType PreciseNumber",
+					"Hash":"DTPN",
+					"DataType":"PreciseNumber"
+					,"PictForm": {"InputType": "PreciseNumberReadOnly", "Section":"Marshaling", "Row":1, "Width":3 }
+				},
+			"ITPNRO":
+				{
+					"Name":"InputType PreciseNumberReadOnly",
+					"Hash":"ITPNRO",
+					"DataType":"PreciseNumber",
+					"InputType": "PreciseNumberReadOnly"
+					,"PictForm": { 
+						"InputType": "PreciseNumberReadOnly", 
+						"DecimalPrecision": 2,
+						"AddCommas": false,
+						"DigitsPrefix": "$", 
+						"DigitsPostfix": " (estimated)", 
+						"Section":"Marshaling", "Row":1, "Width":3 }
 				}
 		}
 }

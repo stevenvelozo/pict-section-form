@@ -18,7 +18,19 @@ declare class PictTemplateMetatemplateInputTemplate extends libPictTemplate {
     /** @type {any} */
     log: any;
     currentInputIndex: number;
-    renderAsync(pTemplateHash: any, pRecord: any, fCallback: any, pContextArray: any): string;
+    /**
+     * Renders the PICT Metacontroller Template.  The Record reference is ignored in this template.
+     *
+     * @param {string} pTemplateHash - The schema hash of the control.
+     * @param {object} pRecord - The record object.
+     * @param {function | null} fCallback - The callback function.
+     * @param {array} pContextArray - The context array.
+     * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
+     * @param {any} [pState] - A catchall state object for plumbing data through template processing.
+     *
+     * @return {void}
+     */
+    renderAsync(pTemplateHash: string, pRecord: object, fCallback: Function | null, pContextArray: any[], pScope?: any, pState?: any): void;
 }
 import libPictTemplate = require("pict-template");
 //# sourceMappingURL=Pict-Template-Metatemplate-InputWithHashAddress.d.ts.map

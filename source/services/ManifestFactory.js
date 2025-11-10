@@ -88,24 +88,24 @@ class ManifestFactory extends libFableServiceProviderBase
 			let tmpDescriptor = pView.options.Manifests.Section.Descriptors[tmpDescriptorKeys[i]];
 
 			if (
-					// If there is an obect in the descriptor
-					typeof(tmpDescriptor) == 'object' &&
-					// AND it has a PictForm property
-					('PictForm' in tmpDescriptor) &&
-					// AND the PictForm property is an object
-					typeof(tmpDescriptor.PictForm) == 'object' &&
-					// AND the PictForm object has a Section property
-					('Section' in tmpDescriptor.PictForm) &&
-					// AND the Section property matches our section hash
-					tmpDescriptor.PictForm.Section == pView.sectionDefinition.Hash
-				)
+				// If there is an obect in the descriptor
+				typeof (tmpDescriptor) == 'object' &&
+				// AND it has a PictForm property
+				('PictForm' in tmpDescriptor) &&
+				// AND the PictForm property is an object
+				typeof (tmpDescriptor.PictForm) == 'object' &&
+				// AND the PictForm object has a Section property
+				('Section' in tmpDescriptor.PictForm) &&
+				// AND the Section property matches our section hash
+				tmpDescriptor.PictForm.Section == pView.sectionDefinition.Hash
+			)
 			{
 				tmpDescriptor.PictForm.InformaryDataAddress = tmpDescriptorKeys[i];
 
 				// Decorate the view hash for reverse lookup
 				tmpDescriptor.PictForm.ViewHash = pView.Hash;
 
-				let tmpGroupHash = (typeof(tmpDescriptor.PictForm.Group) == 'string') ? tmpDescriptor.PictForm.Group : 'Default';
+				let tmpGroupHash = (typeof (tmpDescriptor.PictForm.Group) == 'string') ? tmpDescriptor.PictForm.Group : 'Default';
 
 				if (!('Groups' in pView.sectionDefinition))
 				{
@@ -122,9 +122,9 @@ class ManifestFactory extends libFableServiceProviderBase
 					tmpGroup.Rows = [];
 				}
 
-				let tmpRowHash = (typeof(tmpDescriptor.PictForm.Row) == 'string') ? tmpDescriptor.PictForm.Row :
-								(typeof(tmpDescriptor.PictForm.Row) == 'number') ? `Row_${tmpDescriptor.PictForm.Row.toString()}` :
-								'Row_Default';
+				let tmpRowHash = (typeof (tmpDescriptor.PictForm.Row) == 'string') ? tmpDescriptor.PictForm.Row :
+					(typeof (tmpDescriptor.PictForm.Row) == 'number') ? `Row_${tmpDescriptor.PictForm.Row.toString()}` :
+						'Row_Default';
 
 				tmpDescriptor.PictForm.RowHash = tmpRowHash;
 
@@ -183,7 +183,7 @@ class ManifestFactory extends libFableServiceProviderBase
 					tmpInput.PictForm.ViewHash = pView.Hash;
 
 					tmpInput.PictForm.InformaryDataAddress = tmpSupportingManifestDescriptorKeys[k];
-					if (typeof(tmpGroup.RecordSetAddress) == 'string')
+					if (typeof (tmpGroup.RecordSetAddress) == 'string')
 					{
 						tmpInput.PictForm.InformaryContainerAddress = tmpGroup.RecordSetAddress;
 					}
@@ -206,13 +206,13 @@ class ManifestFactory extends libFableServiceProviderBase
 				{
 					pView.log.trace(`RecordSetAddress is an Array for [${tmpGroup.Hash}]`);
 				}
-				else if (typeof(tmpRecordSetDataObject) === 'object')
+				else if (typeof (tmpRecordSetDataObject) === 'object')
 				{
 					pView.log.trace(`RecordSetAddress is an Object for [${tmpGroup.Hash}]`);
 				}
 				else
 				{
-					pView.log.error(`RecordSetAddress is not an Array or Object for [${tmpGroup.Hash}]; it is a [${typeof(tmpRecordSetDataObject)}] -- likely the data shape will cause erratic problems.`);
+					pView.log.error(`RecordSetAddress is not an Array or Object for [${tmpGroup.Hash}]; it is a [${typeof (tmpRecordSetDataObject)}] -- likely the data shape will cause erratic problems.`);
 				}
 
 				// Check if there are default rows to add
@@ -263,7 +263,7 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 		}
 		// Add the section if it do no exist
-		const tmpSection = { Name:pSectionHash, Hash:pSectionHash, Solvers:[], Groups:[] };
+		const tmpSection = { Name: pSectionHash, Hash: pSectionHash, Solvers: [], Groups: [] };
 		this.manifest.Sections.push(tmpSection);
 		return tmpSection;
 	}
@@ -278,7 +278,7 @@ class ManifestFactory extends libFableServiceProviderBase
 	 */
 	getManifestGroup(pManifestSection, pGroupHash)
 	{
-		let tmpManifestSection = (typeof(pManifestSection) === 'string') ? this.getManifestSection(pManifestSection) : pManifestSection;
+		let tmpManifestSection = (typeof (pManifestSection) === 'string') ? this.getManifestSection(pManifestSection) : pManifestSection;
 		for (const tmpGroup of tmpManifestSection.Groups)
 		{
 			if (tmpGroup.Hash === pGroupHash)
@@ -287,7 +287,7 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 		}
 		// Add the group if it do no exist
-		const tmpGroup = { Name:pGroupHash, Hash:pGroupHash, Rows:[], RecordSetSolvers:[] };
+		const tmpGroup = { Name: pGroupHash, Hash: pGroupHash, Rows: [], RecordSetSolvers: [] };
 		tmpManifestSection.Groups.push(tmpGroup);
 		return tmpGroup;
 	}
@@ -312,6 +312,65 @@ class ManifestFactory extends libFableServiceProviderBase
 		return true;
 	}
 
+	decorateChartDescriptorFromTabularRow(pRecord, pDescriptor, pPostfix)
+	{
+		let tmpRecord = pRecord;
+		let tmpDescriptor = pDescriptor;
+		let tmpPostfix = pPostfix || '';
+
+		// Log out the data coming in
+		//this.log.debug(`Decorating chart descriptor from tabular row for ${tmpDescriptor.Hash} with postfix [${tmpPostfix}]`,{ Record: tmpRecord, Descriptor: tmpDescriptor });
+
+		// Charts will pull in five extra pieces of config if they exist: ChartType, ChartLabelsAddress, ChartLabelsSolver, ChartDatasetsAddress, ChartDatasetsSolver
+		if (tmpRecord.ChartType)
+		{
+			tmpDescriptor.PictForm.ChartType = tmpRecord.ChartType;
+		}
+		if (tmpPostfix == '')
+		{
+			// Maybe later this gets more advanced.
+			if (tmpRecord.ChartLabelsAddress)
+			{
+				tmpDescriptor.PictForm.ChartLabelsAddress = tmpRecord.ChartLabelsAddress;
+			}
+			if (tmpRecord.ChartLabelsSolver)
+			{
+				tmpDescriptor.PictForm.ChartLabelsSolver = tmpRecord.ChartLabelsSolver;
+			}
+			if (tmpRecord.ChartDatasetsAddress)
+			{
+				tmpDescriptor.PictForm.ChartDatasetsAddress = tmpRecord.ChartDatasetsAddress;
+			}
+		}
+		
+		if (tmpRecord[`ChartDatasetsSolver${tmpPostfix}`])
+		{
+			let tmpSolverEntry = { DataSolver: tmpRecord[`ChartDatasetsSolver${tmpPostfix}`] };
+			//this.log.debug(`Adding chart dataset solver for descriptor ${tmpDescriptor.Hash} with postfix [${tmpPostfix}]`, tmpSolverEntry);
+			if (!tmpRecord[`ChartDatasetsLabel${tmpPostfix}`])
+			{
+				tmpSolverEntry.Label = 'Data';
+			}
+			else
+			{
+				tmpSolverEntry.Label = tmpRecord[`ChartDatasetsLabel${tmpPostfix}`];
+			}
+			if (tmpRecord[`ChartDataSetsSolverChartType${tmpPostfix}`])
+			{
+				tmpSolverEntry.ChartType = tmpRecord[`ChartDataSetsSolverChartType${tmpPostfix}`];
+			}
+			if (!tmpDescriptor.PictForm.ChartDatasetsSolvers || !Array.isArray(tmpDescriptor.PictForm.ChartDatasetsSolvers))
+			{
+				tmpDescriptor.PictForm.ChartDatasetsSolvers = [];
+			}
+			// Log and add the solver entry
+			//this.log.debug(`Adding chart dataset solver entry for ${tmpDescriptor.Hash} with postfix [${tmpPostfix}]`, tmpSolverEntry);
+			tmpDescriptor.PictForm.ChartDatasetsSolvers.push(tmpSolverEntry);
+		}
+		// Log the descripter going out
+		//this.log.debug(`Decorated chart descriptor from tabular row for ${tmpDescriptor.Hash} with postfix [${tmpPostfix}]`, tmpDescriptor);
+	}
+
 	/**
 	 * Add a manifest descriptor from a tabular row.
 	 *
@@ -322,7 +381,7 @@ class ManifestFactory extends libFableServiceProviderBase
 	 */
 	tabularRowAddDescriptor(pManifestFactory, pRecord)
 	{
-		if (typeof(pRecord) !== 'object')
+		if (typeof (pRecord) !== 'object')
 		{
 			this.log.error(`Invalid record passed to addManifestDescriptor: ${pRecord}`);
 			return false;
@@ -369,6 +428,21 @@ class ManifestFactory extends libFableServiceProviderBase
 			tmpDescriptor.PictForm.SpreadsheetNotes = tmpRecord['Input Notes'];
 		}
 
+		if (tmpRecord['Description'])
+		{
+			tmpDescriptor.Description = tmpRecord['Description'];
+		}
+
+		if (tmpRecord['Units'])
+		{
+			tmpDescriptor.PictForm.Units = tmpRecord['Units'];
+		}
+
+		if (tmpRecord['Tooltip'])
+		{
+			tmpDescriptor.PictForm.Tooltip = tmpRecord['Tooltip'];
+		}
+
 		if ((tmpDescriptor.PictForm.InputType == 'Option') && (tmpRecord['Input Extra']))
 		{
 			let tmpOptionSet = [];
@@ -381,11 +455,11 @@ class ManifestFactory extends libFableServiceProviderBase
 					let tmpOptionSetValuePair = tmpOptionSetValues[i].split('^');
 					if (tmpOptionSetValuePair.length == 2)
 					{
-						tmpOptionSet.push({ id:tmpOptionSetValuePair[0].trim(), text:tmpOptionSetValuePair[1].trim() });
+						tmpOptionSet.push({ id: tmpOptionSetValuePair[0].trim(), text: tmpOptionSetValuePair[1].trim() });
 					}
 					else
 					{
-						tmpOptionSet.push({ id:tmpOptionSetValues[i].trim(), text:tmpOptionSetValues[i].trim() });
+						tmpOptionSet.push({ id: tmpOptionSetValues[i].trim(), text: tmpOptionSetValues[i].trim() });
 					}
 				}
 			}
@@ -396,7 +470,7 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 		}
 
-		if (((tmpDescriptor.PictForm.InputType == 'TabSectionSelector') || (tmpDescriptor.PictForm.InputType == 'TabGroupSelector')) &&  (tmpRecord['Input Extra']))
+		if (((tmpDescriptor.PictForm.InputType == 'TabSectionSelector') || (tmpDescriptor.PictForm.InputType == 'TabGroupSelector')) && (tmpRecord['Input Extra']))
 		{
 			let tmpTabSet = [];
 			let tmpTabSetNames = [];
@@ -436,7 +510,7 @@ class ManifestFactory extends libFableServiceProviderBase
 		}
 
 		// Verbose obtuse data validation.
-		if ((`TriggerGroup` in tmpRecord) && (typeof(tmpRecord.TriggerGroup) === 'string') && (tmpRecord.TriggerGroup != ''))
+		if ((`TriggerGroup` in tmpRecord) && (typeof (tmpRecord.TriggerGroup) === 'string') && (tmpRecord.TriggerGroup != ''))
 		{
 			if (!Array.isArray(tmpDescriptor.PictForm.Providers))
 			{
@@ -446,15 +520,15 @@ class ManifestFactory extends libFableServiceProviderBase
 			tmpDescriptor.PictForm.Providers.push('Pict-Input-AutofillTriggerGroup');
 			tmpDescriptor.PictForm.AutofillTriggerGroup = (
 				{
-					TriggerGroup: tmpRecord.TriggerGroup,
+					TriggerGroupHash: tmpRecord.TriggerGroup,
 					MarshalEmptyValues: tmpRecord.MarshalEmptyValues ? true : false
 				});
 
-			if ((`TriggerAddress` in tmpRecord) && (typeof(tmpRecord.TriggerAddress) === 'string') && (tmpRecord.TriggerAddress != ''))
+			if ((`TriggerAddress` in tmpRecord) && (typeof (tmpRecord.TriggerAddress) === 'string') && (tmpRecord.TriggerAddress != ''))
 			{
 				tmpDescriptor.PictForm.AutofillTriggerGroup.TriggerAddress = tmpRecord.TriggerAddress;
 			}
-			if ((`TriggerAllInputs` in tmpRecord) && (typeof(tmpRecord.TriggerAllInputs) === 'string') 
+			if ((`TriggerAllInputs` in tmpRecord) && (typeof (tmpRecord.TriggerAllInputs) === 'string')
 				&& ((tmpRecord.TriggerAllInputs.toLowerCase() == 'true') || (tmpRecord.TriggerAllInputs.toLowerCase() == 'x') || (tmpRecord.TriggerAllInputs.toLowerCase() == '1')))
 			{
 				tmpDescriptor.PictForm.AutofillTriggerGroup.TriggerAllInputs = true;
@@ -466,9 +540,9 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 		}
 
-		if ((`Entity` in tmpRecord) && (typeof(tmpRecord.Entity) === 'string') && (tmpRecord.Entity != '')
-			&& (`EntityColumnFilter` in tmpRecord) && (typeof(tmpRecord.EntityColumnFilter) === 'string') && (tmpRecord.EntityColumnFilter != '')
-			&& (`EntityDestination` in tmpRecord) && (typeof(tmpRecord.EntityDestination) === 'string') && (tmpRecord.EntityDestination != ''))
+		if ((`Entity` in tmpRecord) && (typeof (tmpRecord.Entity) === 'string') && (tmpRecord.Entity != '')
+			&& (`EntityColumnFilter` in tmpRecord) && (typeof (tmpRecord.EntityColumnFilter) === 'string') && (tmpRecord.EntityColumnFilter != '')
+			&& (`EntityDestination` in tmpRecord) && (typeof (tmpRecord.EntityDestination) === 'string') && (tmpRecord.EntityDestination != ''))
 		{
 			if (!Array.isArray(tmpDescriptor.PictForm.Providers))
 			{
@@ -596,9 +670,13 @@ class ManifestFactory extends libFableServiceProviderBase
 				this.log.error(`Failed to parse Maximum Row Count for ${tmpRecord['Input Hash']}: ${pError}`);
 			}
 		}
-		if (tmpRecord['Group Show Title'])
+		if (tmpRecord['HideTabularEditingControls'] && ((tmpRecord['HideTabularEditingControls'] == '1') || (tmpRecord['HideTabularEditingControls'].toLowerCase() == 'true') || (tmpRecord['HideTabularEditingControls'].toLowerCase() == 't') || (tmpRecord['HideTabularEditingControls'].toLowerCase() == 'y')))
 		{
-			switch(tmpRecord['Group Show Title'].trim().toLowerCase())
+			tmpGroup.HideTabularEditingControls = true;
+		}
+		if (tmpRecord['Group Show Title'] && (tmpRecord['Group Show Title'] != ''))
+		{
+			switch (tmpRecord['Group Show Title'].toLowerCase())
 			{
 				case '1':
 				case 'true':
@@ -608,7 +686,7 @@ class ManifestFactory extends libFableServiceProviderBase
 				case 'false':
 					tmpGroup.ShowTitle = false;
 					break;
-			}	
+			}
 		}
 		if (tmpDescriptor.Hash in pManifestFactory.manifest.Descriptors)
 		{
@@ -628,20 +706,59 @@ class ManifestFactory extends libFableServiceProviderBase
 		if (tmpRecord.InputType == 'TabularAddress')
 		{
 			tmpGroup.Layout = 'Tabular';
-			tmpGroup.RecordSetAddress = tmpDescriptor.DataAddress;
+			// If the csv defines the GroupRecordSetAddress, use that explicitly
+			console.log(`Group ${tmpGroup.Hash} RSA ${tmpRecord['GroupRecordSetAddress']} -> Descriptor ${tmpDescriptor.DataAddress}`)
+			if (tmpRecord['GroupRecordSetAddress'] && (typeof (tmpRecord.GroupRecordSetAddress == 'string')) && (tmpRecord.GroupRecordSetAddress.length > 0))
+			{
+				tmpGroup.RecordSetAddress = tmpRecord.GroupRecordSetAddress;
+			}
+			else
+			{
+				tmpGroup.RecordSetAddress = tmpDescriptor.DataAddress;
+			}
+			// Otherwise fall back to the DataAddress
 			tmpGroup.RecordManifest = tmpRecord.SubManifest;
 		}
 
 		if (tmpRecord['Equation'])
 		{
-			this.log.trace(`Adding solver to ${tmpRecord.Form} --> ${tmpGroup.Name} for ${tmpRecord['Input Hash']}: ${tmpRecord['Equation']}`);
-			if (tmpGroup.Layout == 'Tabular')
+			// Clean up the equation a bit to remove any leading/trailing spaces and replace HTML quotes
+			// that may have been added by the CSV or other source.
+			const tmpCleanEquation = tmpRecord['Equation'].trim();
+			let tmpEquationOrdinal = 1;
+			if (tmpRecord['Equation Ordinal'])
 			{
-				tmpGroup.RecordSetSolvers.push(tmpRecord['Equation']);
+				try
+				{
+					tmpEquationOrdinal = parseInt(tmpRecord['Equation Ordinal']);
+				}
+				catch (pError)
+				{
+					this.log.error(`Failed to parse Equation Ordinal for ${tmpRecord['Input Hash']}: ${pError}`);
+				}
+			}
+			this.log.trace(`Adding solver to ${tmpRecord.Form} --> ${tmpGroup.Name} for ${tmpRecord['Input Hash']} Ordinal ${tmpEquationOrdinal}: ${tmpRecord['Equation']}`);
+			if ((tmpGroup.Layout == 'Tabular') || (tmpGroup.Layout == 'RecordSet'))
+			{
+				if (tmpEquationOrdinal == 1)
+				{
+					tmpGroup.RecordSetSolvers.push(tmpCleanEquation);
+				}
+				else
+				{
+					tmpGroup.RecordSetSolvers.push({ Ordinal: tmpEquationOrdinal, Expression: tmpCleanEquation });
+				}
 			}
 			else
 			{
-				tmpSection.Solvers.push(tmpRecord['Equation']);
+				if (tmpEquationOrdinal == 1)
+				{
+					tmpSection.Solvers.push(tmpCleanEquation);
+				}
+				else
+				{
+					tmpSection.Solvers.push({ Ordinal: tmpEquationOrdinal, Expression: tmpCleanEquation });
+				}
 			}
 		}
 
@@ -649,7 +766,133 @@ class ManifestFactory extends libFableServiceProviderBase
 
 		if (tmpRecord.DataOnly && tmpDescriptor.PictForm)
 		{
+			if (tmpDescriptor.PictForm.Group)
+			{
+				tmpDescriptor.FormGroup = tmpDescriptor.PictForm.Group;
+			}
+			if (tmpDescriptor.PictForm.Section)
+			{
+				tmpDescriptor.FormSection = tmpDescriptor.PictForm.Section;
+			}
 			delete tmpDescriptor.PictForm;
+		}
+
+		if ((tmpRecord.InputType == 'Chart') && (tmpDescriptor.PictForm))
+		{
+			this.decorateChartDescriptorFromTabularRow(tmpRecord, tmpDescriptor, '');
+			this.decorateChartDescriptorFromTabularRow(tmpRecord, tmpDescriptor, '1');
+			this.decorateChartDescriptorFromTabularRow(tmpRecord, tmpDescriptor, '2');
+			this.decorateChartDescriptorFromTabularRow(tmpRecord, tmpDescriptor, '3');
+			this.decorateChartDescriptorFromTabularRow(tmpRecord, tmpDescriptor, '4');
+			this.decorateChartDescriptorFromTabularRow(tmpRecord, tmpDescriptor, '5');
+			this.decorateChartDescriptorFromTabularRow(tmpRecord, tmpDescriptor, '6');
+			this.decorateChartDescriptorFromTabularRow(tmpRecord, tmpDescriptor, '7');
+			this.decorateChartDescriptorFromTabularRow(tmpRecord, tmpDescriptor, '8');
+			this.decorateChartDescriptorFromTabularRow(tmpRecord, tmpDescriptor, '9');
+		}
+
+		// Finally add any `Descriptor_Extension_* properties
+		const tmpDescriptorKeys = Object.keys(tmpRecord);
+		let tmpDescriptorManifest = this.fable.newManyfest();
+		for (let i = 0; i < tmpDescriptorKeys.length; i++)
+		{
+			let tmpKey = tmpDescriptorKeys[i];
+			if (tmpKey.startsWith('Descriptor_Extension_'))
+			{
+				const tmpExtensionKey = tmpKey.replace('Descriptor_Extension_', '');
+				try
+				{
+					// This is just going to stuff a string in
+					let tmpAddress = tmpExtensionKey;
+					let tmpValue = tmpRecord[tmpKey];
+
+					// Use the manifest to put it on the descriptor
+					if (tmpValue && tmpValue.length > 0)
+					{
+						tmpDescriptorManifest.setValueAtAddress(tmpDescriptor, tmpAddress, tmpValue);
+					}
+				}
+				catch (pError)
+				{
+					this.log.error(`Failed to set Descriptor Extension [${tmpKey}] on descriptor [${tmpDescriptor.Hash}]: ${pError}`);
+				}
+			}
+
+			if (tmpKey.startsWith('Descriptor_Float_Extension_'))
+			{
+				const tmpExtensionKey = tmpKey.replace('Descriptor_Float_Extension_', '');
+				try
+				{
+					// This is just going to stuff a string in
+					let tmpAddress = tmpExtensionKey;
+					let tmpRawValue = tmpRecord[tmpKey];
+					let tmpValue = parseFloat(tmpRawValue);
+
+					// Use the manifest to put it on the descriptor
+					if (tmpValue && !isNaN(tmpValue))
+					{
+						tmpDescriptorManifest.setValueAtAddress(tmpDescriptor, tmpAddress, tmpValue);
+						this.log.trace(`Set Float Descriptor Extension [${tmpKey}] on descriptor [${tmpDescriptor.Hash}] to value [${tmpValue}]`);
+					}
+				}
+				catch (pError)
+				{
+					this.log.error(`Failed to set Float Descriptor Extension [${tmpKey}] on descriptor [${tmpDescriptor.Hash}]: ${pError}`);
+				}
+			}
+
+			if (tmpKey.startsWith('Descriptor_Integer_Extension_'))
+			{
+				const tmpExtensionKey = tmpKey.replace('Descriptor_Integer_Extension_', '');
+				try
+				{
+					// This is just going to stuff a string in
+					let tmpAddress = tmpExtensionKey;
+					let tmpRawValue = tmpRecord[tmpKey];
+					let tmpValue = parseInt(tmpRawValue);
+
+					// Use the manifest to put it on the descriptor
+					if (tmpValue && !isNaN(tmpValue))
+					{
+						tmpDescriptorManifest.setValueAtAddress(tmpDescriptor, tmpAddress, tmpValue);
+					}
+				}
+				catch (pError)
+				{
+					this.log.error(`Failed to set Integer Descriptor Extension [${tmpKey}] on descriptor [${tmpDescriptor.Hash}]: ${pError}`);
+				}
+			}
+
+			if (tmpKey.startsWith('Descriptor_Boolean_Extension_'))
+			{
+				const tmpExtensionKey = tmpKey.replace('Descriptor_Boolean_Extension_', '');
+				try
+				{
+					// This is just going to stuff a string in
+					let tmpAddress = tmpExtensionKey;
+					let tmpRawValue = tmpRecord[tmpKey];
+					let tmpValue;
+
+					if ((tmpRawValue.toLowerCase() == 'x') || (tmpRawValue.toLowerCase() == 'y') || (tmpRawValue.toLowerCase() == 'yes') || (tmpRawValue.toLowerCase() == 't') || (tmpRawValue.toLowerCase() == 'true') || (tmpRawValue == '1'))
+					{
+						tmpValue = true;
+					}
+					if ((tmpRawValue.toLowerCase() == 'n') || (tmpRawValue.toLowerCase() == 'no') || (tmpRawValue.toLowerCase() == 'f') || (tmpRawValue.toLowerCase() == 'false') || (tmpRawValue == '0'))
+					{
+						tmpValue = false;
+					}
+
+					// Use the manifest to put it on the descriptor
+					if ((tmpValue === true) || (tmpValue === false))
+					{
+						tmpDescriptorManifest.setValueAtAddress(tmpDescriptor, tmpAddress, tmpValue);
+					}
+				}
+				catch (pError)
+				{
+					this.log.error(`Failed to set Boolean Descriptor Extension [${tmpKey}] on descriptor [${tmpDescriptor.Hash}]: ${pError}`);
+				}
+			}
 		}
 
 		if (tmpRecord.InputType != 'TabularAddress')
@@ -712,9 +955,9 @@ class ManifestFactory extends libFableServiceProviderBase
 				tmpManifests[tmpRecord.Form] = this.fable.instantiateServiceProviderWithoutRegistration('ManifestFactory',
 					{
 						Manifest:
-							{
-								Form:tmpRecord.Form
-							}
+						{
+							Form: tmpRecord.Form
+						}
 					}, `${this.UUID}-${tmpRecord.Form}`);
 			}
 
@@ -723,7 +966,7 @@ class ManifestFactory extends libFableServiceProviderBase
 			// Check if there is a Form Name to be set
 			if (tmpRecord['Form Name'])
 			{
-				tmpManifest.FormName = tmpRecord['Form Name'];
+				tmpManifest.manifest.FormName = tmpRecord['Form Name'];
 			}
 			if (tmpRecord['Input Hash'])
 			{
@@ -744,4 +987,5 @@ class ManifestFactory extends libFableServiceProviderBase
 }
 
 module.exports = ManifestFactory;
-ManifestFactory.default_configuration = { };
+/** @type {Record<string, any>} */
+ManifestFactory.default_configuration = {};

@@ -9,76 +9,8 @@ export = PictViewDynamicForm;
  */
 declare class PictViewDynamicForm extends libPictViewClass {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
-    /** @type {import('pict') & { PictApplication: import('pict-application'), log: any; instantiateServiceProviderWithoutRegistration: (hash: string) => any; }} */
-    pict: import("pict") & {
-        PictApplication: import("pict-application");
-        log: any;
-        instantiateServiceProviderWithoutRegistration: (hash: string) => any;
-    };
-    /** @type {import('../services/Fable-Service-TransactionTracking.js')} */
-    transactionTracking: import("../services/Fable-Service-TransactionTracking.js");
-    /** @type {Object} */
-    _PackagePictView: any;
-    _Package: {
-        name: string;
-        version: string;
-        description: string;
-        main: string;
-        directories: {
-            test: string;
-        };
-        repository: {
-            type: string;
-            url: string;
-        };
-        bugs: {
-            url: string;
-        };
-        homepage: string;
-        scripts: {
-            start: string;
-            tests: string;
-            coverage: string;
-            build: string;
-            test: string;
-            lint: string;
-            types: string;
-        };
-        types: string;
-        author: string;
-        license: string;
-        devDependencies: {
-            "@eslint/js": string;
-            "browser-env": string;
-            eslint: string;
-            jquery: string;
-            pict: string;
-            "pict-application": string;
-            "pict-service-commandlineutility": string;
-            quackage: string;
-            "tui-grid": string;
-            typescript: string;
-        };
-        dependencies: {
-            "fable-serviceproviderbase": string;
-            marked: string;
-            "pict-provider": string;
-            "pict-section-tuigrid": string;
-            "pict-template": string;
-            "pict-view": string;
-        };
-        mocha: {
-            diff: boolean;
-            extension: string[];
-            package: string;
-            reporter: string;
-            slow: string;
-            timeout: string;
-            ui: string;
-            "watch-files": string[];
-            "watch-ignore": string[];
-        };
-    };
+    /** @type {Record<string, any>} */
+    _PackagePictView: Record<string, any>;
     sectionDefinition: any;
     sectionManifest: any;
     sectionSolvers: any[];
@@ -86,6 +18,7 @@ declare class PictViewDynamicForm extends libPictViewClass {
     customDefaultTemplatePrefix: any;
     formID: string;
     viewMarshalDestination: any;
+    initialBundleLoaded: boolean;
     /**
      * Returns the default template prefix.
      *
@@ -113,6 +46,8 @@ declare class PictViewDynamicForm extends libPictViewClass {
     /**
      * Sets the data in a specific form input based on the provided input object
      *
+     * FIXME: does this need to have a transaction GUID passed in?
+     *
      * @param {object} pInput - The input object.
      * @param {any} pValue - The value to set.
      * @returns {boolean} Returns true if the data was set successfully, false otherwise.
@@ -120,6 +55,8 @@ declare class PictViewDynamicForm extends libPictViewClass {
     setDataByInput(pInput: object, pValue: any): boolean;
     /**
      * Sets the data in a specific tabular form input based on the provided hash, group and row.
+     *
+     * FIXME: does this need to have a transaction GUID passed in?
      *
      * @param {number} pGroupIndex - The index of the group.
      * @param {string} pInputHash - The hash of the input.
@@ -137,14 +74,22 @@ declare class PictViewDynamicForm extends libPictViewClass {
     /**
      * Retrieves the marshal destination object.  This is where the model data is stored.
      *
-     * @returns {Object} The marshal destination object.
+     * @return {Record<string, any>} The marshal destination object.
      */
-    getMarshalDestinationObject(): any;
+    getMarshalDestinationObject(): Record<string, any>;
     /**
      * Gets a value by hash address.
      * @param {string} pHashAddress
      */
-    getValueByHash(pHashAddress: string): any;
+    getValueByHash(pHashAddress: string, pRowIndex: any): any;
+    /**
+     * Gets a value by hash address.
+     *
+     * @param {number} pGroupIndex
+     * @param {number} pInputIndex
+     * @param {number} pRowIndex
+     */
+    getTabularValueByHash(pGroupIndex: number, pInputIndex: number, pRowIndex: number): any;
     /**
      * Marshals data to the view.
      *
@@ -169,15 +114,6 @@ declare class PictViewDynamicForm extends libPictViewClass {
      * @returns {any} The result of the solve operation.
      */
     onSolve(): any;
-    /**
-     * Lifecycle hook that triggers after the view is rendered.
-     *
-     * @param {any} [pRenderable] - The renderable that was rendered.
-     * @param {string} [pRenderDestinationAddress] - The address where the renderable was rendered.
-     * @param {any} [pRecord] - The record (data) that was used by the renderable.
-     * @param {string} [pContent] - The content that was rendered.
-     */
-    onAfterRender(pRenderable?: any, pRenderDestinationAddress?: string, pRecord?: any, pContent?: string): boolean;
     /**
      * Executes layout provider functions based on the given function name.
      *
@@ -243,6 +179,11 @@ declare class PictViewDynamicForm extends libPictViewClass {
      */
     getGroup(pGroupIndex: number): object | boolean;
     /**
+     * Returns all groups in the section.
+     * @returns {Array}
+     */
+    getGroups(): any[];
+    /**
      * Get a row for an input form group.
      *
      * Rows are a horizontal collection of inputs.
@@ -294,15 +235,24 @@ declare class PictViewDynamicForm extends libPictViewClass {
      *
      * @param {String} pInputHash - The input hash object.
      * @param {string} pEvent - The input event string.
+     * @param {string} [pTransactionGUID] - The transaction GUID.
      * @returns {any} - The result of the input event handling.
      */
-    inputEvent(pInputHash: string, pEvent: string): any;
+    inputEvent(pInputHash: string, pEvent: string, pTransactionGUID?: string): any;
+    /**
+     * @deprecated
+     * @param {string} pEvent - The input event string.
+     * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     * @param {string} [pTransactionGUID] - The transaction GUID.
+     */
+    globalInputEvent(pEvent: string, pCompletedHashes: any, pTransactionGUID?: string): void;
     /**
      *
      * @param {string} pEvent - The input event string.
      * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     * @param {string} [pTransactionGUID] - The transaction GUID.
      */
-    globalInputEvent(pEvent: string, pCompletedHashes: any): void;
+    manifestInputEvent(pEvent: string, pCompletedHashes: any, pTransactionGUID?: string): void;
     /**
      * Triggers a DataRequest event for an Input Provider
      *
@@ -319,9 +269,48 @@ declare class PictViewDynamicForm extends libPictViewClass {
      * @param {number} pInputIndex - The index of the input.
      * @param {number} pRowIndex - The index of the row.
      * @param {string} pEvent - The input event object.
+     * @param {string} [pTransactionGUID] - The transaction GUID.
      * @returns {any} - The result of the input event handling.
      */
-    inputEventTabular(pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: string): any;
+    inputEventTabular(pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: string, pTransactionGUID?: string): any;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {string} pAsyncOperationHash - The hash of the async operation.
+     */
+    registerEventTransactionAsyncOperation(pTransactionGUID: string, pAsyncOperationHash: string): void;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {string} pAsyncOperationHash - The hash of the async operation.
+     *
+     * @return {boolean} - Returns true if the async operation was found and marked as complete, otherwise false.
+     */
+    eventTransactionAsyncOperationComplete(pTransactionGUID: string, pAsyncOperationHash: string): boolean;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     *
+     * @return {boolean} - Returns true if the transaction was found and able to be finalized, otherwise false.
+     */
+    finalizeTransaction(pTransactionGUID: string): boolean;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {Function} fCallback - The callback to call when the transaction is complete.
+     */
+    registerOnTransactionCompleteCallback(pTransactionGUID: string, fCallback: Function): void;
+    /**
+     *
+     * @param {number} pGroupIndex - The index of the group.
+     * @param {string} pEvent - The input event string.
+     * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     * @param {string} [pTransactionGUID] - The transaction GUID.
+     */
+    groupInputEvent(pGroupIndex: number, pEvent: string, pCompletedHashes: any, pTransactionGUID?: string): void;
+    /**
+     *
+     * @param {string} pEvent - The input event string.
+     * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+     * @param {string} [pTransactionGUID] - The transaction GUID.
+     */
+    sectionInputEvent(pEvent: string, pCompletedHashes: any, pTransactionGUID?: string): void;
     /**
      * Get the input object for a specific tabular record group and index.
      *
@@ -399,40 +388,6 @@ declare namespace PictViewDynamicForm {
     export { _DefaultConfiguration as default_configuration };
 }
 import libPictViewClass = require("pict-view");
-declare const _DefaultConfiguration: {
-    AutoRender: boolean;
-    AutoSolveWithApp: boolean;
-    ExecuteSolversWithoutMetacontroller: boolean;
-    IncludeInMetatemplateSectionGeneration: boolean;
-    IncludeInDefaultDynamicRender: boolean;
-    DefaultRenderable: string;
-    DefaultDestinationAddress: string;
-    Renderables: any[];
-    Templates: any[];
-    MacroTemplates: {
-        Section: {
-            HTMLID: string;
-        };
-        Group: {
-            HTMLID: string;
-            PictFormLayout: string;
-            TabularCreateRowFunctionCall: string;
-        };
-        Input: {
-            Informary: string;
-            InformaryTabular: string;
-            HTMLSelector: string;
-            HTMLSelectorTabular: string;
-            RawHTMLID: string;
-            HTMLName: string;
-            HTMLIDAddress: string;
-            HTMLID: string;
-            HTMLForID: string;
-            InputFullProperties: string;
-            InputChangeHandler: string;
-            DataRequestFunction: string;
-        };
-    };
-    TargetElementAddress: string;
-};
+/** @type {Record<string, any>} */
+declare const _DefaultConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-View-DynamicForm.d.ts.map

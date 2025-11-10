@@ -58,6 +58,7 @@
                 "InputType": "Option",
                 "Row": "3",
                 "Width": "6",
+                "Units": "planetary",
                 "Section": "Header",
                 "Group": "General_Info"
             }
@@ -71,21 +72,57 @@
                 "InputType": "Option",
                 "Row": "3",
                 "Width": "6",
+                "Units": "planetary",
                 "Section": "Header",
                 "Group": "General_Info"
+            },
+            "AnotherObject": {
+                "NotPictForm": {
+                    "x": 15.2,
+                    "y": 17
+                }
             }
         },
-        "BridgeData.IDBridge": {
-            "Hash": "CurrentIDBridge",
-            "Name": "IDBridge",
-            "DataAddress": "BridgeData.IDBridge",
+        "Header.WarehouseVolume": {
+            "Hash": "WarehouseVolume",
+            "Name": "Warehouse Volume",
+            "DataAddress": "Header.WarehouseVolume",
+            "DataType": "Number",
+            "PictForm": {
+                "Row": "4",
+                "Width": "12",
+                "Section": "Header",
+                "Group": "General_Info"
+            },
+            "Default": "50000"
+        },
+        "BookData.CurrentIDBook": {
+            "Hash": "CurrentIDBook",
+            "Name": "IDBook",
+            "DataAddress": "BookData.CurrentIDBook",
             "DataType": "Number",
             "PictForm": {
                 "Row": "1",
                 "Width": "6",
-                "SpreadsheetNotes": "Bridge",
-                "Section": "Bridge",
-                "Group": "Bridge_Data"
+                "SpreadsheetNotes": "Book from REST request",
+                "Providers": [
+                    "Pict-Input-AutofillTriggerGroup"
+                ],
+                "EntitiesBundle": [
+                    {
+                        "Entity": "Book",
+                        "Filter": "FBV~IDBook~EQ~{~D:Record.Value~}",
+                        "Destination": "LoadedBook",
+                        "SingleRecord": false
+                    }
+                ],
+                "Section": "REST_Request",
+                "Group": "Book_Data"
+            },
+            "AnotherObject": {
+                "NotPictForm": {
+                    "x": 86
+                }
             }
         },
         "HelpContent.Math": {
@@ -113,7 +150,13 @@
                 "Section": "Basic_Geometry",
                 "Group": "BasicGeoGrp"
             },
-            "Default": "7.25"
+            "Default": "7.25",
+            "AnotherObject": {
+                "NotPictForm": {
+                    "x": 11,
+                    "y": 190
+                }
+            }
         },
         "Geometry.Rectangle.Height": {
             "Hash": "RectangleHeight",
@@ -126,7 +169,12 @@
                 "Section": "Basic_Geometry",
                 "Group": "BasicGeoGrp"
             },
-            "Default": "10.3571"
+            "Default": "10.3571",
+            "AnotherObject": {
+                "NotPictForm": {
+                    "y": 22
+                }
+            }
         },
         "Geometry.Rectangle.Area": {
             "Hash": "RectangleArea",
@@ -136,9 +184,12 @@
             "PictForm": {
                 "Row": "2",
                 "Width": "3",
+                "Units": "unrounded",
                 "Section": "Basic_Geometry",
-                "Group": "BasicGeoGrp"
-            }
+                "Group": "BasicGeoGrp",
+                "RandomData": "This is a test for random data injection."
+            },
+            "Description": "Area of the Rectangle."
         },
         "Geometry.Rectangle.AreaRoundedDefault": {
             "Hash": "RectangleAreaRoundedDefault",
@@ -148,6 +199,7 @@
             "PictForm": {
                 "Row": "2",
                 "Width": "3",
+                "Units": "default",
                 "Section": "Basic_Geometry",
                 "Group": "BasicGeoGrp"
             }
@@ -160,6 +212,7 @@
             "PictForm": {
                 "Row": "2",
                 "Width": "3",
+                "Units": "3",
                 "Section": "Basic_Geometry",
                 "Group": "BasicGeoGrp"
             }
@@ -172,6 +225,7 @@
             "PictForm": {
                 "Row": "2",
                 "Width": "3",
+                "Units": "5",
                 "Section": "Basic_Geometry",
                 "Group": "BasicGeoGrp"
             }
@@ -184,8 +238,10 @@
             "PictForm": {
                 "Row": "1",
                 "Width": "12",
+                "DecimalPrecision": 4,
                 "Section": "Basic_Geometry",
-                "Group": "Circle"
+                "Group": "Circle",
+                "RandomData": "Sparse..."
             },
             "Default": "85.523"
         },
@@ -197,6 +253,7 @@
             "PictForm": {
                 "Row": "2",
                 "Width": "3",
+                "Units": "unrounded",
                 "Section": "Basic_Geometry",
                 "Group": "Circle"
             }
@@ -209,6 +266,7 @@
             "PictForm": {
                 "Row": "2",
                 "Width": "3",
+                "Units": "default",
                 "Section": "Basic_Geometry",
                 "Group": "Circle"
             }
@@ -221,6 +279,7 @@
             "PictForm": {
                 "Row": "2",
                 "Width": "3",
+                "Units": "4",
                 "Section": "Basic_Geometry",
                 "Group": "Circle"
             }
@@ -233,6 +292,7 @@
             "PictForm": {
                 "Row": "2",
                 "Width": "3",
+                "Units": "6",
                 "Section": "Basic_Geometry",
                 "Group": "Circle"
             }
@@ -241,25 +301,41 @@
             "Hash": "Boxes",
             "Name": "Boxes",
             "DataAddress": "Boxes",
-            "DataType": "Array"
+            "DataType": "Array",
+            "FormGroup": "BoxCollGrp",
+            "FormSection": "BoxCollSec"
+        },
+        "BoxDecorationSet": {
+            "Hash": "BoxDecorationSet",
+            "Name": "BoxDecorationSet",
+            "DataAddress": "BoxDecorationSet",
+            "DataType": "Array",
+            "FormGroup": "BoxDecorationGroup",
+            "FormSection": "BoxDecroations"
         },
         "Boxes[].Floorspace": {
             "Hash": "BoxesFloorspaceSet",
-            "Name": "BoxesFloorspaceSet",
+            "Name": "BoxesFloorSpaceSet",
             "DataAddress": "Boxes[].Floorspace",
-            "DataType": "Number"
+            "DataType": "Object",
+            "FormGroup": "Box_Summary_Data",
+            "FormSection": "Box_Summary_Data"
         },
         "Boxes[].Volume": {
             "Hash": "BoxesVolumeSet",
             "Name": "BoxesVolumeSet",
             "DataAddress": "Boxes[].Volume",
-            "DataType": "Number"
+            "DataType": "Object",
+            "FormGroup": "Box_Summary_Data",
+            "FormSection": "Box_Summary_Data"
         },
         "Boxes[].Depth": {
             "Hash": "BoxesDepthSet",
             "Name": "BoxesDepthSet",
             "DataAddress": "Boxes[].Depth",
-            "DataType": "Number"
+            "DataType": "Object",
+            "FormGroup": "Box_Summary_Data",
+            "FormSection": "Box_Summary_Data"
         },
         "BoxAggregate.Count": {
             "Hash": "BoxesCount",
@@ -381,6 +457,98 @@
                 "Group": "Box_Summary_Data"
             }
         },
+        "BoxChart_Sizes": {
+            "Hash": "BoxChart_Sizes",
+            "Name": "Box Category Volume Comparison",
+            "DataAddress": "BoxChart_Sizes",
+            "DataType": "Object",
+            "PictForm": {
+                "InputType": "Chart",
+                "Row": "5",
+                "Width": "4",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data",
+                "ChartType": "pie",
+                "ChartLabelsSolver": "objectkeystoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Volume\"))",
+                "ChartDatasetsSolvers": [
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Volume\"))",
+                        "Label": "Box Categories"
+                    }
+                ]
+            }
+        },
+        "BoxChart_Size_Details": {
+            "Hash": "BoxChart_Size_Details",
+            "Name": "Box Size Comparison",
+            "DataAddress": "BoxChart_Size_Details",
+            "DataType": "Object",
+            "PictForm": {
+                "InputType": "Chart",
+                "Row": "5",
+                "Width": "4",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data",
+                "ChartType": "bar",
+                "ChartLabelsSolver": "objectkeystoarray(aggregationhistogrambyobject(Boxes, \"Identifier\", \"Volume\"))",
+                "ChartDatasetsSolvers": [
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"Identifier\", \"Volume\"))",
+                        "Label": "Box Volumes"
+                    }
+                ]
+            }
+        },
+        "BoxChart_Scatter": {
+            "Hash": "BoxChart_Dimensions",
+            "Name": "Box Width x Height Scatter",
+            "DataAddress": "BoxChart_Scatter",
+            "DataType": "Object",
+            "PictForm": {
+                "InputType": "Chart",
+                "Row": "5",
+                "Width": "4",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data",
+                "ChartType": "radar",
+                "ChartLabelsSolver": "objectkeystoarray(aggregationhistogrambyobject(Boxes, \"Identifier\", \"Floorspace\"))",
+                "ChartDatasetsSolvers": [
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"Identifier\", \"Floorspace\"))",
+                        "Label": "Box Floorspace Usage"
+                    }
+                ]
+            }
+        },
+        "BoxChart_DataAll": {
+            "Hash": "BoxChart_DataComparison",
+            "Name": "Box Data Comparison",
+            "DataAddress": "BoxChart_DataAll",
+            "DataType": "Object",
+            "PictForm": {
+                "InputType": "Chart",
+                "Row": "5",
+                "Width": "4",
+                "Section": "Box_Summary_Data",
+                "Group": "Box_Summary_Data",
+                "ChartType": "bar",
+                "ChartLabelsSolver": "objectkeystoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Volume\"))",
+                "ChartDatasetsSolvers": [
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Width\"))",
+                        "Label": "Width"
+                    },
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Depth\"))",
+                        "Label": "Data"
+                    },
+                    {
+                        "DataSolver": "objectvaluestoarray(aggregationhistogrambyobject(Boxes, \"BoxCategory\", \"Height\"))",
+                        "Label": "Data"
+                    }
+                ]
+            }
+        },
         "HelpContent.Cuboid": {
             "Hash": "CuboidHelpContent",
             "Name": "How to Cuboid Math",
@@ -389,7 +557,7 @@
             "PictForm": {
                 "InputType": "Markdown",
                 "Row": "1",
-                "Width": "1",
+                "Width": "12",
                 "Section": "Rectangular_Area_Help",
                 "Group": "Rectangular_Area_Help"
             },
@@ -402,7 +570,8 @@
             "DataType": "Number",
             "PictForm": {
                 "Row": "1",
-                "Width": "4",
+                "Width": "6",
+                "Tooltip": "The PR is *very* important.",
                 "Section": "Complex_Equation",
                 "Group": "Complex_Equation"
             },
@@ -416,6 +585,7 @@
             "PictForm": {
                 "Row": "1",
                 "Width": "4",
+                "Tooltip": "Z _is not_ the z-index.",
                 "Section": "Complex_Equation",
                 "Group": "Complex_Equation"
             },
@@ -429,6 +599,7 @@
             "PictForm": {
                 "Row": "1",
                 "Width": "4",
+                "Tooltip": "C is the universal constant.",
                 "Section": "Complex_Equation",
                 "Group": "Complex_Equation"
             },
@@ -462,13 +633,17 @@
             "Hash": "Rectangles",
             "Name": "Rectangles",
             "DataAddress": "Rectangle",
-            "DataType": "Array"
+            "DataType": "Array",
+            "FormGroup": "Rectangle_Set",
+            "FormSection": "Rectangle_Aggregation"
         },
         "Cylinders": {
             "Hash": "Cylinders",
             "Name": "Cylinders",
             "DataAddress": "Cylinders",
-            "DataType": "Array"
+            "DataType": "Array",
+            "FormGroup": "Cylinders",
+            "FormSection": "Cylinders"
         },
         "Listopia.Filters.Colour": {
             "Hash": "ColourFilter",
@@ -524,7 +699,7 @@
                 ],
                 "AutofillTriggerGroup": [
                     {
-                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Colors.csv",
+                        "TriggerGroupHash": "AutoTriggerGroup-FruitSelection-Colors.csv",
                         "TriggerAllInputs": true,
                         "SelectOptionsRefresh": true
                     }
@@ -556,7 +731,7 @@
                     "Pict-Input-AutofillTriggerGroup"
                 ],
                 "AutofillTriggerGroup": {
-                    "TriggerGroup": "Box",
+                    "TriggerGroupHash": "Box",
                     "MarshalEmptyValues": false,
                     "SelectOptionsRefresh": true
                 },
@@ -607,12 +782,12 @@
                 ],
                 "AutofillTriggerGroup": [
                     {
-                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Colors.csv",
+                        "TriggerGroupHash": "AutoTriggerGroup-FruitSelection-Colors.csv",
                         "TriggerAllInputs": true,
                         "SelectOptionsRefresh": true
                     },
                     {
-                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Stones.csv",
+                        "TriggerGroupHash": "AutoTriggerGroup-FruitSelection-Stones.csv",
                         "TriggerAllInputs": true,
                         "SelectOptionsRefresh": true
                     }
@@ -671,7 +846,7 @@
                 ],
                 "AutofillTriggerGroup": [
                     {
-                        "TriggerGroup": "AutoTriggerGroup-FruitSelection-Stones.csv",
+                        "TriggerGroupHash": "AutoTriggerGroup-FruitSelection-Stones.csv",
                         "TriggerAllInputs": true,
                         "SelectOptionsRefresh": true
                     }
@@ -706,13 +881,13 @@
             ]
         },
         {
-            "Name": "Bridge",
-            "Hash": "Bridge",
+            "Name": "REST Request",
+            "Hash": "REST_Request",
             "Solvers": [],
             "Groups": [
                 {
-                    "Name": "Bridge Data",
-                    "Hash": "Bridge_Data",
+                    "Name": "Book Data",
+                    "Hash": "Book_Data",
                     "Rows": [],
                     "RecordSetSolvers": []
                 }
@@ -782,6 +957,37 @@
             ]
         },
         {
+            "Name": "Box Decoration",
+            "Hash": "BoxDecroations",
+            "Solvers": [],
+            "Groups": [
+                {
+                    "Name": "Box Decorations",
+                    "Hash": "BoxDecorationGroup",
+                    "Rows": [],
+                    "RecordSetSolvers": [],
+                    "HideTabularEditingControls": true,
+                    "ShowTitle": true,
+                    "Layout": "Tabular",
+                    "RecordSetAddress": "Boxes",
+                    "RecordManifest": "BoxCollectionSecondaryTable"
+                }
+            ]
+        },
+        {
+            "Name": "Box Decoration",
+            "Hash": "BoxDecorations",
+            "Solvers": [],
+            "Groups": [
+                {
+                    "Name": "Box Decorations",
+                    "Hash": "BoxDecorationGroup",
+                    "Rows": [],
+                    "RecordSetSolvers": []
+                }
+            ]
+        },
+        {
             "Name": "Box Summary Data",
             "Hash": "Box_Summary_Data",
             "Solvers": [
@@ -845,7 +1051,7 @@
                     "Hash": "Rectangle_Set",
                     "Rows": [],
                     "RecordSetSolvers": [
-                        "RectangleArea = RectangleWidth + RectangleHeight"
+                        "RectangleArea = RectangleWidth * RectangleHeight"
                     ],
                     "MinimumRowCount": 20,
                     "ShowTitle": false,
@@ -868,7 +1074,7 @@
                             "ExtraData": ""
                         },
                         {
-                            "Identifier": "C",
+                            "Identifier": "C and 4\" Nails",
                             "Width": "1",
                             "Height": "1",
                             "Depth": "1",
@@ -1069,13 +1275,16 @@
         {
             "Name": "List Topia",
             "Hash": "Listopia",
-            "Solvers": [],
+            "Solvers": [
+                "SUBTRACTINGSUMMATION(Rectangles, \"Area\", \"AreaDegredation\")"
+            ],
             "Groups": [
                 {
                     "Name": "Occlusion Lists",
                     "Hash": "OcclusionLists",
                     "Rows": [],
-                    "RecordSetSolvers": []
+                    "RecordSetSolvers": [],
+                    "CSSClass": "CustomCSSClass"
                 }
             ],
             "PickLists": [
@@ -1475,7 +1684,28 @@
                             "Pict-Input-AutofillTriggerGroup"
                         ],
                         "AutofillTriggerGroup": {
-                            "TriggerGroup": "Box",
+                            "TriggerGroupHash": "Box",
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
+                        },
+                        "Section": "BoxCollSec",
+                        "Group": "BoxCollGrp"
+                    },
+                    "IsTabular": true
+                },
+                "BoxCategory": {
+                    "Hash": "BoxCategory",
+                    "Name": "Category",
+                    "DataAddress": "BoxCategory",
+                    "DataType": "String",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroupHash": "Box",
                             "MarshalEmptyValues": false,
                             "TriggerAllInputs": true
                         },
@@ -1548,12 +1778,105 @@
                             "Pict-Input-AutofillTriggerGroup"
                         ],
                         "AutofillTriggerGroup": {
-                            "TriggerGroup": "Box",
+                            "TriggerGroupHash": "Box",
                             "MarshalEmptyValues": false,
                             "TriggerAllInputs": true
                         },
                         "Section": "BoxCollSec",
                         "Group": "BoxCollGrp"
+                    },
+                    "IsTabular": true
+                },
+                "WarehouseSpaceLeft": {
+                    "Hash": "WarehouseSpaceLeft",
+                    "Name": "Warehouse Space Left",
+                    "DataAddress": "WarehouseSpaceLeft",
+                    "DataType": "Number",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroupHash": "Box",
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
+                        },
+                        "Section": "BoxCollSec",
+                        "Group": "BoxCollGrp"
+                    },
+                    "IsTabular": true
+                }
+            },
+            "Sections": [],
+            "ReferenceManifests": {}
+        },
+        "BoxCollectionSecondaryTable": {
+            "Scope": "BoxCollectionSecondaryTable",
+            "Descriptors": {
+                "Identifier": {
+                    "Hash": "BoxIdentifier",
+                    "Name": "Identifier",
+                    "DataAddress": "Identifier",
+                    "DataType": "String",
+                    "PictForm": {
+                        "InputType": "DataOnly",
+                        "Row": "1",
+                        "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroupHash": "Box",
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
+                        },
+                        "Section": "BoxDecorations",
+                        "Group": "BoxDecorationGroup"
+                    },
+                    "IsTabular": true
+                },
+                "Volume": {
+                    "Hash": "BoxVolume",
+                    "Name": "Volume",
+                    "DataAddress": "Volume",
+                    "DataType": "PreciseNumber",
+                    "PictForm": {
+                        "InputType": "DataOnly",
+                        "Row": "1",
+                        "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroupHash": "Box",
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
+                        },
+                        "Section": "BoxDecorations",
+                        "Group": "BoxDecorationGroup"
+                    },
+                    "IsTabular": true
+                },
+                "DecorativeText": {
+                    "Hash": "DecorativeText",
+                    "Name": "Decorative Text",
+                    "DataAddress": "DecorativeText",
+                    "DataType": "String",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroupHash": "Box",
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
+                        },
+                        "Section": "BoxDecorations",
+                        "Group": "BoxDecorationGroup"
                     },
                     "IsTabular": true
                 }
@@ -1585,6 +1908,7 @@
                     "PictForm": {
                         "Row": "1",
                         "Width": "1",
+                        "Units": "meters",
                         "Section": "Rectangle_Aggregation",
                         "Group": "Rectangle_Set"
                     },
@@ -1598,6 +1922,7 @@
                     "PictForm": {
                         "Row": "1",
                         "Width": "1",
+                        "Units": "meters",
                         "Section": "Rectangle_Aggregation",
                         "Group": "Rectangle_Set"
                     },
@@ -1607,6 +1932,19 @@
                     "Hash": "RectangleArea",
                     "Name": "Area",
                     "DataAddress": "Area",
+                    "DataType": "Number",
+                    "PictForm": {
+                        "Row": "1",
+                        "Width": "1",
+                        "Section": "Rectangle_Aggregation",
+                        "Group": "Rectangle_Set"
+                    },
+                    "IsTabular": true
+                },
+                "AreaDegredation": {
+                    "Hash": "AreaDegredation",
+                    "Name": "Degredation (first minus each subsequent)",
+                    "DataAddress": "AreaDegredation",
                     "DataType": "Number",
                     "PictForm": {
                         "Row": "1",
@@ -1644,6 +1982,7 @@
                     "PictForm": {
                         "Row": "1",
                         "Width": "1",
+                        "DecimalPrecision": 2,
                         "Section": "Cylinders",
                         "Group": "Cylinders"
                     },
@@ -1692,5 +2031,6 @@
             "Sections": [],
             "ReferenceManifests": {}
         }
-    }
+    },
+    "FormName": "Math Example Form"
 }

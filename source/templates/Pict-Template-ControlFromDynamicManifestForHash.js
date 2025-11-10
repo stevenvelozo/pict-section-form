@@ -31,11 +31,13 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 	 * @param {string} pTemplateHash - The schema hash of the control.
 	 * @param {object} pRecord - The record object.
 	 * @param {array} pContextArray - The context array.
+	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
+	 * @param {any} [pState] - A catchall state object for plumbing data through template processing.
 	 * @returns {string} - The rendered template.
 	 */
-	render(pTemplateHash, pRecord, pContextArray)
+	render(pTemplateHash, pRecord, pContextArray, pScope, pState)
 	{
-		return this.renderAsync(pTemplateHash, pRecord, null, pContextArray);
+		return this.renderAsync(pTemplateHash, pRecord, null, pContextArray, pScope, pState);
 	}
 
 	/**
@@ -43,25 +45,33 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 	 *
 	 * @param {string} pTemplateHash - The schema hash of the control.
 	 * @param {object} pRecord - The record object.
-	 * @param {function} fCallback - The callback function.
+	 * @param {function | null} fCallback - The callback function.
 	 * @param {array} pContextArray - The context array.
-	 * @returns {string} - The rendered template.
+	 * @param {any} [pScope] - A sticky scope that can be used to carry state and simplify template
+	 * @param {any} [pState] - A catchall state object for plumbing data through template processing.
+	 * @returns {string | undefined} - The rendered template or undefined if callback is provided.
 	 */
-	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray)
+	renderAsync(pTemplateHash, pRecord, fCallback, pContextArray, pScope, pState)
 	{
 		const tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
 		const tmpHash = pTemplateHash.trim();
 		/** @type{import('../views/Pict-View-Form-Metacontroller.js')} */
 		const metacontroller = this.pict.views.PictFormMetacontroller;
 		/** @type {import('./Pict-Template-ControlFromDynamicManifest.js').Manyfest} */
-		const manifest = metacontroller.manifest;
+		const manifest = metacontroller ? metacontroller.manifest : this.pict.manifest;
 		const descriptor = manifest.getDescriptorByHash(tmpHash);
 		if (!descriptor)
 		{
 			this.log.error(`PictTemplateControlFromDynamicManifest: Cannot find descriptor for hash [${tmpHash}]`);
+			if (typeof fCallback === 'function')
+			{
+				return fCallback(null, '');
+			}
 			return '';
 		}
 		const tmpView = this.pict.views[descriptor.PictForm.ViewHash];
+		const tmpScope = tmpView || pScope;
+		const tmpContextArray = tmpScope ? [ tmpScope ] : (pContextArray || [ this.pict ]);
 
 		this.pict.providers.MetatemplateMacros.buildInputMacros(tmpView, descriptor);
 
@@ -70,7 +80,7 @@ class PictTemplateControlFromDynamicManifest extends libPictTemplate
 			`getInput("${descriptor.PictForm.GroupIndex}","${descriptor.PictForm.RowIndex}","${descriptor.PictForm.InputIndex}")`);
 
 		// Now parse it and return it.
-		return this.pict.parseTemplate(tmpTemplate, descriptor, fCallback, [tmpView]);
+		return this.pict.parseTemplate(tmpTemplate, descriptor, fCallback, tmpContextArray, tmpScope, pState);
 	}
 }
 

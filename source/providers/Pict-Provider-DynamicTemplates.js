@@ -8,6 +8,9 @@ const templateSetReadOnlyTemplates = require('./dynamictemplates/Pict-DynamicTem
 const libTemplateValueSetWithGroup = require('../templates/Pict-Template-Metacontroller-ValueSetWithGroup.js');
 const libTemplateDynamicInput = require('../templates/Pict-Template-Metatemplate-Input.js');
 const libTemplateDynamicInputWithHashAddress = require('../templates/Pict-Template-Metatemplate-InputWithHashAddress.js');
+const libTemplateDynamicInputWithView = require('../templates/Pict-Template-Metatemplate-InputWithView.js');
+const libTemplateDynamicInputWithViewAndHashAddress = require('../templates/Pict-Template-Metatemplate-InputWithViewAndHashAddress.js');
+const libTemplateDynamicInputWithViewAndDescriptorAddress = require('../templates/Pict-Template-Metatemplate-InputWithViewAndDescriptorAddress.js');
 const libTemplateControlFromDynamicManifest = require('../templates/Pict-Template-ControlFromDynamicManifest.js');
 const libTemplateControlFromDynamicManifestForHash = require('../templates/Pict-Template-ControlFromDynamicManifestForHash.js');
 const libTemplateGetViewSchemaValue = require('../templates/Pict-Template-DyanmicView-Value.js');
@@ -17,6 +20,7 @@ const libTemplateGetViewSchemaValueByHash = require('../templates/Pict-Template-
 // TODO: This is temporary until we publish new pict
 const libTemplatePluckJoinUnique = require('../templates/Pict-Template-Proxy-PluckJoinUnique.js');
 
+/** @type {Record<string, any>} */
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-MetaTemplates-Basic",
@@ -57,6 +61,9 @@ class PictDynamicFormsTemplates extends libPictProvider
 		this.pict.addTemplate(libTemplateValueSetWithGroup);
 		this.pict.addTemplate(libTemplateDynamicInput);
 		this.pict.addTemplate(libTemplateDynamicInputWithHashAddress);
+		this.pict.addTemplate(libTemplateDynamicInputWithView);
+		this.pict.addTemplate(libTemplateDynamicInputWithViewAndHashAddress);
+		this.pict.addTemplate(libTemplateDynamicInputWithViewAndDescriptorAddress);
 		this.pict.addTemplate(libTemplatePluckJoinUnique);
 		this.pict.addTemplate(libTemplateControlFromDynamicManifest);
 		this.pict.addTemplate(libTemplateControlFromDynamicManifestForHash);

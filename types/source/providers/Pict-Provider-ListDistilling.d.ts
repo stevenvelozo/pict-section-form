@@ -2,14 +2,12 @@ export = PictListDistilling;
 /**
  * The PictListDistilling class is a provider that filters lists based on input rules.
  */
-declare class PictListDistilling {
+declare class PictListDistilling extends libPictProvider {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
     /** @type {import('pict')} */
     fable: import("pict");
-    /** @type {any} */
-    log: any;
     /**
       * Filter a list of options based on the filtering rules in a dynamic form input.
       *
@@ -46,10 +44,7 @@ declare class PictListDistilling {
 declare namespace PictListDistilling {
     export { _DefaultProviderConfiguration as default_configuration };
 }
-declare namespace _DefaultProviderConfiguration {
-    let ProviderIdentifier: string;
-    let AutoInitialize: boolean;
-    let AutoInitializeOrdinal: number;
-    let AutoSolveWithApp: boolean;
-}
+import libPictProvider = require("pict-provider");
+/** @type {Record<string, any>} */
+declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-ListDistilling.d.ts.map

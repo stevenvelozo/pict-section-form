@@ -1,6 +1,7 @@
 const libPictProvider = require('pict-provider');
 
 // TODO: Pull this back to pict as a core service once we are happy with the shape.
+/** @type {Record<string, any>} */
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-Informary",
@@ -299,7 +300,8 @@ class PictDynamicFormsInformary extends libPictProvider
 			this.log.error(`Informary failed to marshal data to form because the input view is missing.`);
 			return false;
 		}
-		return this.pict.ContentAssignment.assignContent(`${pInput.Macro.HTMLSelectorTabular}[data-i-index="${pRowIndex}"]`, tmpInputView.getValueByHash(pInput.Hash));
+		return this.pict.ContentAssignment.assignContent(`${pInput.Macro.HTMLSelectorTabular}[data-i-index="${pRowIndex}"]`,
+			tmpInputView.getTabularValueByHash(pInput.PictForm.GroupIndex, pInput.PictForm.InputIndex, pRowIndex));
 	}
 
 	/**

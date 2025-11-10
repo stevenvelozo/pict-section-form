@@ -1,11 +1,15 @@
 const libPictViewClass = require('pict-view');
 
-const libPictDynamicApplication = require(`../services/Pict-Service-DynamicApplication.js`);
+const libPictDynamicFormDependencyManager = require(`../services/Pict-Service-DynamicFormDependencyManager.js`);
 const libPictViewDynamicForm = require('./Pict-View-DynamicForm.js');
 
 // TODO: Potentially create an internalized list of views for this to manage, separate from the pict.views object
 // TODO: Manage view lifecycle internally, including destruction of views if they are flagged to not be needed.
 // Why?  This allows us to dynamically add and remove sections without having to reload the application.
+
+const PENDING_ASYNC_OPERATION_TYPE = 'PendingAsyncOperation';
+const TRANSACTION_COMPLETE_CALLBACK_TYPE = 'onTransactionComplete';
+const READY_TO_FINALIZE_TYPE = 'ReadyToFinalize';
 
 /**
  * @typedef {(a: any, b: any) => number} SortFunction
@@ -26,15 +30,35 @@ class PictFormMetacontroller extends libPictViewClass
 		this.serviceType = 'PictFormMetacontroller';
 
 		// Load the dynamic application dependencies if they don't exist
-		this.fable.addAndInstantiateSingletonService('PictDynamicApplication', libPictDynamicApplication.default_configuration, libPictDynamicApplication);
-
-		this.viewMarshalDestination = 'AppData';
+		this.fable.addAndInstantiateSingletonService('PictDynamicFormDependencyManager', libPictDynamicFormDependencyManager.default_configuration, libPictDynamicFormDependencyManager);
 
 		this.lastRenderedViews = [];
 
 		this.formTemplatePrefix = this.pict.providers.MetatemplateGenerator.baseTemplatePrefix;
 
 		this.manifest = this.pict.manifest;
+
+		this.AutoSolveOnFirstRender = true;
+		this.FirstRenderCompleted = false;
+
+		this.SupportViewPrototypes = (
+		{
+			LifecycleVisualization: require('./support/Pict-View-PSF-LifeCycle-Visualization.js'),
+			DebugViewer: require('./support/Pict-View-PSF-DebugViewer.js'),
+			AppDataViewer: require('./support/Pict-View-PSF-AppData-Visualization.js'),
+			SolverVisualization: require('./support/Pict-View-PSF-Solver-Visualization.js'),
+			SpecificSolveVisualization: require('./support/Pict-View-PSF-SpecificSolve-Visualization.js'),
+		});
+	}
+
+	get viewMarshalDestination()
+	{
+		return this.pict.providers.DataBroker.marshalDestination;
+	}
+
+	set viewMarshalDestination(pValue)
+	{
+		this.pict.providers.DataBroker.marshalDestination = pValue;
 	}
 
 	/**
@@ -73,23 +97,18 @@ class PictFormMetacontroller extends libPictViewClass
 		return super.onMarshalToView();
 	}
 
-	/**
-	 * Retrieves the marshal destination object.  This is where the model data is stored.
-	 *
-	 * @returns {Object} The marshal destination object.
-	 */
-	getMarshalDestinationObject()
+	gatherInitialBundle(fCallback)
 	{
-		return this.manifest.getValueByHash(this, this.viewMarshalDestination);
-	}
-
-	/**
-	 * Gets a value by hash address.
-	 * @param {string} pHashAddress 
-	 */
-	getValueByHash(pHashAddress)
-	{
-		return this.manifest.getValueByHash(this.getMarshalDestinationObject(), pHashAddress);
+		if (this.manifestDescription && this.manifestDescription.InitialBundle)
+		{
+			this.log.info(`Gathering initial bundle for ${this.manifestDescription.InitialBundle.length} entities.`);
+			return this.pict.EntityProvider.gatherDataFromServer(this.manifestDescription.InitialBundle, fCallback);
+		}
+		else
+		{
+			this.log.info('No initial bundle to gather.');
+			return fCallback();
+		}
 	}
 
 	/**
@@ -100,11 +119,24 @@ class PictFormMetacontroller extends libPictViewClass
 	 */
 	onAfterInitializeAsync(fCallback)
 	{
-		// This is safe -- if there is no settings.DefaultFormManifest configuration, it just doesn't do anything
-		this.bootstrapPictFormViewsFromManifest();
-		// Generate the metatemplate (the container for each section)
-		this.generateMetatemplate();
-		return super.onAfterInitializeAsync(fCallback);
+
+		return super.onAfterInitializeAsync(
+			function (pError)
+			{
+				if (pError)
+				{
+					return fCallback(pError);
+				}
+				this.gatherInitialBundle((pError) =>
+				{
+					// This is safe -- if there is no settings.DefaultFormManifest configuration, it just doesn't do anything
+					this.bootstrapPictFormViewsFromManifest();
+					// Generate the metatemplate (the container for each section)
+					this.generateMetatemplate();
+
+					return fCallback(pError);
+				});
+			}.bind(this));
 	}
 
 	/**
@@ -113,23 +145,26 @@ class PictFormMetacontroller extends libPictViewClass
 	 * and optionally populates the form with data.
 	 *
 	 * @param {import('pict-view').Renderable} pRenderable - The renderable that was rendered.
-	 * @param {string} pRenderDestinationAddress - The address where the renderable was rendered.
-	 * @param {any} pRecord - The record (data) that was used by the renderable.
-	 * @param {string} pContent - The content that was rendered.
 	 *
 	 * @return {boolean} The result of the superclass's onAfterRender method.
 	 */
-	onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent)
+	onAfterRender(pRenderable)
 	{
+		const res = super.onAfterRender(pRenderable);
 		this.regenerateFormSectionTemplates();
 		this.renderFormSections();
+
+		if (this.AutoSolveOnFirstRender && !this.FirstRenderCompleted)
+		{
+			this.FirstRenderCompleted = true;
+			this.pict.providers.DynamicSolver.solveViews();
+		}
 
 		if (this.options.AutoPopulateAfterRender)
 		{
 			this.marshalToView();
 		}
-
-		return super.onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent);
+		return res;
 	}
 
 	/**
@@ -143,6 +178,11 @@ class PictFormMetacontroller extends libPictViewClass
 		return super.onSolve();
 	}
 
+	runSolver(pExpression)
+	{
+		this.pict.providers.DynamicSolver.runSolver(pExpression);
+	}
+
 	onBeforeFilterViews(pViewFilterState)
 	{
 		return pViewFilterState;
@@ -151,6 +191,189 @@ class PictFormMetacontroller extends libPictViewClass
 	onAfterFilterViews(pViewFilterState)
 	{
 		return pViewFilterState;
+	}
+
+	/**
+	 * @param {string} pSectionManifestHash - The hash of the section to find.
+	 *
+	 * @return {Record<string, any>} The section definition object, or undefined if not found.
+	 */
+	findDynamicSectionManifestDefinition(pSectionManifestHash)
+	{
+		const sectionManifest = this.manifestDescription?.ReferenceManifests?.[pSectionManifestHash];
+		if (typeof(sectionManifest) !== 'object')
+		{
+			this.log.error(`findDynamicSectionManifestDefinition() could not find a section manifest with hash [${pSectionManifestHash}]`);
+			return null;
+		}
+		return sectionManifest;
+	}
+
+	/**
+	 * @param {Record<string, any>} pManifest - The manifest to add
+	 * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+	 * @param {string} [pUUID] - (optional) The UUID to use for uniqueness. If not provided, a new one will be generated.
+	 *
+	 * @return {Array<import('./Pict-View-DynamicForm.js')>} the views that correspond to the newly added sections
+	 */
+	injectManifestAndRender(pManifest, pAfterSectionHash, pUUID)
+	{
+		const tmpManifest = pUUID ? this.createDistinctManifest(pManifest, pUUID) : pManifest;
+		const tmpViewsToRender = this.injectManifest(tmpManifest, pAfterSectionHash);
+		this.updateMetatemplateInDOM();
+		//FIXME: for some reason, DOM append is not synchronous, so we need to delay the render....................?
+		setTimeout(() =>
+		{
+			for (const tmpViewToRender of tmpViewsToRender)
+			{
+				tmpViewToRender.render();
+			}
+			if (this.options.AutoPopulateAfterRender)
+			{
+				for (const tmpViewToRender of tmpViewsToRender)
+				{
+					tmpViewToRender.marshalToView();
+				}
+			}
+		}, 0);
+
+		return tmpViewsToRender;
+	}
+
+	/**
+	 * @param {Record<string, any>} pManifest - The manifest to add
+	 * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+	 *
+	 * @return {Array<import('./Pict-View-DynamicForm.js')>} the views that correspond to the newly added sections; note that these views are NOT rendered yet
+	 */
+	injectManifest(pManifest, pAfterSectionHash)
+	{
+		const tmpAfterSectionHash = pAfterSectionHash ? (pAfterSectionHash.startsWith('PictSectionForm-') ? pAfterSectionHash : `PictSectionForm-${pAfterSectionHash}`) : null;
+		const tmpAllViewKeys = Object.keys(this.pict.views);
+		const tmpReferenceManifestViewIndex = tmpAfterSectionHash ? tmpAllViewKeys.indexOf(tmpAfterSectionHash) : -1;
+		const tmpViewsToShift = [];
+		if (tmpReferenceManifestViewIndex >= 0)
+		{
+			// reorder views (hacky - add layer to do this more directly)
+			for (let i = tmpReferenceManifestViewIndex + 1; i < tmpAllViewKeys.length; i++)
+			{
+				const tmpKey = tmpAllViewKeys[i];
+				tmpViewsToShift.push({ key: tmpKey, view: this.pict.views[tmpKey] });
+				delete this.pict.views[tmpKey];
+			}
+		}
+		const tmpViewsToRender = this.bootstrapAdditiveManifest(pManifest, tmpAfterSectionHash);
+		for (const tmpViewToShift of tmpViewsToShift)
+		{
+			this.pict.views[tmpViewToShift.key] = tmpViewToShift.view;
+		}
+		// this ensures if we re-render everything, we have the new sections in the template
+		this.generateMetatemplate();
+		for (const tmpViewToRender of tmpViewsToRender)
+		{
+			tmpViewToRender.rebuildCustomTemplate();
+		}
+		this.pict.CSSMap.injectCSS();
+
+		return tmpViewsToRender;
+	}
+
+	/**
+	 * Changes:
+	 *   * The hashes of each section+group to be globally unique.
+	 *   * The data address of each element to map to a unique location.
+	 *
+	 * @param {Record<string, any>} pManifest - The manifest to create a distinct copy of.
+	 * @param {string} [pUUID] - (optional) The UUID to use for uniqueness. If not provided, a new one will be generated.
+	 *
+	 * @return {Record<string, any>} A distinct copy of the manifest.
+	 */
+	createDistinctManifest(pManifest, pUUID)
+	{
+		const tmpUUID = pUUID != null ? pUUID : this.pict.getUUID().replace(/-/g, '');
+		const tmpManifest = JSON.parse(JSON.stringify(pManifest));
+		for (const tmpSection of tmpManifest.Sections || [])
+		{
+			tmpSection.OriginalHash = tmpSection.Hash;
+			tmpSection.Hash = `${tmpSection.Hash}_${tmpUUID}`;
+			for (const tmpGroup of tmpSection.Groups || [])
+			{
+				tmpGroup.OriginalHash = tmpGroup.Hash;
+				tmpGroup.Hash = `${tmpGroup.Hash}_${tmpUUID}`;
+			}
+		}
+		const tmpNewDescriptors = {};
+		for (const [ tmpKey, tmpDescriptor ] of Object.entries(tmpManifest.Descriptors || {}))
+		{
+			//FIXME: do we want to allow prefixing the data address? (ex. nesting it under a parent object) - caller can still do this themselves.
+			tmpDescriptor.DataAddress = `${tmpDescriptor.DataAddress || tmpKey}_${tmpUUID}`;
+			if (tmpDescriptor.Hash)
+			{
+				tmpDescriptor.OriginalHash = tmpDescriptor.Hash;
+				tmpDescriptor.Hash = `${tmpDescriptor.Hash}_${tmpUUID}`;
+			}
+			if (tmpDescriptor.PictForm)
+			{
+				if (tmpDescriptor.PictForm.Section)
+				{
+					tmpDescriptor.PictForm.Section = `${tmpDescriptor.PictForm.Section}_${tmpUUID}`;
+				}
+				if (tmpDescriptor.PictForm.Group)
+				{
+					tmpDescriptor.PictForm.Group = `${tmpDescriptor.PictForm.Group}_${tmpUUID}`;
+				}
+			}
+			tmpNewDescriptors[`${tmpKey}_${tmpUUID}`] = tmpDescriptor;
+		}
+		tmpManifest.Descriptors = tmpNewDescriptors;
+		return tmpManifest;
+	}
+
+	/**
+	 * @param {Array<string>} pManifestHashes - The hashes of the manifests to add.
+	 * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+	 * @param {string} [pUUID] - (optional) The UUID to use for uniqueness. If not provided, a new one will be generated.
+	 */
+	injectManifestsByHash(pManifestHashes, pAfterSectionHash, pUUID)
+	{
+		let tmpViewsToRender = [];
+		for (const tmpManifestHash of pManifestHashes)
+		{
+			const tmpManifest = this.findDynamicSectionManifestDefinition(tmpManifestHash);
+			if (tmpManifest)
+			{
+				const tmpUniqueManifest = this.createDistinctManifest(tmpManifest, pUUID);
+				const tmpViews = this.injectManifest(tmpUniqueManifest, pAfterSectionHash);
+				tmpViewsToRender = tmpViewsToRender.concat(tmpViews);
+			}
+		}
+		this.updateMetatemplateInDOM();
+		setTimeout(() =>
+		{
+			for (const tmpViewToRender of tmpViewsToRender)
+			{
+				tmpViewToRender.render();
+			}
+		}, 0);
+	}
+
+	/**
+	 * @param {Record<string, any>} pSectionsManifest - The section definition object.
+	 * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+	 */
+	bootstrapAdditiveManifest(pSectionsManifest, pAfterSectionHash)
+	{
+		const tmpViewsToRender = [];
+		const tmpNewSectionDefinitions = this.bootstrapPictFormViewsFromManifest(pSectionsManifest, pAfterSectionHash);
+		for (const tmpNewSectionDefinition of tmpNewSectionDefinitions)
+		{
+			const tmpView = this.pict.views[`PictSectionForm-${tmpNewSectionDefinition.Hash}`];
+			if (tmpView)
+			{
+				tmpViewsToRender.push(tmpView);
+			}
+		}
+		return tmpViewsToRender;
 	}
 
 	/**
@@ -167,6 +390,7 @@ class PictFormMetacontroller extends libPictViewClass
 		// Generate the filter state object
 		let tmpViewFilterState = (
 			{
+				//FIXME: need to be able to control this order better - adding dynamic sections will always put them at the end, which is rarely what you want
 				ViewHashList: Object.keys(this.pict.views),
 				// If there is no customization to the filter or sort, just render the last set.
 				RenderLastRenderedViewsWithoutCustomization: true,
@@ -328,6 +552,27 @@ class PictFormMetacontroller extends libPictViewClass
 	}
 
 	/**
+	 * Marshals data to the form sections based on the provided filter and sort functions
+	 *
+	 * If no filter and sort functions are provided, render all form sections.
+	 *
+	 * @param {Function} [fFilterFunction] - The filter function used to filter the views.
+	 * @param {SortFunction} [fSortFunction] - The sort function used to sort the views.
+	 */
+	marshalFormSections(fFilterFunction, fSortFunction)
+	{
+		let tmpViewList = this.filterViews(fFilterFunction, fSortFunction);
+		for (let i = 0; i < tmpViewList.length; i++)
+		{
+			if (tmpViewList[i] === this)
+			{
+				continue;
+			}
+			tmpViewList[i].marshalToView();
+		}
+	}
+
+	/**
 	 * Regenerates the DyunamicForm section templates based on the provided filter and sort function.
 	 *
 	 * @param {Function} [fFormSectionFilter] - (optional) The filter function used to determine which views to include in the regeneration.
@@ -365,7 +610,7 @@ class PictFormMetacontroller extends libPictViewClass
 
 		if (!this.formTemplatePrefix)
 		{
-			this.formTemplatePrefix = this.pict.providers.MetatemplateGenerator.baseTemplatePrefix;;
+			this.formTemplatePrefix = this.pict.providers.MetatemplateGenerator.baseTemplatePrefix;
 		}
 
 		// Add the Form Prefix stuff
@@ -407,6 +652,100 @@ class PictFormMetacontroller extends libPictViewClass
 		tmpTemplate += `{~T:${this.formTemplatePrefix}-Template-Form-Container-Footer:Pict.views["${this.Hash}"]~}`;
 
 		this.pict.TemplateProvider.addTemplate(this.options.MetaTemplateHash, tmpTemplate);
+	}
+
+	/**
+	 * Generates a meta template for the DynamicForm views managed by this Metacontroller.
+	 *
+	 * @param {Function} [fFormSectionFilter] - (optional) The filter function to apply on the form section.
+	 * @param {SortFunction} [fSortFunction] - (optional) The sort function to apply on the form section.
+	 *
+	 * @return {void}
+	 */
+	updateMetatemplateInDOM(fFormSectionFilter, fSortFunction)
+	{
+		if (!this.formTemplatePrefix)
+		{
+			this.formTemplatePrefix = this.pict.providers.MetatemplateGenerator.baseTemplatePrefix;
+		}
+
+		let tmpViewList = this.filterViews(fFormSectionFilter, fSortFunction);
+		let tmpPrevDiv = null;
+		let tmpDeferredDivContent;
+		let tmpDeferredDivID = null;
+
+		for (let i = 0; i < tmpViewList.length; i++)
+		{
+			let tmpFormView = tmpViewList[i];
+			if (tmpFormView === this)
+			{
+				continue;
+			}
+			if (!tmpFormView.isPictSectionForm)
+			{
+				continue;
+			}
+			if (!tmpFormView.options.IncludeInMetatemplateSectionGeneration)
+			{
+				continue;
+			}
+			const tmpFormDivID = tmpFormView.options.CustomTargetID || `Pict-${this.UUID}-${tmpFormView.options.Hash}-Wrap`;
+			let tmpFormDivs = this.pict.ContentAssignment.getElement(`#${tmpFormDivID}`);
+			if (tmpFormDivs.length > 0)
+			{
+				const tmpFormDiv = tmpFormDivs[0];
+				if (tmpDeferredDivID)
+				{
+					// We have a deferred div ID, so we need to insert it before this one
+					this.pict.ContentAssignment.insertContentBefore(`#${tmpFormDivID}`, tmpDeferredDivContent);
+					tmpDeferredDivID = null;
+					tmpDeferredDivContent = null;
+				}
+				tmpPrevDiv = tmpFormDiv;
+				continue;
+			}
+			let tmpFormDivTemplate = '';
+			if (tmpFormView.options.IncludeInMetatemplateSectionGeneration)
+			{
+				tmpFormDivTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Prefix:Pict.views["${tmpFormView.Hash}"]~}`;
+				if (tmpFormView.isPictSectionForm)
+				{
+					tmpFormDivTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container:Pict.views["${tmpFormView.Hash}"]~}`;
+				}
+				else
+				{
+					//NOTE: For now, requiring the destination address to be an ID for this case
+					tmpFormView.options.CustomTargetID = tmpFormView.options.DefaultDestinationAddress.replace(/#/, '');
+					tmpFormDivTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Custom:Pict.views["${tmpFormView.Hash}"]~}`;
+				}
+				tmpFormDivTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Postfix:Pict.views["${tmpFormView.Hash}"]~}`;
+			}
+			else if (!tmpFormView.isPictSectionForm)
+			{
+				//NOTE: For now, requiring the destination address to be an ID for this case
+				tmpFormView.options.CustomTargetID = tmpFormView.options.DefaultDestinationAddress.replace(/#/, '');
+				tmpFormDivTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Prefix:Pict.views["${tmpFormView.Hash}"]~}`;
+				tmpFormDivTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Custom:Pict.views["${tmpFormView.Hash}"]~}`;
+				tmpFormDivTemplate += `\n{~T:${this.formTemplatePrefix}-Template-Form-Container-Wrap-Postfix:Pict.views["${tmpFormView.Hash}"]~}`;
+			}
+			const tmpFormDivContent = this.pict.parseTemplate(tmpFormDivTemplate, tmpFormView, null, [this]);
+			if (tmpPrevDiv)
+			{
+				this.pict.ContentAssignment.insertContentAfter(`#${tmpPrevDiv.id}`, tmpFormDivContent);
+				tmpFormDivs = this.pict.ContentAssignment.getElement(`#${tmpFormDivID}`);
+				tmpPrevDiv = tmpFormDivs[0];
+				continue;
+			}
+			tmpDeferredDivID = tmpFormDivID;
+			tmpDeferredDivContent = tmpFormDivContent;
+		}
+		if (tmpDeferredDivID)
+		{
+			// this means the container was empty, so just add it to the end
+			this.pict.ContentAssignment.appendContent(`#Pict-${this.UUID}-FormContainer`, tmpDeferredDivContent);
+			tmpDeferredDivID = null;
+			tmpDeferredDivContent = null;
+		}
 	}
 
 	/**
@@ -458,13 +797,32 @@ class PictFormMetacontroller extends libPictViewClass
 		}
 	}
 
+	getSectionViewFromHash(pSectionHash)
+	{
+		let tmpSectionHash = (typeof(pSectionHash) === 'string') ? pSectionHash : false;
+		if (!tmpSectionHash)
+		{
+			this.log.error('getSectionViewFromHash() called without a valid section hash.');
+			return false;
+		}
+		let tmpViewHash = `PictSectionForm-${tmpSectionHash}`;
+		if (tmpViewHash in this.fable.views)
+		{
+			return this.fable.views[tmpViewHash];
+		}
+		this.log.error(`getSectionViewFromHash() could not find a view for section hash [${tmpSectionHash}].`);
+		return false;
+	}
+
 	/**
 	 * Bootstraps Pict DynamicForm views from a Manyfest description JSON object.
 	 *
 	 * @param {Object} pManifestDescription - The manifest description object.
-	 * @returns {Array} - An array of section definitions.
+	 * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+	 *
+	 * @returns {Array<Record<string, any>>} - An array of section definitions added.
 	 */
-	bootstrapPictFormViewsFromManifest(pManifestDescription)
+	bootstrapPictFormViewsFromManifest(pManifestDescription, pAfterSectionHash)
 	{
 		let tmpManifestDescription = (typeof(pManifestDescription) === 'object') ? pManifestDescription : false;
 		let tmpSectionList = [];
@@ -484,13 +842,56 @@ class PictFormMetacontroller extends libPictViewClass
 				return tmpSectionList;
 			}
 		}
-
-		let tmpManifest = this.fable.instantiateServiceProviderWithoutRegistration('Manifest', tmpManifestDescription);
+		if (this.manifestDescription)
+		{
+			this.stashedManifestDescription = this.manifestDescription;
+			this.manifestDescription = tmpManifestDescription;
+			//FIXME: merge manifests more fully... should this be an external capability?
+			for (const [ tmpKey, tmpDescriptor ] of Object.entries(this.manifestDescription.Descriptors || {}))
+			{
+				if (this.stashedManifestDescription.Descriptors[tmpKey])
+				{
+					this.log.error(`PictFormMetacontroller.bootstrapPictFormViewsFromManifest() found a duplicate descriptor key [${tmpKey}] when merging manifests. The new descriptor will be skipped.`);
+					continue;
+				}
+				this.stashedManifestDescription.Descriptors[tmpKey] = JSON.parse(JSON.stringify(tmpDescriptor));
+			}
+			for (const tmpKey of Object.keys(this.manifestDescription.ReferenceManifests || {}))
+			{
+				if (this.stashedManifestDescription.ReferenceManifests[tmpKey])
+				{
+					this.log.warn(`PictFormMetacontroller.bootstrapPictFormViewsFromManifest() found a duplicate reference manifest key [${tmpKey}] when merging manifests. The new reference manifest will be skipped.`);
+					continue;
+				}
+				this.stashedManifestDescription.ReferenceManifests[tmpKey] = JSON.parse(JSON.stringify(this.manifestDescription.ReferenceManifests[tmpKey]));
+			}
+			let tmpInsertAtIndex = this.stashedManifestDescription.Sections.findIndex((pSection) => pSection.Hash == pAfterSectionHash);
+			if (tmpInsertAtIndex < 0)
+			{
+				tmpInsertAtIndex = 0;
+			}
+			else
+			{
+				// We want to insert AFTER the found index, so increment by 1
+				++tmpInsertAtIndex;
+			}
+			for (const tmpSection of this.manifestDescription.Sections || [])
+			{
+				const tmpClonedSection = JSON.parse(JSON.stringify(tmpSection));
+				this.stashedManifestDescription.Sections.splice(tmpInsertAtIndex, 0, tmpClonedSection);
+				++tmpInsertAtIndex;
+			}
+		}
+		else
+		{
+			this.manifestDescription = tmpManifestDescription;
+		}
+		let tmpManifest = this.fable.instantiateServiceProviderWithoutRegistration('Manifest', this.manifestDescription);
 
 		if (this.options.AutoPopulateDefaultObject)
 		{
 			// Fill out the defaults at the marshal location if it doesn't exist
-			let tmpMarshalDestinationObject = tmpManifest.getValueAtAddress(this, this.viewMarshalDestination);
+			const tmpMarshalDestinationObject = this.pict.providers.DataBroker.marshalDestinationObject;
 			if (typeof(tmpMarshalDestinationObject) === 'object')
 			{
 				tmpManifest.populateDefaults(tmpMarshalDestinationObject);
@@ -498,11 +899,11 @@ class PictFormMetacontroller extends libPictViewClass
 		}
 
 		// Get the list of Explicitly Defined section hashes from the Sections property of the manifest
-		if (('Sections' in tmpManifestDescription) && Array.isArray(tmpManifestDescription.Sections))
+		if (('Sections' in this.manifestDescription) && Array.isArray(this.manifestDescription.Sections))
 		{
-			for (let i = 0; i < tmpManifestDescription.Sections.length; i++)
+			for (let i = 0; i < this.manifestDescription.Sections.length; i++)
 			{
-				let tmpSectionDefinition = this.getSectionDefinition(tmpManifestDescription.Sections[i]);
+				let tmpSectionDefinition = this.getSectionDefinition(this.manifestDescription.Sections[i]);
 
 				if (tmpSectionDefinition)
 				{
@@ -518,6 +919,11 @@ class PictFormMetacontroller extends libPictViewClass
 		for (let i = 0; i < tmpDescriptorKeys.length; i++)
 		{
 			let tmpDescriptor = tmpManifest.elementDescriptors[tmpDescriptorKeys[i]];
+
+			if (tmpDescriptor)
+			{
+				this.pict.manifest.addDescriptor(tmpDescriptorKeys[i], tmpDescriptor);
+			}
 
 			if (
 					// If there is an object in the descriptor
@@ -563,61 +969,226 @@ class PictFormMetacontroller extends libPictViewClass
 			{
 				tmpViewConfiguration.Manifests = {};
 			}
-			tmpViewConfiguration.Manifests.Section = tmpManifestDescription;
+			tmpViewConfiguration.Manifests.Section = this.manifestDescription;
 			tmpViewConfiguration.AutoMarshalDataOnSolve = this.options.AutoMarshalDataOnSolve;
 			this.pict.addView(tmpViewHash, tmpViewConfiguration, libPictViewDynamicForm);
 		}
 
-		if ('PickLists' in tmpManifestDescription)
+		if ('PickLists' in this.manifestDescription)
 		{
-			let tmpPickListKeys = Object.keys(tmpManifestDescription.PickLists);
+			let tmpPickListKeys = Object.keys(this.manifestDescription.PickLists);
 			for (let i = 0; i < tmpPickListKeys.length; i++)
 			{
-				let tmpPickList = tmpManifestDescription.PickLists[tmpPickListKeys[i]];
+				let tmpPickList = this.manifestDescription.PickLists[tmpPickListKeys[i]];
 				this.pict.providers.DynamicMetaLists.buildList(tmpPickList);
 			}
 		}
 
-		this.manifest = tmpManifest;
+		// Now see if there is custom CSS
+		for (let i = 0; i < tmpSectionList.length; i++)
+		{
+			let tmpSection = tmpSectionList[i];
+			if (('CustomCSS' in tmpSection) && (typeof(tmpSection.CustomCSS) == 'string'))
+			{
+				this.pict.CSSMap.addCSS(`PSF-SectionCSS-${tmpSection.Hash}`, tmpSection.CustomCSS);
+			}
+		}
 
+		if (this.stashedManifestDescription)
+		{
+			this.manifestDescription = this.stashedManifestDescription;
+			delete this.stashedManifestDescription;
+		}
 		return tmpSectionList;
 	}
 
 	/**
 	 * Trigger an event on all inputs on all views.
 	 * @param {string} pEvent - The event to trigger
+	 * @param {string} [pTransactionGUID] - (optional) The transaction GUID to use for the event.
 	 */
-	triggerGlobalInputEvent(pEvent)
+	triggerGlobalInputEvent(pEvent, pTransactionGUID)
 	{
+		const tmpTransactionGUID = (pTransactionGUID && typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
 		let tmpEvent = (typeof(pEvent) === 'string') ? pEvent : this.fable.getUUID();
 		let tmpViewHashes = Object.keys(this.pict.views);
 		let tmpCompletedHashes = {};
+		/** @type {import('./Pict-View-DynamicForm.js')} */
+		let tmpFinalizeView = null;
 		// Filter the views based on the filter function and type
 		for (let i = 0; i < tmpViewHashes.length; i++)
 		{
+			/** @type {import('./Pict-View-DynamicForm.js')} */
 			let tmpView = this.pict.views[tmpViewHashes[i]];
 			if (tmpView.isPictSectionForm)
 			{
-				tmpView.globalInputEvent(tmpEvent, tmpCompletedHashes);
+				tmpFinalizeView = tmpView;
+				tmpView.sectionInputEvent(tmpEvent, tmpCompletedHashes, tmpTransactionGUID);
 			}
+		}
+		if (pTransactionGUID !== tmpTransactionGUID && tmpFinalizeView)
+		{
+			// If we created the transaction GUID, we need to finalize it
+			tmpFinalizeView.finalizeTransaction(tmpTransactionGUID);
 		}
 	}
 
 	/**
-	 * Add a dynamic view to the metacontroller.
-	 * @param {string} pViewHash
-	 * @param {Object} pViewConfiguration
-	 * @return {libPictViewDynamicForm}
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {string} pAsyncOperationHash - The hash of the async operation.
 	 */
-	addDynamicView(pViewHash, pViewConfiguration)
+	registerEventTransactionAsyncOperation(pTransactionGUID, pAsyncOperationHash)
 	{
-		if (pViewHash in this.pict.views)
-		{
-			this.log.error(`addDynamicView() called with a view hash that already exists [${pViewHash}].`);
-			return null;
-		}
+		this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, pAsyncOperationHash, PENDING_ASYNC_OPERATION_TYPE);
+	}
 
-		return this.pict.addView(pViewHash, pViewConfiguration, libPictViewDynamicForm);
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {string} pAsyncOperationHash - The hash of the async operation.
+	 *
+	 * @return {boolean} - Returns true if the async operation was found and marked as complete, otherwise false.
+	 */
+	eventTransactionAsyncOperationComplete(pTransactionGUID, pAsyncOperationHash)
+	{
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpPendingAsyncOperationCount = 0;
+		let tmpMarkedOperationCount = 0;
+		let tmpFinalized = false;
+		for (let i = 0; i < tmpQueue.length; i++)
+		{
+			const tmpQueueItem = tmpQueue[i];
+			if (tmpQueueItem.Type === PENDING_ASYNC_OPERATION_TYPE)
+			{
+				if (tmpQueueItem.Data === pAsyncOperationHash)
+				{
+					tmpQueue.splice(i, 1);
+					++tmpMarkedOperationCount;
+					--i;
+				}
+				else
+				{
+					++tmpPendingAsyncOperationCount;
+				}
+			}
+			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
+			{
+				tmpFinalized = true;
+			}
+		}
+		if (tmpPendingAsyncOperationCount === 0)
+		{
+			for (const tmpQueueItem of tmpQueue)
+			{
+				if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
+				{
+					if (typeof tmpQueueItem.Data !== 'function')
+					{
+						this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
+						continue;
+					}
+					try
+					{
+						tmpQueueItem.Data();
+					}
+					catch (pError)
+					{
+						this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback error: ${pError}`, { Stack: pError.stack });
+					}
+				}
+			}
+		}
+		return tmpMarkedOperationCount > 0;
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 *
+	 * @return {boolean} - Returns true if the transaction was found and able to be finalized, otherwise false.
+	 */
+	finalizeTransaction(pTransactionGUID)
+	{
+		this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, null, READY_TO_FINALIZE_TYPE);
+
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpPendingAsyncOperationCount = 0;
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === PENDING_ASYNC_OPERATION_TYPE)
+			{
+				++tmpPendingAsyncOperationCount;
+			}
+		}
+		if (tmpPendingAsyncOperationCount > 0)
+		{
+			this.pict.log.info(`PICT View Metatemplate Helper finalizeTransaction ${pTransactionGUID} is waiting on ${tmpPendingAsyncOperationCount} pending async operations.`);
+			return false;
+		}
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
+			{
+				if (typeof tmpQueueItem.Data !== 'function')
+				{
+					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
+					continue;
+				}
+				try
+				{
+					tmpQueueItem.Data();
+				}
+				catch (pError)
+				{
+					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback error: ${pError}`, { Stack: pError.stack });
+				}
+			}
+		}
+		//TODO: figure out how to safely clean up old transactions
+		//delete this.pict.TransactionTracking.transactions[pTransactionGUID];
+		return true;
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {Function} fCallback - The callback to call when the transaction is complete.
+	 */
+	registerOnTransactionCompleteCallback(pTransactionGUID, fCallback)
+	{
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpFinalized = false;
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
+			{
+				tmpFinalized = true;
+				break;
+			}
+		}
+		if (tmpFinalized)
+		{
+			fCallback();
+		}
+		else
+		{
+			this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, fCallback, TRANSACTION_COMPLETE_CALLBACK_TYPE);
+		}
+	}
+
+	showSupportViewInlineEditor()
+	{
+		// 1. See if the Support views are loaded
+		// 2. Load the support view if it isn't
+		this.pict.addViewSingleton("Pict-Form-DebugViewer", {}, this.SupportViewPrototypes.DebugViewer);
+		this.pict.addViewSingleton("Pict-Form-AppDataViewer", {}, this.SupportViewPrototypes.AppDataViewer);
+//		this.pict.addViewSingleton("Pict-Form-LifecycleVisualization", {}, this.SupportViewPrototypes.LifecycleVisualization);
+		this.pict.addViewSingleton("Pict-Form-SolverVisualization", {}, this.SupportViewPrototypes.SolverVisualization);
+//		this.pict.addViewSingleton("Pict-Form-SpecificSolveVisualization", {}, this.SupportViewPrototypes.SpecificSolveVisualization);
+	
+		// 3. See if the container for the support view is loaded
+		// 4. Render the container for the support view if it isn't loaded
+		this.pict.views["Pict-Form-DebugViewer"].bootstrapContainer();
+	
+		// 5. Render the support view into the container
+		this.pict.views["Pict-Form-DebugViewer"].render();
 	}
 
 	/**
@@ -632,6 +1203,7 @@ class PictFormMetacontroller extends libPictViewClass
 }
 
 module.exports = PictFormMetacontroller;
+/** @type {Record<string, any>} */
 module.exports.default_configuration = (
 {
 	"AutoRender": true,

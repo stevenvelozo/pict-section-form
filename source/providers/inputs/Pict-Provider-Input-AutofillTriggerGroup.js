@@ -15,7 +15,7 @@ const libPictSectionInputExtension = require('../Pict-Provider-InputExtension.js
 	Providers: ["Pict-Input-AutofillTriggerGroup"],
 	AutofillTriggerGroup:
 		{
-			TriggerGroupName: "Author",
+			TriggerGroupHash: "Author",
 			TriggerAddress: "AppData.CurrentAuthor.Name",
 			MarshalEmptyValues: true
 		}
@@ -42,6 +42,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 	getTriggerGroupConfigurationArray(pInput)
 	{
 		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
+		if (!tmpAutoFillTriggerGroups)
+		{
+			return [];
+		}
 		if (!Array.isArray(tmpAutoFillTriggerGroups))
 		{
 			tmpAutoFillTriggerGroups = [tmpAutoFillTriggerGroups];
@@ -49,23 +53,23 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return tmpAutoFillTriggerGroups;
 	}
 
-	autoFillFromAddressList(pView, pInput, tmpTriggerGroupInfo, pHTMLSelector)
+	autoFillFromAddressList(pView, pInput, pTriggerGroupInfo, pHTMLSelector)
 	{
 		// First sanity check the triggergroupinfo
-		if (!('TriggerGroupName' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerGroupName) != 'string'))
+		if (!('TriggerGroupHash' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerGroupHash) != 'string'))
 		{
-			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupName string is not present.`);
+			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupHash string is not present.`);
 			return false;
 		}
-		if (!('TriggerAddress' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerAddress) != 'string'))
+		if (!('TriggerAddress' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerAddress) != 'string'))
 		{
 			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerAddress string is not present.`);
 			return false;
 		}
 
-		let tmpValue = this.pict.manifest.getValueByHash(this.pict, tmpTriggerGroupInfo.TriggerAddress);
+		let tmpValue = this.pict.manifest.getValueByHash(this.pict, pTriggerGroupInfo.TriggerAddress);
 
-		if ((!tmpValue) && !tmpTriggerGroupInfo.MarshalEmptyValues)
+		if ((!tmpValue) && !pTriggerGroupInfo.MarshalEmptyValues)
 		{
 			return false;
 		}
@@ -75,29 +79,29 @@ class CustomInputHandler extends libPictSectionInputExtension
 		return true;
 	}
 
-	autoFillFromAddressListTabular(pView, pInput, tmpTriggerGroupInfo, pHTMLSelector, pRowIndex)
+	autoFillFromAddressListTabular(pView, pInput, pTriggerGroupInfo, pHTMLSelector, pRowIndex)
 	{
 		// First sanity check the triggergroupinfo
-		if (!('TriggerGroupName' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerGroupName) != 'string'))
+		if (!('TriggerGroupHash' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerGroupHash) != 'string'))
 		{
-			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupName string is not present.`);
+			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerGroupHash string is not present.`);
 			return false;
 		}
-		if (!('TriggerAddress' in tmpTriggerGroupInfo) || (typeof(tmpTriggerGroupInfo.TriggerAddress) != 'string'))
+		if (!('TriggerAddress' in pTriggerGroupInfo) || (typeof(pTriggerGroupInfo.TriggerAddress) != 'string'))
 		{
 			this.log.warn(`AutofillTriggerGroup failed to autofill because a TriggerAddress string is not present.`);
 			return false;
 		}
 
-		let tmpValue = this.pict.manifest.getValueByHash(this.pict, tmpTriggerGroupInfo.TriggerAddress);
+		let tmpValue = this.pict.manifest.getValueByHash(this.pict, pTriggerGroupInfo.TriggerAddress);
 
-		if ((!tmpValue) && !tmpTriggerGroupInfo.MarshalEmptyValues)
+		if ((!tmpValue) && !pTriggerGroupInfo.MarshalEmptyValues)
 		{
 			return false;
 		}
 		// Setting data is in the view intentionally, to allow triggered events.  Probabbly needs to be a separate provider.
-		pView.setDataByInputTabular(pInput.PictForm.GroupIndex, pInput.Hash, pRowIndex, tmpValue);
-		pView.manualMarshalDataToViewByInput(pInput);
+		pView.setDataTabularByHash(pInput.PictForm.GroupIndex, pInput.Hash, pRowIndex, tmpValue);
+		pView.manualMarshalTabularDataToViewByInput(pInput, pRowIndex);
 		return true;
 	}
 
@@ -109,22 +113,26 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The new value of the input.
 	 * @param {string} pHTMLSelector - The HTML selector of the input.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
 	 * @returns {any} - The result of the super.onDataChange method.
 	 */
-	onDataChange(pView, pInput, pValue, pHTMLSelector)
+	onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		let tmpTriggerGroupConfigurations = this.getTriggerGroupConfigurationArray(pInput);
-		if (Array.isArray(tmpTriggerGroupConfigurations))
+		if (Array.isArray(tmpTriggerGroupConfigurations) && this.pict.views.PictFormMetacontroller)
 		{
 			for (let i = 0; i < tmpTriggerGroupConfigurations.length; i++)
 			{
-				if (tmpTriggerGroupConfigurations[i].TriggerAllInputs)
+				const tmpGroupConfig = tmpTriggerGroupConfigurations[i];
+				if (tmpGroupConfig.TriggerAllInputs)
 				{
-					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`AFTG-ODC-${this.pict.getUUID()}`);
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(
+						`TriggerGroup:${tmpGroupConfig.TriggerGroupHash}:DataChange:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`,
+						pTransactionGUID);
 				}
 			}
 		}
-		return super.onDataChange(pView, pInput, pValue, pHTMLSelector);
+		return super.onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
@@ -135,34 +143,52 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The new value.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {number} pRowIndex - The index of the row.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
 	 * @returns {any} - The result of the super method.
 	 */
-	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
+	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
 		let tmpTriggerGroupConfigurations = this.getTriggerGroupConfigurationArray(pInput);
-		if (Array.isArray(tmpTriggerGroupConfigurations))
+		if (Array.isArray(tmpTriggerGroupConfigurations) && this.pict.views.PictFormMetacontroller)
 		{
 			for (let i = 0; i < tmpTriggerGroupConfigurations.length; i++)
 			{
-				if (tmpTriggerGroupConfigurations[i].TriggerAllInputs)
+				const tmpGroupConfig = tmpTriggerGroupConfigurations[i];
+				if (tmpGroupConfig.TriggerAllInputs)
 				{
-					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`AFTG-ODC-${this.pict.getUUID()}`);
+					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(
+						`TriggerGroup:${tmpGroupConfig.TriggerGroupHash}:DataChange:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`,
+						pTransactionGUID);
 				}
 			}
 		}
-		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex);
+		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 
-	// This input extension only responds to events
-	onEvent(pView, pInput, pValue, pHTMLSelector, pEvent)
+	/**
+	 * This input extension only responds to events
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value from AppData.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
+	 * @returns {boolean} - Returns true.
+	 */
+	onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID)
 	{
-		// Get all inputs that are in this autofill trigger group
-		let tmpEventGUID = (typeof(pEvent) === 'string') ? pEvent : this.pict.getUUID();
+		const tmpPayload = typeof pEvent === 'string' ? pEvent : '';
+		let [ tmpType, tmpGroupHash, tmpEvent, tmpInputHash, tmpEventGUID ] = tmpPayload.split(':');
+		if (!tmpEventGUID)
+		{
+			tmpEventGUID = this.pict.getUUID();
+		}
 
 		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
-		if (!tmpAutoFillTriggerGroups)
+		if (!tmpAutoFillTriggerGroups || tmpType !== 'TriggerGroup' || (pInput.Hash || pInput.DataAddress) == tmpInputHash)
 		{
-			return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);			
+			return super.onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
 		}
 		if (!Array.isArray(tmpAutoFillTriggerGroups))
 		{
@@ -171,7 +197,12 @@ class CustomInputHandler extends libPictSectionInputExtension
 		for (let i = 0; i < tmpAutoFillTriggerGroups.length; i++)
 		{
 			let tmpAutoFillTriggerGroup = tmpAutoFillTriggerGroups[i];
+			if (tmpAutoFillTriggerGroup.TriggerGroupHash !== tmpGroupHash)
+			{
+				continue;
+			}
 
+			//FIXME: why is this check here? revisit
 			if ('TriggerAddress' in tmpAutoFillTriggerGroup)
 			{
 				// Autofill based on the address list as it isn't a select option
@@ -189,26 +220,53 @@ class CustomInputHandler extends libPictSectionInputExtension
 			}
 		}
 
-		return super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent);
+		return super.onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
 	}
 
-	onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent)
+	/**
+	 * Handles events for the Pict-Provider-InputExtension.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value from AppData.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {number} pRowIndex - The row index of the tabular data.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
+	 * @returns {boolean} - Returns true.
+	 */
+	onAfterEventTabularCompletion(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID)
 	{
-		let tmpEventGUID = (typeof(pEvent) === 'string') ? pEvent : this.pict.getUUID();
+		const tmpPayload = typeof pEvent === 'string' ? pEvent : '';
+		let [ tmpType, tmpGroupHash, tmpEvent, tmpInputHash, tmpEventGUID ] = tmpPayload.split(':');
+		if (!tmpEventGUID)
+		{
+			tmpEventGUID = this.pict.getUUID();
+		}
 
-		if (!pInput.PictForm.hasOwnProperty('AutofillTriggerGroup'))
+		if (!pInput.PictForm.AutofillTriggerGroup || tmpType !== 'TriggerGroup' || (pInput.Hash || pInput.DataAddress) == tmpInputHash)
 		{
 			// Do nothing for now -- this is the triggering element
+			return super.onAfterEventTabularCompletion(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID);
 		}
-		else if (pInput.PictForm.hasOwnProperty('AutofillTriggerGroup') && 
-			(!('SelectOptionsRefresh' in pInput.PictForm.AutofillTriggerGroup) || !pInput.PictForm.AutofillTriggerGroup.SelectOptionsRefresh))
+		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
+		if (!Array.isArray(tmpAutoFillTriggerGroups))
 		{
-			// Autofill based on the address list as it isn't a select option
-			this.autoFillFromAddressListTabular(pView, pInput, pHTMLSelector, pRowIndex);
+			tmpAutoFillTriggerGroups = [tmpAutoFillTriggerGroups];
 		}
-		else if (pInput.PictForm.AutofillTriggerGroup.SelectOptionsRefresh)
+		for (const tmpAutoFillTriggerGroup of tmpAutoFillTriggerGroups)
 		{
-			if (!pInput.PictForm.SelectOptionsPickList)
+			if (tmpAutoFillTriggerGroup.TriggerGroupHash !== tmpGroupHash)
+			{
+				continue;
+			}
+			//FIXME: why is this flow different from non-tabular? revisit
+			if (!tmpAutoFillTriggerGroup.SelectOptionsRefresh)
+			{
+				// Autofill based on the address list as it isn't a select option
+				this.autoFillFromAddressListTabular(pView, pInput, tmpAutoFillTriggerGroup, pHTMLSelector, pRowIndex);
+			}
+			else if (!pInput.PictForm.SelectOptionsPickList)
 			{
 				// There is no select options picklist so we can't auto refresh it.
 			}
@@ -224,7 +282,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			}
 		}
 
-		return super.onEventTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent);
+		return super.onAfterEventTabularCompletion(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID);
 	}
 }
 

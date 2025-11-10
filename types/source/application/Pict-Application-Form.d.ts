@@ -22,12 +22,5 @@ declare namespace PictSectionFormApplication {
     export { default_configuration };
 }
 import libPictApplication = require("pict-application");
-declare namespace default_configuration {
-    let Name: string;
-    let Hash: string;
-    let MainViewportViewIdentifier: string;
-    namespace pict_configuration {
-        let Product: string;
-    }
-}
+declare const default_configuration: Record<string, any>;
 //# sourceMappingURL=Pict-Application-Form.d.ts.map

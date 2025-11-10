@@ -9,7 +9,6 @@
     },
     "author": "steven",
     "license": "MIT",
-    "devDependencies": {},
     "copyFilesSettings": {
         "whenFileExists": "overwrite"
     },
@@ -21,6 +20,13 @@
         {
             "from": "../../node_modules/pict/dist/*",
             "to": "./dist/"
+        },
+        {
+            "from": "./node_modules/chart.js/dist/chart.umd*",
+            "to": "./dist/"
         }
-    ]
+    ],
+    "devDependencies": {
+        "chart.js": "^4.5.1"
+    }
 }

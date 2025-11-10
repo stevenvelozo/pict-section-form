@@ -1,6 +1,6 @@
 {
     "name": "pict-section-form",
-    "version": "1.0.76",
+    "version": "1.0.152",
     "description": "Pict dynamic form sections",
     "main": "source/Pict-Section-Form.js",
     "directories": {
@@ -21,30 +21,34 @@
         "build": "npx quack build",
         "test": "npx mocha -u tdd -R spec",
         "lint": "eslint source/**",
-        "types": "tsc -p ."
+        "types": "tsc -p .",
+        "docker-dev-build": "docker build ./ -f Dockerfile_LUXURYCode -t pict-section-form-image:local",
+        "docker-dev-run": "docker run -it -d --name pict-section-form-dev -p 48888:8080 -p 49999:9999 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-section-form\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-section-form-image:local",
+        "docker-dev-shell": "docker exec -it pict-section-form-dev /bin/bash"
     },
     "types": "types/source/Pict-Section-Form.d.ts",
     "author": "steven velozo <steven@velozo.com>",
     "license": "MIT",
     "devDependencies": {
-        "@eslint/js": "^9.21.0",
+        "@eslint/js": "^9.38.0",
         "browser-env": "^3.3.0",
-        "eslint": "^9.21.0",
+        "eslint": "^9.38.0",
         "jquery": "^3.7.1",
-        "pict": "^1.0.234",
-        "pict-application": "^1.0.24",
-        "pict-service-commandlineutility": "^1.0.15",
-        "quackage": "^1.0.38",
+        "pict": "^1.0.325",
+        "pict-application": "^1.0.29",
+        "pict-service-commandlineutility": "^1.0.16",
+        "quackage": "^1.0.45",
         "tui-grid": "^4.21.22",
-        "typescript": "^5.7.3"
+        "typescript": "^5.9.3"
     },
     "dependencies": {
+        "chart.js": "^4.5.1",
         "fable-serviceproviderbase": "^3.0.15",
-        "marked": "^15.0.7",
-        "pict-provider": "^1.0.3",
+        "marked": "^15.0.12",
+        "pict-provider": "^1.0.6",
         "pict-section-tuigrid": "^1.0.27",
-        "pict-template": "^1.0.10",
-        "pict-view": "^1.0.59"
+        "pict-template": "^1.0.13",
+        "pict-view": "^1.0.63"
     },
     "mocha": {
         "diff": true,

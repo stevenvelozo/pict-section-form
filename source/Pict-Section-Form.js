@@ -5,7 +5,7 @@ module.exports = require('./views/Pict-View-DynamicForm.js');
 //module.exports.default_configuration = require('./views/Pict-View-DynamicForm-DefaultConfiguration.json');
 
 // The dynamic application dependencies
-module.exports.PictDynamicApplicationService = require('./services/Pict-Service-DynamicApplication.js');
+module.exports.PictDynamicFormDependencyManager = require('./services/Pict-Service-DynamicFormDependencyManager.js');
 
 // The base provider class for form section templates; meant to be subclassed
 module.exports.PictFormTemplateProvider = require('./providers/Pict-Provider-DynamicTemplates.js');
@@ -24,3 +24,15 @@ module.exports.PictDynamicLayoutProvider = require('./providers/Pict-Provider-Dy
 
 // The ManifestFactory, for when we want to convert tabular data to configuration
 module.exports.ManifestFactory = require('./services/ManifestFactory.js');
+module.exports.ManifestConversionToCSV = require('./services/ManifestConversionToCSV.js');
+
+// Reveal the support base class
+module.exports.PictFormSupportBase = require('./views/support/Pict-View-PSF-SupportBase.js');
+
+
+// The extension views
+module.exports.ExtensionViews = (
+	{
+		LifecycleVisualization: require('./views/support/Pict-View-PSF-LifeCycle-Visualization.js'),
+		DebugViewer: require('./views/support/Pict-View-PSF-DebugViewer.js')
+	});

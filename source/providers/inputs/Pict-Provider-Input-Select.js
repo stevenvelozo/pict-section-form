@@ -126,14 +126,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 		tmpListData = this.pict.providers.ListDistilling.filterList(pView, pInput, tmpListData);
 
 		// TODO: Determine later if this should ever be an array.
-		if (tmpInputSelectElement && tmpInputSelectElement.length > 0)
+		if (!Array.isArray(tmpInputSelectElement) || tmpInputSelectElement.length < 1)
 		{
-			tmpInputSelectElement = tmpInputSelectElement[0];
+			return;
 		}
-		else
-		{
-			return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
-		}
+
+		tmpInputSelectElement = tmpInputSelectElement[0];
+
 		// HAX
 		tmpInputSelectElement.innerHTML = '';
 
@@ -158,12 +157,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The input value.
 	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {boolean} - Returns true if the input element is successfully initialized, false otherwise.
 	 */
-	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
+	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		this.refreshSelectList(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
-		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
+		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
@@ -175,12 +175,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The input value.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {number} pRowIndex - The index of the row.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {any} - The result of the initialization.
 	 */
-	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
+	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
 		this.refreshSelectListTabular(pView, pGroup, pView.getRow(pInput.PictForm.GroupIndex, pRowIndex), pInput, pValue, pHTMLSelector, pRowIndex);
-		return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
+		return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 
 	/**
@@ -190,11 +191,12 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The new value of the input.
 	 * @param {string} pHTMLSelector - The HTML selector of the input.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {any} - The result of the super.onDataChange method.
 	 */
-	onDataChange(pView, pInput, pValue, pHTMLSelector)
+	onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
-		return super.onDataChange(pView, pInput, pValue, pHTMLSelector);
+		return super.onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
@@ -205,11 +207,12 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The new value.
 	 * @param {string} pHTMLSelector - The HTML selector.
 	 * @param {number} pRowIndex - The index of the row.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {any} - The result of the super method.
 	 */
-	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex)
+	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
-		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex);
+		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 
 	/**
@@ -221,9 +224,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The value to be marshaled.
 	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {boolean} - Returns true if the value is successfully marshaled to the form, otherwise false.
 	 */
-	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector)
+	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		/** @type {Array<HTMLElement>|HTMLElement} */
 		const tmpInputSelectElements = this.pict.ContentAssignment.getElement(this.getSelectInputHTMLID(pInput.Macro.RawHTMLID));
@@ -255,7 +259,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			//this.log.error(`The value [${pValue}] was not found in the select options for input [${pInput.Macro.RawHTMLID}] but was set in the hidden HTML input.`);
 		}
 
-		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector);
+		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
@@ -267,20 +271,21 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {any} pValue - The value parameter.
 	 * @param {string} pHTMLSelector - The HTML selector parameter.
 	 * @param {number} pRowIndex - The row index parameter.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {any} - The result of the data marshaling.
 	 */
-	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex)
+	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
 		/** @type {Array<HTMLElement>|HTMLElement} */
 		const tmpInputSelectElements = this.pict.ContentAssignment.getElement(this.getTabularSelectDropdownID(pInput.Macro.RawHTMLID, pRowIndex));
 		if (!tmpInputSelectElements || tmpInputSelectElements.length < 1)
 		{
-			return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
+			return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 		}
 		const tmpInputSelectElement = tmpInputSelectElements[0];
 		if (!(tmpInputSelectElement instanceof HTMLSelectElement))
 		{
-			return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
+			return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 		}
 
 		let tmpValueSelected = false;
@@ -301,7 +306,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 			//this.log.error(`The value [${pValue}] was not found in the select options for input [${pInput.Macro.RawHTMLID}] but was set in the hidden HTML input.`);
 		}
 
-		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex);
+		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 
 	/**

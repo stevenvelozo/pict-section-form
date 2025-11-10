@@ -1,5 +1,6 @@
 const libPictProvider = require('pict-provider');
 
+/** @type {Record<string, any>} */
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-MetaList",
@@ -167,8 +168,15 @@ class PictMetalist extends libPictProvider
 			return false;
 		}
 
+		if (!this.pict.views.PictFormMetacontroller)
+		{
+			this.log.error(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] requires PictFormMetacontroller but not found. Skipping.`);
+			this.computedLists[pListObject.Hash] = [];
+			return false;
+		}
+
 		// Now try to fetch the list data
-		let tmpListData = this.pict.views.PictFormMetacontroller.getValueByHash(pListObject.ListSourceAddress);
+		let tmpListData = this.pict.providers.DataBroker.getValueByHash(pListObject.ListSourceAddress);
 		if (!tmpListData)
 		{
 			//this.log.warn(`Dynamic MetaList Provider [${this.UUID}]::[${this.Hash}] failed to fetch the list data for PickList [${pListObject.Hash}]. Skipping.`);

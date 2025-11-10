@@ -44,6 +44,7 @@ class PictSectionFormApplication extends libPictApplication
 
 module.exports = PictSectionFormApplication
 
+/** @type {Record<string, any>} */
 module.exports.default_configuration = (
 {
 	"Name": "A Simple Pict Forms Application",

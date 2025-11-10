@@ -171,15 +171,23 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-Template-Input-DataType-PreciseNumber",
-			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
 			"Template": /*HTML*/`
 					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-PreciseNumberReadOnly",
+			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
+			"Template": /*HTML*/`
+					<!-- InputType PreciseNumberReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
 					<span>{~D:Record.Name~}:</span>
 					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
-					<input type="Number" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" {~D:Record.Macro.InputChangeHandler~} value="">
+					<input type="text" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" value="" readonly="readonly">
 
 `
 		},
+
 		{
 			"HashPostfix": "-Template-Input-InputType-TextArea",
 			"Template": /*HTML*/`
@@ -213,10 +221,45 @@ Glug glug glug Oo... -->
 `
 		},
 		{
+			"HashPostfix": "-Template-Input-InputType-Color",
+			"Template": /*HTML*/`
+					<!-- InputType Color {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <input type="color" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} />
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-DisplayOnly",
+			"Template": /*HTML*/`
+					<!-- InputType DisplayOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <span {~D:Record.Macro.InputFullProperties~}></span>
+`
+		},
+		{
 			"HashPostfix": "-Template-Input-InputType-ReadOnly",
 			"Template": /*HTML*/`
 					<!-- InputType ReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
 					<span>{~D:Record.Name~}:</span> <input type="text" readonly {~D:Record.Macro.InputFullProperties~}></input>
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-Link",
+			"DefaultInputExtensions": ["Pict-Input-Link"],
+			"Template": /*HTML*/`
+					<!-- InputType Link {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
+					<a id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}">{~D:Record.Name~}</a>
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-Chart",
+			"DefaultInputExtensions": ["Pict-Input-Chart"],
+			"Template": /*HTML*/`
+					<!-- InputType Chart {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<div style="width:{~DWAF:Record.PictForm.QuantizedWidth:100~}%; display:inline-block;">
+						<input type="hidden" id="CONFIG-FOR-{~D:Record.Macro.RawHTMLID~}" value="">
+						<h3><span>{~D:Record.Name~}:</span></h3>
+						<div style="width:100%;"><canvas id="CANVAS-FOR-{~D:Record.Macro.RawHTMLID~}" {~D:Record.Macro.InputFullProperties~}></canvas></div>
+					</div>
 `
 		},
 		{
@@ -237,6 +280,16 @@ Glug glug glug Oo... -->
 					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 					<span>{~D:Record.Name~}:</span>
 					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-html"></div>
+`
+		},
+		{
+			"HashPostfix": "-Template-Input-InputType-TemplatedEntityLookup",
+			"DefaultInputExtensions": ["Pict-Input-TemplatedEntityLookup"],
+			"Template": /*HTML*/`
+					<!-- InputType TemplatedEntityLookup {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}"></div>
 `
 		},
 		/*
@@ -280,15 +333,26 @@ Glug glug glug Oo... -->
 		},
 		{
 			"HashPostfix": "-VerticalTemplate-Input-DataType-PreciseNumber",
-			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
 			"Template": /*HTML*/`
 					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
 				<div class="pict-form-vertical-input">
-					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
 					<span>{~D:Record.Name~}:</span>
 					<span>{~D:Record.PictForm.ExtraDescription~}</span>
-					<input type="Number" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" {~D:Record.Macro.InputChangeHandler~} value="">
+					<input type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-PreciseNumberReadOnly",
+			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
+			"Template": /*HTML*/`
+					<!-- InputType PreciseNumberReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<div class="pict-form-vertical-input">
+						<span>{~D:Record.Name~}:</span>
+						<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
+						<input type="text" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" value="" readonly="readonly">
+					</div>
+
 `
 		},
 		{
@@ -340,6 +404,28 @@ Glug glug glug Oo... -->
 `
 		},
 		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-Color",
+			"Template": /*HTML*/`
+					<!-- InputType Color {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<input type="color" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} />
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-DisplayOnly",
+			"Template": /*HTML*/`
+					<!-- InputType DisplayOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<span {~D:Record.Macro.InputFullProperties~}></span>
+				</div>
+`
+		},
+		{
 			"HashPostfix": "-VerticalTemplate-Input-InputType-ReadOnly",
 			"Template": /*HTML*/`
 					<!-- InputType ReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
@@ -347,6 +433,17 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span>
 					<span>{~D:Record.PictForm.ExtraDescription~}</span>
 					<input type="text" readonly {~D:Record.Macro.InputFullProperties~}></input>
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-Link",
+			"DefaultInputExtensions": ["Pict-Input-Link"],
+			"Template": /*HTML*/`
+					<!-- InputType Link {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
+					<a {~D:Record.Macro.InputFullProperties~}>{~D:Record.Name~}</a>
 				</div>
 `
 		},
@@ -373,6 +470,19 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span>
 					<span>{~D:Record.PictForm.ExtraDescription~}</span>
 					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-html"></div>
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-TemplatedEntityLookup",
+			"DefaultInputExtensions": ["Pict-Input-TemplatedEntityLookup"],
+			"Template": /*HTML*/`
+					<!-- InputType TemplatedEntityLookup {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}"></div>
 				</div>
 `
 		},
@@ -494,6 +604,90 @@ Glug glug glug Oo... -->
 		 * [ External Control Templates END ]
 		 *
 		 */
+
+
+		/*
+		 *
+		 * [ RecordSet Templates START ]
+		 *
+		 */
+		{
+			"HashPostfix": "-RecordSetTemplate-Group-Prefix",
+			"Template": /*HTML*/`
+			<div {~D:Record.Macro.PictFormLayout~}>
+			<!-- Form RecordSet Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+`
+		},
+		{
+			"HashPostfix": "-RecordSetTemplate-Group-Postfix",
+			"Template": /*HTML*/`
+			<div><a href="#/" onclick="{~D:Record.Macro.TabularCreateRowFunctionCall~}">create</a></div>
+			</div>
+			<!-- Form RecordSet Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
+`
+		},
+
+
+		/*
+		 * BEGIN RecordSet Template "Extra" Columns
+		 * these are meant to be easy ways to add controls to the left or right side of a record column
+		 */
+
+		{
+			"HashPostfix": "-RecordSetTemplate-Row-ExtraPrefix",
+			"Template": /*HTML*/`<!-- RecordSetTemplateRow-ExtraPrefix -->`
+		},
+		// by default PICT puts a "delete row" button on the right side of a RecordSet Templateset
+		{
+			"HashPostfix": "-RecordSetTemplate-Row-ExtraPostfix",
+			"Template": /*HTML*/`<!-- RecordSetTemplateRow-ExtraPostfix-->
+					<div class="PictSectionForm-RecordSet-Controls">
+						<a href="#/" onClick="{~P~}.views['{~D:Context[0].Hash~}'].deleteDynamicTableRow({~D:Record.Group~},'{~D:Record.Key~}')">del</a>
+						<a href="#/" onClick="{~P~}.views['{~D:Context[0].Hash~}'].moveDynamicTableRowUp({~D:Record.Group~},'{~D:Record.Key~}')">up</a>
+						<a href="#/" onClick="{~P~}.views['{~D:Context[0].Hash~}'].moveDynamicTableRowDown({~D:Record.Group~},'{~D:Record.Key~}')">down</a>
+					</div>
+`
+		},
+		/*
+		 * END RecordSet Template "Extra" Columns
+		 */
+
+		/*
+		 * BEGIN RecordSet TemplateSet Templates ("row" and "cell" prefix/postfix ... tr/td)
+		 * (these are repeated for each "row" which is a record, and then wrap each "cell" which is a columnar input)
+		 */
+		{
+			"HashPostfix": "-RecordSetTemplate-Row-Prefix",
+			"Template": /*HTML*/`
+					<div class="RecordSetEntry">
+					<!-- RecordSetTemplateRow-Prefix -->
+`
+		},
+		{
+			"HashPostfix": "-RecordSetTemplate-Cell-Prefix",
+			"Template": /*HTML*/`
+						<div style="display:inline;">
+							<!-- RecordSetTemplateCell-Prefix -->
+							<span class="RecordSetInputLabel">{~D:Record.Name~}</span>
+`
+		},
+		{
+			"HashPostfix": "-RecordSetTemplate-Cell-Postfix",
+			"Template": /*HTML*/`
+							<!-- RecordSetTemplateCell-Postfix -->
+						</div>
+`
+		},
+		{
+			"HashPostfix": "-RecordSetTemplate-Row-Postfix",
+			"Template": /*HTML*/`
+					<!-- RecordSetTemplateRow-Postfix -->
+					</div>`
+		},
+		/*
+		 * END RecordSet TemplateSet Templates
+		 */
+
 
 
 		/*
@@ -662,12 +856,9 @@ Glug glug glug Oo... -->
 
 		{
 			"HashPostfix": "-TabularTemplate-Begin-Input-DataType-PreciseNumber",
-			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
 			"Template": /*HTML*/`
 					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input type="hidden" id="TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~}  value="">
-					<input type="Number" id="INPUT-FOR-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~}
-`
+					<input type="Number" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-PreciseNumber",
@@ -675,6 +866,21 @@ Glug glug glug Oo... -->
 `
 		},
 
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-PreciseNumberReadOnly",
+			"DefaultInputExtensions": ["Pict-Input-PreciseNumber"],
+			"Template": /*HTML*/`
+					<!-- InputType PreciseNumberReadOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" id="PRECISE-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.InformaryTabular~}
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-PreciseNumberReadOnly",
+			"Template": /*HTML*/`
+						value="">
+					<input type="text" id="TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} value="" readonly="readonly">
+`
+		},
 		{
 			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-TextArea",
 			"Template": /*HTML*/`
@@ -691,12 +897,12 @@ Glug glug glug Oo... -->
 			"DefaultInputExtensions": ["Pict-Input-Select"],
 			"Template": /*HTML*/`
 					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input type="hidden" id="SELECT-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+					<input type="hidden" id="SELECT-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-Option",
 			"Template": /*HTML*/` value="">
-					<select id="SELECT-TABULAR-DROPDOWN-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"></select>
+					<select id="SELECT-TABULAR-DROPDOWN-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"></select>
 `
 		},
 		{
@@ -715,12 +921,14 @@ Glug glug glug Oo... -->
 			"DefaultInputExtensions": ["Pict-Input-DateTime"],
 			"Template": /*HTML*/`
 					<!-- DataType DateTime {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input type="hidden" id="DATETIME-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+					<input type="hidden" id="DATETIME-TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-DateTime",
 			"Template": /*HTML*/` value="">
-					<input id="DATETIME-TABULAR-INPUT-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')" type="datetime-local" value="" />
+					<input id="DATETIME-TABULAR-INPUT-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~}
+						onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"
+						type="datetime-local" value="" />
 `
 		},
 		{
@@ -737,6 +945,30 @@ Glug glug glug Oo... -->
 		},
 
 		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Color",
+			"Template": /*HTML*/`
+					<!-- InputType Color {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <input type="color" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} {~D:Record.Macro.InformaryTabular~}`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-Color",
+			"Template": /*HTML*/` />
+`
+		},
+
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-DisplayOnly",
+			"Template": /*HTML*/`
+					<!-- InputType DisplayOnly {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<span>{~D:Record.Name~}:</span> <span {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InformaryTabular~}`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-DisplayOnly",
+			"Template": /*HTML*/` ></span>
+`
+		},
+
+		{
 			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-ReadOnly",
 			"Template": /*HTML*/`
 					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
@@ -747,6 +979,29 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/` value="">`
 		},
 
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Link",
+			"DefaultInputExtensions": ["Pict-Input-Link"],
+			"Template": /*HTML*/`
+					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-Link",
+			"Template": /*HTML*/` value="">
+					<a id="TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" {~D:Record.Macro.HTMLName~}>{~D:Record.Name~}</a>`
+		},
+
+		{
+			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-TemplatedEntityLookup",
+			"Template": /*HTML*/`
+					<!-- InputType TemplatedEntityLookup {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="text" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+		},
+		{
+			"HashPostfix": "-TabularTemplate-End-Input-InputType-TemplatedEntityLookup",
+			"Template": /*HTML*/` value="">`
+		},
 
 		/*
 		 * END Tabular Input Templates

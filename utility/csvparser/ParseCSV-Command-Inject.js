@@ -27,6 +27,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 		// Parse the CSV file
 		const tmpRecords = [];
 		const tmpCSVParser = this.fable.instantiateServiceProvider('CSVParser');
+		tmpCSVParser.EscapedQuoteString = '"';
 		this.fable.log.info(`Parsing CSV file [${pFilePath}]...`);
 
 		const tmpReadline = libReadline.createInterface(
@@ -59,6 +60,7 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 		// Parse the CSV file
 		const tmpRecords = [];
 		const tmpCSVParser = this.fable.instantiateServiceProvider('CSVParser');
+		tmpCSVParser.EscapedQuoteString = '"';
 		this.fable.log.info(`Parsing Options CSV file [${pFilePath}]...`);
 
 		const tmpReadline = libReadline.createInterface(
@@ -320,10 +322,12 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 
 										if (tmpOptionsRow['Option Value'] || tmpOptionsRow['Option Text'])
 										{
+											// strip leading and trailing whitespace, and convert HTML entities for quotes and apostrophes
+											const tmpCleanText = (tmpOptionsRow['Option Text'] || tmpOptionsRow['Option Value']).trim().replace(/&quot;/g, '"').replace(/&#39;/g, "'");
 											tmpPickListConfig.DefaultListData.push(
 												{
 													id: tmpOptionsRow['Option Value'],
-													text: tmpOptionsRow['Option Text']
+													text: tmpCleanText,
 												});
 										}
 									}

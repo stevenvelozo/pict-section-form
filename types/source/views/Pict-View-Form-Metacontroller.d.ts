@@ -11,10 +11,20 @@ export = PictFormMetacontroller;
  */
 declare class PictFormMetacontroller extends libPictViewClass {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
-    viewMarshalDestination: string;
     lastRenderedViews: any[];
     formTemplatePrefix: any;
     manifest: any;
+    AutoSolveOnFirstRender: boolean;
+    FirstRenderCompleted: boolean;
+    SupportViewPrototypes: {
+        LifecycleVisualization: typeof import("./support/Pict-View-PSF-LifeCycle-Visualization.js");
+        DebugViewer: typeof import("./support/Pict-View-PSF-DebugViewer.js");
+        AppDataViewer: typeof import("./support/Pict-View-PSF-AppData-Visualization.js");
+        SolverVisualization: typeof import("./support/Pict-View-PSF-Solver-Visualization.js");
+        SpecificSolveVisualization: typeof import("./support/Pict-View-PSF-SpecificSolve-Visualization.js");
+    };
+    set viewMarshalDestination(pValue: any);
+    get viewMarshalDestination(): any;
     /**
      * Marshals data from the view to the model, usually AppData (or configured data store).
      *
@@ -27,17 +37,7 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @returns {any} The result of the super.onMarshalToView() method.
      */
     onMarshalToView(): any;
-    /**
-     * Retrieves the marshal destination object.  This is where the model data is stored.
-     *
-     * @returns {Object} The marshal destination object.
-     */
-    getMarshalDestinationObject(): any;
-    /**
-     * Gets a value by hash address.
-     * @param {string} pHashAddress
-     */
-    getValueByHash(pHashAddress: string): any;
+    gatherInitialBundle(fCallback: any): any;
     /**
      * Executes after the initialization of the object.
      *
@@ -51,8 +51,52 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @returns {any} The result of the solve operation.
      */
     onSolve(): any;
+    runSolver(pExpression: any): void;
     onBeforeFilterViews(pViewFilterState: any): any;
     onAfterFilterViews(pViewFilterState: any): any;
+    /**
+     * @param {string} pSectionManifestHash - The hash of the section to find.
+     *
+     * @return {Record<string, any>} The section definition object, or undefined if not found.
+     */
+    findDynamicSectionManifestDefinition(pSectionManifestHash: string): Record<string, any>;
+    /**
+     * @param {Record<string, any>} pManifest - The manifest to add
+     * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+     * @param {string} [pUUID] - (optional) The UUID to use for uniqueness. If not provided, a new one will be generated.
+     *
+     * @return {Array<import('./Pict-View-DynamicForm.js')>} the views that correspond to the newly added sections
+     */
+    injectManifestAndRender(pManifest: Record<string, any>, pAfterSectionHash?: string, pUUID?: string): Array<import("./Pict-View-DynamicForm.js")>;
+    /**
+     * @param {Record<string, any>} pManifest - The manifest to add
+     * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+     *
+     * @return {Array<import('./Pict-View-DynamicForm.js')>} the views that correspond to the newly added sections; note that these views are NOT rendered yet
+     */
+    injectManifest(pManifest: Record<string, any>, pAfterSectionHash?: string): Array<import("./Pict-View-DynamicForm.js")>;
+    /**
+     * Changes:
+     *   * The hashes of each section+group to be globally unique.
+     *   * The data address of each element to map to a unique location.
+     *
+     * @param {Record<string, any>} pManifest - The manifest to create a distinct copy of.
+     * @param {string} [pUUID] - (optional) The UUID to use for uniqueness. If not provided, a new one will be generated.
+     *
+     * @return {Record<string, any>} A distinct copy of the manifest.
+     */
+    createDistinctManifest(pManifest: Record<string, any>, pUUID?: string): Record<string, any>;
+    /**
+     * @param {Array<string>} pManifestHashes - The hashes of the manifests to add.
+     * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+     * @param {string} [pUUID] - (optional) The UUID to use for uniqueness. If not provided, a new one will be generated.
+     */
+    injectManifestsByHash(pManifestHashes: Array<string>, pAfterSectionHash?: string, pUUID?: string): void;
+    /**
+     * @param {Record<string, any>} pSectionsManifest - The section definition object.
+     * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+     */
+    bootstrapAdditiveManifest(pSectionsManifest: Record<string, any>, pAfterSectionHash?: string): any[];
     /**
      * Filters the views based on the provided filter and sort functions.
      *
@@ -88,6 +132,15 @@ declare class PictFormMetacontroller extends libPictViewClass {
      */
     renderFormSections(fFilterFunction?: Function, fSortFunction?: SortFunction): void;
     /**
+     * Marshals data to the form sections based on the provided filter and sort functions
+     *
+     * If no filter and sort functions are provided, render all form sections.
+     *
+     * @param {Function} [fFilterFunction] - The filter function used to filter the views.
+     * @param {SortFunction} [fSortFunction] - The sort function used to sort the views.
+     */
+    marshalFormSections(fFilterFunction?: Function, fSortFunction?: SortFunction): void;
+    /**
      * Regenerates the DyunamicForm section templates based on the provided filter and sort function.
      *
      * @param {Function} [fFormSectionFilter] - (optional) The filter function used to determine which views to include in the regeneration.
@@ -103,31 +156,63 @@ declare class PictFormMetacontroller extends libPictViewClass {
      */
     generateMetatemplate(fFormSectionFilter?: Function, fSortFunction?: SortFunction): void;
     /**
+     * Generates a meta template for the DynamicForm views managed by this Metacontroller.
+     *
+     * @param {Function} [fFormSectionFilter] - (optional) The filter function to apply on the form section.
+     * @param {SortFunction} [fSortFunction] - (optional) The sort function to apply on the form section.
+     *
+     * @return {void}
+     */
+    updateMetatemplateInDOM(fFormSectionFilter?: Function, fSortFunction?: SortFunction): void;
+    /**
      * Retrieves a safe clone of the section definition for a given manyfest section description object.
      *
      * @param {object} pSectionObject - The section object.
      * @returns {object|boolean} - The section definition if successful, otherwise false.
      */
     getSectionDefinition(pSectionObject: object): object | boolean;
+    getSectionViewFromHash(pSectionHash: any): any;
     /**
      * Bootstraps Pict DynamicForm views from a Manyfest description JSON object.
      *
      * @param {Object} pManifestDescription - The manifest description object.
-     * @returns {Array} - An array of section definitions.
+     * @param {string} [pAfterSectionHash] - The hash of the section to add after. Omit to add to the start.
+     *
+     * @returns {Array<Record<string, any>>} - An array of section definitions added.
      */
-    bootstrapPictFormViewsFromManifest(pManifestDescription: any): any[];
+    bootstrapPictFormViewsFromManifest(pManifestDescription: any, pAfterSectionHash?: string): Array<Record<string, any>>;
+    stashedManifestDescription: any;
+    manifestDescription: any;
     /**
      * Trigger an event on all inputs on all views.
      * @param {string} pEvent - The event to trigger
+     * @param {string} [pTransactionGUID] - (optional) The transaction GUID to use for the event.
      */
-    triggerGlobalInputEvent(pEvent: string): void;
+    triggerGlobalInputEvent(pEvent: string, pTransactionGUID?: string): void;
     /**
-     * Add a dynamic view to the metacontroller.
-     * @param {string} pViewHash
-     * @param {Object} pViewConfiguration
-     * @return {libPictViewDynamicForm}
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {string} pAsyncOperationHash - The hash of the async operation.
      */
-    addDynamicView(pViewHash: string, pViewConfiguration: any): libPictViewDynamicForm;
+    registerEventTransactionAsyncOperation(pTransactionGUID: string, pAsyncOperationHash: string): void;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {string} pAsyncOperationHash - The hash of the async operation.
+     *
+     * @return {boolean} - Returns true if the async operation was found and marked as complete, otherwise false.
+     */
+    eventTransactionAsyncOperationComplete(pTransactionGUID: string, pAsyncOperationHash: string): boolean;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     *
+     * @return {boolean} - Returns true if the transaction was found and able to be finalized, otherwise false.
+     */
+    finalizeTransaction(pTransactionGUID: string): boolean;
+    /**
+     * @param {string} pTransactionGUID - The transaction GUID.
+     * @param {Function} fCallback - The callback to call when the transaction is complete.
+     */
+    registerOnTransactionCompleteCallback(pTransactionGUID: string, fCallback: Function): void;
+    showSupportViewInlineEditor(): void;
     /**
      * Returns whether the object is a Pict Metacontroller.
      *
@@ -139,26 +224,6 @@ declare namespace PictFormMetacontroller {
     export { default_configuration, SortFunction };
 }
 import libPictViewClass = require("pict-view");
-import libPictViewDynamicForm = require("./Pict-View-DynamicForm.js");
-declare namespace default_configuration {
-    let AutoRender: boolean;
-    let AutoPopulateDefaultObject: boolean;
-    let AutoSolveBeforeRender: boolean;
-    let AutoPopulateAfterRender: boolean;
-    let DefaultRenderable: string;
-    let DefaultDestinationAddress: string;
-    let AutoMarshalDataOnSolve: boolean;
-    let OnlyRenderDynamicSections: boolean;
-    let MetaTemplateHash: string;
-    let Templates: {
-        Hash: string;
-        Template: string;
-    }[];
-    let Renderables: {
-        RenderableHash: string;
-        TemplateHash: string;
-        DestinationAddress: string;
-    }[];
-}
+declare const default_configuration: Record<string, any>;
 type SortFunction = (a: any, b: any) => number;
 //# sourceMappingURL=Pict-View-Form-Metacontroller.d.ts.map

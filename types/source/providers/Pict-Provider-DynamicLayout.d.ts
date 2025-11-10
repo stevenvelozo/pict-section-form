@@ -2,7 +2,7 @@ export = PictDynamicLayout;
 /**
  * The PictDynamicLayout class is a provider that generates dynamic layouts based on configuration.
  */
-declare class PictDynamicLayout {
+declare class PictDynamicLayout extends libPictProvider {
     /**
      * Creates an instance of the PictDynamicLayout class.
      *
@@ -40,10 +40,7 @@ declare class PictDynamicLayout {
 declare namespace PictDynamicLayout {
     export { _DefaultProviderConfiguration as default_configuration };
 }
-declare namespace _DefaultProviderConfiguration {
-    let ProviderIdentifier: string;
-    let AutoInitialize: boolean;
-    let AutoInitializeOrdinal: number;
-    let AutoSolveWithApp: boolean;
-}
+import libPictProvider = require("pict-provider");
+/** @type {Record<string, any>} */
+declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-DynamicLayout.d.ts.map

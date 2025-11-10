@@ -1,6 +1,7 @@
 const libPictProvider = require('pict-provider');
+const libPictViewDynamicForm = require('../../../source/views/Pict-View-DynamicForm.js');
 
-const _DEFAULT_PROVIDER_CONFIGURATION = 
+const _DEFAULT_PROVIDER_CONFIGURATION =
 {
 	ProviderIdentifier: 'Postcard-DynamicSection-Provider',
 
@@ -18,6 +19,45 @@ class PostcardDynamicSectionProvider extends libPictProvider
 
 	onInitializeAsync(fCallback)
 	{
+		const tmpDynamicInputViewSection = (
+		{
+			"Hash": "PostkardDynamicInputs",
+			"Name": "Custom Dynamic Inputs",
+			"ViewHash": "MyDynamicView",
+
+			"AutoMarshalDataOnSolve": true,
+			"IncludeInMetatemplateSectionGeneration": false,
+
+			"Manifests": {
+				"Section": {
+					"Scope": "PostkardDyanmic",
+					"Sections": [
+						{
+							"Hash": "PostkardDynamicInputs",
+							"Name": "Dynamic Inputs"
+						}
+					],
+					"Descriptors": {
+						"Postkard.DynamicInputPlaceholder": {
+							"Name": "DynamicInputPlaceholder",
+							"Hash": "DynamicInputPlaceholder",
+							"DataType": "String",
+							"Macro": {
+								"HTMLSelector": ""
+							},
+							"PictForm": {
+								"Section": "PostkardDynamicInputs"
+							}
+						}
+					}
+				}
+			}
+		});
+
+		if (!(tmpDynamicInputViewSection.ViewHash in this.pict.views))
+		{
+			this.pict.addView(tmpDynamicInputViewSection.ViewHash, Object.assign({}, tmpDynamicInputViewSection), libPictViewDynamicForm);
+		}
 		this.log.info('PostcardDynamicSectionProvider.onInitializeAsync() called --- loading dynamic section views from "server".');
 		// Load the dynamnic section views from the server
 		this.pict.settings.DefaultFormManifest = require('./PictProvider-Dynamic-Sections-MockServerResponse.json');

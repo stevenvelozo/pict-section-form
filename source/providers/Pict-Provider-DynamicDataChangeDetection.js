@@ -6,7 +6,7 @@ const libPictProvider = require('pict-provider');
 
 /**
  * Default configuration for the PictDataChangeDetection provider.
- * @type {Object}
+ * @type {Record<string, any>}
  */
 const _DefaultProviderConfiguration = {
 	ProviderIdentifier: "Pict-DynamicForms-Provider-DataChangeDetection",

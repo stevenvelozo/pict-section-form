@@ -22,7 +22,8 @@ let _Program = new libPictCommandLineUtility(_ProgramConfiguration,
 	[
 		require('./ParseCSV-Command-Inject.js'),
 		require('./ParseCSV-Command-Parse.js'),
-		require('./ParseCSV-Command-BuildDistilling.js')
+		require('./ParseCSV-Command-BuildDistilling.js'),
+		require('./ParseJSON-Command-GenerateCSV.js')
 	]);
 _Program.LogNoisiness = 4;
 

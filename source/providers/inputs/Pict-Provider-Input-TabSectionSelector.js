@@ -47,7 +47,8 @@ class CustomInputHandler extends libPictSectionInputExtension
 
 	getSectionSelector(pTabViewSectionHash)
 	{
-		return `#Pict-${this.pict.views.PictFormMetacontroller.UUID}-${pTabViewSectionHash}-Wrap`;
+		const metaController = this.pict.views.PictFormMetacontroller;
+		return `#Pict-${metaController ? metaController.UUID : this.UUID}-${pTabViewSectionHash}-Wrap`;
 	}
 
 	selectTabByViewHash(pViewHash, pInputHash, pTabViewHash)
@@ -117,9 +118,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 * @param {Object} pInput - The input object.
 	 * @param {any} pValue - The input value.
 	 * @param {string} pHTMLTabSelector - The HTML selector.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
 	 * @returns {boolean} - Returns true if the input element is successfully initialized, false otherwise.
 	 */
-	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector)
+	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector, pTransactionGUID)
 	{
 		let tmpTabSet = pInput.PictForm?.TabSectionSet;
 
@@ -147,7 +149,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		let tmpDefaultTabSectionHash = pInput.PictForm?.DefaultTabSectionHash || tmpTabSet[0];
 		this.selectTabByViewHash(pView.Hash, pInput.Hash, tmpDefaultTabSectionHash);
 
-		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector);
+		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector, pTransactionGUID);
 	}
 }
 

@@ -23,7 +23,7 @@ const libPictLayoutCustom = require('../providers/layouts/Pict-Layout-Custom.js'
 
 const libInformary = require('../providers/Pict-Provider-Informary.js');
 
-class PictDynamicApplication extends libFableServiceProviderBase
+class PictDynamicFormDependencyManager extends libFableServiceProviderBase
 {
 	constructor(pFable, pOptions, pServiceHash)
 	{
@@ -63,6 +63,7 @@ class PictDynamicApplication extends libFableServiceProviderBase
 	}
 }
 
-module.exports = PictDynamicApplication;
+module.exports = PictDynamicFormDependencyManager;
 
-PictDynamicApplication.default_configuration = { };
+/** @type {Record<string, any>} */
+PictDynamicFormDependencyManager.default_configuration = { };

@@ -1,5 +1,6 @@
 const libPictProvider = require('pict-provider');
 
+/** @type {Record<string, any>} */
 const _DefaultProviderConfiguration = (
 {
 	"ProviderIdentifier": "Pict-DynamicForms-InputEvents",
@@ -74,9 +75,11 @@ class PictDynamicInputEvents extends libPictProvider
 	 * @param {Object} pView - The view object.
 	 * @param {string} pInputHash - The input hash.
 	 * @param {string} pEvent - The input event.
+	 * @param {string} [pTransactionGUID] - (optional) The active transaction GUID.
 	 */
-	inputEvent(pView, pInputHash, pEvent)
+	inputEvent(pView, pInputHash, pEvent, pTransactionGUID)
 	{
+		const tmpTransactionGUID = (pTransactionGUID && typeof pTransactionGUID === 'string') ? pTransactionGUID : this.pict.getUUID();
 		let tmpInput = pView.getInputFromHash(pInputHash);
 		if (pInputHash)
 		{
@@ -90,12 +93,25 @@ class PictDynamicInputEvents extends libPictProvider
 				{
 					if (pView.pict.providers[tmpInputProviderList[i]])
 					{
-						pView.pict.providers[tmpInputProviderList[i]].onEvent(pView, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, pEvent);
+						// we may find uninitialized inputs here, so we do not send events to those
+						if (tmpInput.Macro)
+						{
+							pView.pict.providers[tmpInputProviderList[i]].onEvent(pView, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, pEvent, tmpTransactionGUID);
+							pView.registerOnTransactionCompleteCallback(tmpTransactionGUID, () =>
+							{
+								pView.pict.providers[tmpInputProviderList[i]].onAfterEventCompletion(pView, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, pEvent, tmpTransactionGUID);
+							});
+						}
 					}
 					else
 					{
 						pView.log.error(`Dynamic form [${pView.Hash}]::[${pView.UUID}] inputEvent ${pEvent} cannot find embedded provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}].`);
 					}
+				}
+				if (pTransactionGUID !== tmpTransactionGUID)
+				{
+					// since we synthesized this transaction, finalize it
+					pView.finalizeTransaction(tmpTransactionGUID);
 				}
 			}
 			catch (pError)
@@ -166,11 +182,13 @@ class PictDynamicInputEvents extends libPictProvider
 	 * @param {number} pInputIndex - The index of the input.
 	 * @param {number} pRowIndex - The index of the row.
 	 * @param {string} pEvent - The input event.
+	 * @param {string} [pTransactionGUID] - (optional) The active transaction GUID.
 	 */
-	inputEventTabular(pView, pGroupIndex, pInputIndex, pRowIndex, pEvent)
+	inputEventTabular(pView, pGroupIndex, pInputIndex, pRowIndex, pEvent, pTransactionGUID)
 	{
+		const tmpTransactionGUID = (pTransactionGUID && typeof pTransactionGUID === 'string') ? pTransactionGUID : this.pict.getUUID();
 		let tmpInput = pView.getTabularRecordInput(pGroupIndex, pInputIndex);
-		if (pGroupIndex && pInputIndex && pRowIndex && tmpInput)
+		if (pGroupIndex != null && pInputIndex != null && pRowIndex != null && tmpInput)
 		{
 			try
 			{
@@ -186,12 +204,21 @@ class PictDynamicInputEvents extends libPictProvider
 				{
 					if (pView.pict.providers[tmpInputProviderList[i]])
 					{
-						pView.pict.providers[tmpInputProviderList[i]].onEventTabular(pView, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex, pEvent);
+						pView.pict.providers[tmpInputProviderList[i]].onEventTabular(pView, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex, pEvent, tmpTransactionGUID);
+						pView.registerOnTransactionCompleteCallback(tmpTransactionGUID, () =>
+						{
+							pView.pict.providers[tmpInputProviderList[i]].onAfterEventTabularCompletion(pView, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex, pEvent, tmpTransactionGUID);
+						});
 					}
 					else
 					{
 						pView.log.error(`Dynamic form [${pView.Hash}]::[${pView.UUID}] cannot find embedded provider [${tmpInputProviderList[i]}] for input [${tmpInput.Hash}] row ${pRowIndex} calling inputEvent ${pEvent}.`);
 					}
+				}
+				if (pTransactionGUID !== tmpTransactionGUID)
+				{
+					// since we synthesized this transaction, finalize it
+					pView.finalizeTransaction(tmpTransactionGUID);
 				}
 			}
 			catch (pError)
@@ -199,14 +226,6 @@ class PictDynamicInputEvents extends libPictProvider
 				pView.log.error(`Dynamic form [${pView.Hash}]::[${pView.UUID}] gross error marshaling specific (${pGroupIndex} | ${pInputIndex} | ${pRowIndex}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in calling inputEvent ${pEvent}: ${pError}`);
 			}
 		}
-		else
-		{
-			// pView is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
-			pView.marshalFromView();
-		}
-		// Run any dynamic input providers for the input hash.
-		pView.pict.PictApplication.solve();
-		pView.marshalToView();
 	}
 }
 

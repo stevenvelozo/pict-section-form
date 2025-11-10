@@ -3,7 +3,7 @@ export = PictMetatemplateMacros;
  * Class representing PictMetatemplateMacros.
  * @extends libPictProvider
  */
-declare class PictMetatemplateMacros {
+declare class PictMetatemplateMacros extends libPictProvider {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {any} */
     options: any;
@@ -13,12 +13,6 @@ declare class PictMetatemplateMacros {
     };
     /** @type {import('pict')} */
     fable: import("pict");
-    /** @type {any} */
-    log: any;
-    /** @type {string} */
-    UUID: string;
-    /** @type {string} */
-    Hash: string;
     additionalInputMacros: any;
     AdditionalInputMacros: any;
     additionalGroupMacros: any;
@@ -41,10 +35,7 @@ declare class PictMetatemplateMacros {
 declare namespace PictMetatemplateMacros {
     export { _DefaultProviderConfiguration as default_configuration };
 }
-declare namespace _DefaultProviderConfiguration {
-    let ProviderIdentifier: string;
-    let AutoInitialize: boolean;
-    let AutoInitializeOrdinal: number;
-    let AutoSolveWithApp: boolean;
-}
+import libPictProvider = require("pict-provider");
+/** @type {Record<string, any>} */
+declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-MetatemplateMacros.d.ts.map

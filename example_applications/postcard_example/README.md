@@ -18,3 +18,9 @@ how you can also use configuration to display basic content or other html templa
 
 By leveraging some of the more rich `{~Entity:` and such jellyfish templates, these
 configuration-only views can be fairly capable (not just static HTML content).
+
+## Data Marhsalling
+
+Note for long time enjoyers of Postkard, the data marshalling has changed a bit. You
+no longer need to manually marshal using the navigation. Look forward to a new manual
+marhsalling example in the future.

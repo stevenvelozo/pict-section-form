@@ -1,12 +1,14 @@
 const libPictViewClass = require('pict-view');
 
+/** @type {Record<string, any>} */
 const libPackage = require('../../package.json');
 
-const libPictDynamicApplication = require(`../services/Pict-Service-DynamicApplication.js`);
-
-const libFableServiceTransactionTracking = require(`../services/Fable-Service-TransactionTracking.js`);
-
+/** @type {Record<string, any>} */
 const _DefaultConfiguration = require('./Pict-View-DynamicForm-DefaultConfiguration.json');
+
+const PENDING_ASYNC_OPERATION_TYPE = 'PendingAsyncOperation';
+const TRANSACTION_COMPLETE_CALLBACK_TYPE = 'onTransactionComplete';
+const READY_TO_FINALIZE_TYPE = 'ReadyToFinalize';
 
 /**
  * Represents a dynamic form view for the Pict application.
@@ -60,19 +62,16 @@ class PictViewDynamicForm extends libPictViewClass
 		// Now construct the view.
 		super(pFable, tmpOptions, pServiceHash);
 
-		/** @type {import('pict') & { PictApplication: import('pict-application'), log: any; instantiateServiceProviderWithoutRegistration: (hash: string) => any; }} */
-		this.pict;
-
-		this.fable.addServiceTypeIfNotExists('TransactionTracking', libFableServiceTransactionTracking);
+		if (!this.fable.PictDynamicFormDependencyManager)
+		{
+			throw new Error('PictSectionForm instantiation attempt without a PictDynamicFormDependencyManager service in fable -- cannot instantiate.');
+		}
 
 		// Use this to manage transactions
-		/** @type {import('../services/Fable-Service-TransactionTracking.js')} */
-		this.transactionTracking = this.fable.instantiateServiceProviderWithoutRegistration('TransactionTracking');
+		//FIXME: should we have these sioled??
+		//this.transactionTracking = this.pict.newTransactionTracker();
 
-		// Load the dynamic application dependencies if they don't exist
-		this.fable.addAndInstantiateSingletonService('PictDynamicApplication', libPictDynamicApplication.default_configuration, libPictDynamicApplication);
-
-		/** @type {Object} */
+		/** @type {Record<string, any>} */
 		this._PackagePictView = this._Package;
 		this._Package = libPackage;
 
@@ -121,9 +120,9 @@ class PictViewDynamicForm extends libPictViewClass
 		this.formID = `Pict-Form-${this.Hash}-${this.UUID}`;
 
 		this.viewMarshalDestination = null;
+		this.initialBundleLoaded = false;
 
 		this.fable.ManifestFactory.initializeFormGroups(this);
-
 	}
 
 	/**
@@ -169,6 +168,8 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
 			let tmpHashAddress = this.sectionManifest.resolveHashAddress(pInputHash);
+			const tmpTransactionGUID = this.fable.getUUID();
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			try
 			{
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
@@ -181,7 +182,7 @@ class PictViewDynamicForm extends libPictViewClass
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						this.pict.providers[tmpInputProviderList[i]].onDataChange(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+						this.pict.providers[tmpInputProviderList[i]].onDataChange(this, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, tmpTransactionGUID);
 					}
 					else
 					{
@@ -192,6 +193,10 @@ class PictViewDynamicForm extends libPictViewClass
 			catch (pError)
 			{
 				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) data from view in dataChanged event: ${pError}`);
+			}
+			finally
+			{
+				this.finalizeTransaction(tmpTransactionGUID);
 			}
 		}
 		else
@@ -227,6 +232,8 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
 			let tmpHashAddress = tmpInput.Address;
+			const tmpTransactionGUID = this.fable.getUUID();
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			try
 			{
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
@@ -242,7 +249,7 @@ class PictViewDynamicForm extends libPictViewClass
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						this.pict.providers[tmpInputProviderList[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
+						this.pict.providers[tmpInputProviderList[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex, tmpTransactionGUID);
 					}
 					else
 					{
@@ -253,6 +260,10 @@ class PictViewDynamicForm extends libPictViewClass
 			catch (pError)
 			{
 				this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${tmpInput.Hash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
+			}
+			finally
+			{
+				this.finalizeTransaction(tmpTransactionGUID);
 			}
 		}
 		else
@@ -268,12 +279,16 @@ class PictViewDynamicForm extends libPictViewClass
 	/**
 	 * Sets the data in a specific form input based on the provided input object
 	 *
+	 * FIXME: does this need to have a transaction GUID passed in?
+	 *
 	 * @param {object} pInput - The input object.
 	 * @param {any} pValue - The value to set.
 	 * @returns {boolean} Returns true if the data was set successfully, false otherwise.
 	 */
 	setDataByInput(pInput, pValue)
 	{
+		const tmpTransactionGUID = this.fable.getUUID();
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 		try
 		{
 			this.sectionManifest.setValueByHash(this.getMarshalDestinationObject(), pInput.Hash, pValue)
@@ -287,7 +302,7 @@ class PictViewDynamicForm extends libPictViewClass
 			{
 				if (this.pict.providers[tmpInputProviderList[i]])
 				{
-					this.pict.providers[tmpInputProviderList[i]].onDataChange(this, pInput, tmpValue, tmpVirtualInformaryHTMLSelector);
+					this.pict.providers[tmpInputProviderList[i]].onDataChange(this, pInput, tmpValue, tmpVirtualInformaryHTMLSelector, tmpTransactionGUID);
 				}
 				else
 				{
@@ -299,12 +314,18 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			this.log.error(`Dynamic form setDataByInput [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInput.Hash}) from view in dataChanged event: ${pError}`);
 		}
+		finally
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
+		}
 
 		return false;
 	}
 
 	/**
 	 * Sets the data in a specific tabular form input based on the provided hash, group and row.
+	 *
+	 * FIXME: does this need to have a transaction GUID passed in?
 	 *
 	 * @param {number} pGroupIndex - The index of the group.
 	 * @param {string} pInputHash - The hash of the input.
@@ -347,6 +368,8 @@ class PictViewDynamicForm extends libPictViewClass
 		)
 		{
 			// The informary stuff doesn't know the resolution of the hash to address, so do it here.
+			const tmpTransactionGUID = this.fable.getUUID();
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 			try
 			{
 				let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
@@ -362,7 +385,7 @@ class PictViewDynamicForm extends libPictViewClass
 				{
 					if (this.pict.providers[tmpInputProviderList[i]])
 					{
-						this.pict.providers[tmpInputProviderList[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex);
+						this.pict.providers[tmpInputProviderList[i]].onDataChangeTabular(this, tmpInput, tmpValue, tmpVirtualInformaryHTMLSelector, pRowIndex, tmpTransactionGUID);
 					}
 					else
 					{
@@ -373,6 +396,10 @@ class PictViewDynamicForm extends libPictViewClass
 			catch (pError)
 			{
 				this.log.error(`Dynamic form setDataTabularByHash [${this.Hash}]::[${this.UUID}] gross error marshaling specific (${pInputHash}) tabular data for group ${pGroupIndex} row ${pRowIndex} from view in dataChanged event: ${pError}`);
+			}
+			finally
+			{
+				this.finalizeTransaction(tmpTransactionGUID);
 			}
 		}
 
@@ -386,63 +413,40 @@ class PictViewDynamicForm extends libPictViewClass
 	 */
 	getMarshalDestinationAddress()
 	{
-		if (this.viewMarshalDestination)
-		{
-			return this.viewMarshalDestination;
-		}
-		else if (this.pict.views.PictFormMetacontroller && this.pict.views.PictFormMetacontroller.viewMarshalDestination)
-		{
-			return this.pict.views.PictFormMetacontroller.viewMarshalDestination;
-		}
-		else
-		{
-			return 'AppData';
-		}
+		return this.viewMarshalDestination || this.pict.providers.DataBroker.marshalDestination;
 	}
 
 	/**
 	 * Retrieves the marshal destination object.  This is where the model data is stored.
 	 *
-	 * @returns {Object} The marshal destination object.
+	 * @return {Record<string, any>} The marshal destination object.
 	 */
 	getMarshalDestinationObject()
 	{
-		let tmpMarshalDestinationObject = false;
-		if (this.viewMarshalDestination)
-		{
-			tmpMarshalDestinationObject = this.sectionManifest.getValueByHash(this, this.viewMarshalDestination);
-		}
-		else if (this.pict.views.PictFormMetacontroller && this.pict.views.PictFormMetacontroller.viewMarshalDestination)
-		{
-			tmpMarshalDestinationObject = this.sectionManifest.getValueByHash(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
-
-			if (!tmpMarshalDestinationObject)
-			{
-				// Try to create an empty object.
-				if (this.sectionManifest.setValueAtAddress(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination, {}))
-				{
-					// And try to load it once more!
-					tmpMarshalDestinationObject = this.sectionManifest.getValueByHash(this, this.pict.views.PictFormMetacontroller.viewMarshalDestination);
-				}
-			}
-		}
-
-		if (typeof (tmpMarshalDestinationObject) != 'object')
-		{
-			this.log.error(`Marshal destination object is not an object; if you initialize the view yourself you must set the viewMarshalDestination property to a valid address within the view.  Falling back to AppData.`);
-			tmpMarshalDestinationObject = this.pict.AppData;
-		}
-
-		return tmpMarshalDestinationObject;
+		return this.pict.providers.DataBroker.resolveMarshalDestinationObject(this.viewMarshalDestination);
 	}
 
 	/**
 	 * Gets a value by hash address.
-	 * @param {string} pHashAddress 
+	 * @param {string} pHashAddress
 	 */
-	getValueByHash(pHashAddress)
+	getValueByHash(pHashAddress, pRowIndex)
 	{
 		return this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), pHashAddress);
+	}
+
+	/**
+	 * Gets a value by hash address.
+	 *
+	 * @param {number} pGroupIndex
+	 * @param {number} pInputIndex
+	 * @param {number} pRowIndex
+	 */
+	getTabularValueByHash(pGroupIndex, pInputIndex, pRowIndex)
+	{
+		const tmpInput = this.getTabularRecordInput(pGroupIndex, pInputIndex);
+		const tmpAddress = this.pict.providers.Informary.getComposedContainerAddress(tmpInput.PictForm.InformaryContainerAddress, pRowIndex, tmpInput.PictForm.InformaryDataAddress);
+		return this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpAddress);
 	}
 
 	/**
@@ -453,10 +457,10 @@ class PictViewDynamicForm extends libPictViewClass
 	onMarshalToView()
 	{
 		// TODO: Only marshal data that has changed since the last marshal.  Thought experiment: who decides what changes happened?
+		const tmpTransactionGUID = this.fable.getUUID();
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 		try
 		{
-			let tmpTransactionGUID = this.fable.getUUID();
-			this.transactionTracking.registerTransaction(tmpTransactionGUID);
 			let tmpMarshalDestinationObject = this.getMarshalDestinationObject();
 			// TODO: Add optional transaction awareness to informary
 			this.pict.providers.Informary.marshalDataToForm(tmpMarshalDestinationObject, this.formID, this.sectionManifest);
@@ -467,15 +471,19 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			this.log.error(`Gross error marshaling data to view: ${pError}`);
 		}
+		finally
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
+		}
 		return super.onMarshalToView();
 	}
 
 	manualMarshalDataToViewByInput(pInput, pTransactionGUID)
 	{
+		const tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 		try
 		{
-			let tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
-			this.transactionTracking.registerTransaction(tmpTransactionGUID);
 			this.pict.providers.Informary.manualMarshalDataToFormByInput(pInput);
 			this.runLayoutProviderFunctions('onDataMarshalToForm', tmpTransactionGUID);
 			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash, null, tmpTransactionGUID);
@@ -484,14 +492,21 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			this.log.error(`Gross error marshaling data to view: ${pError}`);
 		}
+		finally
+		{
+			if (tmpTransactionGUID !== pTransactionGUID)
+			{
+				this.finalizeTransaction(tmpTransactionGUID);
+			}
+		}
 	}
 
 	manualMarshalTabularDataToViewByInput(pInput, pRowIndex, pTransactionGUID)
 	{
+		const tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 		try
 		{
-			let tmpTransactionGUID = (typeof(pTransactionGUID) == 'string') ? pTransactionGUID : this.fable.getUUID();
-			this.transactionTracking.registerTransaction(tmpTransactionGUID);
 			this.pict.providers.Informary.manualMarshalTabularDataToFormByInput(pInput, pRowIndex);
 			this.runLayoutProviderFunctions('onDataMarshalToForm', tmpTransactionGUID);
 			this.runInputProviderFunctions('onDataMarshalToForm', pInput.Hash, pRowIndex, tmpTransactionGUID);
@@ -499,6 +514,13 @@ class PictViewDynamicForm extends libPictViewClass
 		catch (pError)
 		{
 			this.log.error(`Gross error marshaling tabular data to view: ${pError}`);
+		}
+		finally
+		{
+			if (tmpTransactionGUID !== pTransactionGUID)
+			{
+				this.finalizeTransaction(tmpTransactionGUID);
+			}
 		}
 	}
 
@@ -527,16 +549,20 @@ class PictViewDynamicForm extends libPictViewClass
 	onAfterMarshalToForm()
 	{
 		// Check to see if there are any hooks set from the input templates
+		const tmpTransactionGUID = this.fable.getUUID();
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 		try
 		{
-			let tmpTransactionGUID = this.fable.getUUID();
-			this.transactionTracking.registerTransaction(tmpTransactionGUID);
 			this.runInputProviderFunctions('onAfterMarshalToForm', null, null, tmpTransactionGUID);
-						
+
 		}
 		catch (pError)
 		{
 			this.log.error(`Gross error running after marshal to form: ${pError}`);
+		}
+		finally
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
 		}
 	}
 
@@ -561,21 +587,77 @@ class PictViewDynamicForm extends libPictViewClass
 	}
 
 	/**
+	 * Lifecycle hook that triggers before the view is rendered.
+	 *
+	 * @param {import('pict-view').Renderable} pRenderable - The renderable that will be rendered.
+	 */
+	onBeforeRender(pRenderable)
+	{
+		if (!this.initialBundleLoaded)
+		{
+			if (Array.isArray(this.sectionDefinition.InitialBundle))
+			{
+				this.pict.EntityProvider.processBundle(this.sectionDefinition.InitialBundle);
+			}
+			this.initialBundleLoaded = true;
+		}
+		return super.onBeforeRender(pRenderable);
+	}
+
+	/**
+	 * Lifecycle hook that triggers before the view is rendered (async flow).
+	 *
+	 * @param {(error?: Error) => void} fCallback - The callback to call when the async operation is complete.
+	 * @param {import('pict-view').Renderable} pRenderable - The renderable that will be rendered.
+	 */
+	onBeforeRenderAsync(fCallback, pRenderable)
+	{
+		super.onBeforeRenderAsync((pError) =>
+		{
+			if (!this.initialBundleLoaded)
+			{
+				if (Array.isArray(this.sectionDefinition.InitialBundle))
+				{
+					this.pict.EntityProvider.gatherDataFromServer(this.sectionDefinition.InitialBundle, (pInnerError) =>
+					{
+						if (pInnerError)
+						{
+							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] failed to load initial bundle: ${pInnerError}`);
+						}
+						fCallback(pError);
+					});
+					return;
+				}
+				this.initialBundleLoaded = true;
+			}
+			return fCallback(pError);
+		}, pRenderable);
+	}
+
+	/**
 	 * Lifecycle hook that triggers after the view is rendered.
 	 *
-	 * @param {any} [pRenderable] - The renderable that was rendered.
-	 * @param {string} [pRenderDestinationAddress] - The address where the renderable was rendered.
-	 * @param {any} [pRecord] - The record (data) that was used by the renderable.
-	 * @param {string} [pContent] - The content that was rendered.
+	 * @param {import('pict-view').Renderable} pRenderable - The renderable that was rendered.
 	 */
-	onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent)
+	onAfterRender(pRenderable)
 	{
 		let tmpTransactionGUID = this.fable.getUUID();
-		this.transactionTracking.registerTransaction(tmpTransactionGUID);
+		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 
-		this.runLayoutProviderFunctions('onGroupLayoutInitialize', tmpTransactionGUID);
-		this.runInputProviderFunctions('onInputInitialize', null, null, tmpTransactionGUID);
-		return super.onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent);
+		try
+		{
+			this.runLayoutProviderFunctions('onGroupLayoutInitialize', tmpTransactionGUID);
+			this.runInputProviderFunctions('onInputInitialize', null, null, tmpTransactionGUID);
+		}
+		catch (pError)
+		{
+			this.log.error(`Gross error running after render: ${pError.message || pError}`);
+		}
+		finally
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
+		}
+		return super.onAfterRender(pRenderable);
 	}
 
 	/**
@@ -597,7 +679,7 @@ class PictViewDynamicForm extends libPictViewClass
 	runLayoutProviderFunctions(pFunctionName, pTransactionGUID)
 	{
 		const tmpTransactionGUID = (typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
-		const tmpTransaction = this.transactionTracking.registerTransaction(tmpTransactionGUID);
+		const tmpTransaction = this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 
 		// Check to see if there are any hooks set from the input templates
 		let tmpLayoutProviders = this.pict.ContentAssignment.getElement(`${this.sectionDefinition.DefaultDestinationAddress} [data-i-pictdynamiclayout="true"]`);
@@ -629,11 +711,15 @@ class PictViewDynamicForm extends libPictViewClass
 			if (tmpLayoutProvider && (pFunctionName in tmpLayoutProvider))
 			{
 				let tmpFunction = tmpLayoutProvider[pFunctionName];
-				if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `G${tmpGroupIndex}-L${tmpLayout}`, pFunctionName))
+				if (this.pict.TransactionTracking.checkEvent(tmpTransaction.TransactionKey, `G${tmpGroupIndex}-L${tmpLayout}`, pFunctionName))
 				{
 					tmpFunction.call(tmpLayoutProvider, this, tmpGroup);
 				}
 			}
+		}
+		if (tmpTransactionGUID !== pTransactionGUID)
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
 		}
 	}
 
@@ -648,7 +734,7 @@ class PictViewDynamicForm extends libPictViewClass
 	runInputProviderFunctions(pFunctionName, pInputHash, pRowIndex, pTransactionGUID)
 	{
 		const tmpTransactionGUID = (typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
-		const tmpTransaction = this.transactionTracking.registerTransaction(tmpTransactionGUID);
+		const tmpTransaction = this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 
 		// Check to see if there are any hooks set from the input templates
 		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
@@ -665,7 +751,7 @@ class PictViewDynamicForm extends libPictViewClass
 					{
 						let tmpInput = tmpRow.Inputs[k];
 						// Now run any providers connected to this input
-						if (tmpInput && tmpInput.PictForm 
+						if (tmpInput && tmpInput.PictForm
 							&& (!pInputHash || (pInputHash === tmpInput.Hash)))
 						{
 							let tmpInputProviderList = this.getInputProviderList(tmpInput);
@@ -682,10 +768,10 @@ class PictViewDynamicForm extends libPictViewClass
 											this.log.trace(`Dynamic form [${this.Hash}]::[${this.UUID}] running provider [${tmpInputProviderList[l]}] function [${pFunctionName}] for input [${tmpInput.Hash}].`);
 										}
 										// TODO: Right now the Option input requires this bug to work
-										//if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
-										if ((tmpInput.PictForm.InputType == 'Option') || this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
+										//if (this.pict.TransactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
+										if ((tmpInput.PictForm.InputType == 'Option') || this.pict.TransactionTracking.checkEvent(tmpTransaction.TransactionKey, `I${tmpInput.Hash}-P${tmpInputProviderList[l]}`, pFunctionName))
 										{
-											this.pict.providers[tmpInputProviderList[l]][pFunctionName](this, tmpGroup, j, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector);
+											this.pict.providers[tmpInputProviderList[l]][pFunctionName](this, tmpGroup, j, tmpInput, tmpValue, tmpInput.Macro.HTMLSelector, tmpTransactionGUID);
 										}
 									}
 									catch (pError)
@@ -735,9 +821,9 @@ class PictViewDynamicForm extends libPictViewClass
 										let tmpValue = this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), tmpValueAddress);
 										try
 										{
-											if (this.transactionTracking.checkEvent(tmpTransaction.TransactionKey, `TI${tmpInput.Hash}-P${tmpInputProviderList[l]}-R${r}`, pFunctionName))
+											if (this.pict.TransactionTracking.checkEvent(tmpTransaction.TransactionKey, `TI${tmpInput.Hash}-P${tmpInputProviderList[l]}-R${r}`, pFunctionName))
 											{
-												this.pict.providers[tmpInputProviderList[l]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r);
+												this.pict.providers[tmpInputProviderList[l]][pFunctionName + 'Tabular'](this, tmpGroup, tmpInput, tmpValue, tmpInput.Macro.HTMLSelectorTabular, r, tmpTransactionGUID);
 											}
 										}
 										catch (pError)
@@ -755,6 +841,10 @@ class PictViewDynamicForm extends libPictViewClass
 					}
 				}
 			}
+		}
+		if (pTransactionGUID !== tmpTransactionGUID)
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
 		}
 	}
 
@@ -832,6 +922,19 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 
 		return this.sectionDefinition.Groups[pGroupIndex];
+	}
+
+	/**
+	 * Returns all groups in the section.
+	 * @returns {Array}
+	 */
+	getGroups()
+	{
+		if (!Array.isArray(this.sectionDefinition.Groups))
+		{
+			return [];
+		}
+		return this.sectionDefinition.Groups;
 	}
 
 	/**
@@ -965,20 +1068,34 @@ class PictViewDynamicForm extends libPictViewClass
 	 *
 	 * @param {String} pInputHash - The input hash object.
 	 * @param {string} pEvent - The input event string.
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
 	 * @returns {any} - The result of the input event handling.
 	 */
-	inputEvent(pInputHash, pEvent)
+	inputEvent(pInputHash, pEvent, pTransactionGUID)
 	{
-		return this.pict.providers.DynamicInputEvents.inputEvent(this, pInputHash, pEvent);
+		return this.pict.providers.DynamicInputEvents.inputEvent(this, pInputHash, pEvent, pTransactionGUID);
+	}
+
+	/**
+	 * @deprecated
+	 * @param {string} pEvent - The input event string.
+	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
+	 */
+	globalInputEvent(pEvent, pCompletedHashes, pTransactionGUID)
+	{
+		this.manifestInputEvent(pEvent, pCompletedHashes, pTransactionGUID);
 	}
 
 	/**
 	 *
 	 * @param {string} pEvent - The input event string.
 	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
 	 */
-	globalInputEvent(pEvent, pCompletedHashes)
+	manifestInputEvent(pEvent, pCompletedHashes, pTransactionGUID)
 	{
+		const tmpTransactionGUID = (pTransactionGUID && typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
 		const tmpInputHashes = Object.keys(this.sectionManifest.elementHashes);
 
 		for (let i = 0; i < tmpInputHashes.length; i++)
@@ -986,8 +1103,13 @@ class PictViewDynamicForm extends libPictViewClass
 			if (!(tmpInputHashes[i] in pCompletedHashes))
 			{
 				pCompletedHashes[tmpInputHashes[i]] = true;
-				this.inputEvent(tmpInputHashes[i], pEvent);
+				this.inputEvent(tmpInputHashes[i], pEvent, pTransactionGUID);
 			}
+		}
+		if (pTransactionGUID !== tmpTransactionGUID)
+		{
+			// We created a transaction, so finalize it.
+			this.finalizeTransaction(tmpTransactionGUID);
 		}
 	}
 
@@ -1011,11 +1133,226 @@ class PictViewDynamicForm extends libPictViewClass
 	 * @param {number} pInputIndex - The index of the input.
 	 * @param {number} pRowIndex - The index of the row.
 	 * @param {string} pEvent - The input event object.
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
 	 * @returns {any} - The result of the input event handling.
 	 */
-	inputEventTabular(pGroupIndex, pInputIndex, pRowIndex, pEvent)
+	inputEventTabular(pGroupIndex, pInputIndex, pRowIndex, pEvent, pTransactionGUID)
 	{
-		return this.pict.providers.DynamicInputEvents.inputEventTabular(this, pGroupIndex, pInputIndex, pRowIndex, pEvent);
+		return this.pict.providers.DynamicInputEvents.inputEventTabular(this, pGroupIndex, pInputIndex, pRowIndex, pEvent, pTransactionGUID);
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {string} pAsyncOperationHash - The hash of the async operation.
+	 */
+	registerEventTransactionAsyncOperation(pTransactionGUID, pAsyncOperationHash)
+	{
+		this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, pAsyncOperationHash, PENDING_ASYNC_OPERATION_TYPE);
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {string} pAsyncOperationHash - The hash of the async operation.
+	 *
+	 * @return {boolean} - Returns true if the async operation was found and marked as complete, otherwise false.
+	 */
+	eventTransactionAsyncOperationComplete(pTransactionGUID, pAsyncOperationHash)
+	{
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpPendingAsyncOperationCount = 0;
+		let tmpMarkedOperationCount = 0;
+		let tmpFinalized = false;
+		for (let i = 0; i < tmpQueue.length; i++)
+		{
+			const tmpQueueItem = tmpQueue[i];
+			if (tmpQueueItem.Type === PENDING_ASYNC_OPERATION_TYPE)
+			{
+				if (tmpQueueItem.Data === pAsyncOperationHash)
+				{
+					tmpQueue.splice(i, 1);
+					++tmpMarkedOperationCount;
+					--i;
+				}
+				else
+				{
+					++tmpPendingAsyncOperationCount;
+				}
+			}
+			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
+			{
+				tmpFinalized = true;
+			}
+		}
+		if (tmpPendingAsyncOperationCount === 0)
+		{
+			for (const tmpQueueItem of tmpQueue)
+			{
+				if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
+				{
+					if (typeof tmpQueueItem.Data !== 'function')
+					{
+						this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
+						continue;
+					}
+					try
+					{
+						tmpQueueItem.Data();
+					}
+					catch (pError)
+					{
+						this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback error: ${pError}`, { Stack: pError.stack });
+					}
+				}
+			}
+		}
+		return tmpMarkedOperationCount > 0;
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 *
+	 * @return {boolean} - Returns true if the transaction was found and able to be finalized, otherwise false.
+	 */
+	finalizeTransaction(pTransactionGUID)
+	{
+		this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, null, READY_TO_FINALIZE_TYPE);
+
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpPendingAsyncOperationCount = 0;
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === PENDING_ASYNC_OPERATION_TYPE)
+			{
+				++tmpPendingAsyncOperationCount;
+			}
+		}
+		if (tmpPendingAsyncOperationCount > 0)
+		{
+			this.pict.log.info(`PICT View Metatemplate Helper finalizeTransaction ${pTransactionGUID} is waiting on ${tmpPendingAsyncOperationCount} pending async operations.`);
+			return false;
+		}
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
+			{
+				if (typeof tmpQueueItem.Data !== 'function')
+				{
+					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
+					continue;
+				}
+				try
+				{
+					tmpQueueItem.Data();
+				}
+				catch (pError)
+				{
+					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback error: ${pError}`, { Stack: pError.stack });
+				}
+			}
+		}
+		//TODO: figure out how to safely clean up old transactions
+		//delete this.pict.TransactionTracking.transactions[pTransactionGUID];
+		return true;
+	}
+
+	/**
+	 * @param {string} pTransactionGUID - The transaction GUID.
+	 * @param {Function} fCallback - The callback to call when the transaction is complete.
+	 */
+	registerOnTransactionCompleteCallback(pTransactionGUID, fCallback)
+	{
+		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpFinalized = false;
+		for (const tmpQueueItem of tmpQueue)
+		{
+			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
+			{
+				tmpFinalized = true;
+				break;
+			}
+		}
+		if (tmpFinalized)
+		{
+			fCallback();
+		}
+		else
+		{
+			this.pict.TransactionTracking.pushToTransactionQueue(pTransactionGUID, fCallback, TRANSACTION_COMPLETE_CALLBACK_TYPE);
+		}
+	}
+
+	/**
+	 *
+	 * @param {number} pGroupIndex - The index of the group.
+	 * @param {string} pEvent - The input event string.
+	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
+	 */
+	groupInputEvent(pGroupIndex, pEvent, pCompletedHashes, pTransactionGUID)
+	{
+		const tmpTransactionGUID = (pTransactionGUID && typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
+		const tmpGroup = this.getGroup(pGroupIndex);
+
+		if (!tmpGroup)
+		{
+			this.log.warn(`PICT View Metatemplate Helper subManifestInputEvent ${pGroupIndex} is not a valid group index.`);
+			return;
+		}
+
+		if (tmpGroup.Rows.length < 1)
+		{
+			// tabular
+			const tmpRecordSetRows = this.getTabularRecordSet(pGroupIndex);
+			if (!Array.isArray(tmpRecordSetRows))
+			{
+				return;
+			}
+			for (let i = 0; i < tmpRecordSetRows.length; i++)
+			{
+				for (const tmpInput of Object.values(tmpGroup.supportingManifest.elementDescriptors))
+				{
+					const tmpInputSignature = `${this.Hash}-${tmpGroup.Hash}-${tmpInput.Hash}-${i}`;
+					if (!(tmpInputSignature in pCompletedHashes))
+					{
+						pCompletedHashes[tmpInputSignature] = true;
+						this.inputEventTabular(pGroupIndex, tmpInput.PictForm.InputIndex, i, pEvent, tmpTransactionGUID);
+					}
+				}
+			}
+		}
+		for (const tmpRow of tmpGroup.Rows || [])
+		{
+			for (const tmpInput of tmpRow.Inputs || [])
+			{
+				const tmpInputSignature = `${this.Hash}-${tmpGroup.Hash}-${tmpInput.Hash}-${tmpRow.Hash}`;
+				if (!(tmpInputSignature in pCompletedHashes))
+				{
+					pCompletedHashes[tmpInputSignature] = true;
+					this.inputEvent(tmpInput.Hash, pEvent, tmpTransactionGUID);
+				}
+			}
+		}
+		if (pTransactionGUID !== tmpTransactionGUID)
+		{
+			// We created a transaction, so finalize it.
+			this.finalizeTransaction(tmpTransactionGUID);
+		}
+	}
+
+	/**
+	 *
+	 * @param {string} pEvent - The input event string.
+	 * @param {Object} pCompletedHashes - the hashes that have already signaled the event
+	 * @param {string} [pTransactionGUID] - The transaction GUID.
+	 */
+	sectionInputEvent(pEvent, pCompletedHashes, pTransactionGUID)
+	{
+		const tmpGroupCount = this.sectionDefinition.Groups.length;
+
+		for (let i = 0; i < tmpGroupCount; i++)
+		{
+			this.groupInputEvent(i, pEvent, pCompletedHashes, pTransactionGUID);
+		}
 	}
 
 	/**

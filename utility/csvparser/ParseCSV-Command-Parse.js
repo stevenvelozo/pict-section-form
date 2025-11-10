@@ -67,6 +67,7 @@ class ImportCSVCommand extends libPictCommandLineUtility.ServiceCommandLineComma
 		// Parse the CSV file
 		const tmpRecords = [];
 		const tmpCSVParser = this.fable.instantiateServiceProvider('CSVParser');
+		tmpCSVParser.EscapedQuoteString = '"';
 
 		this.fable.log.info(`Parsing CSV file [${tmpFileName}]...`);
 
@@ -82,6 +83,7 @@ class ImportCSVCommand extends libPictCommandLineUtility.ServiceCommandLineComma
 				const tmpRecord = tmpCSVParser.parseCSVLine(pLine);
 				if (tmpRecord)
 				{
+					//tmpRecord.Equation = tmpRecord.Equation.replace(/&quot;/g, '"');
 					tmpRecords.push(tmpRecord);
 				}
 			});

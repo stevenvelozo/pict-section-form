@@ -33,45 +33,45 @@ module.exports.default_configuration.pict_configuration = {
 		Scope: "SuperComplexTabularForm",
 
 		PickLists:
-				[
-					{
-						Hash: "Families",
-						ListAddress: "AppData.FruitMetaLists.Families",
-						ListSourceAddress: "FruitData.FruityVice[]",
-						TextTemplate: "{~D:Record.family~}",
-						IDTemplate: "{~D:Record.family~}",
-						Unique: true,
-						Sorted: true,
-						UpdateFrequency: "Once",
-					},
-					{
-						Hash: "Orders",
-						ListAddress: "AppData.FruitMetaLists.Orders",
-						ListSourceAddress: "FruitData.FruityVice[]",
-						TextTemplate: "{~D:Record.order~}",
-						IDTemplate: "{~D:Record.order~}",
-						Unique: true,
-						UpdateFrequency: "Once",
-					},
-					{
-						Hash: "Genuses",
-						ListAddress: "AppData.FruitMetaLists.Genuses",
-						ListSourceAddress: "FruitData.FruityVice[]",
-						TextTemplate: "{~D:Record.genus~}",
-						IDTemplate: "{~D:Record.genus~}",
-						Sorted: true,
-						UpdateFrequency: "Always",
-					},
-					{
-						Hash: "Books",
-						ListAddress: "AppData.AuthorsBooks",
-						ListSourceAddress: "Books[]",
-						TextTemplate: "{~D:Record.Title~}",
-						IDTemplate: "{~D:Record.IDBook~}",
-						Sorted: true,
-						UpdateFrequency: "Always",
-					}
-				],
+			[
+				{
+					Hash: "Families",
+					ListAddress: "AppData.FruitMetaLists.Families",
+					ListSourceAddress: "FruitData.FruityVice[]",
+					TextTemplate: "{~D:Record.family~}",
+					IDTemplate: "{~D:Record.family~}",
+					Unique: true,
+					Sorted: true,
+					UpdateFrequency: "Once",
+				},
+				{
+					Hash: "Orders",
+					ListAddress: "AppData.FruitMetaLists.Orders",
+					ListSourceAddress: "FruitData.FruityVice[]",
+					TextTemplate: "{~D:Record.order~}",
+					IDTemplate: "{~D:Record.order~}",
+					Unique: true,
+					UpdateFrequency: "Once",
+				},
+				{
+					Hash: "Genuses",
+					ListAddress: "AppData.FruitMetaLists.Genuses",
+					ListSourceAddress: "FruitData.FruityVice[]",
+					TextTemplate: "{~D:Record.genus~}",
+					IDTemplate: "{~D:Record.genus~}",
+					Sorted: true,
+					UpdateFrequency: "Always",
+				},
+				{
+					Hash: "Books",
+					ListAddress: "AppData.AuthorsBooks",
+					ListSourceAddress: "Books[]",
+					TextTemplate: "{~D:Record.Title~}",
+					IDTemplate: "{~D:Record.IDBook~}",
+					Sorted: true,
+					UpdateFrequency: "Always",
+				}
+			],
 
 		Sections: [
 			{
@@ -80,25 +80,27 @@ module.exports.default_configuration.pict_configuration = {
 				ShowTitle: false,
 
 				Solvers:
-				[
-					"TotalFruitCalories = SUM(FruitNutritionCalories)",
-					"AverageFruitCalories = MEAN(FruitNutritionCalories)",
-					{
-						Ordinal: 99,
-						Expression: "AverageFatPercent = MEAN(FruitPercentTotalFat)",
-					},
-					"RecipeCounterSurfaceArea = RecipeCounterWidth * RecipeCounterDepth",
-					"RecipeCounterVolume = RecipeCounterSurfaceArea * RecipeVerticalClearance",
-				],
+					[
+						"TotalFruitCalories = SUM(FruitNutritionCalories)",
+						"AverageFruitCalories = MEAN(FruitNutritionCalories)",
+						{
+							Ordinal: 99,
+							Expression: "AverageFatPercent = MEAN(FruitPercentTotalFat)",
+						},
+						"RecipeCounterSurfaceArea = RecipeCounterWidth * RecipeCounterDepth",
+						"RecipeCounterVolume = RecipeCounterSurfaceArea * RecipeVerticalClearance",
+						`InspirationLink = CONCAT("https://www.google.com/search?q=", RecipeName, " recipe")`,
+						'cumulativeSummationResult = cumulativeSummation(getvalue("AppData.FruitData.FruityVice"), "nutritions.calories", "SummedCalories")'
+					],
 
 				MetaTemplates:
-				[
-					{
-						//onclick="{~D:Record.Macro.DataRequestFunction~}"
-						"HashPostfix": "-Template-Wrap-Prefix",
-						"Template": "<h1>Rectangular Area Solver Micro-app</h1><div><a href=\"#\" onclick=\"{~Pict~}.PictApplication.solve()\">[ solve ]</a></div><hr />"
-					}
-				],
+					[
+						{
+							//onclick="{~D:Record.Macro.DataRequestFunction~}"
+							"HashPostfix": "-Template-Wrap-Prefix",
+							"Template": "<h1>Rectangular Area Solver Micro-app</h1><div><a href=\"#\" onclick=\"{~Pict~}.PictApplication.solve()\">[ solve ]</a> <a href=\"#\" onclick=\"{~P~}.views.PictFormMetacontroller.showSupportViewInlineEditor()\">[ debug ]</a></div><hr />"
+						}
+					],
 
 				Groups: [
 					{
@@ -109,13 +111,13 @@ module.exports.default_configuration.pict_configuration = {
 					{
 						Hash: "StatisticsTabs",
 						Name: "Select a Statistics Section",
-						ShowTitle: false,
+						//						ShowTitle: true
 					},
 					{
 						Hash: "Statistics",
 						Name: "Statistics",
 						Layout: "Vertical",
-//						ShowTitle: true
+						//						ShowTitle: true
 					},
 					{
 						Hash: "FruitStatistics",
@@ -154,21 +156,29 @@ module.exports.default_configuration.pict_configuration = {
 								Ordinal: 0,
 								Expression: "PercentTotalFat = (Fat * 9) / Calories",
 							},
+							{
+								Ordinal: 1,
+								Expression: "ProteinFatRatio = Protein / Fat * 100",
+							},
+							{
+								Ordinal: 2,
+								Expression: `HealthInfoLink = CONCAT("https://www.google.com/search?q=", Family, " health information")`,
+							},
 						],
 
 						PickLists:
-						[
-							{
-								Hash: "Families",
-								ListAddress: "AppData.FruitMetaLists.Families",
-								ListSourceAddress: "FruitData.FruityVice[]",
-								TextTemplate: "{~D:Record.family~}",
-								IDTemplate: "{~D:Record.family~}",
-								Unique: true,
-								Sorted: true,
-								UpdateFrequency: "Once",
-							},
-						],
+							[
+								{
+									Hash: "Families",
+									ListAddress: "AppData.FruitMetaLists.Families",
+									ListSourceAddress: "FruitData.FruityVice[]",
+									TextTemplate: "{~D:Record.family~}",
+									IDTemplate: "{~D:Record.family~}",
+									Unique: true,
+									Sorted: true,
+									UpdateFrequency: "Once",
+								},
+							],
 						RecordSetAddress: "FruitData.FruityVice",
 						RecordManifest: "FruitEditor",
 					},
@@ -199,16 +209,22 @@ module.exports.default_configuration.pict_configuration = {
 				DataType: "String",
 				PictForm: { Section: "Recipe", Group: "Recipe", Row: 1 },
 			},
+			InspirationLink: {
+				Name: "Inspiration",
+				Hash: "InspirationLink",
+				DataType: "String",
+				PictForm: { Section: "Recipe", Group: "Recipe", Row: 1, InputType: "Link" },
+			},
 			RecipeType: {
 				Name: "Recipe Type",
 				Hash: "RecipeType",
 				DataType: "String",
-				PictForm: 
-					{
-						Section:"Recipe",
-						Group:"Recipe",
-						Row: 1
-					},
+				PictForm:
+				{
+					Section: "Recipe",
+					Group: "Recipe",
+					Row: 1
+				},
 			},
 			RecipeDescription: {
 				Name: "Description",
@@ -238,7 +254,8 @@ module.exports.default_configuration.pict_configuration = {
 				Name: "Last Prepared",
 				Hash: "LastPrepared",
 				DataType: "DateTime",
-				PictForm: { Section: "Recipe", Group: "Recipe", Row: 4,
+				PictForm: {
+					Section: "Recipe", Group: "Recipe", Row: 4,
 					"Providers": ["Pict-Input-DateTime"]
 				},
 			},
@@ -248,28 +265,28 @@ module.exports.default_configuration.pict_configuration = {
 				Hash: "IDAuthor",
 				DataType: "Number",
 				PictForm: {
-					Section: "Book", Group: "Author", Row: 1, Width: 1, 
+					Section: "Book", Group: "Author", Row: 1, Width: 1,
 					// This performs an entity bundle request whenever a value is selected.
 					Providers: ["Pict-Input-EntityBundleRequest", "Pict-Input-AutofillTriggerGroup"],
 					EntitiesBundle: [
-							{
-								"Entity": "Author",
-								"Filter": "FBV~IDAuthor~EQ~{~D:Record.Value~}",
-								"Destination": "AppData.CurrentAuthor",
-								// This marshals a single record
-								"SingleRecord": true
-							},
-							{
-								"Entity": "BookAuthorJoin",
-								"Filter": "FBV~IDAuthor~EQ~{~D:AppData.CurrentAuthor.IDAuthor~}",
-								"Destination": "AppData.BookAuthorJoins"
-							},
-							{
-								"Entity": "Book",
-								"Filter": "FBL~IDBook~INN~{~PJU:,^IDBook^AppData.BookAuthorJoins~}",
-								"Destination": "AppData.Books"
-							}
-						],
+						{
+							"Entity": "Author",
+							"Filter": "FBV~IDAuthor~EQ~{~D:Record.Value~}",
+							"Destination": "AppData.CurrentAuthor",
+							// This marshals a single record
+							"SingleRecord": true
+						},
+						{
+							"Entity": "BookAuthorJoin",
+							"Filter": "FBV~IDAuthor~EQ~{~D:AppData.CurrentAuthor.IDAuthor~}",
+							"Destination": "AppData.BookAuthorJoins"
+						},
+						{
+							"Entity": "Book",
+							"Filter": "FBL~IDBook~INN~{~PJU:,^IDBook^AppData.BookAuthorJoins~}",
+							"Destination": "AppData.Books"
+						}
+					],
 					EntityBundleTriggerGroup: "BookTriggerGroup"
 				}
 			},
@@ -282,11 +299,11 @@ module.exports.default_configuration.pict_configuration = {
 					// This performs an entity bundle request whenever a value is selected.
 					Providers: ["Pict-Input-AutofillTriggerGroup"],
 					AutofillTriggerGroup:
-						{
-							TriggerGroupName: "BookTriggerGroup",
-							TriggerAddress: "AppData.CurrentAuthor.Name",
-							MarshalEmptyValues: true
-						}
+					{
+						TriggerGroupHash: "BookTriggerGroup",
+						TriggerAddress: "AppData.CurrentAuthor.Name",
+						MarshalEmptyValues: true
+					}
 				}
 			},
 
@@ -304,23 +321,156 @@ module.exports.default_configuration.pict_configuration = {
 					Section: "Book",
 					Group: "Book",
 					Row: 1, Width: 1,
-					InputType:"Option",
+					InputType: "Option",
 					SelectOptionsPickList: "Books",
 					// This performs an entity bundle request whenever a value is selected.
 					Providers: ["Pict-Input-Select", "Pict-Input-AutofillTriggerGroup"],
 					AutofillTriggerGroup:
-						{
-							TriggerGroupName: "BookTriggerGroup",
-							SelectOptionsRefresh: true
-						}
+					{
+						TriggerGroupHash: "BookTriggerGroup",
+						SelectOptionsRefresh: true
+					}
 				}
 			},
-			"Book.Title": {
-				Name: "Book Title",
-				Hash: "BookTitle",
-				DataType: "String",
-				PictForm: {
-					Section: "Book", Group: "Book", Row: 1, Width: 1
+
+			"SimpleGraphExampleRawDataOne":
+			{
+				Name: "SimpleGraphExampleOne",
+				Hash: "SimpleGraphExampleOne",
+
+				DataType: "Object",
+				PictForm:
+				{
+					Section: "Chart",
+					Group: "SimpleChart",
+
+					Row: 1,
+					Width: 3,
+
+					InputType: "Chart",
+
+					ChartLabelsRaw: ['Red', 'Green', 'Yellow', 'Grey', 'Blue'],
+
+					ChartDatasetsRaw: [{
+						label: 'My First Dataset',
+						data: [11, 16, 7, 3, 14],
+						backgroundColor: 
+						[
+							'rgb(255, 99, 132)',
+							'rgb(75, 192, 192)',
+							'rgb(255, 205, 86)',
+							'rgb(201, 203, 207)',
+							'rgb(54, 162, 235)'
+						]
+					}],
+
+					ChartConfigCorePrototypeRaw:
+					{
+						type: 'polarArea'
+					}
+				}
+			},
+
+			"SimpleGraphExampleRawDataTwo":
+			{
+				Name: "SimpleGraphExampleTwo",
+				Hash: "SimpleGraphExampleTwo",
+
+				DataType: "Object",
+				PictForm:
+				{
+					Section: "Chart",
+					Group: "SimpleChart",
+
+					Row: 2,
+					Width: 6,
+
+					InputType: "Chart",
+
+					ChartType: "bar",
+					ChartLabelsSolver: `objectkeystoarray(aggregationhistogrambyobject(FruitGrid, "name", "nutritions.calories"))`,
+					ChartDatasetsSolvers:
+						[
+							{
+								Label: 'Calories',
+								DataSolver: `objectvaluestoarray(aggregationhistogrambyobject(FruitGrid, "name", "nutritions.calories"))` 
+							}
+						]
+				}
+			},
+			
+			"SimpleGraphExampleRawDataThree":
+			{
+				Name: "SimpleGraphExampleThree",
+				Hash: "SimpleGraphExampleThree",
+
+				DataType: "Object",
+				PictForm:
+				{
+					Section: "Chart",
+					Group: "SimpleChart",
+
+					Row: 2,
+					Width: 6,
+
+					InputType: "Chart",
+
+					ChartType: "bar",
+					ChartLabelsSolver: `objectkeystoarray(aggregationhistogrambyobject(FruitGrid, "name", "nutritions.fat"))`,
+					ChartDatasetsSolvers: 
+						[
+							{
+								Label: 'Fat',
+								DataSolver: `objectvaluestoarray(aggregationhistogrambyobject(FruitGrid, "name", "nutritions.fat"))` 
+							},
+							{
+								Label: 'Carbohydrates',
+								DataSolver: `objectvaluestoarray(aggregationhistogrambyobject(FruitGrid, "name", "nutritions.carbohydrates"))` 
+							},
+							{
+								Label: 'Protein',
+								DataSolver: `objectvaluestoarray(aggregationhistogrambyobject(FruitGrid, "name", "nutritions.protein"))` 
+							},
+							{
+								Label: 'Sugars',
+								DataSolver: `objectvaluestoarray(aggregationhistogrambyobject(FruitGrid, "name", "nutritions.sugar"))` 
+							}
+						]
+				}
+			},
+
+			"WideGraphExample": {
+				Name: "WideGraphExample",
+				Hash: "WideGraphExample",
+				DataType: "Object",
+				PictForm:
+				{
+					Section: "Chart",
+					Group: "SimpleChart",
+					Row: 3,
+					Width: 12,
+					InputType: "Chart",
+
+					ChartLabelsRaw: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+
+					ChartDatasetsRaw: [
+						{
+							label: 'Awesomeness',
+							data: [1500, 1200, 800, 1700, 900, 2000]
+						}],
+
+					// Do anything you want here!!
+					ChartConfigCorePrototypeRaw:
+					{
+						type: 'bar',
+						options: {
+							scales: {
+								y: {
+									beginAtZero: true
+								}
+							}
+						}
+					}
 				}
 			},
 
@@ -330,7 +480,7 @@ module.exports.default_configuration.pict_configuration = {
 				DataType: "String",
 				PictForm: {
 					Section: "Recipe",
-					Group: "StatisticsTabs", 
+					Group: "StatisticsTabs",
 					InputType: "TabGroupSelector",
 					// The default when there is no state is the first entry here.
 					// If you want to set a default, you can just do it in the state address though.
@@ -358,11 +508,12 @@ module.exports.default_configuration.pict_configuration = {
 				Hash: "RecipeFeeds",
 				DataType: "PreciseNumber",
 				Default: "1",
-				PictForm: { Section: "Recipe", Group: "Statistics", Row: 1, Width: 1,
+				PictForm: {
+					Section: "Recipe", Group: "Statistics", Row: 1, Width: 1,
 					"ExtraDescription": "How many people does this recipe feed?",
-					"InputType":"Option",
+					"InputType": "Option",
 					"Providers": ["CustomDataProvider", "Pict-Input-Select"],
-					"SelectOptions": [{"id":"few", "text":"Few"}, {"id":"some", "text":"Some"}, {"id":"many", "text":"Many"}]
+					"SelectOptions": [{ "id": "few", "text": "Few" }, { "id": "some", "text": "Some" }, { "id": "many", "text": "Many" }]
 				},
 			},
 			"Recipe.TotalCalories": {
@@ -375,7 +526,7 @@ module.exports.default_configuration.pict_configuration = {
 					Group: "Statistics",
 					Row: 1,
 					Width: 1
-					},
+				},
 			},
 
 			"Recipe.CounterWidth": {
@@ -396,7 +547,7 @@ module.exports.default_configuration.pict_configuration = {
 				Name: "Required Counter Surface Area",
 				Hash: "RecipeCounterSurfaceArea",
 				DataType: "PreciseNumber",
-				PictForm: { Section: "Recipe", Group: "Statistics", Row: 2, Width: 1 },
+				PictForm: { Section: "Recipe", Group: "Statistics", Row: 2, Width: 1, "InputType": "PreciseNumberReadOnly", "DecimalPrecision": 3, "DigitsPostfix": " sq. in." },
 			},
 
 			"Recipe.VerticalClearance": {
@@ -464,6 +615,9 @@ module.exports.default_configuration.pict_configuration = {
 
 			"FruitData.FruityVice[].nutritions.calories": {
 				Hash: "FruitNutritionCalories",
+			},
+			"FruitData.FruityVice[].health_info": {
+				Hash: "FruitHealthInfo",
 			},
 			"FruitData.FruityVice[].nutritions.percent_total_fat": {
 				Hash: "FruitPercentTotalFat",
@@ -566,6 +720,39 @@ module.exports.default_configuration.pict_configuration = {
 		},
 
 		ReferenceManifests: {
+			DynamicSection1: {
+				Scope: "DynamicSection1",
+				Descriptors: {
+					DynamicField1: {
+						Name: "Dynamic Field 1",
+						Hash: "DynamicField1",
+						DataType: "String",
+						PictForm: { Section: "DynamicSection1", Group: "DynamicGroup1", Row: 1 },
+					},
+					DynamicField2: {
+						Name: "Dynamic Field 2",
+						Hash: "DynamicField2",
+						DataType: "String",
+						PictForm: { Section: "DynamicSection1", Group: "DynamicGroup2", Row: 1 },
+					},
+				},
+				Sections: [
+					{
+						Hash: "DynamicSection1",
+						Name: "Dynamic Section 1",
+						Groups: [
+							{
+								Hash: "DynamicGroup1",
+								Name: "Dynamic Group 1",
+							},
+							{
+								Hash: "DynamicGroup2",
+								Name: "Dynamic Group 2",
+							}
+						]
+					}
+				]
+			},
 			FruitEditor: {
 				Scope: "FruitEditor",
 
@@ -575,15 +762,24 @@ module.exports.default_configuration.pict_configuration = {
 						Hash: "Name",
 						DataType: "String",
 						Default: "(unnamed fruit)",
-						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
+						PictForm: { Row: "1", Section: "FruitGrid", Group: "FruitGrid" },
+					},
+					health_info: {
+						Name: "Health Info.",
+						Hash: "HealthInfoLink",
+						DataType: "String",
+						Default: "",
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid", "InputType": "Link" },
 					},
 					family: {
 						Name: "Family",
 						Hash: "Family",
 						DataType: "String",
-						PictForm: { Section: "FruitGrid", Group: "FruitGrid", "InputType":"Option",
+						PictForm: {
+							Section: "FruitGrid", Group: "FruitGrid", "InputType": "Option",
 							"Providers": ["Pict-Input-Select"],
-							"SelectOptionsPickList": "Families"}
+							"SelectOptionsPickList": "Families"
+						}
 					},
 					order: {
 						Name: "Order",
@@ -601,13 +797,19 @@ module.exports.default_configuration.pict_configuration = {
 						Name: "Last Watered",
 						Hash: "LastWatered",
 						DataType: "DateTime",
-						PictForm: { Section: "FruitGrid", Group: "FruitGrid", "InputType":"DateTime", "Providers": ["Pict-Input-DateTime"]},
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid", "InputType": "DateTime", "Providers": ["Pict-Input-DateTime"] },
 					},
 					"nutritions.calories": {
 						Name: "Calories",
 						Hash: "Calories",
 						DataType: "Number",
-						PictForm: { Section: "FruitGrid", Group: "FruitGrid"},
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
+					},
+					"SummedCalories": {
+						Name: "Summed Calories (cumulative)",
+						Hash: "SummedCalories",
+						DataType: "Number",
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
 					},
 					"nutritions.fat": {
 						Name: "Fat",
@@ -627,11 +829,34 @@ module.exports.default_configuration.pict_configuration = {
 						DataType: "Number",
 						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
 					},
+					"nutritions.protein_fat_ratio": {
+						Name: "Protein Fat Ratio",
+						Hash: "ProteinFatRatio",
+						DataType: "Number",
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid", TabularHidden: true },
+					},
 					"nutritions.percent_total_fat": {
 						Name: "PercentTotalFat",
 						Hash: "PercentTotalFat",
 						DataType: "Number",
-						PictForm: { Section: "FruitGrid", Group: "FruitGrid" },
+						PictForm: { Section: "FruitGrid", Group: "FruitGrid", "InputType": "PreciseNumberReadOnly", "DecimalPrecision": 4 },
+					},
+					"Author.Name": {
+						Name: "Author Name",
+						Hash: "AuthorNameTabular",
+						DataType: "String",
+						PictForm: {
+							Row: "1",
+							Section: "FruitGrid", Group: "FruitGrid",
+							// This performs an entity bundle request whenever a value is selected.
+							Providers: ["Pict-Input-AutofillTriggerGroup"],
+							AutofillTriggerGroup:
+							{
+								TriggerGroupHash: "BookTriggerGroup",
+								TriggerAddress: "AppData.CurrentAuthor.Name",
+								MarshalEmptyValues: true
+							}
+						}
 					},
 				},
 			},

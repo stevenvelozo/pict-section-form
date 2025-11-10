@@ -2,7 +2,7 @@ export = PictDynamicInputEvents;
 /**
  * The PictDynamicInputEvents class is a provider that manages data brokering and provider mappings for dynamic inputs.
  */
-declare class PictDynamicInputEvents {
+declare class PictDynamicInputEvents extends libPictProvider {
     /**
      * Creates an instance of the PictDynamicInputEvents class.
      *
@@ -24,8 +24,9 @@ declare class PictDynamicInputEvents {
      * @param {Object} pView - The view object.
      * @param {string} pInputHash - The input hash.
      * @param {string} pEvent - The input event.
+     * @param {string} [pTransactionGUID] - (optional) The active transaction GUID.
      */
-    inputEvent(pView: any, pInputHash: string, pEvent: string): void;
+    inputEvent(pView: any, pInputHash: string, pEvent: string, pTransactionGUID?: string): void;
     /**
      * Requests input data for a tabular record.
      *
@@ -43,16 +44,14 @@ declare class PictDynamicInputEvents {
      * @param {number} pInputIndex - The index of the input.
      * @param {number} pRowIndex - The index of the row.
      * @param {string} pEvent - The input event.
+     * @param {string} [pTransactionGUID] - (optional) The active transaction GUID.
      */
-    inputEventTabular(pView: any, pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: string): void;
+    inputEventTabular(pView: any, pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent: string, pTransactionGUID?: string): void;
 }
 declare namespace PictDynamicInputEvents {
     export { _DefaultProviderConfiguration as default_configuration };
 }
-declare namespace _DefaultProviderConfiguration {
-    let ProviderIdentifier: string;
-    let AutoInitialize: boolean;
-    let AutoInitializeOrdinal: number;
-    let AutoSolveWithApp: boolean;
-}
+import libPictProvider = require("pict-provider");
+/** @type {Record<string, any>} */
+declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-DynamicInputEvents.d.ts.map

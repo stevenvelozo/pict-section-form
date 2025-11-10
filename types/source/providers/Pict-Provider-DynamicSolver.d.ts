@@ -2,7 +2,7 @@ export = PictDynamicSolver;
 /**
  * The PictDynamicSolver class is a provider that solves configuration-generated dynamic views.
  */
-declare class PictDynamicSolver {
+declare class PictDynamicSolver extends libPictProvider {
     /**
      * Creates an instance of the PictDynamicSolver class.
      *
@@ -13,16 +13,12 @@ declare class PictDynamicSolver {
     constructor(pFable: object, pOptions: object, pServiceHash: object);
     /** @type {import('pict')} */
     pict: import("pict");
-    /** @type {import('pict') & { instantiateServiceProviderIfNotExists: (hash: string) => any }} */
+    /** @type {import('pict') & { instantiateServiceProviderIfNotExists: (hash: string) => any, ExpressionParser: any }} */
     fable: import("pict") & {
         instantiateServiceProviderIfNotExists: (hash: string) => any;
+        ExpressionParser: any;
     };
-    /** @type {any} */
-    log: any;
-    /** @type {string} */
-    UUID: string;
-    /** @type {string} */
-    Hash: string;
+    runSolver(pSolverExpression: any): any;
     /**
      * Checks the solver and returns the solver object if it passes the checks.
      *
@@ -100,10 +96,7 @@ declare class PictDynamicSolver {
 declare namespace PictDynamicSolver {
     export { _DefaultProviderConfiguration as default_configuration };
 }
-declare namespace _DefaultProviderConfiguration {
-    let ProviderIdentifier: string;
-    let AutoInitialize: boolean;
-    let AutoInitializeOrdinal: number;
-    let AutoSolveWithApp: boolean;
-}
+import libPictProvider = require("pict-provider");
+/** @type {Record<string, any>} */
+declare const _DefaultProviderConfiguration: Record<string, any>;
 //# sourceMappingURL=Pict-Provider-DynamicSolver.d.ts.map
