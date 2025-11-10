@@ -80,7 +80,7 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/`
 		<!-- Form Section Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 		<div id="SECTION-{~D:Context[0].formID~}" class="pict-form-section {~D:Record.CSSClass~}">
-		<h2 {~ShowTitle:Record~}>{~D:Record.Name~}</h2>
+		<h2>{~D:Record.Name~}</h2>
 `
 		},
 		// -Form-Template-Section-Postfix
@@ -101,7 +101,7 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/`
 			<!-- Form Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
 			<div id="GROUP-{~D:Context[0].formID~}-{~D:Record.Hash~}" class="{~D:Record.CSSClass~}" {~D:Record.Macro.PictFormLayout~}>
-			<h3 {~ShowTitle:Record~}>Group: {~D:Record.Name~}</h3>
+			<h3>Group: {~D:Record.Name~}</h3>
 `
 		},
 		// row(s) are useful when our form has multiple inputs on some lines and a single on another...
