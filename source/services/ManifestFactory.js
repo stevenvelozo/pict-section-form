@@ -795,7 +795,7 @@ class ManifestFactory extends libFableServiceProviderBase
 					let tmpValue = tmpRecord[tmpKey];
 
 					// Use the manifest to put it on the descriptor
-					if (tmpValue && tmpValue.length > 0)
+					if (tmpValue)
 					{
 						tmpDescriptorManifest.setValueAtAddress(tmpDescriptor, tmpAddress, tmpValue);
 					}
@@ -817,7 +817,7 @@ class ManifestFactory extends libFableServiceProviderBase
 					let tmpValue = parseFloat(tmpRawValue);
 
 					// Use the manifest to put it on the descriptor
-					if (tmpValue && !isNaN(tmpValue))
+					if (!isNaN(tmpValue))
 					{
 						tmpDescriptorManifest.setValueAtAddress(tmpDescriptor, tmpAddress, tmpValue);
 						this.log.trace(`Set Float Descriptor Extension [${tmpKey}] on descriptor [${tmpDescriptor.Hash}] to value [${tmpValue}]`);
@@ -840,7 +840,7 @@ class ManifestFactory extends libFableServiceProviderBase
 					let tmpValue = parseInt(tmpRawValue);
 
 					// Use the manifest to put it on the descriptor
-					if (tmpValue && !isNaN(tmpValue))
+					if (!isNaN(tmpValue))
 					{
 						tmpDescriptorManifest.setValueAtAddress(tmpDescriptor, tmpAddress, tmpValue);
 					}
@@ -874,6 +874,10 @@ class ManifestFactory extends libFableServiceProviderBase
 					if ((tmpValue === true) || (tmpValue === false))
 					{
 						tmpDescriptorManifest.setValueAtAddress(tmpDescriptor, tmpAddress, tmpValue);
+					}
+					else
+					{
+						this.log.warn(`Could not parse Boolean value [${tmpRawValue}] for Descriptor Boolean Extension [${tmpKey}] on descriptor [${tmpDescriptor.Hash}]`);
 					}
 				}
 				catch (pError)
