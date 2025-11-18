@@ -8,6 +8,12 @@ class ComplexTabularApplication extends libPictSectionForm.PictFormApplication
 	{
 		super(pFable, pOptions, pServiceHash);
 
+		if (!this.pict.AppData.UI)
+		{
+			this.pict.AppData.UI = {};
+		}
+		// test defaulting to alternate tab
+		this.pict.AppData.UI.StatisticsTabState = "FruitStatistics";
 		this.pict.addProvider('CustomDataProvider', libCustomDataProvider.default_configuration, libCustomDataProvider);
 	}
 }
@@ -475,7 +481,7 @@ module.exports.default_configuration.pict_configuration = {
 					// The default when there is no state is the first entry here.
 					// If you want to set a default, you can just do it in the state address though.
 					TabGroupSet: ["Statistics", "FruitStatistics"],
-					TabGroupNames: ["Statistics", "Fruit Statistics"]
+					TabGroupNames: ["Statistics", "Fruit Statistics"],
 				}
 			},
 

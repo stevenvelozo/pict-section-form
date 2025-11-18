@@ -16,10 +16,34 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
     cssHideClass: string;
     cssSelectedTabClass: string;
     cssSnippet: string;
-    setCSSSnippets(pCSSHideClass: any, pCSSSnippet: any): void;
-    getTabSelector(pView: any, pInput: any, pGroupHash: any): string;
-    getGroupSelector(pView: any, pGroupHash: any): string;
-    selectTabByViewHash(pViewHash: any, pInputHash: any, pTabHash: any): boolean;
+    /**
+     * @param {string} [pCSSHideClass]
+     * @param {string} [pCSSSnippet]
+     */
+    setCSSSnippets(pCSSHideClass?: string, pCSSSnippet?: string): void;
+    /**
+     * @param {Object} pView - The view object.
+     * @param {Object} pInput - The input object.
+     * @param {string} pGroupHash - The group hash.
+     *
+     * @return {string}
+     */
+    getTabSelector(pView: any, pInput: any, pGroupHash: string): string;
+    /**
+     * @param {Object} pView - The view object.
+     * @param {string} pGroupHash - The group hash.
+     *
+     * @return {string}
+     */
+    getGroupSelector(pView: any, pGroupHash: string): string;
+    /**
+     * @param {string} pViewHash
+     * @param {string} pInputHash
+     * @param {string} pTabHash
+     *
+     * @return {boolean}
+     */
+    selectTabByViewHash(pViewHash: string, pInputHash: string, pTabHash: string): boolean;
     /**
      * Generates the HTML ID for a select input element.
      * @param {string} pInputHTMLID - The HTML ID of the input element.

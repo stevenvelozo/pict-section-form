@@ -28,24 +28,50 @@ class CustomInputHandler extends libPictSectionInputExtension
 		this.setCSSSnippets();
 	}
 
+	/**
+	 * @param {string} [pCSSHideClass]
+	 * @param {string} [pCSSSnippet]
+	 */
 	setCSSSnippets(pCSSHideClass, pCSSSnippet)
 	{
 		this.cssHideClass = pCSSHideClass || this.cssHideClass;
 		this.cssSnippet = pCSSSnippet || this.cssSnippet;
+
 		this.pict.CSSMap.addCSS('Pict-Section-Form-Input-Group-TabSelector', this.cssSnippet, 1001, 'Pict-Input-TabSelector');
 		this.pict.CSSMap.injectCSS();
 	}
 
+	/**
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {string} pGroupHash - The group hash.
+	 *
+	 * @return {string}
+	 */
 	getTabSelector(pView, pInput, pGroupHash)
 	{
 		return `#TAB-${pGroupHash}-${pInput.Macro.RawHTMLID}`;
 	}
 
+
+	/**
+	 * @param {Object} pView - The view object.
+	 * @param {string} pGroupHash - The group hash.
+	 *
+	 * @return {string}
+	 */
 	getGroupSelector(pView, pGroupHash)
 	{
 		return `#GROUP-${pView.formID}-${pGroupHash}`;
 	}
 
+	/**
+	 * @param {string} pViewHash
+	 * @param {string} pInputHash
+	 * @param {string} pTabHash
+	 *
+	 * @return {boolean}
+	 */
 	selectTabByViewHash(pViewHash, pInputHash, pTabHash)
 	{
 		// First get the view
@@ -86,6 +112,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 				this.pict.ContentAssignment.addClass(this.getTabSelector(tmpView, tmpInput, tmpTabGroupHash), this.cssSelectedTabClass);
 			}
 		}
+		tmpView.setDataByInput(tmpInput, pTabHash);
 		return true;
 	}
 
@@ -135,7 +162,8 @@ class CustomInputHandler extends libPictSectionInputExtension
 		this.pict.ContentAssignment.projectContent('replace', this.getTabSelectorInputHTMLID(pInput.Macro.RawHTMLID), tmpTabGroupSetEntries, 'FixTheTypescriptTypes');
 
 		// Now set the default tab (or first one)
-		let tmpDefaultTabGroupHash = pInput.PictForm?.DefaultTabGroupHash || tmpTabSet[0];
+		const tmpDefaultTabGroupHash = (pInput.PictForm?.DefaultFromData !== false && pValue) || pInput.PictForm?.DefaultTabGroupHash || tmpTabSet[0];
+
 		this.selectTabByViewHash(pView.Hash, pInput.Hash, tmpDefaultTabGroupHash);
 
 		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector, pTransactionGUID);

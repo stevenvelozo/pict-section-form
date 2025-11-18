@@ -291,7 +291,7 @@ class PictViewDynamicForm extends libPictViewClass
 		this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 		try
 		{
-			this.sectionManifest.setValueByHash(this.getMarshalDestinationObject(), pInput.Hash, pValue)
+			this.sectionManifest.setValueByHash(this.getMarshalDestinationObject(), pInput.Hash, pValue);
 
 			// TODO: DRY TIME, excellent.
 			let tmpValue = pValue;

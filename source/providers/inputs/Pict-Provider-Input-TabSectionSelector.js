@@ -28,6 +28,10 @@ class CustomInputHandler extends libPictSectionInputExtension
 		this.setCSSSnippets();
 	}
 
+	/**
+	 * @param {string} [pCSSHideClass]
+	 * @param {string} [pCSSSnippet]
+	 */
 	setCSSSnippets(pCSSHideClass, pCSSSnippet)
 	{
 		this.cssHideClass = pCSSHideClass || this.cssHideClass;
@@ -35,22 +39,45 @@ class CustomInputHandler extends libPictSectionInputExtension
 		this.pict.CSSMap.addCSS('Pict-Section-Form-Input-Section-TabSelector', this.cssSnippet, 1001, 'Pict-Input-TabSelector');
 	}
 
+	/**
+	 * @param {string} pManifestSectionHash
+	 *
+	 * @return {string}
+	 */
 	getViewHash(pManifestSectionHash)
 	{
 		return `PictSectionForm-${pManifestSectionHash}`;
 	}
 
+	/**
+	 * @param {string} pTabSectionHash
+	 * @param {Object} pInput
+	 *
+	 * @return {string}
+	 */
 	getTabSelector(pTabSectionHash, pInput)
 	{
 		return `#TAB-${pTabSectionHash}-${pInput.Macro.RawHTMLID}`;
 	}
 
+	/**
+	 * @param {string} pTabViewSectionHash
+	 *
+	 * @return {string}
+	 */
 	getSectionSelector(pTabViewSectionHash)
 	{
 		const metaController = this.pict.views.PictFormMetacontroller;
 		return `#Pict-${metaController ? metaController.UUID : this.UUID}-${pTabViewSectionHash}-Wrap`;
 	}
 
+	/**
+	 * @param {string} pViewHash
+	 * @param {string} pInputHash
+	 * @param {string} pTabViewHash
+	 *
+	 * @return {boolean}
+	 */
 	selectTabByViewHash(pViewHash, pInputHash, pTabViewHash)
 	{
 		// First get the view
@@ -97,13 +124,16 @@ class CustomInputHandler extends libPictSectionInputExtension
 				this.pict.ContentAssignment.addClass(this.getTabSelector(tmpTabSectionHash, tmpInput), this.cssSelectedTabClass);
 			}
 		}
+		tmpView.setDataByInput(tmpInput, pTabViewHash);
 		return true;
 	}
 
 	/**
 	 * Generates the HTML ID for a select input element.
+	 *
 	 * @param {string} pInputHTMLID - The HTML ID of the input element.
-	 * @returns {string} - The generated HTML ID for the select input element.
+	 *
+	 * @return {string} - The generated HTML ID for the select input element.
 	 */
 	getTabSelectorInputHTMLID(pInputHTMLID)
 	{
@@ -146,7 +176,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 		this.pict.ContentAssignment.projectContent('replace', this.getTabSelectorInputHTMLID(pInput.Macro.RawHTMLID), tmpTabSectionSetEntries, 'FixTheTypescriptTypes');
 
 		// Now set the default tab (or first one)
-		let tmpDefaultTabSectionHash = pInput.PictForm?.DefaultTabSectionHash || tmpTabSet[0];
+		const tmpDefaultTabSectionHash = (pInput.PictForm?.DefaultFromData !== false && pValue) || pInput.PictForm?.DefaultTabSectionHash || tmpTabSet[0];
 		this.selectTabByViewHash(pView.Hash, pInput.Hash, tmpDefaultTabSectionHash);
 
 		return super.onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLTabSelector, pTransactionGUID);
