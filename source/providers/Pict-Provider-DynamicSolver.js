@@ -370,7 +370,14 @@ class PictDynamicSolver extends libPictProvider
 
 		// Now sort the ordinal container keys
 		let tmpOrdinalKeys = Object.keys(tmpOrdinalsToSolve);
-		tmpOrdinalKeys.sort();
+		tmpOrdinalKeys.sort((a, b) =>
+		{
+			if (isNaN(Number(a)) || isNaN(Number(b)))
+			{
+				return a.localeCompare(b);
+			}
+			return Number(a) - Number(b);
+		});
 
 		// Now enumerate the keys and solve each layer of the solution set
 		for (let i = 0; i < tmpOrdinalKeys.length; i++)

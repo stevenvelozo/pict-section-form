@@ -50,6 +50,46 @@ class DoNothingView extends libPictView
 	}
 }
 
+class OrderedSolverApplication extends DoNothingApplication
+{
+	constructor(pFable, pOptions, pServiceHash)
+	{
+		super(pFable, pOptions, pServiceHash);
+
+		this.pict.AppData.A = '5';
+		this.pict.AppData.B = '3';
+	}
+
+	onAfterSolve()
+	{
+		super.onAfterSolve();
+		this.pict.log.info('OrderedSolverApplication onAfterSolve called.');
+		this?._testDone?.();
+	}
+
+	onAfterInitialize()
+	{
+	}
+}
+
+OrderedSolverApplication.default_configuration.pict_configuration.DefaultFormManifest =
+{
+	Scope: 'OrderedSolverApplicationForm',
+	Descriptors: {},
+	Sections:
+	[
+		{
+			Name: 'Ordered Solver Section',
+			Hash: 'OrderedSolverSection',
+			Solvers:
+			[
+				{ Ordinal: 5, Expression: 'C = A + B' },
+				{ Ordinal: 40, Expression: 'D = C - B' },
+			],
+		},
+	],
+};
+
 suite
 (
 	'PictSectionForm Basic',
@@ -136,6 +176,66 @@ suite
 								_Pict.addApplication(tmpApplicationHash, tmpDefaultConfiguration, DoNothingApplication);
 
 								_Pict.PictApplication.testDone = fDone;
+
+								_Pict.PictApplication.initializeAsync(
+									function (pError)
+									{
+										if (pError)
+										{
+											console.log('Error initializing the pict application: '+pError)
+										}
+										_Pict.log.info('Loading the Application and associated views.');
+									});
+							}
+						);
+					test(
+							'Solve Ordinals',
+							(fDone) =>
+							{
+								//NOTE: code is a clone of Pict.safeLoadPictApplication
+								let _Pict;
+								const tmpApplicationClass = OrderedSolverApplication;
+								if (tmpApplicationClass && ('default_configuration' in tmpApplicationClass) && ('pict_configuration' in tmpApplicationClass.default_configuration))
+								{
+									_Pict = new libPict(tmpApplicationClass.default_configuration.pict_configuration);
+								}
+								else
+								{
+									_Pict = new libPict();
+								}
+
+								//_Pict.LogNoisiness = 0;
+
+								let tmpApplicationHash = 'DefaultApplication';
+								let tmpDefaultConfiguration = {};
+
+								if ('default_configuration' in tmpApplicationClass)
+								{
+									tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+
+									if ('Hash' in tmpApplicationClass.default_configuration)
+									{
+										tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+										tmpApplicationHash = tmpApplicationClass.default_configuration.Hash;
+									}
+								}
+								_Pict.log.info(`Loading the pict application [${tmpApplicationHash}] and associated views.`);
+
+								_Pict.addApplication(tmpApplicationHash, tmpDefaultConfiguration, tmpApplicationClass);
+
+								_Pict.PictApplication.testDone = () =>
+								{
+									try
+									{
+										Expect(_Pict.AppData.C).to.equal('8', 'C should equal 8 (A + B)');
+										Expect(_Pict.AppData.D).to.equal('5', 'D should equal 5 (C - B)');
+									}
+									catch (pError)
+									{
+										return fDone(pError);
+									}
+									fDone();
+								};
 
 								_Pict.PictApplication.initializeAsync(
 									function (pError)
