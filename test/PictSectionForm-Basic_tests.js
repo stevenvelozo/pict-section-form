@@ -557,6 +557,15 @@ suite
 									Scope: 'OrderedSolverApplicationForm',
 									Descriptors:
 									{
+										'LevelOfIndirection.AggregateValueAddress':
+										{
+											Hash: 'IndirectAggregateValue',
+											Name: 'Indirect Aggregate Value',
+											DataAddress: 'LevelOfIndirection.AggregateValueAddress',
+											DataType: 'PreciseNumber',
+											FormGroup: 'DataTableGroup',
+											FormSection: 'DataTableSection',
+										},
 										'LevelOfIndirection.DataTableAddress[].ValueAddress':
 										{
 											Hash: 'ValueArray',
@@ -590,10 +599,19 @@ suite
 										{
 											Name: 'Ordered Solver Section',
 											Hash: 'OrderedSolverSection',
+											Groups:
+											[
+												{
+													Name: 'Group Name',
+													Hash: 'GroupHash',
+													RecordSetAddress: 'LevelOfIndirection.DataTableAddress',
+												},
+											],
 											Solvers:
 											[
 												{ Ordinal: 5, Expression: 'AggregateValue = SUM(ValueArray)' },
 												{ Ordinal: 40, Expression: 'AggregateValue2 = SUM(LevelOfIndirection.DataTableAddress[].ValueAddress)' },
+												{ Ordinal: 60, Expression: 'IndirectAggregateValue = AggregateValue' },
 											],
 										},
 									],
@@ -601,6 +619,7 @@ suite
 
 								let tmpHashedAggregateValue = null;
 								let tmpHashedAggregateValue2 = null;
+								let tmpHashedAggregateValue3 = null;
 								_Pict.PictApplication.initializeAsync(
 									function (pError)
 									{
@@ -612,10 +631,13 @@ suite
 										try
 										{
 											_Pict.log.info('Loading the Application and associated views.');
-											const tmpDistinctManifest = _Pict.views.PictFormMetacontroller.createDistinctManifest(tmpManifest);
+											const tmpUUID = _Pict.getUUID().substring(0, 8);
+											const tmpDistinctManifest = _Pict.views.PictFormMetacontroller.createDistinctManifest(tmpManifest, tmpUUID);
 											_Pict.log.info('Distinct Manifest:', tmpDistinctManifest);
+											Expect(tmpDistinctManifest.Sections[0].Groups[0].RecordSetAddress).to.equal(`LevelOfIndirection_${tmpUUID}.DataTableAddress`, 'Group RecordSetAddress should be preserved in distinct manifest.');
 											tmpHashedAggregateValue = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue')[0];
 											tmpHashedAggregateValue2 = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue2')[0];
+											tmpHashedAggregateValue3 = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'IndirectAggregateValue')[0];
 											const tmpInjectedSecionViews = _Pict.views.PictFormMetacontroller.injectManifest(tmpDistinctManifest);
 											_Pict.log.info('Injected Section Views:', tmpInjectedSecionViews.length);
 											_Pict.views.PictFormMetacontroller.updateMetatemplateInDOM();
@@ -635,9 +657,10 @@ suite
 											{
 												try
 												{
-													_Pict.log.info(`AppData after`, { AppData: _Pict.AppData, tmpHashedAggregateValue, tmpHashedAggregateValue2 });
+													_Pict.log.info(`AppData after`, { AppData: _Pict.AppData, tmpHashedAggregateValue, tmpHashedAggregateValue2, tmpHashedAggregateValue3 });
 													Expect(_Pict.AppData[tmpHashedAggregateValue]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
 													Expect(_Pict.AppData[tmpHashedAggregateValue2]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
+													Expect(_Pict.manifest.getValueByHash(_Pict.AppData, tmpHashedAggregateValue3)).to.equal('15', 'IndirectAggregateValue should equal 15 (via indirection) using manifest method');
 												}
 												catch (pError)
 												{

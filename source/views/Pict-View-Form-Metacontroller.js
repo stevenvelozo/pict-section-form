@@ -378,7 +378,7 @@ class PictFormMetacontroller extends libPictViewClass
 				{
 					continue;
 				}
-				const tmpTranslatedAddress = tmpAddressTranslation[tmpIterAddress].replace(new RegExp(`\\b${tmpOriginalAddress}\\b`, 'g'), tmpUpdatedAddress);
+				const tmpTranslatedAddress = tmpAddressTranslation[tmpIterAddress].replace(new RegExp(`^${tmpOriginalAddress}\\b`, 'g'), tmpUpdatedAddress);
 				if (tmpTranslatedAddress !== tmpAddressTranslation[tmpIterAddress])
 				{
 					//this.pict.log.info(`DocumentDynamicSectionManager._addTestSections: Updated address translation for "${tmpIterAddress}" from "${tmpAddressTranslation[tmpIterAddress]}" to "${tmpTranslatedAddress}".`);
@@ -416,6 +416,7 @@ class PictFormMetacontroller extends libPictViewClass
 						continue;
 					}
 					let tmpUpdatedSolver = tmpSolverExpression;
+					//FIXME: what if there is a collision in a suffix-part and we replace too much?
 					for (const tmpMapping of tmpAddressMappings)
 					{
 						tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
@@ -440,6 +441,43 @@ class PictFormMetacontroller extends libPictViewClass
 			}
 			for (const tmpGroup of tmpSection.Groups || [])
 			{
+				if (tmpGroup.RecordSetAddress)
+				{
+					let tmpRecordSetAddress = tmpGroup.RecordSetAddress;
+					for (const tmpMapping of tmpAddressMappings)
+					{
+						tmpRecordSetAddress = tmpRecordSetAddress.replace(new RegExp(`^${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+					}
+					if (tmpRecordSetAddress !== tmpGroup.RecordSetAddress)
+					{
+						//this.pict.log.info(`DocumentDynamicSectionManager._addTestSections: Updated group record set address from "${tmpGroup.RecordSetAddress}" to "${tmpRecordSetAddress}".`);
+					}
+					else
+					{
+						let tmpArrayIndex = tmpRecordSetAddress.indexOf('[');
+						let tmpDotIndex = tmpRecordSetAddress.indexOf('.');
+						if (tmpDotIndex >= 0 && (tmpDotIndex < tmpArrayIndex || tmpArrayIndex < 0))
+						{
+							const tmpPrefixPart = tmpRecordSetAddress.substring(0, tmpDotIndex);
+							const tmpPostfixPart = tmpRecordSetAddress.substring(tmpDotIndex);
+							tmpRecordSetAddress = `${tmpPrefixPart}_${tmpUUID}${tmpPostfixPart}`;
+						}
+						else if (tmpArrayIndex >= 0 && (tmpArrayIndex < tmpDotIndex || tmpDotIndex < 0))
+						{
+							const tmpArrayPart = tmpRecordSetAddress.substring(0, tmpArrayIndex);
+							const tmpPostfixPart = tmpRecordSetAddress.substring(tmpArrayIndex);
+							tmpRecordSetAddress = `${tmpArrayPart}_${tmpUUID}${tmpPostfixPart}`;
+						}
+						else
+						{
+							//FIXME: do we want to allow prefixing the data address? (ex. nesting it under a parent object) - caller can still do this themselves.
+							tmpRecordSetAddress = `${tmpGroup.RecordSetAddress}_${tmpUUID}`;
+						}
+						//TODO: does this need to go into the mappings?
+						tmpGroup.RecordSetAddress = tmpRecordSetAddress;
+					}
+
+				}
 				if (Array.isArray(tmpGroup.RecordSetSolvers) && tmpGroup.RecordSetSolvers.length > 0)
 				{
 					for (let i = 0; i < tmpGroup.RecordSetSolvers.length; i++)
@@ -451,6 +489,7 @@ class PictFormMetacontroller extends libPictViewClass
 							continue;
 						}
 						let tmpUpdatedSolver = tmpSolverExpression;
+						//FIXME: what if there is a collision in a suffix-part and we replace too much?
 						for (const tmpMapping of tmpAddressMappings)
 						{
 							tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
