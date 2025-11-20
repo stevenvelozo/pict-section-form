@@ -290,6 +290,8 @@ class PictFormMetacontroller extends libPictViewClass
 	 */
 	createDistinctManifest(pManifest, pUUID)
 	{
+		const tmpDescriptorHashes = Object.keys(pManifest?.Descriptors || {});
+		const tmpDescriptorHashSet = new Set(tmpDescriptorHashes);
 		const tmpUUID = pUUID != null ? pUUID : this.pict.getUUID().replace(/-/g, '');
 		const tmpManifest = JSON.parse(JSON.stringify(pManifest));
 		for (const tmpSection of tmpManifest.Sections || [])
@@ -305,8 +307,37 @@ class PictFormMetacontroller extends libPictViewClass
 		const tmpNewDescriptors = {};
 		for (const [ tmpKey, tmpDescriptor ] of Object.entries(tmpManifest.Descriptors || {}))
 		{
-			//FIXME: do we want to allow prefixing the data address? (ex. nesting it under a parent object) - caller can still do this themselves.
-			tmpDescriptor.DataAddress = `${tmpDescriptor.DataAddress || tmpKey}_${tmpUUID}`;
+			if (!tmpDescriptor.DataAddress)
+			{
+				tmpDescriptor.DataAddress = tmpKey;
+			}
+			tmpDescriptor.OriginalDataAddress = tmpDescriptor.DataAddress;
+			// we only make distinct top level properties to keep things as tidy as possible so do a split to isoloate that
+			//TODO: if we have .. dereferences (for example) in the data address, this will not work properly
+
+			let tmpArrayIndex = tmpDescriptor.DataAddress.indexOf('[');
+			let tmpDotIndex = tmpDescriptor.DataAddress.indexOf('.');
+			if (tmpDotIndex >= 0 && (tmpDotIndex < tmpArrayIndex || tmpArrayIndex < 0))
+			{
+				const tmpPrefixPart = tmpDescriptor.DataAddress.substring(0, tmpDotIndex);
+				const tmpPostfixPart = tmpDescriptor.DataAddress.substring(tmpDotIndex);
+				tmpDescriptor.DataAddress = `${tmpPrefixPart}_${tmpUUID}${tmpPostfixPart}`;
+			}
+			else if (tmpArrayIndex >= 0 && (tmpArrayIndex < tmpDotIndex || tmpDotIndex < 0))
+			{
+				const tmpArrayPart = tmpDescriptor.DataAddress.substring(0, tmpArrayIndex);
+				const tmpPostfixPart = tmpDescriptor.DataAddress.substring(tmpArrayIndex);
+				tmpDescriptor.DataAddress = `${tmpArrayPart}_${tmpUUID}${tmpPostfixPart}`;
+			}
+			else
+			{
+				//FIXME: do we want to allow prefixing the data address? (ex. nesting it under a parent object) - caller can still do this themselves.
+				tmpDescriptor.DataAddress = `${tmpDescriptor.OriginalDataAddress}_${tmpUUID}`;
+			}
+			if (tmpDescriptor.Address != null)
+			{
+				tmpDescriptor.Address = tmpDescriptor.DataAddress;
+			}
 			if (tmpDescriptor.Hash)
 			{
 				tmpDescriptor.OriginalHash = tmpDescriptor.Hash;
@@ -323,9 +354,127 @@ class PictFormMetacontroller extends libPictViewClass
 					tmpDescriptor.PictForm.Group = `${tmpDescriptor.PictForm.Group}_${tmpUUID}`;
 				}
 			}
-			tmpNewDescriptors[`${tmpKey}_${tmpUUID}`] = tmpDescriptor;
+			tmpNewDescriptors[tmpDescriptor.DataAddress] = tmpDescriptor;
 		}
 		tmpManifest.Descriptors = tmpNewDescriptors;
+		const tmpAddressTranslation = {};
+		const tmpHashTranslation = {};
+		for (const tmpDescriptor of Object.values(tmpManifest?.Descriptors || {}))
+		{
+			if (tmpDescriptor.OriginalDataAddress)
+			{
+				tmpAddressTranslation[tmpDescriptor.OriginalDataAddress] = tmpDescriptor.DataAddress;
+			}
+			if (tmpDescriptor.OriginalHash)
+			{
+				tmpHashTranslation[tmpDescriptor.OriginalHash] = tmpDescriptor.Hash;
+			}
+		}
+		for (const [ tmpOriginalAddress, tmpUpdatedAddress ] of Object.entries(tmpAddressTranslation))
+		{
+			for (const tmpIterAddress of Object.keys(tmpAddressTranslation))
+			{
+				if (tmpIterAddress === tmpOriginalAddress)
+				{
+					continue;
+				}
+				const tmpTranslatedAddress = tmpAddressTranslation[tmpIterAddress].replace(new RegExp(`\\b${tmpOriginalAddress}\\b`, 'g'), tmpUpdatedAddress);
+				if (tmpTranslatedAddress !== tmpAddressTranslation[tmpIterAddress])
+				{
+					//this.pict.log.info(`DocumentDynamicSectionManager._addTestSections: Updated address translation for "${tmpIterAddress}" from "${tmpAddressTranslation[tmpIterAddress]}" to "${tmpTranslatedAddress}".`);
+					tmpAddressTranslation[tmpIterAddress] = tmpTranslatedAddress;
+					const [ tmpCurrentKey, tmpOriginalDescriptor ] = Object.entries(tmpManifest.Descriptors).find(([ pKey, pDescriptor ]) => pDescriptor.OriginalDataAddress === tmpIterAddress);
+					tmpManifest.Descriptors[tmpCurrentKey].DataAddress = tmpTranslatedAddress;
+					if (tmpManifest.Descriptors[tmpCurrentKey].Address != null)
+					{
+						tmpManifest.Descriptors[tmpCurrentKey].Address = tmpManifest.Descriptors[tmpCurrentKey].DataAddress;
+					}
+					tmpManifest.Descriptors[tmpTranslatedAddress] = tmpManifest.Descriptors[tmpCurrentKey];
+					delete tmpManifest.Descriptors[tmpCurrentKey];
+				}
+			}
+		}
+		//TODO: should we merge these two together for solvers?
+		const tmpAddressMappings = Object.entries(tmpAddressTranslation).map(([ pOldAddress, pNewAddress ]) => ({ From: pOldAddress, To: pNewAddress }));
+		tmpAddressMappings.sort((a, b) => b.From.length - a.From.length);
+		const tmpHashMappings = Object.entries(tmpHashTranslation).map(([ pOldHash, pNewHash ]) => ({ From: pOldHash, To: pNewHash }));
+		tmpHashMappings.sort((a, b) => b.From.length - a.From.length);
+		const escapeRegExp = (string) =>
+		{
+			return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		}
+		for (const tmpSection of tmpManifest.Sections || [])
+		{
+			if (Array.isArray(tmpSection.Solvers) && tmpSection.Solvers.length > 0)
+			{
+				for (let i = 0; i < tmpSection.Solvers.length; i++)
+				{
+					const tmpSolver = tmpSection.Solvers[i];
+					const tmpSolverExpression = typeof tmpSolver === 'string' ? tmpSolver : tmpSolver.Expression;
+					if (!tmpSolverExpression)
+					{
+						continue;
+					}
+					let tmpUpdatedSolver = tmpSolverExpression;
+					for (const tmpMapping of tmpAddressMappings)
+					{
+						tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+					}
+					for (const tmpMapping of tmpHashMappings)
+					{
+						tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+					}
+					if (tmpUpdatedSolver !== tmpSolver)
+					{
+						//this.pict.log.info(`DocumentDynamicSectionManager._addTestSections: Updated section solver reference ${i} from "${tmpSolverExpression}" to "${tmpUpdatedSolver}".`);
+						if (typeof tmpSolver === 'string')
+						{
+							tmpSection.Solvers[i] = tmpUpdatedSolver;
+						}
+						else
+						{
+							tmpSection.Solvers[i].Expression = tmpUpdatedSolver;
+						}
+					}
+				}
+			}
+			for (const tmpGroup of tmpSection.Groups || [])
+			{
+				if (Array.isArray(tmpGroup.RecordSetSolvers) && tmpGroup.RecordSetSolvers.length > 0)
+				{
+					for (let i = 0; i < tmpGroup.RecordSetSolvers.length; i++)
+					{
+						const tmpSolver = tmpGroup.RecordSetSolvers[i];
+						const tmpSolverExpression = typeof tmpSolver === 'string' ? tmpSolver : tmpSolver.Expression;
+						if (!tmpSolverExpression)
+						{
+							continue;
+						}
+						let tmpUpdatedSolver = tmpSolverExpression;
+						for (const tmpMapping of tmpAddressMappings)
+						{
+							tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+						}
+						for (const tmpMapping of tmpHashMappings)
+						{
+							tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+						}
+						if (tmpUpdatedSolver !== tmpSolver)
+						{
+							//this.pict.log.info(`DocumentDynamicSectionManager._addTestSections: Updated group solver reference ${i} from "${tmpSolver}" to "${tmpUpdatedSolver}".`);
+							if (typeof tmpSolver === 'string')
+							{
+								tmpGroup.RecordSetSolvers[i] = tmpUpdatedSolver;
+							}
+							else
+							{
+								tmpGroup.RecordSetSolvers[i].Expression = tmpUpdatedSolver;
+							}
+						}
+					}
+				}
+			}
+		}
 		return tmpManifest;
 	}
 

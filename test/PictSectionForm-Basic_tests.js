@@ -64,7 +64,7 @@ class OrderedSolverApplication extends DoNothingApplication
 	{
 		super.onAfterSolve();
 		this.pict.log.info('OrderedSolverApplication onAfterSolve called.');
-		this?._testDone?.();
+		this._testDone?.();
 	}
 
 	onAfterInitialize()
@@ -189,6 +189,486 @@ suite
 							}
 						);
 					test(
+							'Distinct Array Test',
+							(fDone) =>
+							{
+								//NOTE: code is a clone of Pict.safeLoadPictApplication
+								let _Pict;
+								const tmpApplicationClass = OrderedSolverApplication;
+								if (tmpApplicationClass && ('default_configuration' in tmpApplicationClass) && ('pict_configuration' in tmpApplicationClass.default_configuration))
+								{
+									_Pict = new libPict(tmpApplicationClass.default_configuration.pict_configuration);
+								}
+								else
+								{
+									_Pict = new libPict();
+								}
+
+								//_Pict.LogNoisiness = 0;
+
+								let tmpApplicationHash = 'DefaultApplication';
+								let tmpDefaultConfiguration = {};
+
+								if ('default_configuration' in tmpApplicationClass)
+								{
+									tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+
+									if ('Hash' in tmpApplicationClass.default_configuration)
+									{
+										tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+										tmpApplicationHash = tmpApplicationClass.default_configuration.Hash;
+									}
+								}
+								_Pict.log.info(`Loading the pict application [${tmpApplicationHash}] and associated views.`);
+
+								_Pict.addApplication(tmpApplicationHash, tmpDefaultConfiguration, tmpApplicationClass);
+
+								// Add the pict form service
+								_Pict.addServiceType('PictSectionForm', libPictSectionForm);
+
+								// Add the pict form metacontroller service, which provides programmaatic view construction from manifests and render/marshal methods.
+								_Pict.addView('PictFormMetacontroller', {}, libPictSectionForm.PictFormMetacontroller);
+
+								const tmpManifest =
+								{
+									Scope: 'OrderedSolverApplicationForm',
+									Descriptors:
+									{
+										DataTableAddress:
+										{
+											Hash: 'DataTable',
+											Name: 'Data Table',
+											DataAddress: 'DataTableAddress',
+											DataType: 'Array',
+											FormGroup: 'DataTableGroup',
+											FormSection: 'DataTableSection',
+										},
+										'DataTableAddress[].ValueAddress':
+										{
+											Hash: 'ValueArray',
+											Name: 'Data Value',
+											DataAddress: 'DataTableAddress[].ValueAddress',
+											DataType: 'Array',
+											FormGroup: 'DataTableGroup',
+											FormSection: 'DataTableSection',
+										},
+										AggregateValueAddress:
+										{
+											Hash: 'AggregateValue',
+											Name: 'Aggregate Value',
+											DataAddress: 'AggregateValueAddress',
+											DataType: 'PreciseNumber',
+											FormGroup: 'DataTableGroup',
+											FormSection: 'DataTableSection',
+										},
+										AggregateValueAddress2:
+										{
+											Hash: 'AggregateValue2',
+											Name: 'Aggregate Value 2',
+											DataAddress: 'AggregateValueAddress2',
+											DataType: 'PreciseNumber',
+											FormGroup: 'DataTableGroup',
+											FormSection: 'DataTableSection',
+										},
+									},
+									Sections:
+									[
+										{
+											Name: 'Ordered Solver Section',
+											Hash: 'OrderedSolverSection',
+											Solvers:
+											[
+												{ Ordinal: 5, Expression: 'AggregateValue = SUM(ValueArray)' },
+												{ Ordinal: 40, Expression: 'AggregateValue2 = SUM(DataTableAddress[].ValueAddress)' },
+											],
+										},
+									],
+								};
+
+								let tmpHashedAggregateValue = null;
+								let tmpHashedAggregateValue2 = null;
+								_Pict.PictApplication.initializeAsync(
+									function (pError)
+									{
+										if (pError)
+										{
+											_Pict.log.info('Error initializing the pict application: '+pError)
+										}
+
+										try
+										{
+											_Pict.log.info('Loading the Application and associated views.');
+											const tmpDistinctManifest = _Pict.views.PictFormMetacontroller.createDistinctManifest(tmpManifest);
+											_Pict.log.info('Distinct Manifest:', tmpDistinctManifest);
+											tmpHashedAggregateValue = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue')[0];
+											tmpHashedAggregateValue2 = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue2')[0];
+											const tmpInjectedSecionViews = _Pict.views.PictFormMetacontroller.injectManifest(tmpDistinctManifest);
+											_Pict.log.info('Injected Section Views:', tmpInjectedSecionViews.length);
+											_Pict.views.PictFormMetacontroller.updateMetatemplateInDOM();
+											setTimeout(() =>
+											{
+												for (const tmpView of tmpInjectedSecionViews)
+												{
+													tmpView.render();
+												}
+												for (const tmpView of tmpInjectedSecionViews)
+												{
+													tmpView.marshalToView();
+												}
+												//TODO: do we need to trigger a solve here?
+											}, 0);
+											_Pict.PictApplication.testDone = () =>
+											{
+												try
+												{
+													_Pict.log.info(`AppData after`, { AppData: _Pict.AppData, tmpHashedAggregateValue, tmpHashedAggregateValue2 });
+													Expect(_Pict.AppData[tmpHashedAggregateValue]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
+													Expect(_Pict.AppData[tmpHashedAggregateValue2]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
+												}
+												catch (pError)
+												{
+													return fDone(pError);
+												}
+												fDone();
+											};
+											const [ tmpValueArrayKey, tmpValueArrayDescriptor ] = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pDescriptor]) => pDescriptor.OriginalHash == 'ValueArray');
+											const tmpAddress = tmpValueArrayDescriptor.DataAddress;
+											_Pict.log.info('Setting up Distinct Array Test with address:', { tmpValueArrayKey, tmpValueArrayDescriptor, tmpAddress });
+											const tmpArrayAddress = tmpAddress.substring(0, tmpAddress.indexOf('[]'));
+											const tmpPropertyAddress = tmpAddress.substring(tmpAddress.indexOf('[]') + 3);
+											_Pict.manifest.setValueByHash(_Pict.AppData, tmpArrayAddress,
+												[
+													{ [tmpPropertyAddress]: '1' },
+													{ [tmpPropertyAddress]: '2' },
+													{ [tmpPropertyAddress]: '3' },
+													{ [tmpPropertyAddress]: '4' },
+													{ [tmpPropertyAddress]: '5' },
+												]);
+											_Pict.PictApplication.solve();
+										}
+										catch (pError)
+										{
+											_Pict.log.error('Error during Distinct Array Test:', pError);
+											return fDone(pError);
+										}
+									});
+							}
+						);
+					test(
+							'Distinct Array Test 2',
+							(fDone) =>
+							{
+								//NOTE: code is a clone of Pict.safeLoadPictApplication
+								let _Pict;
+								const tmpApplicationClass = OrderedSolverApplication;
+								if (tmpApplicationClass && ('default_configuration' in tmpApplicationClass) && ('pict_configuration' in tmpApplicationClass.default_configuration))
+								{
+									_Pict = new libPict(tmpApplicationClass.default_configuration.pict_configuration);
+								}
+								else
+								{
+									_Pict = new libPict();
+								}
+
+								//_Pict.LogNoisiness = 0;
+
+								let tmpApplicationHash = 'DefaultApplication';
+								let tmpDefaultConfiguration = {};
+
+								if ('default_configuration' in tmpApplicationClass)
+								{
+									tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+
+									if ('Hash' in tmpApplicationClass.default_configuration)
+									{
+										tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+										tmpApplicationHash = tmpApplicationClass.default_configuration.Hash;
+									}
+								}
+								_Pict.log.info(`Loading the pict application [${tmpApplicationHash}] and associated views.`);
+
+								_Pict.addApplication(tmpApplicationHash, tmpDefaultConfiguration, tmpApplicationClass);
+
+								// Add the pict form service
+								_Pict.addServiceType('PictSectionForm', libPictSectionForm);
+
+								// Add the pict form metacontroller service, which provides programmaatic view construction from manifests and render/marshal methods.
+								_Pict.addView('PictFormMetacontroller', {}, libPictSectionForm.PictFormMetacontroller);
+
+								const tmpManifest =
+								{
+									Scope: 'OrderedSolverApplicationForm',
+									Descriptors:
+									{
+										'DataTableAddress[].ValueAddress':
+										{
+											Hash: 'ValueArray',
+											Name: 'Data Value',
+											DataAddress: 'DataTableAddress[].ValueAddress',
+											DataType: 'Array',
+											FormGroup: 'DataTableGroup',
+											FormSection: 'DataTableSection',
+										},
+										AggregateValueAddress:
+										{
+											Hash: 'AggregateValue',
+											Name: 'Aggregate Value',
+											DataAddress: 'AggregateValueAddress',
+											DataType: 'PreciseNumber',
+											FormGroup: 'DataTableGroup',
+											FormSection: 'DataTableSection',
+										},
+										AggregateValueAddress2:
+										{
+											Hash: 'AggregateValue2',
+											Name: 'Aggregate Value 2',
+											DataAddress: 'AggregateValueAddress2',
+											DataType: 'PreciseNumber',
+											FormGroup: 'DataTableGroup',
+											FormSection: 'DataTableSection',
+										},
+									},
+									Sections:
+									[
+										{
+											Name: 'Ordered Solver Section',
+											Hash: 'OrderedSolverSection',
+											Solvers:
+											[
+												{ Ordinal: 5, Expression: 'AggregateValue = SUM(ValueArray)' },
+												{ Ordinal: 40, Expression: 'AggregateValue2 = SUM(DataTableAddress[].ValueAddress)' },
+											],
+										},
+									],
+								};
+
+								let tmpHashedAggregateValue = null;
+								let tmpHashedAggregateValue2 = null;
+								_Pict.PictApplication.initializeAsync(
+									function (pError)
+									{
+										if (pError)
+										{
+											_Pict.log.info('Error initializing the pict application: '+pError)
+										}
+
+										try
+										{
+											_Pict.log.info('Loading the Application and associated views.');
+											const tmpDistinctManifest = _Pict.views.PictFormMetacontroller.createDistinctManifest(tmpManifest);
+											_Pict.log.info('Distinct Manifest:', tmpDistinctManifest);
+											tmpHashedAggregateValue = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue')[0];
+											tmpHashedAggregateValue2 = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue2')[0];
+											const tmpInjectedSecionViews = _Pict.views.PictFormMetacontroller.injectManifest(tmpDistinctManifest);
+											_Pict.log.info('Injected Section Views:', tmpInjectedSecionViews.length);
+											_Pict.views.PictFormMetacontroller.updateMetatemplateInDOM();
+											setTimeout(() =>
+											{
+												for (const tmpView of tmpInjectedSecionViews)
+												{
+													tmpView.render();
+												}
+												for (const tmpView of tmpInjectedSecionViews)
+												{
+													tmpView.marshalToView();
+												}
+												//TODO: do we need to trigger a solve here?
+											}, 0);
+											_Pict.PictApplication.testDone = () =>
+											{
+												try
+												{
+													_Pict.log.info(`AppData after`, { AppData: _Pict.AppData, tmpHashedAggregateValue, tmpHashedAggregateValue2 });
+													Expect(_Pict.AppData[tmpHashedAggregateValue]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
+													Expect(_Pict.AppData[tmpHashedAggregateValue2]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
+												}
+												catch (pError)
+												{
+													return fDone(pError);
+												}
+												fDone();
+											};
+											const [ tmpValueArrayKey, tmpValueArrayDescriptor ] = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pDescriptor]) => pDescriptor.OriginalHash == 'ValueArray');
+											const tmpAddress = tmpValueArrayDescriptor.DataAddress;
+											_Pict.log.info('Setting up Distinct Array Test with address:', { tmpValueArrayKey, tmpValueArrayDescriptor, tmpAddress });
+											const tmpArrayAddress = tmpAddress.substring(0, tmpAddress.indexOf('[]'));
+											const tmpPropertyAddress = tmpAddress.substring(tmpAddress.indexOf('[]') + 3);
+											_Pict.manifest.setValueByHash(_Pict.AppData, tmpArrayAddress,
+												[
+													{ [tmpPropertyAddress]: '1' },
+													{ [tmpPropertyAddress]: '2' },
+													{ [tmpPropertyAddress]: '3' },
+													{ [tmpPropertyAddress]: '4' },
+													{ [tmpPropertyAddress]: '5' },
+												]);
+											_Pict.PictApplication.solve();
+										}
+										catch (pError)
+										{
+											_Pict.log.error('Error during Distinct Array Test:', pError);
+											return fDone(pError);
+										}
+									});
+							}
+						);
+					test(
+							'Distinct Array Test 3',
+							(fDone) =>
+							{
+								//NOTE: code is a clone of Pict.safeLoadPictApplication
+								let _Pict;
+								const tmpApplicationClass = OrderedSolverApplication;
+								if (tmpApplicationClass && ('default_configuration' in tmpApplicationClass) && ('pict_configuration' in tmpApplicationClass.default_configuration))
+								{
+									_Pict = new libPict(tmpApplicationClass.default_configuration.pict_configuration);
+								}
+								else
+								{
+									_Pict = new libPict();
+								}
+
+								//_Pict.LogNoisiness = 0;
+
+								let tmpApplicationHash = 'DefaultApplication';
+								let tmpDefaultConfiguration = {};
+
+								if ('default_configuration' in tmpApplicationClass)
+								{
+									tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+
+									if ('Hash' in tmpApplicationClass.default_configuration)
+									{
+										tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+										tmpApplicationHash = tmpApplicationClass.default_configuration.Hash;
+									}
+								}
+								_Pict.log.info(`Loading the pict application [${tmpApplicationHash}] and associated views.`);
+
+								_Pict.addApplication(tmpApplicationHash, tmpDefaultConfiguration, tmpApplicationClass);
+
+								// Add the pict form service
+								_Pict.addServiceType('PictSectionForm', libPictSectionForm);
+
+								// Add the pict form metacontroller service, which provides programmaatic view construction from manifests and render/marshal methods.
+								_Pict.addView('PictFormMetacontroller', {}, libPictSectionForm.PictFormMetacontroller);
+
+								const tmpManifest =
+								{
+									Scope: 'OrderedSolverApplicationForm',
+									Descriptors:
+									{
+										'LevelOfIndirection.DataTableAddress[].ValueAddress':
+										{
+											Hash: 'ValueArray',
+											Name: 'Data Value',
+											DataAddress: 'LevelOfIndirection.DataTableAddress[].ValueAddress',
+											DataType: 'Array',
+											FormGroup: 'DataTableGroup',
+											FormSection: 'DataTableSection',
+										},
+										AggregateValueAddress:
+										{
+											Hash: 'AggregateValue',
+											Name: 'Aggregate Value',
+											DataAddress: 'AggregateValueAddress',
+											DataType: 'PreciseNumber',
+											FormGroup: 'DataTableGroup',
+											FormSection: 'DataTableSection',
+										},
+										AggregateValueAddress2:
+										{
+											Hash: 'AggregateValue2',
+											Name: 'Aggregate Value 2',
+											DataAddress: 'AggregateValueAddress2',
+											DataType: 'PreciseNumber',
+											FormGroup: 'DataTableGroup',
+											FormSection: 'DataTableSection',
+										},
+									},
+									Sections:
+									[
+										{
+											Name: 'Ordered Solver Section',
+											Hash: 'OrderedSolverSection',
+											Solvers:
+											[
+												{ Ordinal: 5, Expression: 'AggregateValue = SUM(ValueArray)' },
+												{ Ordinal: 40, Expression: 'AggregateValue2 = SUM(LevelOfIndirection.DataTableAddress[].ValueAddress)' },
+											],
+										},
+									],
+								};
+
+								let tmpHashedAggregateValue = null;
+								let tmpHashedAggregateValue2 = null;
+								_Pict.PictApplication.initializeAsync(
+									function (pError)
+									{
+										if (pError)
+										{
+											_Pict.log.info('Error initializing the pict application: '+pError)
+										}
+
+										try
+										{
+											_Pict.log.info('Loading the Application and associated views.');
+											const tmpDistinctManifest = _Pict.views.PictFormMetacontroller.createDistinctManifest(tmpManifest);
+											_Pict.log.info('Distinct Manifest:', tmpDistinctManifest);
+											tmpHashedAggregateValue = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue')[0];
+											tmpHashedAggregateValue2 = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue2')[0];
+											const tmpInjectedSecionViews = _Pict.views.PictFormMetacontroller.injectManifest(tmpDistinctManifest);
+											_Pict.log.info('Injected Section Views:', tmpInjectedSecionViews.length);
+											_Pict.views.PictFormMetacontroller.updateMetatemplateInDOM();
+											setTimeout(() =>
+											{
+												for (const tmpView of tmpInjectedSecionViews)
+												{
+													tmpView.render();
+												}
+												for (const tmpView of tmpInjectedSecionViews)
+												{
+													tmpView.marshalToView();
+												}
+												//TODO: do we need to trigger a solve here?
+											}, 0);
+											_Pict.PictApplication.testDone = () =>
+											{
+												try
+												{
+													_Pict.log.info(`AppData after`, { AppData: _Pict.AppData, tmpHashedAggregateValue, tmpHashedAggregateValue2 });
+													Expect(_Pict.AppData[tmpHashedAggregateValue]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
+													Expect(_Pict.AppData[tmpHashedAggregateValue2]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
+												}
+												catch (pError)
+												{
+													return fDone(pError);
+												}
+												fDone();
+											};
+											const [ tmpValueArrayKey, tmpValueArrayDescriptor ] = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pDescriptor]) => pDescriptor.OriginalHash == 'ValueArray');
+											const tmpAddress = tmpValueArrayDescriptor.DataAddress;
+											_Pict.log.info('Setting up Distinct Array Test with address:', { tmpValueArrayKey, tmpValueArrayDescriptor, tmpAddress });
+											const tmpArrayAddress = tmpAddress.substring(0, tmpAddress.indexOf('[]'));
+											const tmpPropertyAddress = tmpAddress.substring(tmpAddress.indexOf('[]') + 3);
+											_Pict.manifest.setValueByHash(_Pict.AppData, tmpArrayAddress,
+												[
+													{ [tmpPropertyAddress]: '1' },
+													{ [tmpPropertyAddress]: '2' },
+													{ [tmpPropertyAddress]: '3' },
+													{ [tmpPropertyAddress]: '4' },
+													{ [tmpPropertyAddress]: '5' },
+												]);
+											_Pict.PictApplication.solve();
+										}
+										catch (pError)
+										{
+											_Pict.log.error('Error during Distinct Array Test:', pError);
+											return fDone(pError);
+										}
+									});
+							}
+						);
+					test(
 							'Solve Ordinals',
 							(fDone) =>
 							{
@@ -242,7 +722,7 @@ suite
 									{
 										if (pError)
 										{
-											console.log('Error initializing the pict application: '+pError)
+											_Pict.log.info('Error initializing the pict application: '+pError)
 										}
 										_Pict.log.info('Loading the Application and associated views.');
 									});
