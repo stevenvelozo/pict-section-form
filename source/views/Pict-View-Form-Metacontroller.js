@@ -473,9 +473,9 @@ class PictFormMetacontroller extends libPictViewClass
 							//FIXME: do we want to allow prefixing the data address? (ex. nesting it under a parent object) - caller can still do this themselves.
 							tmpRecordSetAddress = `${tmpGroup.RecordSetAddress}_${tmpUUID}`;
 						}
-						//TODO: does this need to go into the mappings?
-						tmpGroup.RecordSetAddress = tmpRecordSetAddress;
 					}
+					//TODO: does this need to go into the mappings if it isn't there?
+					tmpGroup.RecordSetAddress = tmpRecordSetAddress;
 
 				}
 				if (Array.isArray(tmpGroup.RecordSetSolvers) && tmpGroup.RecordSetSolvers.length > 0)
