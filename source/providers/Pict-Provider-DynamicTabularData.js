@@ -78,7 +78,7 @@ class DynamicTabularData extends libPictProvider
 
 		if (!tmpGroup)
 		{
-			this.log.warn(`PICT View Metatemplate Helper getTabularRowData ${pGroupIndex} was not a valid group.`);
+			this.log.warn(`PICT View Metatemplate Helper getTabularRecordInput ${pGroupIndex} was not a valid group.`);
 			return false;
 		}
 
@@ -86,6 +86,45 @@ class DynamicTabularData extends libPictProvider
 		// This needs more guards
 		let tmpSupportingManifestHash = tmpGroup.supportingManifest.elementAddresses[pInputIndex];
 		return tmpGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];
+	}
+
+	/**
+	 * Retrieves the tabular record input from the specified view, group, and input indexes.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {number} pGroupHash - The index of the group.
+	 * @param {number} pInputHash - The index of the input.
+	 * @returns {ElementDescriptor|boolean} The tabular record input or false if the group is invalid.
+	 */
+	getTabularRecordInputByHash(pView, pGroupHash, pInputHash)
+	{
+		// The neat thing about how the tabular groups work is that we can make it clever about whether it's an object or an array.
+		let tmpGroup = pView.getGroups().find((pGroup) => pGroup.Hash === pGroupHash);
+
+		if (!tmpGroup)
+		{
+			this.log.warn(`PICT View Metatemplate Helper getTabularRecordInputByHash ${pGroupHash} was not a valid group.`);
+			return false;
+		}
+
+		if (!tmpGroup.supportingManifest)
+		{
+			this.log.warn(`PICT View Metatemplate Helper getTabularRecordInputByHash ${pGroupHash} s not a tabular group.`);
+			return false;
+		}
+
+		// Now get the supporting manifest and the input element
+		// This needs more guards
+		for (const tmpDescriptor of Object.values(tmpGroup.supportingManifest.elementDescriptors))
+		{
+			if (tmpDescriptor.Hash === pInputHash)
+			{
+				return tmpDescriptor;
+			}
+		}
+
+		this.log.warn(`PICT View Metatemplate Helper getTabularRecordInputByHash ${pGroupHash} could not find input ${pInputHash}.`);
+		return false;
 	}
 
 	/**
@@ -103,7 +142,7 @@ class DynamicTabularData extends libPictProvider
 
 		if (!tmpGroup)
 		{
-			this.log.warn(`PICT View Metatemplate Helper getTabularRowData ${pGroupIndex} was not a valid group.`);
+			this.log.warn(`PICT View Metatemplate Helper getTabularRecordData ${pGroupIndex} was not a valid group.`);
 			return false;
 		}
 
@@ -118,7 +157,7 @@ class DynamicTabularData extends libPictProvider
 
 		if (!tmpRowSourceRecord)
 		{
-			this.log.warn(`PICT View Metatemplate Helper getTabularRowData ${pGroupIndex} could not find the record set for ${tmpGroup.RecordSetAddress}.`);
+			this.log.warn(`PICT View Metatemplate Helper getTabularRecordData ${pGroupIndex} could not find the record set for ${tmpGroup.RecordSetAddress}.`);
 			return false;
 		}
 
@@ -135,13 +174,13 @@ class DynamicTabularData extends libPictProvider
 			}
 			else
 			{
-				this.log.warn(`PICT View Metatemplate Helper getTabularRowData ${pGroupIndex} could not determine the type of the record set for ${tmpGroup.RecordSetAddress}.`);
+				this.log.warn(`PICT View Metatemplate Helper getTabularRecordData ${pGroupIndex} could not determine the type of the record set for ${tmpGroup.RecordSetAddress}.`);
 				return false;
 			}
 		}
 		catch (pError)
 		{
-			this.log.error(`PICT View Metatemplate Helper getTabularRowData ${pGroupIndex} encountered an error: ${pError}`);
+			this.log.error(`PICT View Metatemplate Helper getTabularRecordData ${pGroupIndex} encountered an error: ${pError}`);
 			return false;
 		}
 	}

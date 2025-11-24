@@ -86,7 +86,8 @@ module.exports.default_configuration.pict_configuration = {
 						"RecipeCounterSurfaceArea = RecipeCounterWidth * RecipeCounterDepth",
 						"RecipeCounterVolume = RecipeCounterSurfaceArea * RecipeVerticalClearance",
 						`InspirationLink = CONCAT("https://www.google.com/search?q=", RecipeName, " recipe")`,
-						'cumulativeSummationResult = cumulativeSummation(getvalue("AppData.FruitData.FruityVice"), "nutritions.calories", "SummedCalories")'
+						'cumulativeSummationResult = cumulativeSummation(getvalue("AppData.FruitData.FruityVice"), "nutritions.calories", "SummedCalories")',
+						`MAP VAR row FROM FruitData.FruityVice : ColorInputBackgroundTabular("FruitGrid", "FruitGrid", "PercentTotalFat", stepIndex, "#FFCCCC", IF(row.nutritions.percent_total_fat, ">", 0.25, 1, 0))`,
 					],
 
 				MetaTemplates:

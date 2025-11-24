@@ -91,7 +91,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
-		this.pict.ContentAssignment.assignContent('PRECISE-' + this.getTabularInputHTMLID(pInput.Macro.RawHTMLID, pRowIndex), pValue);
+		this.pict.ContentAssignment.assignContent('#PRECISE-' + this.getTabularInputHTMLID(pInput.Macro.RawHTMLID, pRowIndex).substring(1), pValue);
 		this.pict.ContentAssignment.assignContent(this.getTabularInputHTMLID(pInput.Macro.RawHTMLID, pRowIndex), this.roundValue(pInput, pValue));
 		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}

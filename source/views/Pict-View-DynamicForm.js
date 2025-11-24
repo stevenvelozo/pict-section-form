@@ -1370,6 +1370,21 @@ class PictViewDynamicForm extends libPictViewClass
 	}
 
 	/**
+	 * Get the input object for a specific tabular record group and index.
+	 *
+	 * Input objects are not distinct among rows.
+	 *
+	 * @param {string} pGroupHash - The hash of the group.
+	 * @param {string} pInputHash - The hash of the input.
+	 *
+	 * @return {Object} The input object.
+	 */
+	getTabularRecordInputByHash(pGroupHash, pInputHash)
+	{
+		return this.pict.providers.DynamicTabularData.getTabularRecordInputByHash(this, pGroupHash, pInputHash);
+	}
+
+	/**
 	 * Get the tabular record object for a particular row in a group.
 	 *
 	 * @param {number} pGroupIndex

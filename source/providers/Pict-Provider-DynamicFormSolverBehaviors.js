@@ -82,6 +82,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		this.addSolverFunction(pExpressionParser, 'colorSectionBackground', 'fable.providers.DynamicFormSolverBehaviors.colorSectionBackground', 'Colors a section background with a HTML hex color (e.g. #FF0000 for red).');
 		this.addSolverFunction(pExpressionParser, 'colorGroupBackground', 'fable.providers.DynamicFormSolverBehaviors.colorGroupBackground', 'Colors a group background with a HTML hex color (e.g. #FF0000 for red).');
 		this.addSolverFunction(pExpressionParser, 'colorInputBackground', 'fable.providers.DynamicFormSolverBehaviors.colorInputBackground', 'Colors an input background with a HTML hex color (e.g. #FF0000 for red).');
+		this.addSolverFunction(pExpressionParser, 'colorInputBackgroundTabular', 'fable.providers.DynamicFormSolverBehaviors.colorInputBackgroundTabular', 'Colors a tabular input background with a HTML hex color (e.g. #FF0000 for red).');
 
 		return false;
 	}
@@ -293,7 +294,8 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return true;
 		}
 
-		let tmpInputView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash)
+		/** @type {import('../views/Pict-View-DynamicForm.js')} */
+		let tmpInputView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash);
 
 		if (!tmpInputView)
 		{
@@ -313,22 +315,89 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 
 		if (tmpElementSet.length < 1)
 		{
-			this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] selector [${ tmpElementSet[0].id}].`);
+			this.log.warn(`PictDynamicFormsInformary: colorInput could not find input element with section hash [${pSectionHash}] input [${pInputHash}] selector [#${tmpInput.Macro.RawHTMLID}].`);
 			return false;
 		}
 
-		let tmpElement = tmpElementSet[0];
+		return this.colorElementBackground(tmpElementSet, pColor, pCSSSelector);
+	}
+
+	/**
+	 * Colors an input background or its container with a HTML hex color (e.g. #FF0000 for red).
+	 * @param {string} pSectionHash - The hash of the section containing the input.
+	 * @param {string} pGroupHash - The hash of the group containing the input.
+	 * @param {number} pRowIndex - The index of the row.
+	 * @param {string} pInputHash - The hash of the input to color.
+	 * @param {string} pColor - The HTML hex color to apply (e.g. #FF0000 for red).
+	 * @param {string} pApplyChange - If "0", the change will not be applied.
+	 * @param {string} [pCSSSelector] - Optional. If provided, the color will be applied to the closest element matching this selector instead of the input itself.
+	 * @param {string} [pElementIDPrefix] - Optional. The prefix for the tabular element ID. Default is 'TABULAR-DATA-'.
+	 * @returns {boolean} - Returns true if the color was applied successfully or if the change was skipped for pApplyChange equal to "0", false otherwise.
+	 */
+	colorInputBackgroundTabular(pSectionHash, pGroupHash, pInputHash, pRowIndex, pColor, pApplyChange, pCSSSelector, pElementIDPrefix = 'TABULAR-DATA-')
+	{
+		if (pApplyChange == "0")
+		{
+			return true;
+		}
+
+		/** @type {import('../views/Pict-View-DynamicForm.js')} */
+		let tmpInputView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash);
+
+		if (!tmpInputView)
+		{
+			this.log.warn(`PictDynamicFormsInformary: colorInputBackgroundTabular could not find input with section hash [${pSectionHash}] group hash [${pGroupHash}] input hash [${pInputHash}].`);
+			return false;
+		}
+
+		let tmpInput = tmpInputView.getTabularRecordInputByHash(pGroupHash, pInputHash);
+
+		if (!tmpInput)
+		{
+			this.log.warn(`PictDynamicFormsInformary: colorInputBackgroundTabular could not find input with section hash [${pSectionHash}] group hash [${pGroupHash}] input hash [${pInputHash}].`);
+			return false;
+		}
+
+		if (!tmpInput.Macro)
+		{
+			this.log.warn(`PictDynamicFormsInformary: colorInputBackgroundTabular input with section hash [${pSectionHash}] group hash [${pGroupHash}] input hash [${pInputHash}] is missing Macro data.`);
+			return false;
+		}
+
+		//FIXME: is this reliable for all input types?
+		let tmpElementSet = this.pict.ContentAssignment.getElement(`#${pElementIDPrefix}${tmpInput.Macro.RawHTMLID}-${pRowIndex}`);
+
+		if (tmpElementSet.length < 1)
+		{
+			this.log.warn(`PictDynamicFormsInformary: colorInputBackgroundTabular could not find input element with section hash [${pSectionHash}] group hash [${pGroupHash}] input hash [${pInputHash}] row index [${pRowIndex}] selector [#${tmpInput.Macro.RawHTMLID}-${pRowIndex}].`);
+			return false;
+		}
+
+		return this.colorElementBackground(tmpElementSet, pColor, pCSSSelector);
+	}
+
+	/**
+	 * @param {Array<HTMLElement>} pElementSet - The element to color.
+	 * @param {string} pColor - The HTML hex color to apply (e.g. #FF0000 for red).
+	 * @param {string} [pCSSSelector] - Optional. If provided, the color will be applied to the closest element matching this selector instead of the input itself.
+	 *
+	 * @returns {boolean}
+	 */
+	colorElementBackground(pElementSet, pColor, pCSSSelector)
+	{
+		/** @type {HTMLElement} */
+		let tmpElement = pElementSet[0];
 
 		// if we passed a class target, find the closest element with that class and apply the color to it
 		// otherwise, just apply it to the input element itself
 		if (pCSSSelector)
 		{
 			// find closest target by class name and if we find it, immediately break out of the loop
-			for (let i = 0; i < tmpElementSet.length; i++)
+			for (let i = 0; i < pElementSet.length; i++)
 			{
-				const element = tmpElementSet[i];
+				const element = pElementSet[i];
 				const closest = element.closest(`${pCSSSelector}`);
-				if (closest)
+				if (closest && closest instanceof HTMLElement)
 				{
 					tmpElement = closest;
 					break;
