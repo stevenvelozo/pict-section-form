@@ -875,7 +875,7 @@ class ManifestFactory extends libFableServiceProviderBase
 					{
 						tmpDescriptorManifest.setValueAtAddress(tmpDescriptor, tmpAddress, tmpValue);
 					}
-					else
+					else if (tmpRawValue)
 					{
 						this.log.warn(`Could not parse Boolean value [${tmpRawValue}] for Descriptor Boolean Extension [${tmpKey}] on descriptor [${tmpDescriptor.Hash}]`);
 					}
