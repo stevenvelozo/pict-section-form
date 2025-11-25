@@ -35,7 +35,7 @@ class PictFormsLifeCycle extends libPictViewFormSupportBase
 	{
 		super(pFable, pOptions, pServiceHash);
 
-		this.DisplayShortName = 'LV';
+		this.DisplayShortName = 'LCV';
 		this.DisplayLongName = 'LifecycleVisulization';
 	}
 }

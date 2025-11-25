@@ -110,7 +110,7 @@ class PictFormsAppData extends libPictViewFormSupportBase
 	{
 		super(pFable, pOptions, pServiceHash);
 
-		this.DisplayShortName = 'FD';
+		this.DisplayShortName = 'FDT';
 		this.DisplayLongName = 'FormData';
 	}
 

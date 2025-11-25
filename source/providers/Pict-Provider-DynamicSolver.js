@@ -60,6 +60,7 @@ class PictDynamicSolver extends libPictProvider
 		// Initialize the solver service if it isn't up
 		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
 
+
 		this.pict.addProviderSingleton('DynamicFormSolverBehaviors', libDynamicFormSolverBehaviors.default_configuration, libDynamicFormSolverBehaviors);
 		this.pict.providers.DynamicFormSolverBehaviors.injectBehaviors(this.fable.ExpressionParser);
 		this.pict.addProviderSingleton('DynamicMetaLists', libDynamicMetaLists.default_configuration, libDynamicMetaLists);
@@ -509,9 +510,13 @@ class PictDynamicSolver extends libPictProvider
 				this.log.trace(`DynamicSolver [${this.UUID}]::[${this.Hash}] Solving ordinal ${tmpOrdinalKeys[i]}`);
 			}
 			let tmpOrdinalContainer = tmpOrdinalsToSolve[tmpOrdinalKeys[i]];
-			this.executeGroupSolvers(tmpOrdinalContainer.GroupSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
-			this.executeSectionSolvers(tmpOrdinalContainer.SectionSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
-			this.executeViewSolvers(tmpOrdinalContainer.ViewSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
+			let tmpExecuteOrdinal = this.pict.providers.DynamicFormSolverBehaviors.checkSolverOrdinalEnabled(tmpOrdinalKeys[i]);
+			if (tmpExecuteOrdinal)
+			{
+				this.executeGroupSolvers(tmpOrdinalContainer.GroupSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
+				this.executeSectionSolvers(tmpOrdinalContainer.SectionSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
+				this.executeViewSolvers(tmpOrdinalContainer.ViewSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
+			}
 		}
 
 		// Now regenerate the metalists .. after the solve has happened.

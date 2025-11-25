@@ -158,7 +158,7 @@ class PictFormsSolver extends libPictViewFormSupportBase
 	{
 		super(pFable, pOptions, pServiceHash);
 
-		this.DisplayShortName = 'SV';
+		this.DisplayShortName = 'SLV';
 		this.DisplayLongName = 'SolverVisualization';
 	}
 }

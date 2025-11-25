@@ -43,6 +43,8 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		this.cssHideGroupClass = 'pict-section-form-hidden-group';
 		this.cssSnippet = '.pict-section-form-hidden-section { display: none; } .pict-section-form-hidden-group { display: none; }';
 
+		this.solverOrdinalMap = {};
+
 		this.setCSSSnippets();
 	}
 
@@ -72,19 +74,38 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 	injectBehaviors(pExpressionParser)
 	{
 		// Wire up the solver functions.
-		this.addSolverFunction(pExpressionParser, 'logValues', 'fable.providers.DynamicFormSolverBehaviors.logValues', 'Logs a set of values to the console and returns the last one.');
+		this.addSolverFunction(pExpressionParser, 'logvalues', 'fable.providers.DynamicFormSolverBehaviors.logValues', 'Logs a set of values to the console and returns the last one.');
 
-		this.addSolverFunction(pExpressionParser, 'setSectionVisibility', 'fable.providers.DynamicFormSolverBehaviors.setSectionVisibility', 'Sets a sections visiblity to true or fales based on the second parameter.');
-		this.addSolverFunction(pExpressionParser, 'setGroupVisibility', 'fable.providers.DynamicFormSolverBehaviors.setGroupVisibility', 'Sets a group visiblity to true or fales based on the third parameter.');
+		this.addSolverFunction(pExpressionParser, 'setsectionvisibility', 'fable.providers.DynamicFormSolverBehaviors.setSectionVisibility', 'Sets a sections visiblity to true or fales based on the second parameter.');
+		this.addSolverFunction(pExpressionParser, 'setgroupvisibility', 'fable.providers.DynamicFormSolverBehaviors.setGroupVisibility', 'Sets a group visiblity to true or fales based on the third parameter.');
 
-		this.addSolverFunction(pExpressionParser, 'generateHTMLHexColor', 'fable.providers.DynamicFormSolverBehaviors.generateHTMLHexColor', 'Generates a HTML hex color from three integer parameters (red, green, blue).');
+		this.addSolverFunction(pExpressionParser, 'generatehtmlhexcolor', 'fable.providers.DynamicFormSolverBehaviors.generateHTMLHexColor', 'Generates a HTML hex color from three integer parameters (red, green, blue).');
 
-		this.addSolverFunction(pExpressionParser, 'colorSectionBackground', 'fable.providers.DynamicFormSolverBehaviors.colorSectionBackground', 'Colors a section background with a HTML hex color (e.g. #FF0000 for red).');
-		this.addSolverFunction(pExpressionParser, 'colorGroupBackground', 'fable.providers.DynamicFormSolverBehaviors.colorGroupBackground', 'Colors a group background with a HTML hex color (e.g. #FF0000 for red).');
-		this.addSolverFunction(pExpressionParser, 'colorInputBackground', 'fable.providers.DynamicFormSolverBehaviors.colorInputBackground', 'Colors an input background with a HTML hex color (e.g. #FF0000 for red).');
-		this.addSolverFunction(pExpressionParser, 'colorInputBackgroundTabular', 'fable.providers.DynamicFormSolverBehaviors.colorInputBackgroundTabular', 'Colors a tabular input background with a HTML hex color (e.g. #FF0000 for red).');
+		this.addSolverFunction(pExpressionParser, 'colorsectionbackground', 'fable.providers.DynamicFormSolverBehaviors.colorSectionBackground', 'Colors a section background with a HTML hex color (e.g. #FF0000 for red).');
+		this.addSolverFunction(pExpressionParser, 'colorgroupbackground', 'fable.providers.DynamicFormSolverBehaviors.colorGroupBackground', 'Colors a group background with a HTML hex color (e.g. #FF0000 for red).');
+		this.addSolverFunction(pExpressionParser, 'colorinputbackground', 'fable.providers.DynamicFormSolverBehaviors.colorInputBackground', 'Colors an input background with a HTML hex color (e.g. #FF0000 for red).');
+		this.addSolverFunction(pExpressionParser, 'colorinputbackgroundtabular', 'fable.providers.DynamicFormSolverBehaviors.colorInputBackgroundTabular', 'Colors a tabular input background with a HTML hex color (e.g. #FF0000 for red).');
+
+		this.addSolverFunction(pExpressionParser, 'enablesolverordinal', 'fable.providers.DynamicFormSolverBehaviors.enableSolverOrdinal', 'Enables a solver ordinal so that it can run.');
+		this.addSolverFunction(pExpressionParser, 'disablesolverordinall', 'fable.providers.DynamicFormSolverBehaviors.disableSolverOrdinal', 'Disables a solver ordinal so that it will not run.');
 
 		return false;
+	}
+
+	enableSolverOrdinal(pSolverOrdinal)
+	{
+		this.solverOrdinalMap[`ORD-${pSolverOrdinal}`] = true;
+	}
+
+	disableSolverOrdinal(pSolverOrdinal)
+	{
+		this.solverOrdinalMap[`ORD-${pSolverOrdinal}`] = false;
+	}
+
+	checkSolverOrdinalEnabled(pSolveOrdinal)
+	{
+		let tmpOrdinalKey = `ORD-${pSolveOrdinal}`;
+		return (!(tmpOrdinalKey in this.solverOrdinalMap)) || (this.solverOrdinalMap[tmpOrdinalKey] === true);
 	}
 
 	getSectionSelector(pSectionFormID)

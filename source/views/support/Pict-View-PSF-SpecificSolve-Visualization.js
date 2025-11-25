@@ -16,7 +16,7 @@ const defaultViewConfiguration = (
 			Hash: "Pict-Form-SpecificSolve-Content",
 			Template: /*html*/`
 <div id="Pict-Form-SpecificSolve-Content">
-	<h2 class="PSFSS-Global-Header">Pict Specific Solve Visualization</h2>
+	<h2 class="PSFSS-Global-Header">Pict Specific Solve Timing Visualization</h2>
 </div>
 `
 		}
@@ -35,8 +35,8 @@ class PictFormsSpecificSolve extends libPictViewFormSupportBase
 	{
 		super(pFable, pOptions, pServiceHash);
 
-		this.DisplayShortName = 'SSV';
-		this.DisplayLongName = 'SpecificSolveVisualization';
+		this.DisplayShortName = 'STV';
+		this.DisplayLongName = 'SpecificSolveTimingVisualization';
 	}
 }
 
