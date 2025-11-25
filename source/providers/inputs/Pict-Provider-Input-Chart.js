@@ -380,7 +380,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 						break;
 					}
 
-					let tmpSolvedConfiguration = this.pict.providers.DynamicSolver.runSolver(tmpSolverExpression);
+					let tmpSolvedConfiguration = this.pict.providers.DynamicSolver.runSolver(tmpSolverExpression, true);
 
 					if (tmpParsingConfiguration.ObjectType === 'array')
 					{
@@ -466,7 +466,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 
 						let tmpSolverLabel = tmpCurrentSolverExpression.Label;
 						let tmpSolverExpression = tmpCurrentSolverExpression.DataSolver;
-						let tmpSolvedDataSet = this.pict.providers.DynamicSolver.runSolver(tmpSolverExpression);
+						let tmpSolvedDataSet = this.pict.providers.DynamicSolver.runSolver(tmpSolverExpression, true);
 
 						let tmpDataObject = (
 							{

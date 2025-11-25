@@ -78,7 +78,117 @@ class PictDynamicSolver extends libPictProvider
 		this.pict.addProviderSingleton('Pict-Input-Chart', libInputChart.default_configuration, libInputChart);
 	}
 
-	runSolver(pSolverExpression)
+	logSolveOutcome(pSolveOutcome)
+	{
+		let tmpSolveOutcome = pSolveOutcome;
+		if (typeof(tmpSolveOutcome) !== 'object' || tmpSolveOutcome === null)
+		{
+			tmpSolveOutcome = this.lastSolveOutcome;
+		}
+		if (typeof(tmpSolveOutcome) !== 'object' || tmpSolveOutcome === null)
+		{
+			this.log.error(`DynamicSolver [${this.UUID}]::[${this.Hash}] No solve outcome available to log.`);
+			return;
+		}
+
+		let tmpSolversRun = tmpSolveOutcome.SolverResultsMap.ExecutedSolvers.length;
+
+		this.log.info(`DynamicSolver completed solving ${tmpSolversRun} solvers in ${tmpSolveOutcome.EndTimeStamp - tmpSolveOutcome.StartTimeStamp} ms.`);
+
+		for (let i = 0; i < tmpSolveOutcome.SolverResultsMap.ExecutedSolvers.length; i++)
+		{
+			let tmpSolver = tmpSolveOutcome.SolverResultsMap.ExecutedSolvers[i];
+			this.log.info(`  Solver [${tmpSolver.Hash}] Ordinal ${tmpSolver.Ordinal} executed in ${tmpSolver.EndTimeStamp - tmpSolver.StartTimeStamp}ms solving for [${tmpSolver?.ResultsObject?.PostfixedAssignmentAddress}] expression [${tmpSolver.Expression}]`);
+		}
+	}
+
+	/**
+	 * Prepares the solver results map by ensuring it has the necessary structure.
+	 *
+	 * @param {Object} pSolverResultsMap - The solver results map to prepare.
+	 * @returns {Object} - The prepared solver results map.
+	*/
+	prepareSolverResultsMap(pSolverResultsMap)
+	{
+		let tmpSolverResultsMap = pSolverResultsMap;
+		if (typeof(tmpSolverResultsMap) !== 'object' || tmpSolverResultsMap === null)
+		{
+			tmpSolverResultsMap = {};
+		}
+		if (!('ExecutedSolvers' in tmpSolverResultsMap))
+		{
+			tmpSolverResultsMap.ExecutedSolvers = [];
+		}
+		if (!('SolverResolutionMap' in tmpSolverResultsMap))
+		{
+			tmpSolverResultsMap.SolverResolutionMap = {};
+		}
+		return tmpSolverResultsMap;
+	}
+
+	/**
+	 * Backfills solver dependencies into the solve outcome.
+	 *
+	 * @param {Object} pSolveOutcome - The solve outcome object.
+	 * @returns {Object} - The updated solve outcome with backfilled dependencies.
+	 */
+	backfillSolverDependencies(pSolveOutcome)
+	{
+		let tmpSolveOutcome = pSolveOutcome;
+
+		if (typeof(tmpSolveOutcome) !== 'object' || tmpSolveOutcome === null)
+		{
+			tmpSolveOutcome = this.lastSolveOutcome;
+		}
+
+		if (typeof(tmpSolveOutcome) !== 'object' || tmpSolveOutcome === null)
+		{
+			this.log.error(`DynamicSolver [${this.UUID}]::[${this.Hash}] No solve outcome available to backfill solver dependencies.`);
+			return;
+		}
+
+		for (let i = 0; i < tmpSolveOutcome.SolverResultsMap.ExecutedSolvers.length; i++)
+		{
+			let tmpSolver = tmpSolveOutcome.SolverResultsMap.ExecutedSolvers[i];
+			if (('ResultsObject' in tmpSolver) && (typeof(tmpSolver.ResultsObject) === 'object') && (tmpSolver.ResultsObject !== null))
+			{
+				// Now fill any dependencies from the results object
+				// If the Postfixed Assignment Address is "Result" it hasn't been set and we will ignore it.
+				if (tmpSolver.ResultsObject.PostfixedAssignmentAddress && (tmpSolver.ResultsObject.PostfixedAssignmentAddress != 'Result'))
+				{
+					if (typeof(tmpSolveOutcome.SolverResultsMap.SolverResolutionMap[tmpSolver.ResultsObject.PostfixedAssignmentAddress]) !== 'object')
+					{
+						tmpSolveOutcome.SolverResultsMap.SolverResolutionMap[tmpSolver.ResultsObject.PostfixedAssignmentAddress] = {};
+					}
+					// Go through the postfixed list and pull out any symbols being assigned
+					for (let j = 0; j < tmpSolver.ResultsObject.PostfixTokenObjects.length; j++)
+					{
+						let tmpTokenObject = tmpSolver.ResultsObject.PostfixTokenObjects[j];
+						if (tmpTokenObject.Type == 'Token.Symbol')
+						{
+							if (!(tmpTokenObject.Token in tmpSolveOutcome.SolverResultsMap.SolverResolutionMap[tmpSolver.ResultsObject.PostfixedAssignmentAddress]))
+							{
+								tmpSolveOutcome.SolverResultsMap.SolverResolutionMap[tmpSolver.ResultsObject.PostfixedAssignmentAddress][tmpTokenObject.Token] = 0;
+							}
+							tmpSolveOutcome.SolverResultsMap.SolverResolutionMap[tmpSolver.ResultsObject.PostfixedAssignmentAddress][tmpTokenObject.Token] = tmpSolveOutcome.SolverResultsMap.SolverResolutionMap[tmpSolver.ResultsObject.PostfixedAssignmentAddress][tmpTokenObject.Token] + 1;
+						}
+					}
+				}
+				
+			}
+		}
+
+		return tmpSolveOutcome;
+	}
+
+	/**
+	 * Runs a manual solver expression against the dynamic view marshal destination or the application data.
+	 *
+	 * @param {string} pSolverExpression - The solver expression to run.
+	 * @param {boolean} [pSilent=false] - Whether to suppress debug logging output.
+	 * @returns {any} - The result of the solver expression.
+	 */
+	runSolver(pSolverExpression, pSilent = false)
 	{
 		let tmpViewMarshalDestinationObject = this.pict.resolveStateFromAddress(this.pict.views.PictFormMetacontroller.viewMarshalDestination);
 
@@ -95,7 +205,10 @@ class PictDynamicSolver extends libPictProvider
 			delete tmpResultsObject.fable;
 		}
 
-		this.pict.log.trace(`Manual solve executed for expression: ${pSolverExpression}`, tmpResultsObject);
+		if (!pSilent)
+		{
+			this.pict.log.trace(`Manual solve executed for expression: ${pSolverExpression}`, tmpResultsObject);
+		}
 
 		return tmpSolutionValue;
 	}
@@ -147,11 +260,13 @@ class PictDynamicSolver extends libPictProvider
 	 *
 	 * @param {array} pGroupSolverArray - An array of Solvers from the groups to solve.
 	 * @param {number} pOrdinal - The ordinal value to filter to.  Optional.
+	 * @param {Object} pSolverResultsMap - The solver results map.
 	 */
-	executeGroupSolvers(pGroupSolverArray, pOrdinal)
+	executeGroupSolvers(pGroupSolverArray, pOrdinal, pSolverResultsMap)
 	{
 		// This is purely for readability of the code below ... uglify optimizes it out.
 		let tmpFiltered = (typeof(pOrdinal) === 'undefined') ? false : true;
+		let tmpSolverReultsMap = this.prepareSolverResultsMap(pSolverResultsMap);
 
 		// Solve the group RecordSet solvers first
 		for (let j = 0; j < pGroupSolverArray.length; j++)
@@ -201,6 +316,7 @@ class PictDynamicSolver extends libPictProvider
 					}
 				}
 			}
+			tmpSolverReultsMap.ExecutedSolvers.push(tmpSolver);
 			tmpSolver.EndTimeStamp = Date.now();
 		}
 	}
@@ -210,10 +326,12 @@ class PictDynamicSolver extends libPictProvider
 	 *
 	 * @param {Array} pViewSectionSolverArray - The array of view section solvers.
 	 * @param {number} pOrdinal - The ordinal value.
+	 * @param {Object} pSolverResultsMap - The solver results map.
 	 */
-	executeSectionSolvers(pViewSectionSolverArray, pOrdinal)
+	executeSectionSolvers(pViewSectionSolverArray, pOrdinal, pSolverResultsMap)
 	{
 		let tmpFiltered = (typeof(pOrdinal) === 'undefined') ? false : true;
+		let tmpSolverReultsMap = this.prepareSolverResultsMap(pSolverResultsMap);
 
 		for (let i = 0; i < pViewSectionSolverArray.length; i++)
 		{
@@ -234,11 +352,11 @@ class PictDynamicSolver extends libPictProvider
 			}
 			tmpSolver.ResultsObject = {};
 			let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpView.getMarshalDestinationObject(), tmpSolver.ResultsObject, this.pict.manifest, tmpView.getMarshalDestinationObject());
-			//let tmpSolutionValue = tmpView.fable.ExpressionParser.solve(tmpSolver.Expression, tmpView.getMarshalDestinationObject(), tmpSolver.ResultsObject, tmpView.sectionManifest, tmpView.getMarshalDestinationObject());
 			if (this.pict.LogNoisiness > 1)
 			{
 				tmpView.log.trace(`[${tmpSolver.Expression}] result was ${tmpSolutionValue}`);
 			}
+			tmpSolverReultsMap.ExecutedSolvers.push(tmpSolver);
 			tmpSolver.EndTimeStamp = +new Date();
 		}
 	}
@@ -248,10 +366,12 @@ class PictDynamicSolver extends libPictProvider
 	 *
 	 * @param {Array} pViewSolverArray - The array of view solvers to execute.
 	 * @param {number} pOrdinal - The ordinal value.
+	 * @param {Object} pSolverResultsMap - The solver results map.
 	 */
-	executeViewSolvers(pViewSolverArray, pOrdinal)
+	executeViewSolvers(pViewSolverArray, pOrdinal, pSolverResultsMap)
 	{
 		let tmpFiltered = (typeof(pOrdinal) === 'undefined') ? false : true;
+		let tmpSolverReultsMap = this.prepareSolverResultsMap(pSolverResultsMap);
 
 		for (let i = 0; i < pViewSolverArray.length; i++)
 		{
@@ -269,6 +389,7 @@ class PictDynamicSolver extends libPictProvider
 			}
 			// Solve with the normal view solve() pipeline
 			tmpView.solve();
+			tmpSolverReultsMap.ExecutedSolvers.push(tmpSolver);
 			tmpSolver.EndTimeStamp = +new Date();
 		}
 	}
@@ -319,6 +440,7 @@ class PictDynamicSolver extends libPictProvider
 		let tmpViewHashes = Array.isArray(pViewHashes) ? pViewHashes : Object.keys(this.fable.views);
 
 		let tmpSolveOutcome = {};
+		tmpSolveOutcome.SolverResultsMap = {};
 		tmpSolveOutcome.StartTimeStamp = +new Date();
 		tmpSolveOutcome.ViewHashes = tmpViewHashes;
 
@@ -387,9 +509,9 @@ class PictDynamicSolver extends libPictProvider
 				this.log.trace(`DynamicSolver [${this.UUID}]::[${this.Hash}] Solving ordinal ${tmpOrdinalKeys[i]}`);
 			}
 			let tmpOrdinalContainer = tmpOrdinalsToSolve[tmpOrdinalKeys[i]];
-			this.executeGroupSolvers(tmpOrdinalContainer.GroupSolvers, Number(tmpOrdinalKeys[i]));
-			this.executeSectionSolvers(tmpOrdinalContainer.SectionSolvers, Number(tmpOrdinalKeys[i]));
-			this.executeViewSolvers(tmpOrdinalContainer.ViewSolvers, Number(tmpOrdinalKeys[i]));
+			this.executeGroupSolvers(tmpOrdinalContainer.GroupSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
+			this.executeSectionSolvers(tmpOrdinalContainer.SectionSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
+			this.executeViewSolvers(tmpOrdinalContainer.ViewSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
 		}
 
 		// Now regenerate the metalists .. after the solve has happened.
