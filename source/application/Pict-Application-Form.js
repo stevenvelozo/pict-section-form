@@ -51,6 +51,7 @@ module.exports.default_configuration = (
 	"Hash": "PictFormsApp",
 
 	"MainViewportViewIdentifier": "PictFormMetacontroller",
+	"AutoSolveAfterInitialize": false,
 
 	"pict_configuration":
 		{
