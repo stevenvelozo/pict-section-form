@@ -41,9 +41,28 @@ class PictDynamicInputEvents extends libPictProvider
 		if (pInputHash)
 		{
 			let tmpInput = pView.getInputFromHash(pInputHash);
-			if (pEvent && this.pict.providers.DynamicInput.ignoredEventHashes[pEvent])
+			if (pEvent)
 			{
-				return;
+				let tmpFormattedEvent;
+				if (typeof pEvent === 'string')
+				{
+					tmpFormattedEvent = pEvent;
+				}
+				else
+				{
+					if (pEvent.namespace)
+					{
+						tmpFormattedEvent = `${pEvent.type}.${pEvent.namespace}`;
+					}
+					else
+					{
+						tmpFormattedEvent = pEvent.type;
+					}
+				}
+				if (this.pict.providers.DynamicInput.ignoredEventHashes[tmpFormattedEvent])
+				{
+					return;
+				}
 			}
 			let tmpHashAddress = pView.sectionManifest.resolveHashAddress(pInputHash);
 			try
@@ -144,6 +163,29 @@ class PictDynamicInputEvents extends libPictProvider
 		let tmpInput = pView.getTabularRecordInput(pGroupIndex, pInputIndex);
 		if (pGroupIndex && pInputIndex && pRowIndex && tmpInput)
 		{
+			if (pEvent)
+			{
+				let tmpFormattedEvent;
+				if (typeof pEvent === 'string')
+				{
+					tmpFormattedEvent = pEvent;
+				}
+				else
+				{
+					if (pEvent.namespace)
+					{
+						tmpFormattedEvent = `${pEvent.type}.${pEvent.namespace}`;
+					}
+					else
+					{
+						tmpFormattedEvent = pEvent.type;
+					}
+				}
+				if (this.pict.providers.DynamicInput.ignoredEventHashes[tmpFormattedEvent])
+				{
+					return;
+				}
+			}
 			try
 			{
 				let tmpMarshalDestinationObject = pView.getMarshalDestinationObject();
