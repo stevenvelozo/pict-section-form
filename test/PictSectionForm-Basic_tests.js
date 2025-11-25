@@ -938,6 +938,9 @@ suite
 										}
 										_Pict.log.info('Loading the Application and associated views.');
 									});
+								
+								// This needs to be explicitly called now that we turned off auto solve
+								_Pict.PictApplication.solve();
 							}
 						);
 				}
