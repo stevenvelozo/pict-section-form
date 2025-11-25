@@ -51,7 +51,7 @@ declare class PictFormMetacontroller extends libPictViewClass {
      * @returns {any} The result of the solve operation.
      */
     onSolve(): any;
-    runSolver(pExpression: any): void;
+    runSolver(pExpression: any, pSilent: any): void;
     onBeforeFilterViews(pViewFilterState: any): any;
     onAfterFilterViews(pViewFilterState: any): any;
     /**

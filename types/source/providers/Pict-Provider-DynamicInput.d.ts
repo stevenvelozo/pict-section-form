@@ -12,6 +12,12 @@ declare class PictDynamicInput extends libPictProvider {
      */
     constructor(pFable: import("pict"), pOptions?: any, pServiceHash?: string);
     templateProviderMap: {};
+    /** @type {Record<string, boolean>} */
+    ignoredEventHashes: Record<string, boolean>;
+    /**
+     * @param {string} pEventHash
+     */
+    registerIgnoredEventHash(pEventHash: string): void;
     /**
      * Retrieves the template hash for the input based on the provided view and input.
      *

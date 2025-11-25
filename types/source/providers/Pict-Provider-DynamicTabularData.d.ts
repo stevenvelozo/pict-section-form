@@ -37,6 +37,15 @@ declare class DynamicTabularData extends libPictProvider {
      */
     getTabularRecordInput(pView: any, pGroupIndex: number, pInputIndex: number): ElementDescriptor | boolean;
     /**
+     * Retrieves the tabular record input from the specified view, group, and input indexes.
+     *
+     * @param {Object} pView - The view object.
+     * @param {number} pGroupHash - The index of the group.
+     * @param {number} pInputHash - The index of the input.
+     * @returns {ElementDescriptor|boolean} The tabular record input or false if the group is invalid.
+     */
+    getTabularRecordInputByHash(pView: any, pGroupHash: number, pInputHash: number): ElementDescriptor | boolean;
+    /**
      * Retrieves tabular record data based on the provided parameters.
      *
      * @param {Object} pView - The view object.

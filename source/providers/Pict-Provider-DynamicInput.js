@@ -29,6 +29,16 @@ class PictDynamicInput extends libPictProvider
 		super(pFable, tmpOptions, pServiceHash);
 		// A map of strings for each input template, mapping it to arrays of default providers.
 		this.templateProviderMap = {};
+		/** @type {Record<string, boolean>} */
+		this.ignoredEventHashes = {};
+	}
+
+	/**
+	 * @param {string} pEventHash
+	 */
+	registerIgnoredEventHash(pEventHash)
+	{
+		this.ignoredEventHashes[pEventHash] = true;
 	}
 
 	/**

@@ -227,9 +227,10 @@ declare class PictViewDynamicForm extends libPictViewClass {
      * Triggers a DataRequest event for an Input Provider
      *
      * @param {String} pInputHash - The input hash.
+     * @param {any} [pEvent] - The input event.
      * @returns {boolean} Whether or not the data request was successful.
      */
-    inputDataRequest(pInputHash: string): boolean;
+    inputDataRequest(pInputHash: string, pEvent?: any): boolean;
     /**
      * Handles the generic Input Event for an Input Provider
      *
@@ -259,9 +260,10 @@ declare class PictViewDynamicForm extends libPictViewClass {
      * @param {number} pGroupIndex - The index of the group.
      * @param {number} pInputIndex - The index of the input.
      * @param {number} pRowIndex - The index of the row.
+     * @param {any} [pEvent] - The input event.
      * @returns {Promise<any>} A promise that resolves with the input data.
      */
-    inputDataRequestTabular(pGroupIndex: number, pInputIndex: number, pRowIndex: number): Promise<any>;
+    inputDataRequestTabular(pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent?: any): Promise<any>;
     /**
      * Handles the generic Tabular Input Event for an Input Provider
      *
@@ -321,6 +323,17 @@ declare class PictViewDynamicForm extends libPictViewClass {
      * @returns
      */
     getTabularRecordInput(pGroupIndex: number, pInputIndex: number): any;
+    /**
+     * Get the input object for a specific tabular record group and index.
+     *
+     * Input objects are not distinct among rows.
+     *
+     * @param {string} pGroupHash - The hash of the group.
+     * @param {string} pInputHash - The hash of the input.
+     *
+     * @return {Object} The input object.
+     */
+    getTabularRecordInputByHash(pGroupHash: string, pInputHash: string): any;
     /**
      * Get the tabular record object for a particular row in a group.
      *

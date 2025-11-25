@@ -18,7 +18,29 @@ declare class PictDynamicSolver extends libPictProvider {
         instantiateServiceProviderIfNotExists: (hash: string) => any;
         ExpressionParser: any;
     };
-    runSolver(pSolverExpression: any): any;
+    logSolveOutcome(pSolveOutcome: any): void;
+    /**
+     * Prepares the solver results map by ensuring it has the necessary structure.
+     *
+     * @param {Object} pSolverResultsMap - The solver results map to prepare.
+     * @returns {Object} - The prepared solver results map.
+    */
+    prepareSolverResultsMap(pSolverResultsMap: any): any;
+    /**
+     * Backfills solver dependencies into the solve outcome.
+     *
+     * @param {Object} pSolveOutcome - The solve outcome object.
+     * @returns {Object} - The updated solve outcome with backfilled dependencies.
+     */
+    backfillSolverDependencies(pSolveOutcome: any): any;
+    /**
+     * Runs a manual solver expression against the dynamic view marshal destination or the application data.
+     *
+     * @param {string} pSolverExpression - The solver expression to run.
+     * @param {boolean} [pSilent=false] - Whether to suppress debug logging output.
+     * @returns {any} - The result of the solver expression.
+     */
+    runSolver(pSolverExpression: string, pSilent?: boolean): any;
     /**
      * Checks the solver and returns the solver object if it passes the checks.
      *
@@ -37,22 +59,25 @@ declare class PictDynamicSolver extends libPictProvider {
      *
      * @param {array} pGroupSolverArray - An array of Solvers from the groups to solve.
      * @param {number} pOrdinal - The ordinal value to filter to.  Optional.
+     * @param {Object} pSolverResultsMap - The solver results map.
      */
-    executeGroupSolvers(pGroupSolverArray: any[], pOrdinal: number): void;
+    executeGroupSolvers(pGroupSolverArray: any[], pOrdinal: number, pSolverResultsMap: any): void;
     /**
      * Executes the section solvers at a given ordinal (or all if no ordinal is passed).
      *
      * @param {Array} pViewSectionSolverArray - The array of view section solvers.
      * @param {number} pOrdinal - The ordinal value.
+     * @param {Object} pSolverResultsMap - The solver results map.
      */
-    executeSectionSolvers(pViewSectionSolverArray: any[], pOrdinal: number): void;
+    executeSectionSolvers(pViewSectionSolverArray: any[], pOrdinal: number, pSolverResultsMap: any): void;
     /**
      * Executes the view solvers for the given array of view hashes.
      *
      * @param {Array} pViewSolverArray - The array of view solvers to execute.
      * @param {number} pOrdinal - The ordinal value.
+     * @param {Object} pSolverResultsMap - The solver results map.
      */
-    executeViewSolvers(pViewSolverArray: any[], pOrdinal: number): void;
+    executeViewSolvers(pViewSolverArray: any[], pOrdinal: number, pSolverResultsMap: any): void;
     /**
      * Checks if the given ordinal exists in the provided ordinal set.
      *
@@ -87,6 +112,7 @@ declare class PictDynamicSolver extends libPictProvider {
      */
     solveViews(pViewHashes?: any[] | string[]): void;
     lastSolveOutcome: {
+        SolverResultsMap: {};
         StartTimeStamp: number;
         ViewHashes: any[];
         SolveOrdinals: {};

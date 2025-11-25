@@ -34,12 +34,17 @@ class PictDynamicInputEvents extends libPictProvider
 	 *
 	 * @param {Object} pView - The view object.
 	 * @param {string} pInputHash - The input hash.
+	 * @param {any} [pEvent] - The input event.
 	 */
-	inputDataRequest(pView, pInputHash)
+	inputDataRequest(pView, pInputHash, pEvent)
 	{
-		let tmpInput = pView.getInputFromHash(pInputHash);
 		if (pInputHash)
 		{
+			let tmpInput = pView.getInputFromHash(pInputHash);
+			if (pEvent && this.pict.providers.DynamicInput.ignoredEventHashes[pEvent])
+			{
+				return;
+			}
 			let tmpHashAddress = pView.sectionManifest.resolveHashAddress(pInputHash);
 			try
 			{
@@ -132,8 +137,9 @@ class PictDynamicInputEvents extends libPictProvider
 	 * @param {number} pGroupIndex - The index of the group.
 	 * @param {number} pInputIndex - The index of the input.
 	 * @param {number} pRowIndex - The index of the row.
+	 * @param {any} [pEvent] - The input event.
 	 */
-	inputDataRequestTabular(pView, pGroupIndex, pInputIndex, pRowIndex)
+	inputDataRequestTabular(pView, pGroupIndex, pInputIndex, pRowIndex, pEvent)
 	{
 		let tmpInput = pView.getTabularRecordInput(pGroupIndex, pInputIndex);
 		if (pGroupIndex && pInputIndex && pRowIndex && tmpInput)

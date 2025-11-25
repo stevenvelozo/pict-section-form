@@ -1,6 +1,6 @@
 /*
 	Unit tests for PictSectionForm Basic
-	
+
 */
 
 // This is temporary, but enables unit tests
@@ -938,7 +938,71 @@ suite
 										}
 										_Pict.log.info('Loading the Application and associated views.');
 									});
-								
+
+								// This needs to be explicitly called now that we turned off auto solve
+								_Pict.PictApplication.solve();
+							}
+						);
+					test(
+							'Disable Solve Ordinals',
+							(fDone) =>
+							{
+								//NOTE: code is a clone of Pict.safeLoadPictApplication
+								let _Pict;
+								const tmpApplicationClass = OrderedSolverApplication;
+								OrderedSolverApplication.default_configuration.pict_configuration.DefaultFormManifest.Sections[0].Solvers.splice(1, 0, { Ordinal: 15, Expression: 'setSolverOrdinalEnabled(40, 0)' });
+								if (tmpApplicationClass && ('default_configuration' in tmpApplicationClass) && ('pict_configuration' in tmpApplicationClass.default_configuration))
+								{
+									_Pict = new libPict(tmpApplicationClass.default_configuration.pict_configuration);
+								}
+								else
+								{
+									_Pict = new libPict();
+								}
+
+								//_Pict.LogNoisiness = 0;
+
+								let tmpApplicationHash = 'DefaultApplication';
+								let tmpDefaultConfiguration = {};
+
+								if ('default_configuration' in tmpApplicationClass)
+								{
+									tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+
+									if ('Hash' in tmpApplicationClass.default_configuration)
+									{
+										tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+										tmpApplicationHash = tmpApplicationClass.default_configuration.Hash;
+									}
+								}
+								_Pict.log.info(`Loading the pict application [${tmpApplicationHash}] and associated views.`);
+
+								_Pict.addApplication(tmpApplicationHash, tmpDefaultConfiguration, tmpApplicationClass);
+
+								_Pict.PictApplication.testDone = () =>
+								{
+									try
+									{
+										Expect(_Pict.AppData.C).to.equal('8', 'C should equal 8 (A + B)');
+										Expect(_Pict.AppData.D).to.not.exist;
+									}
+									catch (pError)
+									{
+										return fDone(pError);
+									}
+									fDone();
+								};
+
+								_Pict.PictApplication.initializeAsync(
+									function (pError)
+									{
+										if (pError)
+										{
+											_Pict.log.info('Error initializing the pict application: '+pError)
+										}
+										_Pict.log.info('Loading the Application and associated views.');
+									});
+
 								// This needs to be explicitly called now that we turned off auto solve
 								_Pict.PictApplication.solve();
 							}

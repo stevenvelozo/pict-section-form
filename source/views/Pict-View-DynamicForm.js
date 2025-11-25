@@ -1056,11 +1056,12 @@ class PictViewDynamicForm extends libPictViewClass
 	 * Triggers a DataRequest event for an Input Provider
 	 *
 	 * @param {String} pInputHash - The input hash.
+	 * @param {any} [pEvent] - The input event.
 	 * @returns {boolean} Whether or not the data request was successful.
 	 */
-	inputDataRequest(pInputHash)
+	inputDataRequest(pInputHash, pEvent)
 	{
-		return this.pict.providers.DynamicInputEvents.inputDataRequest(this, pInputHash);
+		return this.pict.providers.DynamicInputEvents.inputDataRequest(this, pInputHash, pEvent);
 	}
 
 	/**
@@ -1119,11 +1120,12 @@ class PictViewDynamicForm extends libPictViewClass
 	 * @param {number} pGroupIndex - The index of the group.
 	 * @param {number} pInputIndex - The index of the input.
 	 * @param {number} pRowIndex - The index of the row.
+	 * @param {any} [pEvent] - The input event.
 	 * @returns {Promise<any>} A promise that resolves with the input data.
 	 */
-	inputDataRequestTabular(pGroupIndex, pInputIndex, pRowIndex)
+	inputDataRequestTabular(pGroupIndex, pInputIndex, pRowIndex, pEvent)
 	{
-		return this.pict.providers.DynamicInputEvents.inputDataRequestTabular(this, pGroupIndex, pInputIndex, pRowIndex);
+		return this.pict.providers.DynamicInputEvents.inputDataRequestTabular(this, pGroupIndex, pInputIndex, pRowIndex, pEvent);
 	}
 
 	/**

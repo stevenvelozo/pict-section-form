@@ -86,22 +86,43 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		this.addSolverFunction(pExpressionParser, 'colorinputbackground', 'fable.providers.DynamicFormSolverBehaviors.colorInputBackground', 'Colors an input background with a HTML hex color (e.g. #FF0000 for red).');
 		this.addSolverFunction(pExpressionParser, 'colorinputbackgroundtabular', 'fable.providers.DynamicFormSolverBehaviors.colorInputBackgroundTabular', 'Colors a tabular input background with a HTML hex color (e.g. #FF0000 for red).');
 
+		this.addSolverFunction(pExpressionParser, 'setsolverordinalenabled', 'fable.providers.DynamicFormSolverBehaviors.setSolverOrdinalEnabled', 'Enables or disabled a solver ordinal to determine if it should run.');
 		this.addSolverFunction(pExpressionParser, 'enablesolverordinal', 'fable.providers.DynamicFormSolverBehaviors.enableSolverOrdinal', 'Enables a solver ordinal so that it can run.');
 		this.addSolverFunction(pExpressionParser, 'disablesolverordinall', 'fable.providers.DynamicFormSolverBehaviors.disableSolverOrdinal', 'Disables a solver ordinal so that it will not run.');
 
 		return false;
 	}
 
+	/**
+	 * @param {number|string} pSolverOrdinal
+	 * @param {boolean|string|number} pEnabled
+	 */
+	setSolverOrdinalEnabled(pSolverOrdinal, pEnabled)
+	{
+		this.solverOrdinalMap[`ORD-${pSolverOrdinal}`] = pEnabled == true || pEnabled == '1';
+	}
+
+	/**
+	 * @param {number|string} pSolverOrdinal
+	 */
 	enableSolverOrdinal(pSolverOrdinal)
 	{
 		this.solverOrdinalMap[`ORD-${pSolverOrdinal}`] = true;
 	}
 
+	/**
+	 * @param {number|string} pSolverOrdinal
+	 */
 	disableSolverOrdinal(pSolverOrdinal)
 	{
 		this.solverOrdinalMap[`ORD-${pSolverOrdinal}`] = false;
 	}
 
+	/**
+	 * @param {number|string} pSolveOrdinal
+	 *
+	 * @return {boolean}
+	 */
 	checkSolverOrdinalEnabled(pSolveOrdinal)
 	{
 		let tmpOrdinalKey = `ORD-${pSolveOrdinal}`;

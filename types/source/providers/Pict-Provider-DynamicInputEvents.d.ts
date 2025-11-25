@@ -16,8 +16,9 @@ declare class PictDynamicInputEvents extends libPictProvider {
      *
      * @param {Object} pView - The view object.
      * @param {string} pInputHash - The input hash.
+     * @param {any} [pEvent] - The input event.
      */
-    inputDataRequest(pView: any, pInputHash: string): void;
+    inputDataRequest(pView: any, pInputHash: string, pEvent?: any): void;
     /**
      * Handles the input event for a dynamic form.
      *
@@ -34,8 +35,9 @@ declare class PictDynamicInputEvents extends libPictProvider {
      * @param {number} pGroupIndex - The index of the group.
      * @param {number} pInputIndex - The index of the input.
      * @param {number} pRowIndex - The index of the row.
+     * @param {any} [pEvent] - The input event.
      */
-    inputDataRequestTabular(pView: import("../views/Pict-View-DynamicForm"), pGroupIndex: number, pInputIndex: number, pRowIndex: number): void;
+    inputDataRequestTabular(pView: import("../views/Pict-View-DynamicForm"), pGroupIndex: number, pInputIndex: number, pRowIndex: number, pEvent?: any): void;
     /**
      * Handles the tabular input event.
      *
