@@ -322,8 +322,8 @@ suite
 												try
 												{
 													_Pict.log.info(`AppData after`, { AppData: _Pict.AppData, tmpHashedAggregateValue, tmpHashedAggregateValue2 });
-													Expect(_Pict.AppData[tmpHashedAggregateValue]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
-													Expect(_Pict.AppData[tmpHashedAggregateValue2]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
+													Expect(_Pict.manifest.getValueByHash(_Pict.AppData, tmpHashedAggregateValue)).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
+													Expect(_Pict.manifest.getValueByHash(_Pict.AppData, tmpHashedAggregateValue2)).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
 												}
 												catch (pError)
 												{
@@ -479,8 +479,8 @@ suite
 												try
 												{
 													_Pict.log.info(`AppData after`, { AppData: _Pict.AppData, tmpHashedAggregateValue, tmpHashedAggregateValue2 });
-													Expect(_Pict.AppData[tmpHashedAggregateValue]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
-													Expect(_Pict.AppData[tmpHashedAggregateValue2]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
+													Expect(_Pict.manifest.getValueByHash(_Pict.AppData, tmpHashedAggregateValue)).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
+													Expect(_Pict.manifest.getValueByHash(_Pict.AppData, tmpHashedAggregateValue2)).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
 												}
 												catch (pError)
 												{
@@ -634,7 +634,7 @@ suite
 											const tmpUUID = _Pict.getUUID().substring(0, 8);
 											const tmpDistinctManifest = _Pict.views.PictFormMetacontroller.createDistinctManifest(tmpManifest, tmpUUID);
 											_Pict.log.info('Distinct Manifest:', tmpDistinctManifest);
-											Expect(tmpDistinctManifest.Sections[0].Groups[0].RecordSetAddress).to.equal(`LevelOfIndirection_${tmpUUID}.DataTableAddress`, 'Group RecordSetAddress should be preserved in distinct manifest.');
+											Expect(tmpDistinctManifest.Sections[0].Groups[0].RecordSetAddress).to.equal(`${tmpUUID}.LevelOfIndirection.DataTableAddress`, 'Group RecordSetAddress should be preserved in distinct manifest.');
 											tmpHashedAggregateValue = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue')[0];
 											tmpHashedAggregateValue2 = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue2')[0];
 											tmpHashedAggregateValue3 = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'IndirectAggregateValue')[0];
@@ -658,8 +658,8 @@ suite
 												try
 												{
 													_Pict.log.info(`AppData after`, { AppData: _Pict.AppData, tmpHashedAggregateValue, tmpHashedAggregateValue2, tmpHashedAggregateValue3 });
-													Expect(_Pict.AppData[tmpHashedAggregateValue]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
-													Expect(_Pict.AppData[tmpHashedAggregateValue2]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
+													Expect(_Pict.manifest.getValueByHash(_Pict.AppData, tmpHashedAggregateValue)).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
+													Expect(_Pict.manifest.getValueByHash(_Pict.AppData, tmpHashedAggregateValue2)).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
 													Expect(_Pict.manifest.getValueByHash(_Pict.AppData, tmpHashedAggregateValue3)).to.equal('15', 'IndirectAggregateValue should equal 15 (via indirection) using manifest method');
 												}
 												catch (pError)
@@ -823,7 +823,7 @@ suite
 											const tmpUUID = _Pict.getUUID().substring(0, 8);
 											const tmpDistinctManifest = _Pict.views.PictFormMetacontroller.createDistinctManifest(tmpManifest, tmpUUID);
 											_Pict.log.info('Distinct Manifest:', tmpDistinctManifest);
-											Expect(tmpDistinctManifest.Sections[0].Groups[0].RecordSetAddress).to.equal(`LevelOfIndirection_${tmpUUID}.DataTableAddress`, 'Group RecordSetAddress should be preserved in distinct manifest.');
+											Expect(tmpDistinctManifest.Sections[0].Groups[0].RecordSetAddress).to.equal(`${tmpUUID}.LevelOfIndirection.DataTableAddress`, 'Group RecordSetAddress should be preserved in distinct manifest.');
 											tmpHashedAggregateValue = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue')[0];
 											tmpHashedAggregateValue2 = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue2')[0];
 											tmpHashedAggregateValue3 = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'IndirectAggregateValue')[0];
@@ -847,8 +847,8 @@ suite
 												try
 												{
 													_Pict.log.info(`AppData after`, { AppData: _Pict.AppData, tmpHashedAggregateValue, tmpHashedAggregateValue2, tmpHashedAggregateValue3 });
-													Expect(_Pict.AppData[tmpHashedAggregateValue]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
-													Expect(_Pict.AppData[tmpHashedAggregateValue2]).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
+													Expect(_Pict.manifest.getValueByHash(_Pict.AppData, tmpHashedAggregateValue)).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via hash)');
+													Expect(_Pict.manifest.getValueByHash(_Pict.AppData, tmpHashedAggregateValue2)).to.equal('15', 'AggregateValue should equal 15 (SUM of ValueArray via address)');
 													Expect(_Pict.manifest.getValueByHash(_Pict.AppData, tmpHashedAggregateValue3)).to.equal('15', 'IndirectAggregateValue should equal 15 (via indirection) using manifest method');
 												}
 												catch (pError)

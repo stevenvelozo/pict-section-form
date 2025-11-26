@@ -1,6 +1,7 @@
 export = PictFormMetacontroller;
 /**
  * @typedef {(a: any, b: any) => number} SortFunction
+ * @typedef {import('manyfest').ManifestDescriptor} ManifestDescriptor
  */
 /**
  * Class representing a PictFormMetacontroller.
@@ -221,9 +222,10 @@ declare class PictFormMetacontroller extends libPictViewClass {
     get isPictMetacontroller(): boolean;
 }
 declare namespace PictFormMetacontroller {
-    export { default_configuration, SortFunction };
+    export { default_configuration, SortFunction, ManifestDescriptor };
 }
 import libPictViewClass = require("pict-view");
 declare const default_configuration: Record<string, any>;
 type SortFunction = (a: any, b: any) => number;
+type ManifestDescriptor = import("manyfest").ManifestDescriptor;
 //# sourceMappingURL=Pict-View-Form-Metacontroller.d.ts.map

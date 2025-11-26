@@ -13,6 +13,7 @@ const READY_TO_FINALIZE_TYPE = 'ReadyToFinalize';
 
 /**
  * @typedef {(a: any, b: any) => number} SortFunction
+ * @typedef {import('manyfest').ManifestDescriptor} ManifestDescriptor
  */
 
 /**
@@ -291,7 +292,6 @@ class PictFormMetacontroller extends libPictViewClass
 	createDistinctManifest(pManifest, pUUID)
 	{
 		const tmpDescriptorHashes = Object.keys(pManifest?.Descriptors || {});
-		const tmpDescriptorHashSet = new Set(tmpDescriptorHashes);
 		const tmpUUID = pUUID != null ? pUUID : this.pict.getUUID().replace(/-/g, '');
 		const tmpManifest = JSON.parse(JSON.stringify(pManifest));
 		for (const tmpSection of tmpManifest.Sections || [])
@@ -304,8 +304,11 @@ class PictFormMetacontroller extends libPictViewClass
 				tmpGroup.Hash = `${tmpGroup.Hash}_${tmpUUID}`;
 			}
 		}
+		/** @type {Record<string, ManifestDescriptor>} */
+		const tmpDescriptors = tmpManifest.Descriptors || {};
+		/** @type {Record<string, ManifestDescriptor>} */
 		const tmpNewDescriptors = {};
-		for (const [ tmpKey, tmpDescriptor ] of Object.entries(tmpManifest.Descriptors || {}))
+		for (const [ tmpKey, tmpDescriptor ] of Object.entries(tmpDescriptors))
 		{
 			if (!tmpDescriptor.DataAddress)
 			{
@@ -313,31 +316,15 @@ class PictFormMetacontroller extends libPictViewClass
 			}
 			tmpDescriptor.OriginalDataAddress = tmpDescriptor.DataAddress;
 			// we only make distinct top level properties to keep things as tidy as possible so do a split to isoloate that
-			//TODO: if we have .. dereferences (for example) in the data address, this will not work properly
+			//TODO: if we have .. dereferences (for example) in the data address, this may not work properly
 
-			let tmpArrayIndex = tmpDescriptor.DataAddress.indexOf('[');
-			let tmpDotIndex = tmpDescriptor.DataAddress.indexOf('.');
-			if (tmpDotIndex >= 0 && (tmpDotIndex < tmpArrayIndex || tmpArrayIndex < 0))
-			{
-				const tmpPrefixPart = tmpDescriptor.DataAddress.substring(0, tmpDotIndex);
-				const tmpPostfixPart = tmpDescriptor.DataAddress.substring(tmpDotIndex);
-				tmpDescriptor.DataAddress = `${tmpPrefixPart}_${tmpUUID}${tmpPostfixPart}`;
-			}
-			else if (tmpArrayIndex >= 0 && (tmpArrayIndex < tmpDotIndex || tmpDotIndex < 0))
-			{
-				const tmpArrayPart = tmpDescriptor.DataAddress.substring(0, tmpArrayIndex);
-				const tmpPostfixPart = tmpDescriptor.DataAddress.substring(tmpArrayIndex);
-				tmpDescriptor.DataAddress = `${tmpArrayPart}_${tmpUUID}${tmpPostfixPart}`;
-			}
-			else
-			{
-				//FIXME: do we want to allow prefixing the data address? (ex. nesting it under a parent object) - caller can still do this themselves.
-				tmpDescriptor.DataAddress = `${tmpDescriptor.OriginalDataAddress}_${tmpUUID}`;
-			}
+			// nest the data addresses inside a container that is unique to this injection
+			tmpDescriptor.DataAddress = `${tmpUUID}.${tmpDescriptor.OriginalDataAddress}`;
 			if (tmpDescriptor.Address != null)
 			{
 				tmpDescriptor.Address = tmpDescriptor.DataAddress;
 			}
+			// nesting doesn't work for hashes, so we append instead for input, section and group hashes
 			if (tmpDescriptor.Hash)
 			{
 				tmpDescriptor.OriginalHash = tmpDescriptor.Hash;
@@ -357,7 +344,9 @@ class PictFormMetacontroller extends libPictViewClass
 			tmpNewDescriptors[tmpDescriptor.DataAddress] = tmpDescriptor;
 		}
 		tmpManifest.Descriptors = tmpNewDescriptors;
+		/** @type {Record<string, string>} */
 		const tmpAddressTranslation = {};
+		/** @type {Record<string, string>} */
 		const tmpHashTranslation = {};
 		for (const tmpDescriptor of Object.values(tmpManifest?.Descriptors || {}))
 		{
@@ -370,6 +359,15 @@ class PictFormMetacontroller extends libPictViewClass
 				tmpHashTranslation[tmpDescriptor.OriginalHash] = tmpDescriptor.Hash;
 			}
 		}
+		const escapeRegExp =
+		/**
+		 * @param {string} str - the string to match
+		 * @return {string} - the escaped string
+		 */
+		(str) =>
+		{
+			return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		}
 		for (const [ tmpOriginalAddress, tmpUpdatedAddress ] of Object.entries(tmpAddressTranslation))
 		{
 			for (const tmpIterAddress of Object.keys(tmpAddressTranslation))
@@ -378,10 +376,10 @@ class PictFormMetacontroller extends libPictViewClass
 				{
 					continue;
 				}
-				const tmpTranslatedAddress = tmpAddressTranslation[tmpIterAddress].replace(new RegExp(`^${tmpOriginalAddress}\\b`, 'g'), tmpUpdatedAddress);
+				const tmpTranslatedAddress = tmpAddressTranslation[tmpIterAddress].replace(new RegExp(`^${escapeRegExp(tmpOriginalAddress)}\\b`, 'g'), tmpUpdatedAddress);
 				if (tmpTranslatedAddress !== tmpAddressTranslation[tmpIterAddress])
 				{
-					//this.pict.log.info(`DocumentDynamicSectionManager._addTestSections: Updated address translation for "${tmpIterAddress}" from "${tmpAddressTranslation[tmpIterAddress]}" to "${tmpTranslatedAddress}".`);
+					this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated address translation for "${tmpIterAddress}" from "${tmpAddressTranslation[tmpIterAddress]}" to "${tmpTranslatedAddress}".`);
 					tmpAddressTranslation[tmpIterAddress] = tmpTranslatedAddress;
 					const [ tmpCurrentKey, tmpOriginalDescriptor ] = Object.entries(tmpManifest.Descriptors).find(([ pKey, pDescriptor ]) => pDescriptor.OriginalDataAddress === tmpIterAddress);
 					tmpManifest.Descriptors[tmpCurrentKey].DataAddress = tmpTranslatedAddress;
@@ -399,17 +397,15 @@ class PictFormMetacontroller extends libPictViewClass
 		tmpAddressMappings.sort((a, b) => b.From.length - a.From.length);
 		const tmpHashMappings = Object.entries(tmpHashTranslation).map(([ pOldHash, pNewHash ]) => ({ From: pOldHash, To: pNewHash }));
 		tmpHashMappings.sort((a, b) => b.From.length - a.From.length);
-		const escapeRegExp = (string) =>
-		{
-			return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-		}
 		for (const tmpSection of tmpManifest.Sections || [])
 		{
 			if (Array.isArray(tmpSection.Solvers) && tmpSection.Solvers.length > 0)
 			{
 				for (let i = 0; i < tmpSection.Solvers.length; i++)
 				{
+					/** @type {Record<string, any>|string} */
 					const tmpSolver = tmpSection.Solvers[i];
+					/** @type {string} */
 					const tmpSolverExpression = typeof tmpSolver === 'string' ? tmpSolver : tmpSolver.Expression;
 					if (!tmpSolverExpression)
 					{
@@ -419,15 +415,28 @@ class PictFormMetacontroller extends libPictViewClass
 					//FIXME: what if there is a collision in a suffix-part and we replace too much?
 					for (const tmpMapping of tmpAddressMappings)
 					{
-						tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+						const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+						if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
+						{
+							//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Iteratively updated section solver reference ${i} address from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`, tmpMapping);
+						}
+						tmpUpdatedSolver = tmpUpdatedSolverIter;
 					}
 					for (const tmpMapping of tmpHashMappings)
 					{
-						tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+						const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+						if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
+						{
+							//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Iteratively updated section solver reference ${i} hash from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`, tmpMapping);
+						}
+						tmpUpdatedSolver = tmpUpdatedSolverIter;
 					}
-					if (tmpUpdatedSolver !== tmpSolver)
+					if (tmpUpdatedSolver !== tmpSolverExpression)
 					{
-						//this.pict.log.info(`DocumentDynamicSectionManager._addTestSections: Updated section solver reference ${i} from "${tmpSolverExpression}" to "${tmpUpdatedSolver}".`);
+						//FIXME: hack to remove duplicated tmpUUID prefixes
+						const tmpPrefix = `${tmpUUID}.`;
+						tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`(${escapeRegExp(tmpPrefix)})+`), tmpPrefix);
+						this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated section solver reference ${i} from "${tmpSolverExpression}" to "${tmpUpdatedSolver}".`);
 						if (typeof tmpSolver === 'string')
 						{
 							tmpSection.Solvers[i] = tmpUpdatedSolver;
@@ -443,38 +452,8 @@ class PictFormMetacontroller extends libPictViewClass
 			{
 				if (tmpGroup.RecordSetAddress)
 				{
-					let tmpRecordSetAddress = tmpGroup.RecordSetAddress;
-					for (const tmpMapping of tmpAddressMappings)
-					{
-						tmpRecordSetAddress = tmpRecordSetAddress.replace(new RegExp(`^${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
-					}
-					if (tmpRecordSetAddress !== tmpGroup.RecordSetAddress)
-					{
-						//this.pict.log.info(`DocumentDynamicSectionManager._addTestSections: Updated group record set address from "${tmpGroup.RecordSetAddress}" to "${tmpRecordSetAddress}".`);
-					}
-					else
-					{
-						let tmpArrayIndex = tmpRecordSetAddress.indexOf('[');
-						let tmpDotIndex = tmpRecordSetAddress.indexOf('.');
-						if (tmpDotIndex >= 0 && (tmpDotIndex < tmpArrayIndex || tmpArrayIndex < 0))
-						{
-							const tmpPrefixPart = tmpRecordSetAddress.substring(0, tmpDotIndex);
-							const tmpPostfixPart = tmpRecordSetAddress.substring(tmpDotIndex);
-							tmpRecordSetAddress = `${tmpPrefixPart}_${tmpUUID}${tmpPostfixPart}`;
-						}
-						else if (tmpArrayIndex >= 0 && (tmpArrayIndex < tmpDotIndex || tmpDotIndex < 0))
-						{
-							const tmpArrayPart = tmpRecordSetAddress.substring(0, tmpArrayIndex);
-							const tmpPostfixPart = tmpRecordSetAddress.substring(tmpArrayIndex);
-							tmpRecordSetAddress = `${tmpArrayPart}_${tmpUUID}${tmpPostfixPart}`;
-						}
-						else
-						{
-							//FIXME: do we want to allow prefixing the data address? (ex. nesting it under a parent object) - caller can still do this themselves.
-							tmpRecordSetAddress = `${tmpGroup.RecordSetAddress}_${tmpUUID}`;
-						}
-					}
-					//TODO: does this need to go into the mappings if it isn't there?
+					let tmpRecordSetAddress = `${tmpUUID}.${tmpGroup.RecordSetAddress}`;
+					this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group record set address from "${tmpGroup.RecordSetAddress}" to "${tmpRecordSetAddress}".`);
 					tmpGroup.RecordSetAddress = tmpRecordSetAddress;
 
 				}
@@ -482,6 +461,7 @@ class PictFormMetacontroller extends libPictViewClass
 				{
 					for (let i = 0; i < tmpGroup.RecordSetSolvers.length; i++)
 					{
+						/** @type {Record<string, any>|string} */
 						const tmpSolver = tmpGroup.RecordSetSolvers[i];
 						const tmpSolverExpression = typeof tmpSolver === 'string' ? tmpSolver : tmpSolver.Expression;
 						if (!tmpSolverExpression)
@@ -492,15 +472,28 @@ class PictFormMetacontroller extends libPictViewClass
 						//FIXME: what if there is a collision in a suffix-part and we replace too much?
 						for (const tmpMapping of tmpAddressMappings)
 						{
-							tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+							const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+							if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
+							{
+								//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} address from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`);
+							}
+							tmpUpdatedSolver = tmpUpdatedSolverIter;
 						}
 						for (const tmpMapping of tmpHashMappings)
 						{
-							tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+							const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+							if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
+							{
+								//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} hash from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`);
+							}
+							tmpUpdatedSolver = tmpUpdatedSolverIter;
 						}
-						if (tmpUpdatedSolver !== tmpSolver)
+						if (tmpUpdatedSolver !== tmpSolverExpression)
 						{
-							//this.pict.log.info(`DocumentDynamicSectionManager._addTestSections: Updated group solver reference ${i} from "${tmpSolver}" to "${tmpUpdatedSolver}".`);
+							//FIXME: hack to remove duplicated tmpUUID prefixes
+							const tmpPrefix = `${tmpUUID}.`;
+							tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`(${escapeRegExp(tmpPrefix)})+`), tmpPrefix);
+							this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} from "${tmpSolverExpression}" to "${tmpUpdatedSolver}".`);
 							if (typeof tmpSolver === 'string')
 							{
 								tmpGroup.RecordSetSolvers[i] = tmpUpdatedSolver;
