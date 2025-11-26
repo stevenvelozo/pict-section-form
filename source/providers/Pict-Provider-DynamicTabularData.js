@@ -212,8 +212,6 @@ class DynamicTabularData extends libPictProvider
 					tmpRowPrototype = JSON.parse(JSON.stringify(tmpGroup.DefaultRows[tmpDestinationObject.length]));
 				}
 				tmpDestinationObject.push(tmpGroup.supportingManifest.populateDefaults(tmpRowPrototype));
-				// Run the solver
-				this.pict.providers.DynamicSolver.solveViews();
 
 				// Also render any other views that have this as the RecordSetAddress
 				// Filter the views by each Group.RecordSetAddress and find the ones with this RecordSetAddress
@@ -240,6 +238,9 @@ class DynamicTabularData extends libPictProvider
 				{
 					tmpViewsToRender[i].render();
 				}
+
+				// Run the solver
+				this.pict.providers.DynamicSolver.solveViews();
 
 				//pView.render();
 				//pView.marshalToView();
@@ -428,9 +429,6 @@ class DynamicTabularData extends libPictProvider
 				}
 				tmpDestinationObject.splice(tmpRowIndex, 1);
 
-				// Run the solver
-				this.pict.providers.DynamicSolver.solveViews();
-
 				// Also render any other views that have this as the RecordSetAddress
 				// Filter the views by each Group.RecordSetAddress and find the ones with this RecordSetAddress
 				let tmpViewsToRender = this.pict.views.PictFormMetacontroller.filterViews(
@@ -457,8 +455,9 @@ class DynamicTabularData extends libPictProvider
 					tmpViewsToRender[i].render();
 				}
 
-				//pView.render();
-				//pView.marshalToView();
+				// Run the solver
+				this.pict.providers.DynamicSolver.solveViews();
+
 				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
 				this.pict.views.PictFormMetacontroller.marshalFormSections();
 			}

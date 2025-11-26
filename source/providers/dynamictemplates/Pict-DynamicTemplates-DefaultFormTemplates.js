@@ -858,7 +858,7 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-TabularTemplate-Begin-Input-DataType-PreciseNumber",
 			"Template": /*HTML*/`
 					<!-- DataType PreciseNumber {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input type="Number" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+					<input type="Number" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} id="TABULAR-DATA-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-PreciseNumber",

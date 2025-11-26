@@ -311,7 +311,7 @@
             "DataAddress": "BoxDecorationSet",
             "DataType": "Array",
             "FormGroup": "BoxDecorationGroup",
-            "FormSection": "BoxDecroations"
+            "FormSection": "BoxDecorations"
         },
         "Boxes[].Floorspace": {
             "Hash": "BoxesFloorspaceSet",
@@ -958,14 +958,16 @@
         },
         {
             "Name": "Box Decoration",
-            "Hash": "BoxDecroations",
+            "Hash": "BoxDecorations",
             "Solvers": [],
             "Groups": [
                 {
                     "Name": "Box Decorations",
                     "Hash": "BoxDecorationGroup",
                     "Rows": [],
-                    "RecordSetSolvers": [],
+                    "RecordSetSolvers": [
+                        "VolumeLessTen = BoxVolume - 10"
+                    ],
                     "HideTabularEditingControls": true,
                     "ShowTitle": true,
                     "Layout": "Tabular",
@@ -975,22 +977,10 @@
             ]
         },
         {
-            "Name": "Box Decoration",
-            "Hash": "BoxDecorations",
-            "Solvers": [],
-            "Groups": [
-                {
-                    "Name": "Box Decorations",
-                    "Hash": "BoxDecorationGroup",
-                    "Rows": [],
-                    "RecordSetSolvers": []
-                }
-            ]
-        },
-        {
             "Name": "Box Summary Data",
             "Hash": "Box_Summary_Data",
             "Solvers": [
+                "MAP VAR row FROM Boxes: ColorInputBackgroundTabular(\"BoxDecorations\", \"BoxDecorationGroup\", \"VolumeLessTen\", stepIndex, \"#FFCCCC\", 1)",
                 "BoxesCount = COUNT(BoxesFloorspaceSet)",
                 "BoxesAverageFloorspace = AVG(BoxesFloorspaceSet)",
                 "BoxesTotalFloorspace = SUM(BoxesFloorspaceSet)",
@@ -1841,6 +1831,28 @@
                     "Hash": "BoxVolume",
                     "Name": "Volume",
                     "DataAddress": "Volume",
+                    "DataType": "PreciseNumber",
+                    "PictForm": {
+                        "InputType": "DataOnly",
+                        "Row": "1",
+                        "Width": "1",
+                        "Providers": [
+                            "Pict-Input-AutofillTriggerGroup"
+                        ],
+                        "AutofillTriggerGroup": {
+                            "TriggerGroupHash": "Box",
+                            "MarshalEmptyValues": false,
+                            "TriggerAllInputs": true
+                        },
+                        "Section": "BoxDecorations",
+                        "Group": "BoxDecorationGroup"
+                    },
+                    "IsTabular": true
+                },
+                "VolumeLessTen": {
+                    "Hash": "VolumeLessTen",
+                    "Name": "VolumeLessTen",
+                    "DataAddress": "VolumeLessTen",
                     "DataType": "PreciseNumber",
                     "PictForm": {
                         "InputType": "DataOnly",
