@@ -216,6 +216,7 @@ class DynamicTabularData extends libPictProvider
 				// Also render any other views that have this as the RecordSetAddress
 				// Filter the views by each Group.RecordSetAddress and find the ones with this RecordSetAddress
 				let tmpViewsToRender = this.pict.views.PictFormMetacontroller.filterViews(
+					/** @param {import('../views/Pict-View-DynamicForm.js')} pViewToTestForGroup */
 					(pViewToTestForGroup) =>
 					{
 						if (!pViewToTestForGroup.isPictSectionForm)
@@ -277,8 +278,6 @@ class DynamicTabularData extends libPictProvider
 				{
 					tmpRowPrototype = JSON.parse(JSON.stringify(tmpGroup.DefaultRows[tmpDestinationObject.length]));
 				}
-				console.log(tmpRowPrototype);
-				console.log(tmpGroup.supportingManifest.populateDefaults(tmpRowPrototype));
 				tmpDestinationObject.push(tmpGroup.supportingManifest.populateDefaults(tmpRowPrototype))
 			}
 		}

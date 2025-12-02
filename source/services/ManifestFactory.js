@@ -695,7 +695,7 @@ class ManifestFactory extends libFableServiceProviderBase
 		{
 			tmpGroup.Layout = 'Tabular';
 			// If the csv defines the GroupRecordSetAddress, use that explicitly
-			console.log(`Group ${tmpGroup.Hash} RSA ${tmpRecord['GroupRecordSetAddress']} -> Descriptor ${tmpDescriptor.DataAddress}`)
+			this.log.info(`Group ${tmpGroup.Hash} RSA ${tmpRecord['GroupRecordSetAddress']} -> Descriptor ${tmpDescriptor.DataAddress}`);
 			if (tmpRecord['GroupRecordSetAddress'] && (typeof (tmpRecord.GroupRecordSetAddress == 'string')) && (tmpRecord.GroupRecordSetAddress.length > 0))
 			{
 				tmpGroup.RecordSetAddress = tmpRecord.GroupRecordSetAddress;
