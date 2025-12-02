@@ -16,6 +16,12 @@ const _DefaultProviderConfiguration = (
  */
 class PictListDistilling extends libPictProvider
 {
+	/**
+	 *
+	 * @param {import('fable')} pFable - The Fable instance.
+	 * @param {Record<string, any>} [pOptions] - The options for the provider.
+	 * @param {string} [pServiceHash] - The service hash for the provider.
+	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);

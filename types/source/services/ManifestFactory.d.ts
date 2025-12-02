@@ -1,9 +1,10 @@
 export = ManifestFactory;
 declare class ManifestFactory {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
-    /** @type {import('pict') & { instantiateServiceProviderWithoutRegistration: (hash: string, options?: any, uuid?: string) => any }} */
+    /** @type {import('pict') & { instantiateServiceProviderWithoutRegistration: (hash: string, options?: any, uuid?: string) => any, newManyfest: () => import('manyfest') }} */
     fable: import("pict") & {
         instantiateServiceProviderWithoutRegistration: (hash: string, options?: any, uuid?: string) => any;
+        newManyfest: () => import("manyfest");
     };
     /** @type {any} */
     log: any;

@@ -27,7 +27,6 @@ export = CustomInputHandler;
  * @memberof providers.inputs
  */
 declare class CustomInputHandler extends libPictSectionInputExtension {
-    constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
     getTriggerGroupConfigurationArray(pInput: any): any;

@@ -5,7 +5,6 @@ export = CustomInputHandler;
  * @extends libPictSectionInputExtension
  */
 declare class CustomInputHandler extends libPictSectionInputExtension {
-    constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
     /**

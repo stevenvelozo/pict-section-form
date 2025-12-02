@@ -17,6 +17,12 @@ const _DefaultProviderConfiguration = (
  */
 class PictMetatemplateMacros extends libPictProvider
 {
+	/**
+	 *
+	 * @param {import('fable')} pFable - The Fable instance.
+	 * @param {Record<string, any>} [pOptions] - The options for the provider.
+	 * @param {string} [pServiceHash] - The service hash for the provider.
+	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);

@@ -7,14 +7,6 @@ export = DynamicTabularData;
  * The DynamicTabularData class is a provider that translates simple list entries into arrays of entries ready to use in drop-down lists and such
  */
 declare class DynamicTabularData extends libPictProvider {
-    /**
-     * Creates an instance of the DynamicTabularData class.
-     *
-     * @param {object} pFable - The fable object.
-     * @param {object} pOptions - The options object.
-     * @param {object} pServiceHash - The service hash object.
-     */
-    constructor(pFable: object, pOptions: object, pServiceHash: object);
     /** @type {any} */
     options: any;
     /** @type {import('pict')} */

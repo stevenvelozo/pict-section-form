@@ -6,14 +6,6 @@ export = PictRecordSet;
  * be projected into a view.
  */
 declare class PictRecordSet extends libPictProvider {
-    /**
-     * Creates an instance of the PictRecordSet class.
-     *
-     * @param {object} pFable - The fable object.
-     * @param {object} pOptions - The options object.
-     * @param {object} pServiceHash - The service hash object.
-     */
-    constructor(pFable: object, pOptions: object, pServiceHash: object);
     recordProviders: {};
     /**
      * Returns the count for a specific dynamic record set.

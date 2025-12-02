@@ -23,9 +23,10 @@ class PictDataChangeDetection extends libPictProvider
 {
 	/**
 	 * Creates an instance of PictDataChangeDetection.
-	 * @param {Object} pFable - The Fable object.
-	 * @param {Object} pOptions - Custom options for the provider.
-	 * @param {string} pServiceHash - The service hash.
+	 *
+	 * @param {import('fable')} pFable - The Fable instance.
+	 * @param {Record<string, any>} [pOptions] - The options for the provider.
+	 * @param {string} [pServiceHash] - The service hash for the provider.
 	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{

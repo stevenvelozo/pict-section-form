@@ -19,9 +19,9 @@ class PictDynamicInput extends libPictProvider
 	/**
 	 * Creates an instance of the PictDynamicInput class.
 	 *
-	 * @param {import('pict')} pFable - The fable object.
-	 * @param {any} [pOptions={}] - The options object.
-	 * @param {string} [pServiceHash] - The service hash object.
+	 * @param {import('fable')} pFable - The Fable instance.
+	 * @param {Record<string, any>} [pOptions] - The options for the provider.
+	 * @param {string} [pServiceHash] - The service hash for the provider.
 	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{

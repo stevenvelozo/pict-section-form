@@ -5,13 +5,6 @@ export = PictDataChangeDetection;
  */
 declare class PictDataChangeDetection extends libPictProvider {
     /**
-     * Creates an instance of PictDataChangeDetection.
-     * @param {Object} pFable - The Fable object.
-     * @param {Object} pOptions - Custom options for the provider.
-     * @param {string} pServiceHash - The service hash.
-     */
-    constructor(pFable: any, pOptions: any, pServiceHash: string);
-    /**
      * @property {Object} cachedValues - Stores the cached values for comparison.
      */
     cachedValues: {};

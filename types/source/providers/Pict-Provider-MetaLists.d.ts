@@ -3,14 +3,6 @@ export = PictMetalist;
  * The PictMetalist class is a provider that translates simple list entries into arrays of entries ready to use in drop-down lists and such
  */
 declare class PictMetalist extends libPictProvider {
-    /**
-     * Creates an instance of the PictMetalist class.
-     *
-     * @param {object} pFable - The fable object.
-     * @param {object} pOptions - The options object.
-     * @param {object} pServiceHash - The service hash object.
-     */
-    constructor(pFable: object, pOptions: object, pServiceHash: object);
     /** @type {any} */
     options: any;
     /** @type {import('pict')} */

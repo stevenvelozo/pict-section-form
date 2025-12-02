@@ -3,14 +3,6 @@ export = PictDynamicSolver;
  * The PictDynamicSolver class is a provider that solves configuration-generated dynamic views.
  */
 declare class PictDynamicSolver extends libPictProvider {
-    /**
-     * Creates an instance of the PictDynamicSolver class.
-     *
-     * @param {object} pFable - The fable object.
-     * @param {object} pOptions - The options object.
-     * @param {object} pServiceHash - The service hash object.
-     */
-    constructor(pFable: object, pOptions: object, pServiceHash: object);
     /** @type {import('pict')} */
     pict: import("pict");
     /** @type {import('pict') & { instantiateServiceProviderIfNotExists: (hash: string) => any, ExpressionParser: any }} */

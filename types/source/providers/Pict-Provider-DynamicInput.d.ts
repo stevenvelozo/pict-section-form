@@ -3,14 +3,6 @@ export = PictDynamicInput;
  * The PictDynamicInput class is a provider that manages data brokering and provider mappings for dynamic inputs.
  */
 declare class PictDynamicInput extends libPictProvider {
-    /**
-     * Creates an instance of the PictDynamicInput class.
-     *
-     * @param {import('pict')} pFable - The fable object.
-     * @param {any} [pOptions={}] - The options object.
-     * @param {string} [pServiceHash] - The service hash object.
-     */
-    constructor(pFable: import("pict"), pOptions?: any, pServiceHash?: string);
     templateProviderMap: {};
     /** @type {Record<string, boolean>} */
     ignoredEventHashes: Record<string, boolean>;

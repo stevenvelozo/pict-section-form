@@ -4,14 +4,6 @@ export = PictDynamicLayout;
  */
 declare class PictDynamicLayout extends libPictProvider {
     /**
-     * Creates an instance of the PictDynamicLayout class.
-     *
-     * @param {object} pFable - The fable object.
-     * @param {object} pOptions - The options object.
-     * @param {object} pServiceHash - The service hash object.
-     */
-    constructor(pFable: object, pOptions: object, pServiceHash: object);
-    /**
      * Generate a group layout template for the Dynamically Generated views.
      *
      * @param {object} pView - The view to generate the dynamic group layout for

@@ -4,7 +4,6 @@ export = PictMetatemplateGenerator;
  * @extends libPictProvider
  */
 declare class PictMetatemplateGenerator extends libPictProvider {
-    constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
     /** @type {libPictViewDynamicForm} */

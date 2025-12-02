@@ -7,7 +7,6 @@ export = LinkInputHandler;
  * @memberof providers.inputs
  */
 declare class LinkInputHandler extends libPictSectionInputExtension {
-    constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
     /** @type {import('pict') & { Math: any } & { DataFormat: any }} */

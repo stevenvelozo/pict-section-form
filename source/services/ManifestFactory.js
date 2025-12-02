@@ -13,7 +13,7 @@ class ManifestFactory extends libFableServiceProviderBase
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultManifestSettings)), pOptions);
 		super(pFable, pOptions, pServiceHash);
 
-		/** @type {import('pict') & { instantiateServiceProviderWithoutRegistration: (hash: string, options?: any, uuid?: string) => any }} */
+		/** @type {import('pict') & { instantiateServiceProviderWithoutRegistration: (hash: string, options?: any, uuid?: string) => any, newManyfest: () => import('manyfest') }} */
 		this.fable;
 		/** @type {any} */
 		this.log;

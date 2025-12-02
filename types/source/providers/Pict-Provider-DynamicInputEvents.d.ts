@@ -4,14 +4,6 @@ export = PictDynamicInputEvents;
  */
 declare class PictDynamicInputEvents extends libPictProvider {
     /**
-     * Creates an instance of the PictDynamicInputEvents class.
-     *
-     * @param {object} pFable - The fable object.
-     * @param {object} pOptions - The options object.
-     * @param {object} pServiceHash - The service hash object.
-     */
-    constructor(pFable: object, pOptions: object, pServiceHash: object);
-    /**
      * Requests input data from the view based on the provided input hash.
      *
      * @param {Object} pView - The view object.

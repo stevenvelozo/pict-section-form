@@ -9,6 +9,11 @@ const libPictSectionInputExtension = require('../Pict-Provider-InputExtension.js
  */
 class LinkInputHandler extends libPictSectionInputExtension
 {
+	/**
+	 * @param {import('fable')} pFable - The Fable instance.
+	 * @param {Record<string, any>} [pOptions] - The options for the provider.
+	 * @param {string} [pServiceHash] - The service hash for the provider.
+	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);

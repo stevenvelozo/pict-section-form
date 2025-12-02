@@ -39,9 +39,10 @@ class PictDynamicFormsTemplates extends libPictProvider
 {
 	/**
 	 * Constructs a new instance of the PictProviderDynamicTemplates class.
-	 * @param {Object} pFable - The pFable object.
-	 * @param {Object} pOptions - The options object.
-	 * @param {Object} pServiceHash - The service hash object.
+	 *
+	 * @param {import('fable')} pFable - The Fable instance.
+	 * @param {Record<string, any>} [pOptions] - The options for the provider.
+	 * @param {string} [pServiceHash] - The service hash for the provider.
 	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{

@@ -6,14 +6,6 @@ export = PictInputExtensionProvider;
  */
 declare class PictInputExtensionProvider extends libPictProvider {
     /**
-     * Creates an instance of the PictInputExtensionProvider class.
-     *
-     * @param {object} pFable - The fable object.
-     * @param {object} pOptions - The options object.
-     * @param {object} pServiceHash - The service hash object.
-     */
-    constructor(pFable: object, pOptions: object, pServiceHash: object);
-    /**
      * Generates the HTML ID for a custom input element based on the given input HTML ID.
      *
      * @param {string} pInputHTMLID - The input HTML ID.

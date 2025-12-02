@@ -4,7 +4,6 @@ export = PictMetatemplateMacros;
  * @extends libPictProvider
  */
 declare class PictMetatemplateMacros extends libPictProvider {
-    constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {any} */
     options: any;
     /** @type {import('pict') & { settings: any }} */

@@ -3,7 +3,6 @@ export = PictListDistilling;
  * The PictListDistilling class is a provider that filters lists based on input rules.
  */
 declare class PictListDistilling extends libPictProvider {
-    constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict')} */
     pict: import("pict");
     /** @type {import('pict')} */

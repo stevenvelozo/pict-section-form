@@ -37,9 +37,9 @@ class PictDynamicSolver extends libPictProvider
 	/**
 	 * Creates an instance of the PictDynamicSolver class.
 	 *
-	 * @param {object} pFable - The fable object.
-	 * @param {object} pOptions - The options object.
-	 * @param {object} pServiceHash - The service hash object.
+	 * @param {import('fable')} pFable - The Fable instance.
+	 * @param {Record<string, any>} [pOptions] - The options for the provider.
+	 * @param {string} [pServiceHash] - The service hash for the provider.
 	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{
