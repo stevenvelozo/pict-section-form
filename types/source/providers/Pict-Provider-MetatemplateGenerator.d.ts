@@ -9,7 +9,7 @@ declare class PictMetatemplateGenerator extends libPictProvider {
     /** @type {libPictViewDynamicForm} */
     dynamicInputView: libPictViewDynamicForm;
     baseTemplatePrefix: string;
-    onInitializeAsync(fCallback: any): any;
+    onInitializeAsync(fCallback: any): void;
     createOnDemandMetatemplateView(): void;
     /**
      * Retrieves the metatemplate template reference in raw format.

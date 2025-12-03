@@ -2,6 +2,62 @@ const libPictSectionForm = require('../../source/Pict-Section-Form.js');
 
 const libCustomDataProvider = require('./Complex-Tabular-CustomDataProvider.js');
 
+const SelectInputProvider = require('../../source/providers/inputs/Pict-Provider-Input-Select.js');
+
+class CustomSelectInputProvider extends SelectInputProvider
+{
+	/**
+	 * Handles events for the Pict-Provider-InputExtension.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value from AppData.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
+	 * @returns {boolean} - Returns true.
+	 */
+	onEvent(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID)
+	{
+		const tmpResult = super.onEvent(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
+		if (typeof pEvent !== "string")
+		{
+			return tmpResult;
+		}
+		const tmpEventParts = pEvent.split(':');
+		const tmpEventHash = tmpEventParts[0];
+		if (tmpEventHash !== 'GetPickList')
+		{
+			return tmpResult;
+		}
+		const tmpListHash = tmpEventParts[1];
+		if (tmpListHash !== pInput.PictForm.SelectOptionsPickList)
+		{
+			return tmpResult;
+		}
+		const tmpListDataAddress = tmpEventParts[2];
+		const tmpEventOptions = JSON.parse(tmpEventParts.slice(3).join(':'));
+		this.pict.log.info(`CustomSelectInputProvider received event: ${pEvent} for list ${tmpListHash} with options:`, { tmpEventHash, tmpListHash, tmpListDataAddress, tmpEventOptions });
+		const tmpListData = this.pict.manifest.getValueByHash(this.pict, tmpListDataAddress);
+		if (!Array.isArray(tmpListData))
+		{
+			this.pict.log.error(`CustomSelectInputProvider expected array data at address ${tmpListDataAddress} but found:`, { tmpListData });
+			return tmpResult;
+		}
+		if (tmpListData.length > 0)
+		{
+			return tmpResult;
+		}
+		for (let i = 0; i < 10; ++i)
+		{
+			const tmpRandomNumber = Math.floor(Math.random() * 1000);
+			tmpListData.push({ id: `random-${tmpRandomNumber}`, text: `${tmpRandomNumber}` });
+		}
+
+		return tmpResult;
+	}
+}
+
 class ComplexTabularApplication extends libPictSectionForm.PictFormApplication
 {
 	constructor(pFable, pOptions, pServiceHash)
@@ -15,6 +71,12 @@ class ComplexTabularApplication extends libPictSectionForm.PictFormApplication
 		// test defaulting to alternate tab
 		this.pict.AppData.UI.StatisticsTabState = "FruitStatistics";
 		this.pict.addProvider('CustomDataProvider', libCustomDataProvider.default_configuration, libCustomDataProvider);
+	}
+
+	onInitialize()
+	{
+		this.pict.addProvider('Pict-Input-Select', CustomSelectInputProvider.default_configuration, CustomSelectInputProvider);
+		return super.onInitialize();
 	}
 }
 
@@ -67,7 +129,11 @@ module.exports.default_configuration.pict_configuration = {
 					IDTemplate: "{~D:Record.IDBook~}",
 					Sorted: true,
 					UpdateFrequency: "Always",
-				}
+				},
+				{
+					Hash: "RandomNumbers",
+					Dynamic: true,
+				},
 			],
 
 		Sections: [
@@ -200,6 +266,12 @@ module.exports.default_configuration.pict_configuration = {
 		],
 
 		Descriptors: {
+			RandomNumber: {
+				Name: "Pick a Random Number",
+				Hash: "PickRandomNumber",
+				DataType: "String",
+				PictForm: { Section: "Recipe", Group: "Recipe", Row: 1, InputType: "Option", SelectOptionsPickList: "RandomNumbers" },
+			},
 			RecipeName: {
 				Name: "Recipe Name",
 				Hash: "RecipeName",

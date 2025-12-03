@@ -5,19 +5,30 @@ export = PictMetalist;
 declare class PictMetalist extends libPictProvider {
     /** @type {any} */
     options: any;
-    /** @type {import('pict')} */
-    pict: import("pict");
+    /** @type {import('pict') & { log: any, instantiateServiceProviderWithoutRegistration: (hash: String) => any, instantiateServiceProviderIfNotExists: (hash: string) => any, TransactionTracking: import('pict/types/source/services/Fable-Service-TransactionTracking') }} */
+    pict: import("pict") & {
+        log: any;
+        instantiateServiceProviderWithoutRegistration: (hash: string) => any;
+        instantiateServiceProviderIfNotExists: (hash: string) => any;
+        TransactionTracking: import("pict/types/source/services/Fable-Service-TransactionTracking");
+    };
     /** @type {import('pict')} */
     fable: import("pict");
     computedLists: {};
     listDefinitions: {};
+    /** @typedef {{ id: string, text: string }} PickListItem */
     /**
      * Retrieves a list based on the provided view hash and list hash.
      *
      * @param {string} pListHash - The list hash.
-     * @returns {Array} - The retrieved list.
+     * @param {Object} [pOptions={}] - (optional) Additional options for retrieving the list. (ex. search term)
+     *
+     * @returns {Array<PickListItem>} - The retrieved list.
      */
-    getList(pListHash: string): any[];
+    getList(pListHash: string, pOptions?: any): Array<{
+        id: string;
+        text: string;
+    }>;
     /**
      * Checks if a list exists in the Pict Provider MetaLists.
      *

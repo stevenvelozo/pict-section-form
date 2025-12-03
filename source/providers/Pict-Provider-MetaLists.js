@@ -30,7 +30,7 @@ class PictMetalist extends libPictProvider
 
 		/** @type {any} */
 		this.options;
-		/** @type {import('pict')} */
+		/** @type {import('pict') & { log: any, instantiateServiceProviderWithoutRegistration: (hash: String) => any, instantiateServiceProviderIfNotExists: (hash: string) => any, TransactionTracking: import('pict/types/source/services/Fable-Service-TransactionTracking') }} */
 		this.pict;
 		/** @type {import('pict')} */
 		this.fable;
@@ -44,15 +44,31 @@ class PictMetalist extends libPictProvider
 		this.computedLists = {};
 		this.listDefinitions = {};
 	}
+	/** @typedef {{ id: string, text: string }} PickListItem */
 
 	/**
 	 * Retrieves a list based on the provided view hash and list hash.
 	 *
 	 * @param {string} pListHash - The list hash.
-	 * @returns {Array} - The retrieved list.
+	 * @param {Object} [pOptions={}] - (optional) Additional options for retrieving the list. (ex. search term)
+	 *
+	 * @returns {Array<PickListItem>} - The retrieved list.
 	 */
-	getList(pListHash)
+	getList(pListHash, pOptions = {})
 	{
+		if (this.listDefinitions[pListHash].Dynamic)
+		{
+			const tmpList = [];
+			const tmpTransactionGUID = this.pict.getUUID();
+			const tmpHash = tmpTransactionGUID.substring(0, 8);
+			const tmpAddress = `AppData._MetaLists.${tmpHash}`;
+			this.pict.manifest.setValueByHash(this.pict, tmpAddress, tmpList);
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
+			this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`GetPickList:${pListHash}:${tmpAddress}:${JSON.stringify(pOptions)}`, tmpTransactionGUID);
+			this.pict.views.PictFormMetacontroller.finalizeTransaction(tmpTransactionGUID);
+			delete this.pict.AppData._MetaLists[tmpHash];
+			return tmpList;
+		}
 		if (pListHash in this.computedLists)
 		{
 			return this.computedLists[pListHash];
