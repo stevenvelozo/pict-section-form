@@ -903,6 +903,43 @@ class PictViewDynamicForm extends libPictViewClass
 	}
 
 	/**
+	 * Returns the index of a group within the sectionDefinition.Groups array that matches the provided hash.
+	 *
+	 * @param {string} pGroupHash - The hash value of the group to find.
+	 * @returns {number} The index of the group if found; otherwise, -1.
+	 */
+	getGroupIndexFromHash(pGroupHash)
+	{
+		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
+		{
+			if (this.sectionDefinition.Groups[i].Hash === pGroupHash)
+			{
+				return i;
+			}
+		}
+		this.log.warn(`PICT View Metatemplate Helper getGroupIndexByHash could not find group with hash [${pGroupHash}].`);
+		return -1;
+	}
+
+	/**
+	 * Get a group by its hash
+	 * @param {string} pGroupHash - The hash of the group to retrieve.
+	 * @returns {object|boolean} - The group object if found, or false if the group hash is not found.
+	 */
+	getGroupFromHash(pGroupHash)
+	{
+		for (let i = 0; i < this.sectionDefinition.Groups.length; i++)
+		{
+			if (this.sectionDefinition.Groups[i].Hash === pGroupHash)
+			{
+				return this.sectionDefinition.Groups[i];
+			}
+		}
+		this.log.warn(`PICT View Metatemplate Helper getGroupByHash could not find group with hash [${pGroupHash}].`);
+		return false;
+	}
+
+	/**
 	 * Retrieves a group from the PICT View Metatemplate Helper based on the provided group index.
 	 *
 	 * @param {number} pGroupIndex - The index of the group to retrieve.

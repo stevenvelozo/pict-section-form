@@ -91,6 +91,8 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		this.addSolverFunction(pExpressionParser, 'enablesolverordinal', 'fable.providers.DynamicFormSolverBehaviors.enableSolverOrdinal', 'Enables a solver ordinal so that it can run.');
 		this.addSolverFunction(pExpressionParser, 'disablesolverordinall', 'fable.providers.DynamicFormSolverBehaviors.disableSolverOrdinal', 'Disables a solver ordinal so that it will not run.');
 
+		this.addSolverFunction(pExpressionParser, 'settabularrowlength', 'fable.providers.DynamicFormSolverBehaviors.setTabularRowLength', 'Sets the length of a tabular data set.');
+
 		return false;
 	}
 
@@ -240,6 +242,66 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		this.pict.ContentAssignment.removeClass(this.getGroupSelector(tmpGroupView.formID, pGroupHash), this.cssHideGroupClass);
 		return true;
 	}
+
+	/**
+	 * Set the length of a tabular set
+	 * @param {string} pSectionHash - The hash of the section containing the tabular group
+	 * @param {string} pGroupHash - The hash of the tabular group
+	 * @param {number|string} pLength - The desired length of the tabular set
+	 * @param {boolean|string} pDeleteExtraRows - If true, will delete extra rows from the end if the length is less than current 
+	 * @returns 
+	 */
+	setTabularRowLength(pSectionHash, pGroupHash, pLength, pDeleteExtraRows = false)
+	{
+		let tmpGroupView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash)
+		if (!tmpGroupView)
+		{
+			this.log.warn(`PictDynamicFormsInformary: showGroup could not find group with section hash [${pSectionHash}] group [${pGroupHash}].`);
+			return false;
+		}
+		let tmpGroupIndex = tmpGroupView.getGroupIndexFromHash(pGroupHash);
+		if (tmpGroupIndex < 0)
+		{
+			this.log.warn(`PictDynamicFormsInformary: setTabularRowLength could not find group with section hash [${pSectionHash}] group [${pGroupHash}].`);
+			return false;
+		}
+		let tmpTabularRecordSet = tmpGroupView.getTabularRecordSet(tmpGroupIndex);
+		if (!tmpTabularRecordSet || !Array.isArray(tmpTabularRecordSet))
+		{
+			this.log.warn(`PictDynamicFormsInformary: setTabularRowLength could not find a valid tabular record set with section hash [${pSectionHash}] group [${pGroupHash}].`);
+			return false;
+		}
+
+		let tmpLength = parseInt(pLength.toString());
+		if (isNaN(tmpLength) || tmpLength < 0)
+		{
+			this.log.warn(`PictDynamicFormsInformary: setTabularRowLength was given an invalid length [${pLength}] with section hash [${pSectionHash}] group [${pGroupHash}].`);
+			return false;
+		}
+
+		// See if the length is less than what we have
+		let tmpCurrentLength = tmpTabularRecordSet.length;
+
+		let tmpDeleteExtraRows = (pDeleteExtraRows == true || pDeleteExtraRows == '1');
+
+		if (tmpLength > tmpCurrentLength)
+		{
+			// Add rows until we are at the expected length
+			for (let i = tmpCurrentLength; i < tmpLength; i++)
+			{
+				tmpGroupView.createDynamicTableRow(tmpGroupIndex);
+			}
+		}
+		else if (tmpLength < tmpCurrentLength && tmpDeleteExtraRows)
+		{
+			// Remove rows from the end until we are at the expected length
+			for (let i = tmpCurrentLength - 1; i >= tmpLength; i--)
+			{
+				tmpGroupView.deleteDynamicTableRow(tmpGroupIndex, i);
+			}
+		}
+	}
+
 
 	generateHTMLHexColor(pRed, pGreen, pBlue)
 	{

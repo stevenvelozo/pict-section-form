@@ -97,6 +97,19 @@
                 },
                 "Default": "50000"
             },
+            "Header.BoxRowCount": {
+                "Hash": "HeaderBoxRowCount",
+                "Name": "Number of Box Styles",
+                "DataAddress": "Header.BoxRowCount",
+                "DataType": "Number",
+                "PictForm": {
+                    "Row": "5",
+                    "Width": "12",
+                    "Section": "Header",
+                    "Group": "General_Info"
+                },
+                "Default": "8"
+            },
             "BookData.CurrentIDBook": {
                 "Hash": "CurrentIDBook",
                 "Name": "IDBook",
@@ -169,7 +182,7 @@
                     "Section": "Basic_Geometry",
                     "Group": "BasicGeoGrp"
                 },
-                "Default": "10.3571",
+                "Default": "5",
                 "AnotherObject": {
                     "NotPictForm": {
                         "y": 22
@@ -721,7 +734,9 @@
             {
                 "Name": "Header",
                 "Hash": "Header",
-                "Solvers": [],
+                "Solvers": [
+                    "BoxRowCountSuccess = SETTABULARROWLENGTH(\"BoxCollSec\", \"BoxCollGrp\", HeaderBoxRowCount, 1)"
+                ],
                 "Groups": [
                     {
                         "Name": "General Info",

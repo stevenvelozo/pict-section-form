@@ -7,10 +7,11 @@ MathExampleForm,,,,,,Header,,General Info,,,,,2,12,,,Header.Description,Descript
 MathExampleForm,,,,,,Header,,General Info,,,,,3,6,,,Header.Planet,Planet,Planet,,planetary,String,,Option,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 MathExampleForm,,,,,,Header,,General Info,,,,,3,6,,,Header.Universe,Universe,Universe,,planetary,String,,Option,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,15.2,17
 MathExampleForm,,,,,,Header,,General Info,,,,,4,12,,,Header.WarehouseVolume,Warehouse Volume,WarehouseVolume,,,Number,,,,,50000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,t,,
+MathExampleForm,,,,,,Header,,General Info,,,,,5,12,,,Header.BoxRowCount,Number of Box Styles,HeaderBoxRowCount,,,Number,,,"BoxRowCountSuccess = SETTABULARROWLENGTH(""BoxCollSec"", ""BoxCollGrp"", HeaderBoxRowCount, 1)",,8,,,,,,,,,,,,,,,,,,,,,,,,,,,,,t,,
 MathExampleForm,,,,,,REST Request,,Book Data,,,,,1,6,,,BookData.CurrentIDBook,IDBook,CurrentIDBook,,,Number,,,,,,,,Book from REST request,Book,IDBook,LoadedBook,,,,,,,,,,,,,,,,,,,,,,,,86,
 MathExampleForm,,,,,,MatheMagic,,Math is Magic,,,,,1,1,,,HelpContent.Math,So Very Magic,MathHelpContent,,,String,,HTML,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 MathExampleForm,,,,,,Basic Geometry,,Rectangle,BasicGeoGrp,,,,1,6,,,Geometry.Rectangle.Width,Width,RectangleWidth,,,Number,,,,,7.25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,y,11,190
-MathExampleForm,,,,,,Basic Geometry,,Rectangle,BasicGeoGrp,,,,1,6,,,Geometry.Rectangle.Height,Height,RectangleHeight,,,Number,,,,,10.3571,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,22
+MathExampleForm,,,,,,Basic Geometry,,Rectangle,BasicGeoGrp,,,,1,6,,,Geometry.Rectangle.Height,Height,RectangleHeight,,,Number,,,,,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,22
 MathExampleForm,,,,,,Basic Geometry,,Rectangle,BasicGeoGrp,,,,2,3,,,Geometry.Rectangle.Area,Area,RectangleArea,,unrounded,Number,,,RectangleArea = RectangleWidth * RectangleHeight,,,Area of the Rectangle.,,,,,,,,,,,,,,,,,,,,,,,,,,,This is a test for random data injection.,1,,
 MathExampleForm,,,,,,Basic Geometry,,Rectangle,BasicGeoGrp,,,,2,3,,,Geometry.Rectangle.AreaRoundedDefault,Area Rounded,RectangleAreaRoundedDefault,,default,Number,,,RectangleAreaRoundedDefault = ROUND(RectangleWidth * RectangleHeight),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,frog,
 MathExampleForm,,,,,,Basic Geometry,,Rectangle,BasicGeoGrp,,,,2,3,,,Geometry.Rectangle.AreaRoundedThree,Area Rounded 3,RectangleAreaRoundedThree,,3,Number,,,"RectangleAreaRoundedThree = ROUND((RectangleWidth * RectangleHeight), 3)",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
