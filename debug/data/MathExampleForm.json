@@ -743,11 +743,13 @@
                 "Providers": [
                     "Pict-Input-AutofillTriggerGroup"
                 ],
-                "AutofillTriggerGroup": {
-                    "TriggerGroupHash": "Box",
-                    "MarshalEmptyValues": false,
-                    "SelectOptionsRefresh": true
-                },
+                "AutofillTriggerGroup": [
+                    {
+                        "TriggerGroupHash": "Box",
+                        "MarshalEmptyValues": false,
+                        "SelectOptionsRefresh": true
+                    }
+                ],
                 "Section": "Listopia",
                 "Group": "OcclusionLists",
                 "SelectOptionsPickList": "OPTION_Listopia_BoxSelection"
@@ -1688,11 +1690,13 @@
                         "Providers": [
                             "Pict-Input-AutofillTriggerGroup"
                         ],
-                        "AutofillTriggerGroup": {
-                            "TriggerGroupHash": "Box",
-                            "MarshalEmptyValues": false,
-                            "TriggerAllInputs": true
-                        },
+                        "AutofillTriggerGroup": [
+                            {
+                                "TriggerGroupHash": "Box",
+                                "MarshalEmptyValues": false,
+                                "TriggerAllInputs": true
+                            }
+                        ],
                         "Section": "BoxCollSec",
                         "Group": "BoxCollGrp"
                     },
@@ -1709,11 +1713,13 @@
                         "Providers": [
                             "Pict-Input-AutofillTriggerGroup"
                         ],
-                        "AutofillTriggerGroup": {
-                            "TriggerGroupHash": "Box",
-                            "MarshalEmptyValues": false,
-                            "TriggerAllInputs": true
-                        },
+                        "AutofillTriggerGroup": [
+                            {
+                                "TriggerGroupHash": "Box",
+                                "MarshalEmptyValues": false,
+                                "TriggerAllInputs": true
+                            }
+                        ],
                         "Section": "BoxCollSec",
                         "Group": "BoxCollGrp"
                     },
@@ -1782,11 +1788,13 @@
                         "Providers": [
                             "Pict-Input-AutofillTriggerGroup"
                         ],
-                        "AutofillTriggerGroup": {
-                            "TriggerGroupHash": "Box",
-                            "MarshalEmptyValues": false,
-                            "TriggerAllInputs": true
-                        },
+                        "AutofillTriggerGroup": [
+                            {
+                                "TriggerGroupHash": "Box",
+                                "MarshalEmptyValues": false,
+                                "TriggerAllInputs": true
+                            }
+                        ],
                         "Section": "BoxCollSec",
                         "Group": "BoxCollGrp"
                     },
@@ -1803,11 +1811,13 @@
                         "Providers": [
                             "Pict-Input-AutofillTriggerGroup"
                         ],
-                        "AutofillTriggerGroup": {
-                            "TriggerGroupHash": "Box",
-                            "MarshalEmptyValues": false,
-                            "TriggerAllInputs": true
-                        },
+                        "AutofillTriggerGroup": [
+                            {
+                                "TriggerGroupHash": "Box",
+                                "MarshalEmptyValues": false,
+                                "TriggerAllInputs": true
+                            }
+                        ],
                         "Section": "BoxCollSec",
                         "Group": "BoxCollGrp"
                     },
@@ -1832,11 +1842,13 @@
                         "Providers": [
                             "Pict-Input-AutofillTriggerGroup"
                         ],
-                        "AutofillTriggerGroup": {
-                            "TriggerGroupHash": "Box",
-                            "MarshalEmptyValues": false,
-                            "TriggerAllInputs": true
-                        },
+                        "AutofillTriggerGroup": [
+                            {
+                                "TriggerGroupHash": "Box",
+                                "MarshalEmptyValues": false,
+                                "TriggerAllInputs": true
+                            }
+                        ],
                         "Section": "BoxDecorations",
                         "Group": "BoxDecorationGroup"
                     },
@@ -1854,11 +1866,13 @@
                         "Providers": [
                             "Pict-Input-AutofillTriggerGroup"
                         ],
-                        "AutofillTriggerGroup": {
-                            "TriggerGroupHash": "Box",
-                            "MarshalEmptyValues": false,
-                            "TriggerAllInputs": true
-                        },
+                        "AutofillTriggerGroup": [
+                            {
+                                "TriggerGroupHash": "Box",
+                                "MarshalEmptyValues": false,
+                                "TriggerAllInputs": true
+                            }
+                        ],
                         "Section": "BoxDecorations",
                         "Group": "BoxDecorationGroup"
                     },
@@ -1876,11 +1890,13 @@
                         "Providers": [
                             "Pict-Input-AutofillTriggerGroup"
                         ],
-                        "AutofillTriggerGroup": {
-                            "TriggerGroupHash": "Box",
-                            "MarshalEmptyValues": false,
-                            "TriggerAllInputs": true
-                        },
+                        "AutofillTriggerGroup": [
+                            {
+                                "TriggerGroupHash": "Box",
+                                "MarshalEmptyValues": false,
+                                "TriggerAllInputs": true
+                            }
+                        ],
                         "Section": "BoxDecorations",
                         "Group": "BoxDecorationGroup"
                     },
@@ -1897,11 +1913,13 @@
                         "Providers": [
                             "Pict-Input-AutofillTriggerGroup"
                         ],
-                        "AutofillTriggerGroup": {
-                            "TriggerGroupHash": "Box",
-                            "MarshalEmptyValues": false,
-                            "TriggerAllInputs": true
-                        },
+                        "AutofillTriggerGroup": [
+                            {
+                                "TriggerGroupHash": "Box",
+                                "MarshalEmptyValues": false,
+                                "TriggerAllInputs": true
+                            }
+                        ],
                         "Section": "BoxDecorations",
                         "Group": "BoxDecorationGroup"
                     },

@@ -48,6 +48,15 @@ declare class PictDynamicFormsSolverBehaviors extends libPictProvider {
     setGroupVisibility(pSectionHash: any, pGroupHash: any, pVisible: any): boolean;
     hideGroup(pSectionHash: any, pGroupHash: any): boolean;
     showGroup(pSectionHash: any, pGroupHash: any): boolean;
+    /**
+     * Set the length of a tabular set
+     * @param {string} pSectionHash - The hash of the section containing the tabular group
+     * @param {string} pGroupHash - The hash of the tabular group
+     * @param {number|string} pLength - The desired length of the tabular set
+     * @param {boolean|string} pDeleteExtraRows - If true, will delete extra rows from the end if the length is less than current
+     * @returns
+     */
+    setTabularRowLength(pSectionHash: string, pGroupHash: string, pLength: number | string, pDeleteExtraRows?: boolean | string): boolean;
     generateHTMLHexColor(pRed: any, pGreen: any, pBlue: any): string;
     colorSectionBackground(pSectionHash: any, pColor: any, pApplyChange: any): boolean;
     colorGroupBackground(pSectionHash: any, pGroupHash: any, pColor: any, pApplyChange: any): boolean;

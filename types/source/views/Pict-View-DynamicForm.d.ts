@@ -172,6 +172,19 @@ declare class PictViewDynamicForm extends libPictViewClass {
      */
     rebuildCustomTemplate(): void;
     /**
+     * Returns the index of a group within the sectionDefinition.Groups array that matches the provided hash.
+     *
+     * @param {string} pGroupHash - The hash value of the group to find.
+     * @returns {number} The index of the group if found; otherwise, -1.
+     */
+    getGroupIndexFromHash(pGroupHash: string): number;
+    /**
+     * Get a group by its hash
+     * @param {string} pGroupHash - The hash of the group to retrieve.
+     * @returns {object|boolean} - The group object if found, or false if the group hash is not found.
+     */
+    getGroupFromHash(pGroupHash: string): object | boolean;
+    /**
      * Retrieves a group from the PICT View Metatemplate Helper based on the provided group index.
      *
      * @param {number} pGroupIndex - The index of the group to retrieve.

@@ -518,25 +518,43 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 
 			tmpDescriptor.PictForm.Providers.push('Pict-Input-AutofillTriggerGroup');
-			tmpDescriptor.PictForm.AutofillTriggerGroup = (
+			if (!Array.isArray(tmpDescriptor.PictForm.AutofillTriggerGroup))
+			{
+				const tmpPreviousTriggerGroup = tmpDescriptor.PictForm.AutofillTriggerGroup;
+				tmpDescriptor.PictForm.AutofillTriggerGroup = [];
+				if (tmpPreviousTriggerGroup)
 				{
-					TriggerGroupHash: tmpRecord.TriggerGroup,
-					MarshalEmptyValues: tmpRecord.MarshalEmptyValues ? true : false
-				});
+					tmpDescriptor.PictForm.AutofillTriggerGroup.push(tmpPreviousTriggerGroup);
+				}
+			}
+			const tmpTriggerGroupHashes = tmpRecord.TriggerGroup.split(',');
+			const tmpTriggerAddresses = (`TriggerAddress` in tmpRecord) ? tmpRecord.TriggerAddress.split(',') : [];
+			const tmpTriggerAllInputs = (`TriggerAllInputs` in tmpRecord) ? tmpRecord.TriggerAllInputs.split(',') : [];
 
-			if ((`TriggerAddress` in tmpRecord) && (typeof (tmpRecord.TriggerAddress) === 'string') && (tmpRecord.TriggerAddress != ''))
+			for (let i = 0; i < tmpTriggerGroupHashes.length; i++)
 			{
-				tmpDescriptor.PictForm.AutofillTriggerGroup.TriggerAddress = tmpRecord.TriggerAddress;
-			}
-			if ((`TriggerAllInputs` in tmpRecord) && (typeof (tmpRecord.TriggerAllInputs) === 'string')
-				&& ((tmpRecord.TriggerAllInputs.toLowerCase() == 'true') || (tmpRecord.TriggerAllInputs.toLowerCase() == 'x') || (tmpRecord.TriggerAllInputs.toLowerCase() == '1')))
-			{
-				tmpDescriptor.PictForm.AutofillTriggerGroup.TriggerAllInputs = true;
-			}
-			// TODO: Ugh
-			if (tmpDescriptor.PictForm.InputType == 'Option')
-			{
-				tmpDescriptor.PictForm.AutofillTriggerGroup.SelectOptionsRefresh = true;
+				const tmpTriggerGroup =
+				{
+					TriggerGroupHash: tmpTriggerGroupHashes[i].trim(),
+					MarshalEmptyValues: tmpRecord.MarshalEmptyValues ? true : false,
+				};
+
+				const tmpTriggerAddress = tmpTriggerAddresses[i];
+				if (tmpTriggerAddress)
+				{
+					tmpTriggerGroup.TriggerAddress = tmpRecord.TriggerAddress;
+				}
+				const tmpTriggerAllInput = tmpTriggerAllInputs[i];
+				if (tmpTriggerAllInput != null && (tmpTriggerAllInput.toLowerCase() == 'true' || tmpTriggerAllInput.toLowerCase() == 'x' || tmpTriggerAllInput.toLowerCase() == '1'))
+				{
+					tmpTriggerGroup.TriggerAllInputs = true;
+				}
+				// TODO: Ugh
+				if (tmpDescriptor.PictForm.InputType == 'Option')
+				{
+					tmpTriggerGroup.SelectOptionsRefresh = true;
+				}
+				tmpDescriptor.PictForm.AutofillTriggerGroup.push(tmpTriggerGroup);
 			}
 		}
 
