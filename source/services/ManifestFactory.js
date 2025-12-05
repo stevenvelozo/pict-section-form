@@ -539,12 +539,12 @@ class ManifestFactory extends libFableServiceProviderBase
 					MarshalEmptyValues: tmpRecord.MarshalEmptyValues ? true : false,
 				};
 
-				const tmpTriggerAddress = tmpTriggerAddresses[i];
+				const tmpTriggerAddress = tmpTriggerAddresses[i]?.trim?.();
 				if (tmpTriggerAddress)
 				{
-					tmpTriggerGroup.TriggerAddress = tmpRecord.TriggerAddress;
+					tmpTriggerGroup.TriggerAddress = tmpTriggerAddress;
 				}
-				const tmpTriggerAllInput = tmpTriggerAllInputs[i];
+				const tmpTriggerAllInput = tmpTriggerAllInputs[i]?.trim?.();
 				if (tmpTriggerAllInput != null && (tmpTriggerAllInput.toLowerCase() == 'true' || tmpTriggerAllInput.toLowerCase() == 'x' || tmpTriggerAllInput.toLowerCase() == '1'))
 				{
 					tmpTriggerGroup.TriggerAllInputs = true;
