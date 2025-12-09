@@ -45,6 +45,37 @@ declare class PictDynamicSolver extends libPictProvider {
      * @returns {object|undefined} - The solver object if it passes the checks, otherwise undefined.
      */
     checkSolver(pSolver: string | object, pFiltered?: boolean, pOrdinal?: number): object | undefined;
+    /** @typedef {{ Ordinal: number, Expression: string } | string} Solver */
+    /**
+     * Execute a set of adhoc solvers.
+     *
+     * @param {import('../views/Pict-View-DynamicForm.js')} pView - The dynamic view to execute the solvers against.
+     * @param {Array<Solver>} pSolvers - An array of solvers to execute.
+     * @param {string} pReason - The reason for executing the solvers.
+     */
+    executeSolvers(pView: import("../views/Pict-View-DynamicForm.js"), pSolvers: Array<string | {
+        Ordinal: number;
+        Expression: string;
+    }>, pReason: string): void;
+    lastAdhocSolveOutcome: {
+        SolverResultsMap: {};
+        StartTimeStamp: number;
+        SolveOrdinals: {};
+        EndTimeStamp: number;
+    };
+    /**
+     * Runs each Adhoc solver formulae for a dynamic view group at a given ordinal.
+     *
+     * Or for all ordinals if no ordinal is passed.
+     *
+     * @param {import('../views/Pict-View-DynamicForm.js')} pView - The dynamic view to execute the solvers against.
+     * @param {Array<string>} pAdhocSolverArray - An array of Solvers from the groups to solve.
+     * @param {string} pReason - The reason for executing the solvers.
+     * @param {number} pOrdinal - The ordinal value to filter to.  Optional.
+     * @param {Object} pSolverResultsMap - The solver results map.
+     * @param {boolean} [pPreventSolverCycles=false] - Whether to prevent solver cycles.
+     */
+    executeAdhocSolvers(pView: import("../views/Pict-View-DynamicForm.js"), pAdhocSolverArray: Array<string>, pReason: string, pOrdinal: number, pSolverResultsMap: any, pPreventSolverCycles?: boolean): void;
     /**
      * Runs each RecordSet solver formulae for a dynamic view group at a given ordinal.
      *

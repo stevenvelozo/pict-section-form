@@ -59,6 +59,7 @@ module.exports.default_configuration.pict_configuration = (
 
 					"Solvers":
 						[
+							'runSolvers()'
 						],
 					"MetaTemplates":
 						[
@@ -124,7 +125,9 @@ module.exports.default_configuration.pict_configuration = (
 						{
 							TriggerGroupHash: "BookTriggerGroup",
 							TriggerAddress: "AppData.CurrentAuthor.Name",
-							MarshalEmptyValues: true
+							MarshalEmptyValues: true,
+							PreSolvers: [ 'NumBooks = getvalue("AppData.BookAuthorJoins.length")' ],
+							PostSolvers: [ 'runSolvers()' ],
 						}
 					}
 				},

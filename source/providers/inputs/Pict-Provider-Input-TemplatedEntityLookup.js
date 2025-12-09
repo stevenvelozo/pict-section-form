@@ -175,6 +175,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
+		//FIXME: this should use a trigger group + event
 		this.assignDisplayEntityData(this.getContentDisplayHTMLID(pInput.Macro.RawHTMLID), pInput, pValue);
 		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
@@ -193,6 +194,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
+		//FIXME: this should use a trigger group + event
 		this.assignDisplayEntityData(this.getTabularContentDisplayInputID(pInput.Macro.RawHTMLID, pRowIndex), pInput, pValue);
 		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}

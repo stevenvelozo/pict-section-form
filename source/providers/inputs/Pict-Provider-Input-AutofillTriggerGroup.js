@@ -131,6 +131,17 @@ class CustomInputHandler extends libPictSectionInputExtension
 				const tmpGroupConfig = tmpTriggerGroupConfigurations[i];
 				if (tmpGroupConfig.TriggerAllInputs)
 				{
+					if (Array.isArray(tmpGroupConfig.PreSolvers))
+					{
+						this.pict.providers.DynamicSolver.executeSolvers(pView, tmpGroupConfig.PreSolvers, `AutofillTriggerGroup hash ${tmpGroupConfig.TriggerGroupHash} pre-trigger`);
+					}
+					pView.registerOnTransactionCompleteCallback(pTransactionGUID, () =>
+					{
+						if (Array.isArray(tmpGroupConfig.PostSolvers))
+						{
+							this.pict.providers.DynamicSolver.executeSolvers(pView, tmpGroupConfig.PostSolvers, `AutofillTriggerGroup hash ${tmpGroupConfig.TriggerGroupHash} post-trigger`);
+						}
+					});
 					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(
 						`TriggerGroup:${tmpGroupConfig.TriggerGroupHash}:DataChange:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`,
 						pTransactionGUID);
@@ -161,6 +172,17 @@ class CustomInputHandler extends libPictSectionInputExtension
 				const tmpGroupConfig = tmpTriggerGroupConfigurations[i];
 				if (tmpGroupConfig.TriggerAllInputs)
 				{
+					if (Array.isArray(tmpGroupConfig.PreSolvers))
+					{
+						this.pict.providers.DynamicSolver.executeSolvers(pView, tmpGroupConfig.PreSolvers, `AutofillTriggerGroup hash ${tmpGroupConfig.TriggerGroupHash} tabular pre-trigger`);
+					}
+					pView.registerOnTransactionCompleteCallback(pTransactionGUID, () =>
+					{
+						if (Array.isArray(tmpGroupConfig.PostSolvers))
+						{
+							this.pict.providers.DynamicSolver.executeSolvers(pView, tmpGroupConfig.PostSolvers, `AutofillTriggerGroup hash ${tmpGroupConfig.TriggerGroupHash} tabular post-trigger`);
+						}
+					});
 					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(
 						`TriggerGroup:${tmpGroupConfig.TriggerGroupHash}:DataChange:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`,
 						pTransactionGUID);
@@ -207,6 +229,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 				continue;
 			}
 
+			if (Array.isArray(tmpAutoFillTriggerGroup.PreSolvers))
+			{
+				this.pict.providers.DynamicSolver.executeSolvers(pView, tmpAutoFillTriggerGroup.PreSolvers, `AutofillTriggerGroup hash ${tmpAutoFillTriggerGroup.TriggerGroupHash} pre-autofill`);
+			}
+
 			//FIXME: why is this check here? revisit
 			if ('TriggerAddress' in tmpAutoFillTriggerGroup)
 			{
@@ -222,6 +249,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 				this.pict.providers.DynamicMetaLists.rebuildListByHash(pInput.PictForm.SelectOptionsPickList);
 				this.pict.providers['Pict-Input-Select'].refreshSelectList(tmpInputView, tmpInputView.getGroup(pInput.PictForm.GroupIndex), tmpInputView.getRow(pInput.PictForm.GroupIndex, pInput.PictForm.Row), pInput, pValue, pHTMLSelector);
 				tmpInputView.manualMarshalDataToViewByInput(pInput, tmpEventGUID);
+			}
+
+			if (Array.isArray(tmpAutoFillTriggerGroup.PostSolvers))
+			{
+				this.pict.providers.DynamicSolver.executeSolvers(pView, tmpAutoFillTriggerGroup.PostSolvers, `AutofillTriggerGroup hash ${tmpAutoFillTriggerGroup.TriggerGroupHash} post-autofill`);
 			}
 		}
 

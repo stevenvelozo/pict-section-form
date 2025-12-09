@@ -932,6 +932,110 @@ class ManifestFactory extends libFableServiceProviderBase
 		// This is meant to be overloaded by the parent class
 	}
 
+	migrateAutofillTriggerGroupSolvers(pManifests)
+	{
+		for (const tmpManifestFactory of Object.values(pManifests))
+		{
+			const tmpManifest = tmpManifestFactory.manifest;
+
+			const tmpGatheredSolverExpressions = [];
+
+			for (const tmpSection of tmpManifest.Sections || [])
+			{
+				if (Array.isArray(tmpSection.Solvers))
+				{
+					for (let i = 0; i < tmpSection.Solvers.length; i++)
+					{
+						const tmpSolverEntry = tmpSection.Solvers[i];
+						const tmpSolverExpression = (typeof (tmpSolverEntry) === 'string') ? tmpSolverEntry : tmpSolverEntry.Expression;
+						if (typeof tmpSolverExpression === 'string' && tmpSolverExpression.startsWith('TriggerGroup:'))
+						{
+							tmpGatheredSolverExpressions.push(tmpSolverEntry);
+							// Remove it from the section solvers
+							tmpSection.Solvers.splice(i, 1);
+							--i;
+						}
+					}
+				}
+				for (const tmpGroup of tmpSection.Groups || [])
+				{
+					if (Array.isArray(tmpGroup.RecordSetSolvers))
+					{
+						for (let i = 0; i < tmpGroup.RecordSetSolvers.length; i++)
+						{
+							const tmpSolverEntry = tmpGroup.RecordSetSolvers[i];
+							const tmpSolverExpression = (typeof (tmpSolverEntry) === 'string') ? tmpSolverEntry : tmpSolverEntry.Expression;
+							if (typeof tmpSolverExpression === 'string' && tmpSolverExpression.startsWith('TriggerGroup:'))
+							{
+								tmpGatheredSolverExpressions.push(tmpSolverEntry);
+								// Remove it from the group solvers
+								tmpGroup.RecordSetSolvers.splice(i, 1);
+								--i;
+							}
+						}
+					}
+				}
+			}
+			for (const tmpTriggerGroupSolverEntry of tmpGatheredSolverExpressions)
+			{
+				const tmpSolverExpression = (typeof (tmpTriggerGroupSolverEntry) === 'string') ? tmpTriggerGroupSolverEntry : tmpTriggerGroupSolverEntry.Expression;
+				let [ tmpType, tmpTriggerGroupHash, tmpPrePost, tmpSimpleSolverExpression ] = tmpSolverExpression.split(':');
+				if (!tmpSimpleSolverExpression)
+				{
+					tmpSimpleSolverExpression = tmpPrePost;
+					tmpPrePost = 'post';
+				}
+
+				if (!tmpSimpleSolverExpression || tmpSimpleSolverExpression.trim() === '')
+				{
+					this.log.error(`Skipping migration of empty TriggerGroup solver expression in manifest [${tmpManifest.Scope}] for TriggerGroup [${tmpTriggerGroupHash}]`);
+					continue;
+				}
+				const tmpTriggerGroupDescriptor = Object.values(tmpManifest.Descriptors).find((pDescriptor) =>
+				{
+					if (!pDescriptor.PictForm?.AutofillTriggerGroup)
+					{
+						return false;
+					}
+					/** @type {Array<any>} */
+					const tmpTriggerGroups = Array.isArray(pDescriptor.PictForm.AutofillTriggerGroup) ? pDescriptor.PictForm.AutofillTriggerGroup : [pDescriptor.PictForm.AutofillTriggerGroup];
+					return tmpTriggerGroups.some((pTriggerGroup) => pTriggerGroup.TriggerGroupHash === tmpTriggerGroupHash);
+				});
+				if (!tmpTriggerGroupDescriptor)
+				{
+					this.log.error(`Could not find descriptor for TriggerGroup [${tmpTriggerGroupHash}] in manifest [${tmpManifest.Scope}] while migrating solver expression: ${tmpSolverExpression}`);
+					continue;
+				}
+				const tmpTriggerGroups = Array.isArray(tmpTriggerGroupDescriptor.PictForm.AutofillTriggerGroup) ? tmpTriggerGroupDescriptor.PictForm.AutofillTriggerGroup : [tmpTriggerGroupDescriptor.PictForm.AutofillTriggerGroup];
+				const tmpTriggerGroup = tmpTriggerGroups.find((pTriggerGroup) => pTriggerGroup.TriggerGroupHash === tmpTriggerGroupHash);
+				if (!tmpTriggerGroup)
+				{
+					this.log.error(`Could not find TriggerGroup entry for TriggerGroup [${tmpTriggerGroupHash}] in descriptor [${tmpTriggerGroupDescriptor.Hash}] while migrating solver expression: ${tmpSolverExpression}`);
+					continue;
+				}
+				let tmpUpdatedTriggerGroupSolverEntry = tmpTriggerGroupSolverEntry;
+				if (typeof tmpTriggerGroupSolverEntry === 'string')
+				{
+					tmpUpdatedTriggerGroupSolverEntry = tmpSimpleSolverExpression;
+				}
+				else
+				{
+					tmpTriggerGroupSolverEntry.Expression = tmpSimpleSolverExpression;
+				}
+				if (tmpPrePost.toLowerCase() === 'pre')
+				{
+					tmpTriggerGroup.PreSolvers = tmpTriggerGroup.PreSolvers || [];
+					tmpTriggerGroup.PreSolvers.push(tmpUpdatedTriggerGroupSolverEntry);
+				}
+				else
+				{
+					tmpTriggerGroup.PostSolvers = tmpTriggerGroup.PostSolvers || [];
+					tmpTriggerGroup.PostSolvers.push(tmpUpdatedTriggerGroupSolverEntry);
+				}
+			}
+		}
+	}
+
 	/**
 	 * Create some manifests with a "factory" pattern.
 	 *
@@ -983,6 +1087,7 @@ class ManifestFactory extends libFableServiceProviderBase
 				this.tabularRowAddDescriptor(tmpManifest, tmpRecord);
 			}
 		}
+		this.migrateAutofillTriggerGroupSolvers(tmpManifests);
 
 		this.log.info(`Generated ${Object.keys(tmpManifests).length} manifests.`);
 

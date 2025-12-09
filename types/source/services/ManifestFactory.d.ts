@@ -86,6 +86,7 @@ declare class ManifestFactory {
      * @param {Object} pNewDescriptor - The descriptor object
      */
     onTabularRowAddDescriptor(pIncomingDescriptor: any, pSection: any, pGroup: any, pNewDescriptor: any): void;
+    migrateAutofillTriggerGroupSolvers(pManifests: any): void;
     /**
      * Create some manifests with a "factory" pattern.
      *

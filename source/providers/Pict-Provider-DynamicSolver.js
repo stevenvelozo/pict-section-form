@@ -256,6 +256,119 @@ class PictDynamicSolver extends libPictProvider
 		return tmpSolver;
 	}
 
+	/** @typedef {{ Ordinal: number, Expression: string } | string} Solver */
+
+	/**
+	 * Execute a set of adhoc solvers.
+	 *
+	 * @param {import('../views/Pict-View-DynamicForm.js')} pView - The dynamic view to execute the solvers against.
+	 * @param {Array<Solver>} pSolvers - An array of solvers to execute.
+	 * @param {string} pReason - The reason for executing the solvers.
+	 */
+	executeSolvers(pView, pSolvers, pReason)
+	{
+		const tmpSolvers = Array.isArray(pSolvers) ? pSolvers : [];
+		let tmpSolveOutcome = {};
+		tmpSolveOutcome.SolverResultsMap = {};
+		tmpSolveOutcome.StartTimeStamp = +new Date();
+
+		let tmpOrdinalsToSolve = {};
+		tmpSolveOutcome.SolveOrdinals = tmpOrdinalsToSolve;
+		for (let i = 0; i < tmpSolvers.length; i++)
+		{
+			const tmpSolver = this.checkSolver(tmpSolvers[i]);
+			if (tmpSolver)
+			{
+				let tmpOrdinalContainer = this.checkAutoSolveOrdinal(tmpSolver.Ordinal, tmpOrdinalsToSolve);
+				tmpOrdinalContainer.AdhocSolvers.push(tmpSolver);
+			}
+		}
+
+		// Now sort the ordinal container keys
+		let tmpOrdinalKeys = Object.keys(tmpOrdinalsToSolve);
+		tmpOrdinalKeys.sort((a, b) =>
+		{
+			if (isNaN(Number(a)) || isNaN(Number(b)))
+			{
+				return a.localeCompare(b);
+			}
+			return Number(a) - Number(b);
+		});
+
+		// Now enumerate the keys and solve each layer of the solution set
+		for (let i = 0; i < tmpOrdinalKeys.length; i++)
+		{
+			if (this.pict.LogNoisiness > 1)
+			{
+				this.log.trace(`DynamicSolver [${this.UUID}]::[${this.Hash}] [${pReason}] Solving ordinal ${tmpOrdinalKeys[i]}`);
+			}
+			let tmpOrdinalContainer = tmpOrdinalsToSolve[tmpOrdinalKeys[i]];
+			let tmpExecuteOrdinal = this.pict.providers.DynamicFormSolverBehaviors.checkSolverOrdinalEnabled(tmpOrdinalKeys[i]);
+			if (tmpExecuteOrdinal)
+			{
+				this.executeAdhocSolvers(pView, tmpOrdinalContainer.AdhocSolvers, pReason, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
+			}
+		}
+
+		tmpSolveOutcome.EndTimeStamp = +new Date();
+
+		// It's up to the developer to decide if they want to use this information somewhere.
+		this.lastAdhocSolveOutcome = tmpSolveOutcome;
+	}
+
+	/**
+	 * Runs each Adhoc solver formulae for a dynamic view group at a given ordinal.
+	 *
+	 * Or for all ordinals if no ordinal is passed.
+	 *
+	 * @param {import('../views/Pict-View-DynamicForm.js')} pView - The dynamic view to execute the solvers against.
+	 * @param {Array<string>} pAdhocSolverArray - An array of Solvers from the groups to solve.
+	 * @param {string} pReason - The reason for executing the solvers.
+	 * @param {number} pOrdinal - The ordinal value to filter to.  Optional.
+	 * @param {Object} pSolverResultsMap - The solver results map.
+	 * @param {boolean} [pPreventSolverCycles=false] - Whether to prevent solver cycles.
+	 */
+	executeAdhocSolvers(pView, pAdhocSolverArray, pReason, pOrdinal, pSolverResultsMap, pPreventSolverCycles = false)
+	{
+		let tmpFiltered = (typeof(pOrdinal) === 'undefined') ? false : true;
+		let tmpSolverReultsMap = this.prepareSolverResultsMap(pSolverResultsMap);
+
+		for (let i = 0; i < pAdhocSolverArray.length; i++)
+		{
+			let tmpSolver = this.checkSolver(pAdhocSolverArray[i], tmpFiltered, pOrdinal);
+			if (typeof(tmpSolver) === 'undefined')
+			{
+				continue;
+			}
+
+			if (pPreventSolverCycles && tmpSolver.Expression.match(this._RunSolversRegex))
+			{
+				if (this.pict.LogNoisiness > 0)
+				{
+					pView.log.warn(`Dynamic View [${pView.UUID}]::[${pView.Hash}] [${pReason}] skipping RecordSet ordinal ${tmpSolver.Ordinal} [${tmpSolver.Expression}] due to solver cycle prevention.`);
+				}
+				continue;
+			}
+
+			tmpSolver.StartTimeStamp = +new Date();
+			tmpSolver.Hash = `AdhocSolver-${i}`;
+
+			// TODO: Precompile the solvers (it's super easy)
+			if (this.pict.LogNoisiness > 1)
+			{
+				this.pict.log.trace(`Dynamic View [${pView.UUID}]::[${pView.Hash}] [${pReason}] solving equation ${i} ordinal ${tmpSolver.Ordinal} [${pView.options.Solvers[i]}]`);
+			}
+			tmpSolver.ResultsObject = {};
+			let tmpSolutionValue = this.fable.ExpressionParser.solve(tmpSolver.Expression, pView.getMarshalDestinationObject(), tmpSolver.ResultsObject, this.pict.manifest, pView.getMarshalDestinationObject());
+			if (this.pict.LogNoisiness > 1)
+			{
+				this.pict.log.trace(`[${tmpSolver.Expression}] [${pReason}] result was ${tmpSolutionValue}`);
+			}
+			tmpSolverReultsMap.ExecutedSolvers.push(tmpSolver);
+			tmpSolver.EndTimeStamp = +new Date();
+		}
+	}
+
 	/**
 	 * Runs each RecordSet solver formulae for a dynamic view group at a given ordinal.
 	 *
@@ -430,7 +543,7 @@ class PictDynamicSolver extends libPictProvider
 	{
 		if (!(pOrdinal.toString() in pOrdinalSet))
 		{
-			pOrdinalSet[pOrdinal.toString()] = { ViewSolvers:[], SectionSolvers:[], GroupSolvers:[] };
+			pOrdinalSet[pOrdinal.toString()] = { ViewSolvers:[], SectionSolvers:[], GroupSolvers:[], AdhocSolvers:[] };
 		}
 		return pOrdinalSet[pOrdinal];
 	}
