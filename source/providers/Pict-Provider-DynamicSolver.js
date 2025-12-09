@@ -57,6 +57,8 @@ class PictDynamicSolver extends libPictProvider
 		/** @type {string} */
 		this.Hash;
 
+		this._RunSolversRegex = /\brunsolvers\b/gi;
+
 		// Initialize the solver service if it isn't up
 		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
 
@@ -262,8 +264,9 @@ class PictDynamicSolver extends libPictProvider
 	 * @param {array} pGroupSolverArray - An array of Solvers from the groups to solve.
 	 * @param {number} pOrdinal - The ordinal value to filter to.  Optional.
 	 * @param {Object} pSolverResultsMap - The solver results map.
+	 * @param {boolean} [pPreventSolverCycles=false] - Whether to prevent solver cycles.
 	 */
-	executeGroupSolvers(pGroupSolverArray, pOrdinal, pSolverResultsMap)
+	executeGroupSolvers(pGroupSolverArray, pOrdinal, pSolverResultsMap, pPreventSolverCycles = false)
 	{
 		// This is purely for readability of the code below ... uglify optimizes it out.
 		let tmpFiltered = (typeof(pOrdinal) === 'undefined') ? false : true;
@@ -277,6 +280,15 @@ class PictDynamicSolver extends libPictProvider
 			let tmpSolver = this.checkSolver(pGroupSolverArray[j].Solver, tmpFiltered, pOrdinal);
 			if (typeof(tmpSolver) === 'undefined')
 			{
+				continue;
+			}
+
+			if (pPreventSolverCycles && tmpSolver.Expression.match(this._RunSolversRegex))
+			{
+				if (this.pict.LogNoisiness > 0)
+				{
+					tmpView.log.warn(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] skipping RecordSet ordinal ${tmpSolver.Ordinal} [${tmpSolver.Expression}] due to solver cycle prevention.`);
+				}
 				continue;
 			}
 
@@ -328,8 +340,9 @@ class PictDynamicSolver extends libPictProvider
 	 * @param {Array} pViewSectionSolverArray - The array of view section solvers.
 	 * @param {number} pOrdinal - The ordinal value.
 	 * @param {Object} pSolverResultsMap - The solver results map.
+	 * @param {boolean} [pPreventSolverCycles=false] - Whether to prevent solver cycles.
 	 */
-	executeSectionSolvers(pViewSectionSolverArray, pOrdinal, pSolverResultsMap)
+	executeSectionSolvers(pViewSectionSolverArray, pOrdinal, pSolverResultsMap, pPreventSolverCycles = false)
 	{
 		let tmpFiltered = (typeof(pOrdinal) === 'undefined') ? false : true;
 		let tmpSolverReultsMap = this.prepareSolverResultsMap(pSolverResultsMap);
@@ -340,6 +353,15 @@ class PictDynamicSolver extends libPictProvider
 			let tmpSolver = this.checkSolver(pViewSectionSolverArray[i].Solver, tmpFiltered, pOrdinal);
 			if (typeof(tmpSolver) === 'undefined')
 			{
+				continue;
+			}
+
+			if (pPreventSolverCycles && tmpSolver.Expression.match(this._RunSolversRegex))
+			{
+				if (this.pict.LogNoisiness > 0)
+				{
+					tmpView.log.warn(`Dynamic View [${tmpView.UUID}]::[${tmpView.Hash}] skipping RecordSet ordinal ${tmpSolver.Ordinal} [${tmpSolver.Expression}] due to solver cycle prevention.`);
+				}
 				continue;
 			}
 
@@ -434,11 +456,14 @@ class PictDynamicSolver extends libPictProvider
 	 * leaves on the tree.
 
 	 * @param {Array|string[]} [pViewHashes] - An optional array of view hashes to solve. If not provided, all views in the fable will be solved.
+	 * @param {boolean} [pPreventSolverCycles] - An optional context string for the solve operation.
+	 * TODO: make sure you can't cycle with the same solve context - new solver method to invoke this
 	 */
-	solveViews(pViewHashes)
+	solveViews(pViewHashes, pPreventSolverCycles)
 	{
 		//this.log.trace(`Dynamic View Provider [${this.UUID}]::[${this.Hash}] solving views.`);
 		let tmpViewHashes = Array.isArray(pViewHashes) ? pViewHashes : Object.keys(this.fable.views);
+		const tmpPreventSolverCycles = pPreventSolverCycles === true;
 
 		let tmpSolveOutcome = {};
 		tmpSolveOutcome.SolverResultsMap = {};
@@ -513,8 +538,8 @@ class PictDynamicSolver extends libPictProvider
 			let tmpExecuteOrdinal = this.pict.providers.DynamicFormSolverBehaviors.checkSolverOrdinalEnabled(tmpOrdinalKeys[i]);
 			if (tmpExecuteOrdinal)
 			{
-				this.executeGroupSolvers(tmpOrdinalContainer.GroupSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
-				this.executeSectionSolvers(tmpOrdinalContainer.SectionSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
+				this.executeGroupSolvers(tmpOrdinalContainer.GroupSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap, tmpPreventSolverCycles);
+				this.executeSectionSolvers(tmpOrdinalContainer.SectionSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap, tmpPreventSolverCycles);
 				this.executeViewSolvers(tmpOrdinalContainer.ViewSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
 			}
 		}

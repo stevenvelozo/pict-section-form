@@ -72,6 +72,11 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		});
 	}
 
+	runSolvers()
+	{
+		return this.pict.providers.DynamicSolver.solveViews(undefined, true);
+	}
+
 	injectBehaviors(pExpressionParser)
 	{
 		// Wire up the solver functions.
@@ -92,6 +97,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		this.addSolverFunction(pExpressionParser, 'disablesolverordinall', 'fable.providers.DynamicFormSolverBehaviors.disableSolverOrdinal', 'Disables a solver ordinal so that it will not run.');
 
 		this.addSolverFunction(pExpressionParser, 'settabularrowlength', 'fable.providers.DynamicFormSolverBehaviors.setTabularRowLength', 'Sets the length of a tabular data set.');
+		this.addSolverFunction(pExpressionParser, 'runsolvers', 'fable.providers.DynamicFormSolverBehaviors.runSolvers', 'Solves all views.');
 
 		return false;
 	}

@@ -10,6 +10,7 @@ declare class PictDynamicSolver extends libPictProvider {
         instantiateServiceProviderIfNotExists: (hash: string) => any;
         ExpressionParser: any;
     };
+    _RunSolversRegex: RegExp;
     logSolveOutcome(pSolveOutcome: any): void;
     /**
      * Prepares the solver results map by ensuring it has the necessary structure.
@@ -52,16 +53,18 @@ declare class PictDynamicSolver extends libPictProvider {
      * @param {array} pGroupSolverArray - An array of Solvers from the groups to solve.
      * @param {number} pOrdinal - The ordinal value to filter to.  Optional.
      * @param {Object} pSolverResultsMap - The solver results map.
+     * @param {boolean} [pPreventSolverCycles=false] - Whether to prevent solver cycles.
      */
-    executeGroupSolvers(pGroupSolverArray: any[], pOrdinal: number, pSolverResultsMap: any): void;
+    executeGroupSolvers(pGroupSolverArray: any[], pOrdinal: number, pSolverResultsMap: any, pPreventSolverCycles?: boolean): void;
     /**
      * Executes the section solvers at a given ordinal (or all if no ordinal is passed).
      *
      * @param {Array} pViewSectionSolverArray - The array of view section solvers.
      * @param {number} pOrdinal - The ordinal value.
      * @param {Object} pSolverResultsMap - The solver results map.
+     * @param {boolean} [pPreventSolverCycles=false] - Whether to prevent solver cycles.
      */
-    executeSectionSolvers(pViewSectionSolverArray: any[], pOrdinal: number, pSolverResultsMap: any): void;
+    executeSectionSolvers(pViewSectionSolverArray: any[], pOrdinal: number, pSolverResultsMap: any, pPreventSolverCycles?: boolean): void;
     /**
      * Executes the view solvers for the given array of view hashes.
      *
@@ -101,8 +104,10 @@ declare class PictDynamicSolver extends libPictProvider {
      * leaves on the tree.
 
      * @param {Array|string[]} [pViewHashes] - An optional array of view hashes to solve. If not provided, all views in the fable will be solved.
+     * @param {boolean} [pPreventSolverCycles] - An optional context string for the solve operation.
+     * TODO: make sure you can't cycle with the same solve context - new solver method to invoke this
      */
-    solveViews(pViewHashes?: any[] | string[]): void;
+    solveViews(pViewHashes?: any[] | string[], pPreventSolverCycles?: boolean): void;
     lastSolveOutcome: {
         SolverResultsMap: {};
         StartTimeStamp: number;
