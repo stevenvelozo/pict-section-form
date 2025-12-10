@@ -175,8 +175,6 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
-		//FIXME: this should use a trigger group + event
-		this.assignDisplayEntityData(this.getContentDisplayHTMLID(pInput.Macro.RawHTMLID), pInput, pValue);
 		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
@@ -194,9 +192,86 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
-		//FIXME: this should use a trigger group + event
-		this.assignDisplayEntityData(this.getTabularContentDisplayInputID(pInput.Macro.RawHTMLID, pRowIndex), pInput, pValue);
 		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
+	}
+
+	/**
+	 * This input extension only responds to events
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value from AppData.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
+	 * @returns {boolean} - Returns true.
+	 */
+	onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID)
+	{
+		const tmpPayload = typeof pEvent === 'string' ? pEvent : '';
+		let [ tmpType, tmpGroupHash, tmpEvent, tmpInputHash, tmpEventGUID ] = tmpPayload.split(':');
+		if (!tmpEventGUID)
+		{
+			tmpEventGUID = this.pict.getUUID();
+		}
+
+		if (!pInput.PictForm.TemplatedEntityLookup || !('TriggerGroupHash' in pInput.PictForm.TemplatedEntityLookup))
+		{
+			return super.onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
+		}
+		let tmpAutoFillTriggerGroups = [pInput.PictForm.TemplatedEntityLookup];
+
+		for (let i = 0; i < tmpAutoFillTriggerGroups.length; i++)
+		{
+			let tmpAutoFillTriggerGroup = tmpAutoFillTriggerGroups[i];
+			if (tmpAutoFillTriggerGroup.TriggerGroupHash !== tmpGroupHash)
+			{
+				continue;
+			}
+
+			this.assignDisplayEntityData(this.getContentDisplayHTMLID(pInput.Macro.RawHTMLID), pInput, pValue);
+		}
+
+		return super.onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
+	}
+
+	/**
+	 * Handles events for the Pict-Provider-InputExtension.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value from AppData.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {number} pRowIndex - The row index of the tabular data.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
+	 * @returns {boolean} - Returns true.
+	 */
+	onAfterEventTabularCompletion(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID)
+	{
+		const tmpPayload = typeof pEvent === 'string' ? pEvent : '';
+		let [ tmpType, tmpGroupHash, tmpEvent, tmpInputHash, tmpEventGUID ] = tmpPayload.split(':');
+		if (!tmpEventGUID)
+		{
+			tmpEventGUID = this.pict.getUUID();
+		}
+
+		if (!pInput.PictForm.TemplatedEntityLookup || !('TriggerGroupHash' in pInput.PictForm.TemplatedEntityLookup))
+		{
+			return super.onAfterEventTabularCompletion(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID);
+		}
+		let tmpAutoFillTriggerGroups = [pInput.PictForm.TemplatedEntityLookup];
+		for (const tmpAutoFillTriggerGroup of tmpAutoFillTriggerGroups)
+		{
+			if (tmpAutoFillTriggerGroup.TriggerGroupHash !== tmpGroupHash)
+			{
+				continue;
+			}
+
+			this.assignDisplayEntityData(this.getTabularContentDisplayInputID(pInput.Macro.RawHTMLID, pRowIndex), pInput, pValue);
+		}
+
+		return super.onAfterEventTabularCompletion(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID);
 	}
 }
 

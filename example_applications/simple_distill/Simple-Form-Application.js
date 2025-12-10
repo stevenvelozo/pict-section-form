@@ -171,6 +171,8 @@ module.exports.default_configuration.pict_configuration = (
 						{
 							Template: "Record GUIDBookAuthorJoin {~D:AppData.CurrentBookAuthorJoinForDisplayTemplate.GUIDBookAuthorJoin~} IDBook {~D:AppData.CurrentBookAuthorJoinForDisplayTemplate.IDBook~} is the first book for IDAuthor {~D:AppData.CurrentAuthor.IDAuthor~} AuthorName [{~D:AppData.CurrentAuthor.Name~}]",
 
+							TriggerGroupHash: "BookTriggerGroup",
+
 							EmptyValueTestList: ["AppData.CurrentBookAuthorJoinForDisplayTemplate"],
 							EmptyValueTemplate: "No BookAuthorJoin Found",
 
