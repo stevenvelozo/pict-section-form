@@ -110,7 +110,8 @@ module.exports.default_configuration.pict_configuration = (
 								"Destination": "AppData.AuthorSchema"
 							}
 						],
-						EntityBundleTriggerGroup: "BookTriggerGroup"
+						EntityBundleTriggerGroup: "BookTriggerGroup",
+						EntityBundleTriggerOnInitialize: true
 					}
 				},
 				"Author.Name": {
