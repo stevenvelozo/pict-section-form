@@ -19,7 +19,6 @@ const _DynamicInputViewSection = (
 			"Name": "Dynamic Inputs",
 			"ViewHash": "PictFormMetacontroller-DynamicInputs",
 
-			"AutoMarshalDataOnSolve": true,
 			"IncludeInMetatemplateSectionGeneration": false,
 
 			"Manifests": {

@@ -567,7 +567,7 @@ class PictViewDynamicForm extends libPictViewClass
 	}
 
 	/**
-	 * Executes the solve operation for the dynamic views, then auto marshals data if options.AutoMarshalDataOnSolve is set to true.
+	 * Executes the solve operation for the dynamic views.
 	 *
 	 * @returns {any} The result of the solve operation.
 	 */
@@ -577,11 +577,6 @@ class PictViewDynamicForm extends libPictViewClass
 		if (this.options.ExecuteSolversWithoutMetacontroller)
 		{
 			this.pict.providers.DynamicSolver.solveViews([this.Hash]);
-		}
-
-		if (this.options.AutoMarshalDataOnSolve)
-		{
-			this.marshalToView();
 		}
 		return super.onSolve();
 	}

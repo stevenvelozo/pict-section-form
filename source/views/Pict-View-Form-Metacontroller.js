@@ -1151,7 +1151,6 @@ class PictFormMetacontroller extends libPictViewClass
 				tmpViewConfiguration.Manifests = {};
 			}
 			tmpViewConfiguration.Manifests.Section = this.manifestDescription;
-			tmpViewConfiguration.AutoMarshalDataOnSolve = this.options.AutoMarshalDataOnSolve;
 			this.pict.addView(tmpViewHash, tmpViewConfiguration, libPictViewDynamicForm);
 		}
 
@@ -1396,7 +1395,6 @@ module.exports.default_configuration = (
 	"DefaultRenderable": "Pict-Forms-Metacontainer",
 	"DefaultDestinationAddress": "#Pict-Form-Container",
 
-	"AutoMarshalDataOnSolve": true,
 	"OnlyRenderDynamicSections": true,
 
 	"MetaTemplateHash": "Pict-Forms-Metatemplate",

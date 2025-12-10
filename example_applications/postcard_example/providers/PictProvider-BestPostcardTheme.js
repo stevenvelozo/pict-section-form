@@ -94,7 +94,7 @@ Glug glug CUSTOMIZED glug Oo... -->
 				"Template": /*HTML*/`
             <div class="pure-u-1 pure-u-md-1-3">
                 <label {~D:Record.Macro.HTMLForID~}>{~D:Record.Name~}:</label>
-                <input type="number" {~D:Record.Macro.HTMLID~} {~D:Record.Macro.InputFullProperties~} class="pure-u-23-24" />
+                <input type="number" {~D:Record.Macro.HTMLID~} {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} class="pure-u-23-24" />
             </div>
 	`
 			},

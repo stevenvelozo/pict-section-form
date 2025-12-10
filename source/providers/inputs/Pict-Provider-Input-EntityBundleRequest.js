@@ -311,7 +311,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	onInputInitialize(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
 		// Try to get the input element
-		if (pValue && pInput.PictForm && pInput.PictForm.EntityBundleTriggerOnInitialize)
+		if (pInput.PictForm && (pValue || pInput.PictForm.EntityBundleTriggerWithoutValue) && pInput.PictForm.EntityBundleTriggerOnInitialize)
 		{
 			// This is a request on initial load
 			this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
@@ -334,6 +334,7 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
 	{
+		this.log.error(`EntityBundleRequest for input [${pInput.Hash}] Tabular support is intentionally not supported.`);
 		return super.onInputInitializeTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
 	}
 
@@ -349,59 +350,36 @@ class CustomInputHandler extends libPictSectionInputExtension
 	 */
 	onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID)
 	{
-		this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
+		if (pInput.PictForm && (pValue || pInput.PictForm.EntityBundleTriggerWithoutValue) && pInput.PictForm.EntityBundleTriggerOnDataChange !== false)
+		{
+			this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
+		}
 		return super.onDataChange(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
 	}
 
 	/**
-	 * Handles the change event for tabular data.
+	 * This input extension only responds to events
 	 *
 	 * @param {Object} pView - The view object.
 	 * @param {Object} pInput - The input object.
-	 * @param {any} pValue - The new value.
+	 * @param {any} pValue - The value from AppData.
 	 * @param {string} pHTMLSelector - The HTML selector.
-	 * @param {number} pRowIndex - The index of the row.
-	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
-	 * @returns {any} - The result of the super method.
+	 * @param {string} pEvent - The event hash that is expected to be triggered.
+	 * @param {string} pTransactionGUID - The transaction GUID, if any.
+	 * @returns {boolean} - Returns true.
 	 */
-	onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
+	onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID)
 	{
+		const tmpPayload = typeof pEvent === 'string' ? pEvent : '';
+		let [ tmpType, tmpGroupHash ] = tmpPayload.split(':');
+
+		if (pInput.PictForm.TriggerGroupHash !== tmpGroupHash)
+		{
+			return super.onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
+		}
 		this.gatherDataFromServer(pView, pInput, pValue, pHTMLSelector, pTransactionGUID);
-		return super.onDataChangeTabular(pView, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
-	}
 
-	/**
-	 * Marshals data to the form for the given input.
-	 *
-	 * @param {Object} pView - The view object.
-	 * @param {Object} pGroup - The group object.
-	 * @param {Object} pRow - The row object.
-	 * @param {Object} pInput - The input object.
-	 * @param {any} pValue - The value to be marshaled.
-	 * @param {string} pHTMLSelector - The HTML selector.
-	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
-	 * @returns {boolean} - Returns true if the value is successfully marshaled to the form, otherwise false.
-	 */
-	onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID)
-	{
-		return super.onDataMarshalToForm(pView, pGroup, pRow, pInput, pValue, pHTMLSelector, pTransactionGUID);
-	}
-
-	/**
-	 * Marshals data to a form in tabular format.
-	 *
-	 * @param {Object} pView - The view object.
-	 * @param {Object} pGroup - The group object.
-	 * @param {Object} pInput - The input object.
-	 * @param {any} pValue - The value parameter.
-	 * @param {string} pHTMLSelector - The HTML selector parameter.
-	 * @param {number} pRowIndex - The row index parameter.
-	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
-	 * @returns {any} - The result of the data marshaling.
-	 */
-	onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID)
-	{
-		return super.onDataMarshalToFormTabular(pView, pGroup, pInput, pValue, pHTMLSelector, pRowIndex, pTransactionGUID);
+		return super.onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
 	}
 }
 

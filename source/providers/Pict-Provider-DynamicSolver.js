@@ -13,6 +13,7 @@ const libInputEntityBundleRequest = require('./inputs/Pict-Provider-Input-Entity
 const libInputAutofillTriggerGroup = require('./inputs/Pict-Provider-Input-AutofillTriggerGroup.js');
 const libInputMarkdown = require('./inputs/Pict-Provider-Input-Markdown.js');
 const libInputHTML = require('./inputs/Pict-Provider-Input-HTML.js');
+const libInputTemplated = require('./inputs/Pict-Provider-Input-Templated.js');
 const libInputPreciseNumber = require('./inputs/Pict-Provider-Input-PreciseNumber.js');
 const libInputLink = require('./inputs/Pict-Provider-Input-Link.js');
 const libInputTemplatedEntityLookup = require('./inputs/Pict-Provider-Input-TemplatedEntityLookup.js');
@@ -62,7 +63,6 @@ class PictDynamicSolver extends libPictProvider
 		// Initialize the solver service if it isn't up
 		this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
 
-
 		this.pict.addProviderSingleton('DynamicFormSolverBehaviors', libDynamicFormSolverBehaviors.default_configuration, libDynamicFormSolverBehaviors);
 		this.pict.providers.DynamicFormSolverBehaviors.injectBehaviors(this.fable.ExpressionParser);
 		this.pict.addProviderSingleton('DynamicMetaLists', libDynamicMetaLists.default_configuration, libDynamicMetaLists);
@@ -75,6 +75,7 @@ class PictDynamicSolver extends libPictProvider
 		this.pict.addProviderSingleton('Pict-Input-AutofillTriggerGroup', libInputAutofillTriggerGroup.default_configuration, libInputAutofillTriggerGroup);
 		this.pict.addProviderSingleton('Pict-Input-Markdown', libInputMarkdown.default_configuration, libInputMarkdown);
 		this.pict.addProviderSingleton('Pict-Input-HTML', libInputHTML.default_configuration, libInputHTML);
+		this.pict.addProviderSingleton('Pict-Input-Templated', libInputTemplated.default_configuration, libInputTemplated);
 		this.pict.addProviderSingleton('Pict-Input-PreciseNumber', libInputPreciseNumber.default_configuration, libInputPreciseNumber);
 		this.pict.addProviderSingleton('Pict-Input-TemplatedEntityLookup', libInputTemplatedEntityLookup.default_configuration, libInputTemplatedEntityLookup);
 		this.pict.addProviderSingleton('Pict-Input-Link', libInputLink.default_configuration, libInputLink);
@@ -177,7 +178,6 @@ class PictDynamicSolver extends libPictProvider
 						}
 					}
 				}
-				
 			}
 		}
 

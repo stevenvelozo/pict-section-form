@@ -217,9 +217,6 @@ class PictDynamicInputEvents extends libPictProvider
 			// pView is what is called whenever a hash is changed.  We could marshal from view, solve and remarshal to view.
 			pView.marshalFromView();
 		}
-		// Run any dynamic input providers for the input hash.
-		pView.pict.PictApplication.solve();
-		pView.marshalToView();
 	}
 
 	/**

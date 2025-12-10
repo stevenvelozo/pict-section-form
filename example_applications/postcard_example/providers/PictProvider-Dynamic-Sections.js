@@ -25,7 +25,6 @@ class PostcardDynamicSectionProvider extends libPictProvider
 			"Name": "Custom Dynamic Inputs",
 			"ViewHash": "MyDynamicView",
 
-			"AutoMarshalDataOnSolve": true,
 			"IncludeInMetatemplateSectionGeneration": false,
 
 			"Manifests": {

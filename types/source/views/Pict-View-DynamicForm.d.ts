@@ -109,7 +109,7 @@ declare class PictViewDynamicForm extends libPictViewClass {
      */
     onAfterMarshalToForm(): void;
     /**
-     * Executes the solve operation for the dynamic views, then auto marshals data if options.AutoMarshalDataOnSolve is set to true.
+     * Executes the solve operation for the dynamic views.
      *
      * @returns {any} The result of the solve operation.
      */

@@ -283,6 +283,15 @@ Glug glug glug Oo... -->
 `
 		},
 		{
+			"HashPostfix": "-Template-Input-InputType-Templated",
+			"DefaultInputExtensions": ["Pict-Input-Templated"],
+			"Template": /*HTML*/`
+					<!-- InputType Templated {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-templated"></div>
+`
+		},
+		{
 			"HashPostfix": "-Template-Input-InputType-TemplatedEntityLookup",
 			"DefaultInputExtensions": ["Pict-Input-TemplatedEntityLookup"],
 			"Template": /*HTML*/`
@@ -470,6 +479,17 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span>
 					<span>{~D:Record.PictForm.ExtraDescription~}</span>
 					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-html"></div>
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-Templated",
+			"DefaultInputExtensions": ["Pict-Input-Templated"],
+			"Template": /*HTML*/`
+				<!-- InputType Templated {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<div id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-templated"></div>
 				</div>
 `
 		},

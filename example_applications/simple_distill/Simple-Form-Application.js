@@ -114,6 +114,23 @@ module.exports.default_configuration.pict_configuration = (
 						EntityBundleTriggerOnInitialize: true
 					}
 				},
+				"TemplatedInput": {
+					Name: "Templated Input",
+					Hash: "TemplatedInput",
+					DataType: "String",
+					PictForm:
+					{
+						InputType: 'Templated',
+						Section: "Book", Group: "Author", Row: 2,
+						TriggerGroupHash: "BookTriggerGroup",
+						Template: "<div>{~T:AuthorInfo~}</div><div>{~TS:BookInfo:AppData.Books~}</div>",
+						Templates:
+						{
+							"AuthorInfo": "{~D:AppData.CurrentAuthor.IDAuthor~} :: {~D:AppData.CurrentAuthor.Name~}",
+							"BookInfo": "<div><img src=\"{~D:Record.ImageURL~}\" />{~D:Record.IDBook~} :: {~D:Record.Title~}</div>"
+						}
+					}
+				},
 				"Author.Name": {
 					Name: "Author Name",
 					Hash: "AuthorName",
@@ -187,7 +204,7 @@ module.exports.default_configuration.pict_configuration = (
 								}]
 						}
 					}
-				}
+				},
 			}
 		}
 	});
