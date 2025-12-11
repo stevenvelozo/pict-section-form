@@ -97,6 +97,17 @@ module.exports.default_configuration.pict_configuration = (
 								"Destination": "AppData.Books"
 							},
 							{
+								"Type": "MapJoin",
+								"DestinationRecordSetAddress": "AppData.Books",
+								"DestinationJoinValue": "IDBook",
+								"JoinJoinValueLHS": "IDBook",
+								"Joins": "AppData.BookAuthorJoins",
+								"JoinJoinValueRHS": "IDBookAuthorJoin",
+								"JoinRecordSetAddress": "AppData.BookAuthorJoins",
+								"JoinValue": "IDBookAuthorJoin",
+								"RecordDestinationAddress": "BookAuthorJoins"
+							},
+							{
 								"Type": "Custom",
 								"Protocol": "HTTP",
 								"Host": "localhost",

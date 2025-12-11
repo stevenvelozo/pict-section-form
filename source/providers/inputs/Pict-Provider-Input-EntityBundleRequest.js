@@ -227,30 +227,68 @@ class CustomInputHandler extends libPictSectionInputExtension
 		let tmpValue = pValue;
 		let tmpAnticipate = this.fable.newAnticipate();
 
-		for (let i = 0; i < tmpInput.PictForm.EntitiesBundle.length; i++)
+		if (tmpInput.PictForm.EntitiesBundle.length > 0 && tmpInput.PictForm.EntitiesBundle[0].PictMode)
 		{
-			let tmpEntityBundleEntry = tmpInput.PictForm.EntitiesBundle[i];
-			tmpAnticipate.anticipate(
-				(fNext) =>
-				{
-					try
+			tmpAnticipate.anticipate((fNext) =>
+			{
+				this.pict.EntityProvider.gatherDataFromServer(tmpInput.PictForm.EntitiesBundle, fNext);
+			});
+		}
+		else
+		{
+			const tmpStateStack = [];
+			/** @type {Record<string, any>} */
+			let tmpState = { Value: tmpValue, Input: tmpInput, View: pView };
+			for (let i = 0; i < tmpInput.PictForm.EntitiesBundle.length; i++)
+			{
+				let tmpEntityBundleEntry = tmpInput.PictForm.EntitiesBundle[i];
+				tmpAnticipate.anticipate(
+					(fNext) =>
 					{
-						switch (tmpEntityBundleEntry.Type)
+						try
 						{
-							case 'Custom':
-								return this.gatherCustomDataSet(fNext, tmpEntityBundleEntry, pView, tmpInput, tmpValue);
-							// This is the default case, for a meadow entity set or single entity
-							case 'MeadowEntity':
-							default:
-								return this.gatherEntitySet(fNext, tmpEntityBundleEntry, pView, tmpInput, tmpValue);
+							switch (tmpEntityBundleEntry.Type)
+							{
+								case 'Custom':
+									return this.gatherCustomDataSet(fNext, tmpEntityBundleEntry, pView, tmpInput, tmpValue);
+								case 'SetStateAddress':
+									tmpStateStack.push(tmpState);
+									tmpState = this.fable.manifest.getValueByHash(this.fable, tmpEntityBundleEntry.StateAddress);
+									if (typeof tmpState === 'undefined')
+									{
+										tmpState = {};
+										this.fable.manifest.setValueByHash(this.fable, tmpEntityBundleEntry.StateAddress, tmpState);
+									}
+									break;
+								case 'PopState':
+									if (tmpStateStack.length > 0)
+									{
+										tmpState = tmpStateStack.pop();
+									}
+									else
+									{
+										this.log.warn(`EntityBundleRequest encountered a PopState without a matching SetStateAddress.`);
+									}
+									break;
+								case 'MapJoin':
+									this.pict.EntityProvider.mapJoin(tmpEntityBundleEntry, this.pict.EntityProvider.prepareState(tmpState, tmpEntityBundleEntry));
+									break;
+								case 'ProjectDataset':
+									this.pict.EntityProvider.projectDataset(tmpEntityBundleEntry, this.pict.EntityProvider.prepareState(tmpState, tmpEntityBundleEntry));
+									break;
+								// This is the default case, for a meadow entity set or single entity
+								case 'MeadowEntity':
+								default:
+									return this.gatherEntitySet(fNext, tmpEntityBundleEntry, pView, tmpInput, tmpValue);
+							}
 						}
-					}
-					catch (pError)
-					{
-						this.log.error(`EntityBundleRequest error gathering entity set: ${pError}`, pError);
-					}
-					return fNext();
-				});
+						catch (pError)
+						{
+							this.log.error(`EntityBundleRequest error gathering entity set: ${pError}`, pError);
+						}
+						return fNext();
+					});
+			}
 		}
 
 		tmpAnticipate.anticipate(
