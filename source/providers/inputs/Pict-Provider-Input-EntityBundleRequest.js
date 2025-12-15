@@ -409,9 +409,9 @@ class CustomInputHandler extends libPictSectionInputExtension
 	onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID)
 	{
 		const tmpPayload = typeof pEvent === 'string' ? pEvent : '';
-		let [ tmpType, tmpGroupHash ] = tmpPayload.split(':');
+		const [ tmpType, tmpGroupHash ] = tmpPayload.split(':');
 
-		if (pInput.PictForm.TriggerGroupHash !== tmpGroupHash)
+		if (tmpType !== 'TriggerGroup' || !tmpGroupHash || pInput.PictForm.TriggerGroupHash !== tmpGroupHash)
 		{
 			return super.onAfterEventCompletion(pView, pInput, pValue, pHTMLSelector, pEvent, pTransactionGUID);
 		}
