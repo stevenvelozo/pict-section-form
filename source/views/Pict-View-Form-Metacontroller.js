@@ -103,7 +103,11 @@ class PictFormMetacontroller extends libPictViewClass
 		if (this.manifestDescription && this.manifestDescription.InitialBundle)
 		{
 			this.log.info(`Gathering initial bundle for ${this.manifestDescription.InitialBundle.length} entities.`);
-			return this.pict.EntityProvider.gatherDataFromServer(this.manifestDescription.InitialBundle, fCallback);
+			return this.pict.EntityProvider.gatherDataFromServer(this.manifestDescription.InitialBundle, (pError) =>
+			{
+				// in case of an empty array, or all tasks being synchronous, wait for the next tick so we don't get event ordering problems
+				setTimeout(() => fCallback(pError), 0);
+			});
 		}
 		else
 		{

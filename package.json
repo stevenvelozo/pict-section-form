@@ -1,6 +1,6 @@
 {
     "name": "pict-section-form",
-    "version": "1.0.173",
+    "version": "1.0.174",
     "description": "Pict dynamic form sections",
     "main": "source/Pict-Section-Form.js",
     "directories": {
@@ -30,9 +30,9 @@
     "author": "steven velozo <steven@velozo.com>",
     "license": "MIT",
     "devDependencies": {
-        "@eslint/js": "^9.39.1",
+        "@eslint/js": "^9.39.2",
         "browser-env": "^3.3.0",
-        "eslint": "^9.39.1",
+        "eslint": "^9.39.2",
         "jquery": "^3.7.1",
         "pict": "^1.0.343",
         "pict-application": "^1.0.30",

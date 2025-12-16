@@ -619,7 +619,8 @@ class PictViewDynamicForm extends libPictViewClass
 						{
 							this.log.error(`Dynamic form [${this.Hash}]::[${this.UUID}] failed to load initial bundle: ${pInnerError}`);
 						}
-						fCallback(pError);
+						// in case of an empty array, or all tasks being synchronous, wait for the next tick so we don't get event ordering problems
+						setTimeout(() => fCallback(pError), 0);
 					});
 					return;
 				}

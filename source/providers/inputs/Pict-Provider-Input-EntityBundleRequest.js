@@ -231,7 +231,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 		{
 			tmpAnticipate.anticipate((fNext) =>
 			{
-				this.pict.EntityProvider.gatherDataFromServer(tmpInput.PictForm.EntitiesBundle, fNext);
+				this.pict.EntityProvider.gatherDataFromServer(tmpInput.PictForm.EntitiesBundle, (pError) =>
+				{
+					// in case of an empty array, or all tasks being synchronous, wait for the next tick so we don't get event ordering problems
+					setTimeout(() => fNext(pError), 0);
+				});
 			});
 		}
 		else
@@ -289,6 +293,8 @@ class CustomInputHandler extends libPictSectionInputExtension
 						return fNext();
 					});
 			}
+			// in case of an empty array, or all tasks being synchronous, wait for the next tick so we don't get event ordering problems
+			tmpAnticipate.anticipate((fNext) => setTimeout(fNext, 0));
 		}
 
 		tmpAnticipate.anticipate(

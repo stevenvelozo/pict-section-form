@@ -90,7 +90,11 @@ class CustomInputHandler extends libPictSectionInputExtension
 		tmpAnticipate.anticipate(
 			function (fNext)
 			{
-				this.pict.EntityProvider.gatherDataFromServer(pInput.PictForm.TemplatedEntityLookup.EntitiesBundle, fNext);
+				this.pict.EntityProvider.gatherDataFromServer(pInput.PictForm.TemplatedEntityLookup.EntitiesBundle, (pError) =>
+				{
+					// in case of an empty array, or all tasks being synchronous, wait for the next tick so we don't get event ordering problems
+					setTimeout(() => fNext(pError), 0);
+				});
 			}.bind(this));
 
 		// 2. Check the Empty Value Test List
