@@ -571,6 +571,8 @@ class PictDynamicSolver extends libPictProvider
 	 * @param {Array|string[]} [pViewHashes] - An optional array of view hashes to solve. If not provided, all views in the fable will be solved.
 	 * @param {boolean} [pPreventSolverCycles] - An optional context string for the solve operation.
 	 * TODO: make sure you can't cycle with the same solve context - new solver method to invoke this
+	 *
+	 * @return {Array<string>} - An array of view hashes that were solved.
 	 */
 	solveViews(pViewHashes, pPreventSolverCycles)
 	{
@@ -664,6 +666,7 @@ class PictDynamicSolver extends libPictProvider
 
 		// It's up to the developer to decide if they want to use this information somewhere.
 		this.lastSolveOutcome = tmpSolveOutcome;
+		return tmpViewHashes;
 	}
 }
 

@@ -74,7 +74,21 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 
 	runSolvers()
 	{
-		return this.pict.providers.DynamicSolver.solveViews(undefined, true);
+		const tmpViewHashes = this.pict.providers.DynamicSolver.solveViews(undefined, true);
+		/* TODO: since this is always run from a solve, I don't think we need to do an extra marshal here
+		if (this.pict.views.PictFormMetacontroller)
+		{
+			this.pict.views.PictFormMetacontroller.marshalFormSections();
+		}
+		else
+		{
+			for (let i = 0; i < tmpViewHashes.length; i++)
+			{
+				const tmpViewHash = tmpViewHashes[i];
+				this.pict.views[tmpViewHash]?.marshalToView?.();
+			}
+		}
+		*/
 	}
 
 	injectBehaviors(pExpressionParser)

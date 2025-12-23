@@ -20,7 +20,7 @@ declare class PictDynamicFormsSolverBehaviors extends libPictProvider {
     setCSSSnippets(pCSSHideClass: any, pCSSSnippet: any): void;
     cssHideClass: any;
     addSolverFunction(pExpressionParser: any, pFunctionName: any, pFunctionAddress: any, pFunctionComment: any): void;
-    runSolvers(): any;
+    runSolvers(): void;
     injectBehaviors(pExpressionParser: any): boolean;
     /**
      * @param {number|string} pSolverOrdinal

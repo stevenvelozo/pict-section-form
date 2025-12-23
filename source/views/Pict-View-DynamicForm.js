@@ -205,7 +205,14 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 		// Run any dynamic input providers for the input hash.
 		this.pict.PictApplication.solve();
-		this.marshalToView();
+		if (this.pict.views.PictFormMetacontroller)
+		{
+			this.pict.views.PictFormMetacontroller.marshalFormSections();
+		}
+		else
+		{
+			this.marshalToView();
+		}
 	}
 
 
