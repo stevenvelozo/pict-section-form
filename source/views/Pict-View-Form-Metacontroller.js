@@ -1000,6 +1000,14 @@ class PictFormMetacontroller extends libPictViewClass
 	}
 
 	/**
+	 * Clears out the manifest description set on the meta controller.
+	 */
+	clearManifestDescription()
+	{
+		this.manifestDescription = null;
+	}
+
+	/**
 	 * Bootstraps Pict DynamicForm views from a Manyfest description JSON object.
 	 *
 	 * @param {Object} pManifestDescription - The manifest description object.
