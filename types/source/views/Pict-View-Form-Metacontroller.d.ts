@@ -174,6 +174,11 @@ declare class PictFormMetacontroller extends libPictViewClass {
     getSectionDefinition(pSectionObject: object): object | boolean;
     getSectionViewFromHash(pSectionHash: any): any;
     /**
+     * Clears out the manifest description set on the meta controller.
+     */
+    clearManifestDescription(): void;
+    manifestDescription: any;
+    /**
      * Bootstraps Pict DynamicForm views from a Manyfest description JSON object.
      *
      * @param {Object} pManifestDescription - The manifest description object.
@@ -183,7 +188,6 @@ declare class PictFormMetacontroller extends libPictViewClass {
      */
     bootstrapPictFormViewsFromManifest(pManifestDescription: any, pAfterSectionHash?: string): Array<Record<string, any>>;
     stashedManifestDescription: any;
-    manifestDescription: any;
     /**
      * Trigger an event on all inputs on all views.
      * @param {string} pEvent - The event to trigger

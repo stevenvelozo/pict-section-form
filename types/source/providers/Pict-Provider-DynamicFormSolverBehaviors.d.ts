@@ -50,6 +50,15 @@ declare class PictDynamicFormsSolverBehaviors extends libPictProvider {
     hideGroup(pSectionHash: any, pGroupHash: any): boolean;
     showGroup(pSectionHash: any, pGroupHash: any): boolean;
     /**
+     * Causes a tabular section to refresh its display
+     *
+     * @param {string} pSectionHash - The hash of the section containing the tabular group
+     * @param {string} pGroupHash - The hash of the tabular group
+     *
+     * @return {void}
+     */
+    refreshTabularSection(pSectionHash: string, pGroupHash: string): void;
+    /**
      * Set the length of a tabular set
      * @param {string} pSectionHash - The hash of the section containing the tabular group
      * @param {string} pGroupHash - The hash of the tabular group

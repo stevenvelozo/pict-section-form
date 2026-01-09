@@ -248,6 +248,21 @@ module.exports.default_configuration.pict_configuration = {
 				],
 			},
 			{
+				Hash: "BookGrid",
+				Name: "Books of the World",
+				Groups: [
+					{
+						Hash: "BookGrid",
+						Name: "BookGrid",
+
+						Layout: "Tabular",
+
+						RecordSetAddress: "Books",
+						RecordManifest: "BookEditor",
+					},
+				],
+			},
+			{
 				Hash: "ExtraFormSections",
 				Name: "Extra Form Sections"
 			},
@@ -356,7 +371,12 @@ module.exports.default_configuration.pict_configuration = {
 							"Destination": "AppData.Books"
 						}
 					],
-					EntityBundleTriggerGroup: "BookTriggerGroup"
+					EntityBundleTriggerGroup: "BookTriggerGroup",
+					AutofillTriggerGroup:
+					{
+						TriggerGroupHash: "BookTriggerGroup",
+						PostSolvers: [ 'refreshTabularSection("BookGrid", "BookGrid")`' ],
+					},
 				}
 			},
 			"Author.Name": {
@@ -371,7 +391,7 @@ module.exports.default_configuration.pict_configuration = {
 					{
 						TriggerGroupHash: "BookTriggerGroup",
 						TriggerAddress: "AppData.CurrentAuthor.Name",
-						MarshalEmptyValues: true
+						MarshalEmptyValues: true,
 					}
 				}
 			},
@@ -381,6 +401,12 @@ module.exports.default_configuration.pict_configuration = {
 				Hash: "Books",
 				DataType: "Array",
 				Default: []
+			},
+			"Books.length": {
+				Name: "Number of Books",
+				Hash: "NumBooks",
+				DataType: "PreciseNumber",
+				Default: "0"
 			},
 			"Book.IDBook": {
 				Name: "Specific Book",
@@ -926,6 +952,19 @@ module.exports.default_configuration.pict_configuration = {
 								MarshalEmptyValues: true
 							}
 						}
+					},
+				},
+			},
+			BookEditor: {
+				Scope: "BookEditor",
+
+				Descriptors: {
+					Title: {
+						Name: "Book Title",
+						Hash: "Title",
+						DataType: "String",
+						Default: "(unnamed book)",
+						PictForm: { Row: "1", Section: "BookGrid", Group: "BookGrid" },
 					},
 				},
 			},

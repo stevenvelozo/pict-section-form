@@ -814,7 +814,26 @@ class PictViewDynamicForm extends libPictViewClass
 							let tmpInputProviderList = this.getInputProviderList(tmpInput);
 							for (let l = 0; l < tmpInputProviderList.length; l++)
 							{
-								for (let r = 0; r < tmpTabularRecordSet.length; r++)
+								let tmpRowsToExecute = [];
+								if (pRowIndex != null)
+								{
+									if (pRowIndex < tmpTabularRecordSet.length)
+									{
+										tmpRowsToExecute.push(pRowIndex);
+									}
+									else
+									{
+										this.log.error(`Dynamic form runInputProviderFunctions [${this.Hash}]::[${this.UUID}] row index ${pRowIndex} is out of bounds for input [${tmpInput.Hash}] with ${tmpTabularRecordSet.length} rows.`);
+									}
+								}
+								else
+								{
+									for (let r = 0; r < tmpTabularRecordSet.length; r++)
+									{
+										tmpRowsToExecute.push(r);
+									}
+								}
+								for (const r of tmpRowsToExecute)
 								{
 									if (this.pict.providers[tmpInputProviderList[l]] &&
 										(pRowIndex === undefined || pRowIndex === null || pRowIndex === r))
@@ -836,7 +855,7 @@ class PictViewDynamicForm extends libPictViewClass
 									}
 									else
 									{
-										this.log.error(`Dynamic form runInputProviderFunctions supporting [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[l]}] for input [${tmpInput.Hash}].`);
+										this.log.error(`Dynamic form runInputProviderFunctions supporting [${this.Hash}]::[${this.UUID}] cannot find provider [${tmpInputProviderList[l]}] for input [${tmpInput.Hash}]${pRowIndex != null ? ` in row ${pRowIndex}` : ''}.`);
 									}
 								}
 							}

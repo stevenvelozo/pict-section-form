@@ -47,8 +47,6 @@ class CustomInputHandler extends libPictSectionInputExtension
 	{
 		super(pFable, pOptions, pServiceHash);
 
-		/** @type {import('pict')} */
-		this.pict;
 		/** @type {import('pict') & { newAnticipate: () => any }} */
 		this.fable;
 		/** @type {any} */
@@ -302,8 +300,33 @@ class CustomInputHandler extends libPictSectionInputExtension
 			{
 				if (tmpInput.PictForm.EntityBundleTriggerGroup && this.pict.views.PictFormMetacontroller)
 				{
+					const tmpGroupConfig = this.getTriggerGroupConfigurationArray(tmpInput, tmpInput.PictForm.EntityBundleTriggerGroup)[0];
+					if (tmpGroupConfig && Array.isArray(tmpGroupConfig.PreSolvers))
+					{
+						this.pict.providers.DynamicSolver.executeSolvers(pView, tmpGroupConfig.PreSolvers, `EntityBundleTriggerGroup hash ${tmpGroupConfig.TriggerGroupHash} pre-trigger`);
+					}
+					let tmpTransactionGUID;
+					if (tmpGroupConfig && Array.isArray(tmpGroupConfig.PostSolvers))
+					{
+						tmpTransactionGUID = pTransactionGUID || this.pict.getUUID();
+						if (tmpTransactionGUID !== pTransactionGUID)
+						{
+							this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
+						}
+						pView.registerOnTransactionCompleteCallback(tmpTransactionGUID, () =>
+						{
+							if (Array.isArray(tmpGroupConfig.PostSolvers))
+							{
+								this.pict.providers.DynamicSolver.executeSolvers(pView, tmpGroupConfig.PostSolvers, `EntityBundleTriggerGroup hash ${tmpGroupConfig.TriggerGroupHash} tabular post-trigger`);
+							}
+						});
+					}
 					// Trigger the autofill global event
 					this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent(`TriggerGroup:${tmpInput.PictForm.EntityBundleTriggerGroup}:BundleLoad:${pInput.Hash || pInput.DataAddress}:${this.pict.getUUID()}`, pTransactionGUID);
+					if (tmpTransactionGUID && tmpTransactionGUID !== pTransactionGUID)
+					{
+						pView.finalizeTransaction(tmpTransactionGUID);
+					}
 				}
 				if (tmpInput.PictForm.EntityBundleTriggerMetacontrollerSolve && this.pict.views.PictFormMetacontroller)
 				{
@@ -339,6 +362,30 @@ class CustomInputHandler extends libPictSectionInputExtension
 				});
 		});
 	}
+
+	/**
+	 * @param {Object} pInput - The input object.
+	 * @param {string} pTriggerGroupHash - The trigger group hash.
+	 * @return {Array<Record<string, any>>} - An array of trigger group configurations.
+	 */
+	getTriggerGroupConfigurationArray(pInput, pTriggerGroupHash)
+	{
+		let tmpAutoFillTriggerGroups = pInput.PictForm.AutofillTriggerGroup;
+		if (!tmpAutoFillTriggerGroups)
+		{
+			return [];
+		}
+		if (!Array.isArray(tmpAutoFillTriggerGroups))
+		{
+			tmpAutoFillTriggerGroups = [tmpAutoFillTriggerGroups];
+		}
+		if (pTriggerGroupHash == null)
+		{
+			return tmpAutoFillTriggerGroups;
+		}
+		return tmpAutoFillTriggerGroups.filter((pGroup) => pGroup.TriggerGroupHash === pTriggerGroupHash);
+	}
+
 
 	/**
 	 * Initializes the input element for the Pict provider select input.

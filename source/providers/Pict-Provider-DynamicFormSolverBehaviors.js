@@ -112,6 +112,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 
 		this.addSolverFunction(pExpressionParser, 'settabularrowlength', 'fable.providers.DynamicFormSolverBehaviors.setTabularRowLength', 'Sets the length of a tabular data set.');
 		this.addSolverFunction(pExpressionParser, 'runsolvers', 'fable.providers.DynamicFormSolverBehaviors.runSolvers', 'Solves all views.');
+		this.addSolverFunction(pExpressionParser, 'refreshtabularsection', 'fable.providers.DynamicFormSolverBehaviors.refreshTabularSection', 'Causes a tabular section to refresh its display.');
 
 		return false;
 	}
@@ -261,6 +262,67 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 
 		this.pict.ContentAssignment.removeClass(this.getGroupSelector(tmpGroupView.formID, pGroupHash), this.cssHideGroupClass);
 		return true;
+	}
+
+	/**
+	 * Causes a tabular section to refresh its display
+	 *
+	 * @param {string} pSectionHash - The hash of the section containing the tabular group
+	 * @param {string} pGroupHash - The hash of the tabular group
+	 *
+	 * @return {void}
+	 */
+	refreshTabularSection(pSectionHash, pGroupHash)
+	{
+		const tmpGroupView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash)
+		if (!tmpGroupView)
+		{
+			this.log.warn(`PictDynamicFormsInformary: showGroup could not find group with section hash [${pSectionHash}] group [${pGroupHash}].`);
+			return;
+		}
+		const tmpGroupIndex = tmpGroupView.getGroupIndexFromHash(pGroupHash);
+		if (tmpGroupIndex < 0)
+		{
+			this.log.warn(`PictDynamicFormsInformary: setTabularRowLength could not find group with section hash [${pSectionHash}] group [${pGroupHash}].`);
+			return;
+		}
+		const tmpGroup = tmpGroupView.getGroup(tmpGroupIndex);
+
+		if (tmpGroup)
+		{
+			// Also render any other views that have this as the RecordSetAddress
+			// Filter the views by each Group.RecordSetAddress and find the ones with this RecordSetAddress
+			const tmpViewsToRender = this.pict.views.PictFormMetacontroller.filterViews(
+				/** @param {import('../views/Pict-View-DynamicForm.js')} pViewToTestForGroup */
+				(pViewToTestForGroup) =>
+				{
+					if (!pViewToTestForGroup.isPictSectionForm)
+					{
+						return false;
+					}
+					const tmpGroupsToTest = pViewToTestForGroup.getGroups();
+					for (let i = 0; i < tmpGroupsToTest.length; i++)
+					{
+						if (tmpGroupsToTest[i].RecordSetAddress == tmpGroup.RecordSetAddress)
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+			)
+			// We expect this view to be in the set.
+			for (let i = 0; i < tmpViewsToRender.length; i++)
+			{
+				tmpViewsToRender[i].render();
+			}
+
+			// Run the solver
+			this.pict.providers.DynamicSolver.solveViews();
+
+			// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
+			this.pict.views.PictFormMetacontroller.marshalFormSections();
+		}
 	}
 
 	/**

@@ -36,8 +36,6 @@ Providers: ["Pict-Input-EntityBundleRequest", "Pict-Input-TriggerGroup"],
  * @memberof providers.inputs
  */
 declare class CustomInputHandler extends libPictSectionInputExtension {
-    /** @type {import('pict')} */
-    pict: import("pict");
     /** @type {import('pict') & { newAnticipate: () => any }} */
     fable: import("pict") & {
         newAnticipate: () => any;
@@ -56,6 +54,12 @@ declare class CustomInputHandler extends libPictSectionInputExtension {
      * @return {Promise<Error?>} - Returns a promise that resolves when the data has been gathered.
      */
     gatherDataFromServer(pView: any, pInput: any, pValue: any, pHTMLSelector: string, pTransactionGUID?: string): Promise<Error | null>;
+    /**
+     * @param {Object} pInput - The input object.
+     * @param {string} pTriggerGroupHash - The trigger group hash.
+     * @return {Array<Record<string, any>>} - An array of trigger group configurations.
+     */
+    getTriggerGroupConfigurationArray(pInput: any, pTriggerGroupHash: string): Array<Record<string, any>>;
     /**
      * Initializes a tabular input element.
      *
