@@ -317,10 +317,9 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 				tmpViewsToRender[i].render();
 			}
 
-			// Run the solver
-			this.pict.providers.DynamicSolver.solveViews();
+			//NOTE: not running a solve, since this is run from the solver; if you need a solve, call runSolvers()
 
-			// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
+			// We've re-rendered but we don't know what needs to be marshaled
 			this.pict.views.PictFormMetacontroller.marshalFormSections();
 		}
 	}
