@@ -297,6 +297,14 @@ class CustomInputHandler extends libPictSectionInputExtension
 			{
 				continue;
 			}
+			/*
+			 * FIXME: for large tables, do we want to run this for every row?
+			if (Array.isArray(tmpAutoFillTriggerGroup.PreSolvers))
+			{
+				this.pict.providers.DynamicSolver.executeSolvers(pView, tmpAutoFillTriggerGroup.PreSolvers, `AutofillTriggerGroup hash ${tmpAutoFillTriggerGroup.TriggerGroupHash} pre-autofill`);
+			}
+			*/
+
 			//FIXME: why is this flow different from non-tabular? revisit
 			if (!tmpAutoFillTriggerGroup.SelectOptionsRefresh)
 			{
@@ -317,6 +325,13 @@ class CustomInputHandler extends libPictSectionInputExtension
 				this.pict.providers['Pict-Input-Select'].refreshSelectListTabular(tmpInputView, tmpInputView.getGroup(pInput.PictForm.GroupIndex), tmpInputView.getRow(pInput.PictForm.GroupIndex, pInput.PictForm.Row), pInput, pValue, pHTMLSelector, pRowIndex);
 				tmpInputView.manualMarshalTabularDataToViewByInput(pInput, pRowIndex, tmpEventGUID);
 			}
+			/*
+			 * TODO: for large tables, do we want to run this for every row?
+			if (Array.isArray(tmpAutoFillTriggerGroup.PostSolvers))
+			{
+				this.pict.providers.DynamicSolver.executeSolvers(pView, tmpAutoFillTriggerGroup.PostSolvers, `AutofillTriggerGroup hash ${tmpAutoFillTriggerGroup.TriggerGroupHash} post-autofill`);
+			}
+			*/
 		}
 
 		return super.onAfterEventTabularCompletion(pView, pInput, pValue, pHTMLSelector, pRowIndex, pEvent, pTransactionGUID);

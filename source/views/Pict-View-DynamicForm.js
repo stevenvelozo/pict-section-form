@@ -123,6 +123,8 @@ class PictViewDynamicForm extends libPictViewClass
 		this.initialBundleLoaded = false;
 
 		this.fable.ManifestFactory.initializeFormGroups(this);
+
+		this._LoopDetectionData = {};
 	}
 
 	/**
@@ -650,7 +652,7 @@ class PictViewDynamicForm extends libPictViewClass
 		try
 		{
 			this.runLayoutProviderFunctions('onGroupLayoutInitialize', tmpTransactionGUID);
-			this.runInputProviderFunctions('onInputInitialize', null, null, tmpTransactionGUID);
+			this.runInputProviderFunctions('onInputInitialize', null, null, tmpTransactionGUID, true);
 		}
 		catch (pError)
 		{
@@ -727,15 +729,44 @@ class PictViewDynamicForm extends libPictViewClass
 	}
 
 	/**
+	 * @private
+	 * @param {string} pFunctionName
+	 * @param {string} [pInputHash]
+	 * @param {number} [pRowIndex]
+	 */
+	_trackInfiniteLoop(pFunctionName, pInputHash, pRowIndex)
+	{
+		this._LoopDetectionData[pFunctionName] = this._LoopDetectionData[pFunctionName] || {};
+		const tmpInputSignature = `${pInputHash ?? ''}::${pRowIndex ?? ''}`;
+		const tmpNowEpochMS = Date.now();
+		this._LoopDetectionData[pFunctionName][tmpInputSignature] = this._LoopDetectionData[pFunctionName][tmpInputSignature] || { Count: 0, Timestamp: tmpNowEpochMS };
+		if (tmpNowEpochMS - this._LoopDetectionData[pFunctionName][tmpInputSignature].Timestamp > 1000)
+		{
+			// only track events within a 1 second window
+			this._LoopDetectionData[pFunctionName][tmpInputSignature].Count = 0;
+			this._LoopDetectionData[pFunctionName][tmpInputSignature].Timestamp = tmpNowEpochMS;
+		}
+		this._LoopDetectionData[pFunctionName][tmpInputSignature].Count += 1;
+		return this._LoopDetectionData[pFunctionName][tmpInputSignature];
+	}
+
+	/**
 	 * Runs the input provider functions.
 	 *
 	 * @param {string} pFunctionName - The name of the function to run for each input provider.
 	 * @param {string} [pInputHash] - The hash of the input to run the function for.
 	 * @param {number} [pRowIndex] - The index of the row to run the
 	 * @param {string} [pTransactionGUID] - The transaction GUID to use for logging.
+	 * @param {boolean} [pLoopDetection] - Whether to enable loop detection.
 	 */
-	runInputProviderFunctions(pFunctionName, pInputHash, pRowIndex, pTransactionGUID)
+	runInputProviderFunctions(pFunctionName, pInputHash, pRowIndex, pTransactionGUID, pLoopDetection)
 	{
+		const tmpLoopData = this._trackInfiniteLoop(pFunctionName, pInputHash, pRowIndex);
+		if (pLoopDetection && tmpLoopData.Count > 10) // seems like a reasonable threshold for now (10 inits in a second)
+		{
+			this.log.fatal(` !!!!!! Infinite loop detected in runInputProviderFunctions for function [${pFunctionName}] on input [${pInputHash}] row [${pRowIndex}] in form [${this.Hash}]::[${this.UUID}].  Aborting further processing.`, { Stack: new Error().stack });
+			return;
+		}
 		const tmpTransactionGUID = (typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
 		const tmpTransaction = this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
 
@@ -1323,16 +1354,20 @@ class PictViewDynamicForm extends libPictViewClass
 	registerOnTransactionCompleteCallback(pTransactionGUID, fCallback)
 	{
 		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
+		let tmpPendingAsyncOperationCount = 0;
 		let tmpFinalized = false;
 		for (const tmpQueueItem of tmpQueue)
 		{
+			if (tmpQueueItem.Type === PENDING_ASYNC_OPERATION_TYPE)
+			{
+				++tmpPendingAsyncOperationCount;
+			}
 			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
 			{
 				tmpFinalized = true;
-				break;
 			}
 		}
-		if (tmpFinalized)
+		if (tmpFinalized && tmpPendingAsyncOperationCount === 0)
 		{
 			fCallback();
 		}

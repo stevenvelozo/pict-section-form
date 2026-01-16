@@ -86,7 +86,27 @@ module.exports.default_configuration = libPictSectionForm.PictFormApplication.de
 module.exports.default_configuration.pict_configuration = {
 	Product: "ComplexTable",
 
-	DefaultAppData: require("./FruitData.json"),
+	DefaultAppData: Object.assign({}, require("./FruitData.json"),
+		{
+			SourceArray:
+			[
+				{
+					"ItemID": 1,
+					"Value": "First",
+					"HiddenValue": "HiddenOne",
+				},
+				{
+					"ItemID": 2,
+					"Value": "Second",
+					"HiddenValue": "HiddenTwo",
+				},
+				{
+					"ItemID": 3,
+					"Value": "Third",
+					"HiddenValue": "HiddenThree",
+				},
+			],
+		}),
 
 	DefaultFormManifest: {
 		Scope: "SuperComplexTabularForm",
@@ -278,6 +298,26 @@ module.exports.default_configuration.pict_configuration = {
 				Hash: "Documentation",
 				Name: "Preparation Documentation",
 			},
+			{
+				"Name": "Array Marshalling Test",
+				"Hash": "ArrayTest",
+				"Solvers": [],
+				"Groups": [
+					{
+						"Name": "",
+						"Hash": "ItemTablePre"
+					},
+					{
+						"Name": "Item Table",
+						"Hash": "ItemTable",
+						"Rows": [],
+						"RecordSetSolvers": [],
+						"Layout": "Tabular",
+						"RecordSetAddress": "ItemArray",
+						"RecordManifest": "ItemManifest"
+					}
+				]
+			}
 		],
 
 		Descriptors: {
@@ -285,7 +325,14 @@ module.exports.default_configuration.pict_configuration = {
 				Name: "Pick a Random Number",
 				Hash: "PickRandomNumber",
 				DataType: "String",
-				PictForm: { Section: "Recipe", Group: "Recipe", Row: 1, InputType: "Option", SelectOptionsPickList: "RandomNumbers" },
+				PictForm:
+				{
+					Section: "Recipe",
+					Group: "Recipe",
+					Row: 1,
+					InputType: "Option",
+					SelectOptionsPickList: "RandomNumbers",
+				},
 			},
 			RecipeName: {
 				Name: "Recipe Name",
@@ -812,6 +859,53 @@ module.exports.default_configuration.pict_configuration = {
 					Width: 1,
 				},
 			},
+			"Placeholder": {
+				"Hash": "Placeholder",
+				"Name": "Placeholder",
+				"PictForm":
+				{
+					"Section": "Recipe",
+					"Group": "Recipe",
+					/*
+					 * NOTE: This input creates an infinite loop if in the ArrayTest section
+					 *       Uncomment this to test the infinite loop protection
+					"Section": "ArrayTest",
+					"Group": "ItemTablePre",
+					 */
+					"InputType": "Hidden",
+					"Providers": [ "Pict-Input-EntityBundleRequest" ],
+					"EntityBundleTriggerGroup": "SourceDataChange",
+					"EntityBundleTriggerWithoutValue": true,
+					"EntityBundleTriggerOnInitialize": true,
+					"EntitiesBundle": [],
+				}
+			},
+			"ItemArray": {
+				"Hash": "ItemArray",
+				"Name": "Item Array",
+				"DataAddress": "ItemArray",
+				"DataType": "Array",
+				"PictForm": {
+					"Row": "0",
+					"Width": "0",
+					"InputType": "Hidden",
+					"Providers": [
+						"Pict-Input-AutofillTriggerGroup"
+					],
+					"AutofillTriggerGroup": [
+						{
+							"TriggerGroupHash": "SourceDataChange",
+							"MarshalEmptyValues": true,
+							"TriggerAddress": "AppData.SourceArray",
+							"PostSolvers": [
+								'refreshtabularsection("ArrayTest","ItemTable")'
+							]
+						}
+					],
+					"Section": "ArrayTest",
+					"Group": "ItemTablePre"
+				}
+			},
 		},
 
 		ReferenceManifests: {
@@ -968,6 +1062,46 @@ module.exports.default_configuration.pict_configuration = {
 					},
 				},
 			},
+			"ItemManifest": {
+				"Scope": "ItemManifest",
+				"Descriptors": {
+					"ItemID": {
+						"Hash": "ItemID",
+						"Name": "Item ID",
+						"DataAddress": "ItemID",
+						"DataType": "Number",
+						"PictForm": {
+							"Row": "1",
+							"Width": "8",
+							"InputType": "ReadOnly"
+						}
+					},
+					"HiddenValue": {
+						"Hash": "HiddenValue",
+						"Name": "Hidden Value",
+						"DataAddress": "HiddenValue",
+						"DataType": "String",
+						"PictForm": {
+							"Row": "1",
+							"Width": "8",
+							"InputType": "Hidden",
+							"TabularHidden": true
+						}
+					},
+					"Value": {
+						"Hash": "Value",
+						"Name": "Value",
+						"DataAddress": "Value",
+						"DataType": "String",
+						"PictForm": {
+							"Row": "1",
+							"Width": "8"
+						}
+					}
+				},
+				"Sections": [],
+				"ReferenceManifests": {}
+			}
 		},
 	},
 };

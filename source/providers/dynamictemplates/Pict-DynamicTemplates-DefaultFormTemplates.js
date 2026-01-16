@@ -221,6 +221,12 @@ Glug glug glug Oo... -->
 `
 		},
 		{
+			"HashPostfix": "-Template-Input-InputType-Hidden",
+			"Template": /*HTML*/`
+					<!-- InputType Hidden {~D:Record.Hash~} {~D:Record.DataType~} -->
+`
+		},
+		{
 			"HashPostfix": "-Template-Input-InputType-Color",
 			"Template": /*HTML*/`
 					<!-- InputType Color {~D:Record.Hash~} {~D:Record.DataType~} -->
@@ -955,13 +961,12 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Hidden",
 			"Template": /*HTML*/`
 					<!-- InputType Hidden {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} {~D:Record.Macro.InformaryTabular~}
+					<span
 `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-Hidden",
-			"Template": /*HTML*/` value="">
-`
+			"Template": /*HTML*/`></span>`,
 		},
 
 		{

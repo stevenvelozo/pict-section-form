@@ -19,6 +19,7 @@ declare class PictViewDynamicForm extends libPictViewClass {
     formID: string;
     viewMarshalDestination: any;
     initialBundleLoaded: boolean;
+    _LoopDetectionData: {};
     /**
      * Returns the default template prefix.
      *
@@ -132,14 +133,22 @@ declare class PictViewDynamicForm extends libPictViewClass {
      */
     runLayoutProviderFunctions(pFunctionName: string, pTransactionGUID?: string): void;
     /**
+     * @private
+     * @param {string} pFunctionName
+     * @param {string} [pInputHash]
+     * @param {number} [pRowIndex]
+     */
+    private _trackInfiniteLoop;
+    /**
      * Runs the input provider functions.
      *
      * @param {string} pFunctionName - The name of the function to run for each input provider.
      * @param {string} [pInputHash] - The hash of the input to run the function for.
      * @param {number} [pRowIndex] - The index of the row to run the
      * @param {string} [pTransactionGUID] - The transaction GUID to use for logging.
+     * @param {boolean} [pLoopDetection] - Whether to enable loop detection.
      */
-    runInputProviderFunctions(pFunctionName: string, pInputHash?: string, pRowIndex?: number, pTransactionGUID?: string): void;
+    runInputProviderFunctions(pFunctionName: string, pInputHash?: string, pRowIndex?: number, pTransactionGUID?: string, pLoopDetection?: boolean): void;
     /**
      * Checks if a view-specific template exists based on the given template postfix.
      * @param {string} pTemplatePostfix - The postfix of the template to check.
