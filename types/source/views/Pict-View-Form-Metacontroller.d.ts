@@ -200,6 +200,8 @@ declare class PictFormMetacontroller extends libPictViewClass {
      */
     registerEventTransactionAsyncOperation(pTransactionGUID: string, pAsyncOperationHash: string): void;
     /**
+     * FIXME: consolidate with same functions(s) in the dynamic view class
+     *
      * @param {string} pTransactionGUID - The transaction GUID.
      * @param {string} pAsyncOperationHash - The hash of the async operation.
      *

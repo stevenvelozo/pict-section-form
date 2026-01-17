@@ -1202,6 +1202,10 @@ class PictFormMetacontroller extends libPictViewClass
 	triggerGlobalInputEvent(pEvent, pTransactionGUID)
 	{
 		const tmpTransactionGUID = (pTransactionGUID && typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
+		if (pTransactionGUID !== tmpTransactionGUID)
+		{
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
+		}
 		let tmpEvent = (typeof(pEvent) === 'string') ? pEvent : this.fable.getUUID();
 		let tmpViewHashes = Object.keys(this.pict.views);
 		let tmpCompletedHashes = {};
@@ -1235,6 +1239,8 @@ class PictFormMetacontroller extends libPictViewClass
 	}
 
 	/**
+	 * FIXME: consolidate with same functions(s) in the dynamic view class
+	 *
 	 * @param {string} pTransactionGUID - The transaction GUID.
 	 * @param {string} pAsyncOperationHash - The hash of the async operation.
 	 *
@@ -1245,7 +1251,7 @@ class PictFormMetacontroller extends libPictViewClass
 		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
 		let tmpPendingAsyncOperationCount = 0;
 		let tmpMarkedOperationCount = 0;
-		let tmpFinalized = false;
+		let tmpReadyToFinalize = false;
 		for (let i = 0; i < tmpQueue.length; i++)
 		{
 			const tmpQueueItem = tmpQueue[i];
@@ -1264,15 +1270,23 @@ class PictFormMetacontroller extends libPictViewClass
 			}
 			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
 			{
-				tmpFinalized = true;
+				tmpReadyToFinalize = true;
 			}
 		}
-		if (tmpPendingAsyncOperationCount === 0)
+		if (tmpMarkedOperationCount === 0)
 		{
-			for (const tmpQueueItem of tmpQueue)
+			this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete ${pTransactionGUID} could not find async operation with hash ${pAsyncOperationHash}.`);
+			return;
+		}
+		if (tmpReadyToFinalize && tmpPendingAsyncOperationCount === 0)
+		{
+			for (let i = 0; i < tmpQueue.length; i++)
 			{
+				const tmpQueueItem = tmpQueue[i];
 				if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
 				{
+					tmpQueue.splice(i, 1);
+					--i;
 					if (typeof tmpQueueItem.Data !== 'function')
 					{
 						this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
@@ -1288,6 +1302,7 @@ class PictFormMetacontroller extends libPictViewClass
 					}
 				}
 			}
+			delete this.pict.TransactionTracking.transactions[pTransactionGUID];
 		}
 		return tmpMarkedOperationCount > 0;
 	}
@@ -1315,13 +1330,16 @@ class PictFormMetacontroller extends libPictViewClass
 			this.pict.log.info(`PICT View Metatemplate Helper finalizeTransaction ${pTransactionGUID} is waiting on ${tmpPendingAsyncOperationCount} pending async operations.`);
 			return false;
 		}
-		for (const tmpQueueItem of tmpQueue)
+		for (let i = 0; i < tmpQueue.length; i++)
 		{
+			const tmpQueueItem = tmpQueue[i];
 			if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
 			{
+				tmpQueue.splice(i, 1);
+				--i;
 				if (typeof tmpQueueItem.Data !== 'function')
 				{
-					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
+					this.log.error(`PICT View Metatemplate Helper finalizeTransaction transaction callback was not a function.`);
 					continue;
 				}
 				try
@@ -1330,12 +1348,11 @@ class PictFormMetacontroller extends libPictViewClass
 				}
 				catch (pError)
 				{
-					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback error: ${pError}`, { Stack: pError.stack });
+					this.log.error(`PICT View Metatemplate Helper finalizeTransaction transaction callback error: ${pError}`, { Stack: pError.stack });
 				}
 			}
 		}
-		//TODO: figure out how to safely clean up old transactions
-		//delete this.pict.TransactionTracking.transactions[pTransactionGUID];
+		delete this.pict.TransactionTracking.transactions[pTransactionGUID];
 		return true;
 	}
 
@@ -1346,16 +1363,20 @@ class PictFormMetacontroller extends libPictViewClass
 	registerOnTransactionCompleteCallback(pTransactionGUID, fCallback)
 	{
 		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
-		let tmpFinalized = false;
+		let tmpPendingAsyncOperationCount = 0;
+		let tmpReadyToFinalize = false;
 		for (const tmpQueueItem of tmpQueue)
 		{
+			if (tmpQueueItem.Type === PENDING_ASYNC_OPERATION_TYPE)
+			{
+				++tmpPendingAsyncOperationCount;
+			}
 			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
 			{
-				tmpFinalized = true;
-				break;
+				tmpReadyToFinalize = true;
 			}
 		}
-		if (tmpFinalized)
+		if (tmpReadyToFinalize && tmpPendingAsyncOperationCount === 0)
 		{
 			fCallback();
 		}

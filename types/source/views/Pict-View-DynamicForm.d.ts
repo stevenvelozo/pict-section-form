@@ -303,6 +303,8 @@ declare class PictViewDynamicForm extends libPictViewClass {
      */
     registerEventTransactionAsyncOperation(pTransactionGUID: string, pAsyncOperationHash: string): void;
     /**
+     * FIXME: consolidate with same functions(s) in the metacontroller
+     *
      * @param {string} pTransactionGUID - The transaction GUID.
      * @param {string} pAsyncOperationHash - The hash of the async operation.
      *

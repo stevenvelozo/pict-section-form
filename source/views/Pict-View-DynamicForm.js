@@ -1243,6 +1243,8 @@ class PictViewDynamicForm extends libPictViewClass
 	}
 
 	/**
+	 * FIXME: consolidate with same functions(s) in the metacontroller
+	 *
 	 * @param {string} pTransactionGUID - The transaction GUID.
 	 * @param {string} pAsyncOperationHash - The hash of the async operation.
 	 *
@@ -1253,7 +1255,7 @@ class PictViewDynamicForm extends libPictViewClass
 		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
 		let tmpPendingAsyncOperationCount = 0;
 		let tmpMarkedOperationCount = 0;
-		let tmpFinalized = false;
+		let tmpReadyToFinalize = false;
 		for (let i = 0; i < tmpQueue.length; i++)
 		{
 			const tmpQueueItem = tmpQueue[i];
@@ -1272,15 +1274,23 @@ class PictViewDynamicForm extends libPictViewClass
 			}
 			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
 			{
-				tmpFinalized = true;
+				tmpReadyToFinalize = true;
 			}
 		}
-		if (tmpPendingAsyncOperationCount === 0)
+		if (tmpMarkedOperationCount === 0)
 		{
-			for (const tmpQueueItem of tmpQueue)
+			this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete ${pTransactionGUID} could not find async operation with hash ${pAsyncOperationHash}.`);
+			return;
+		}
+		if (tmpReadyToFinalize && tmpPendingAsyncOperationCount === 0)
+		{
+			for (let i = 0; i < tmpQueue.length; i++)
 			{
+				const tmpQueueItem = tmpQueue[i];
 				if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
 				{
+					tmpQueue.splice(i, 1);
+					--i;
 					if (typeof tmpQueueItem.Data !== 'function')
 					{
 						this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
@@ -1296,6 +1306,7 @@ class PictViewDynamicForm extends libPictViewClass
 					}
 				}
 			}
+			delete this.pict.TransactionTracking.transactions[pTransactionGUID];
 		}
 		return tmpMarkedOperationCount > 0;
 	}
@@ -1323,13 +1334,16 @@ class PictViewDynamicForm extends libPictViewClass
 			this.pict.log.info(`PICT View Metatemplate Helper finalizeTransaction ${pTransactionGUID} is waiting on ${tmpPendingAsyncOperationCount} pending async operations.`);
 			return false;
 		}
-		for (const tmpQueueItem of tmpQueue)
+		for (let i = 0; i < tmpQueue.length; i++)
 		{
+			const tmpQueueItem = tmpQueue[i];
 			if (tmpQueueItem.Type === TRANSACTION_COMPLETE_CALLBACK_TYPE)
 			{
+				tmpQueue.splice(i, 1);
+				--i;
 				if (typeof tmpQueueItem.Data !== 'function')
 				{
-					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback was not a function.`);
+					this.log.error(`PICT View Metatemplate Helper finalizeTransaction transaction callback was not a function.`);
 					continue;
 				}
 				try
@@ -1338,12 +1352,11 @@ class PictViewDynamicForm extends libPictViewClass
 				}
 				catch (pError)
 				{
-					this.log.error(`PICT View Metatemplate Helper eventTransactionAsyncOperationComplete transaction callback error: ${pError}`, { Stack: pError.stack });
+					this.log.error(`PICT View Metatemplate Helper finalizeTransaction transaction callback error: ${pError}`, { Stack: pError.stack });
 				}
 			}
 		}
-		//TODO: figure out how to safely clean up old transactions
-		//delete this.pict.TransactionTracking.transactions[pTransactionGUID];
+		delete this.pict.TransactionTracking.transactions[pTransactionGUID];
 		return true;
 	}
 
@@ -1355,7 +1368,7 @@ class PictViewDynamicForm extends libPictViewClass
 	{
 		const tmpQueue = this.pict.TransactionTracking.checkTransactionQueue(pTransactionGUID);
 		let tmpPendingAsyncOperationCount = 0;
-		let tmpFinalized = false;
+		let tmpReadyToFinalize = false;
 		for (const tmpQueueItem of tmpQueue)
 		{
 			if (tmpQueueItem.Type === PENDING_ASYNC_OPERATION_TYPE)
@@ -1364,10 +1377,10 @@ class PictViewDynamicForm extends libPictViewClass
 			}
 			if (tmpQueueItem.Type === READY_TO_FINALIZE_TYPE)
 			{
-				tmpFinalized = true;
+				tmpReadyToFinalize = true;
 			}
 		}
-		if (tmpFinalized && tmpPendingAsyncOperationCount === 0)
+		if (tmpReadyToFinalize && tmpPendingAsyncOperationCount === 0)
 		{
 			fCallback();
 		}
@@ -1386,7 +1399,6 @@ class PictViewDynamicForm extends libPictViewClass
 	 */
 	groupInputEvent(pGroupIndex, pEvent, pCompletedHashes, pTransactionGUID)
 	{
-		const tmpTransactionGUID = (pTransactionGUID && typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
 		const tmpGroup = this.getGroup(pGroupIndex);
 
 		if (!tmpGroup)
@@ -1395,6 +1407,11 @@ class PictViewDynamicForm extends libPictViewClass
 			return;
 		}
 
+		const tmpTransactionGUID = (pTransactionGUID && typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
+		if (pTransactionGUID !== tmpTransactionGUID)
+		{
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
+		}
 		if (tmpGroup.Rows.length < 1)
 		{
 			// tabular
@@ -1444,10 +1461,19 @@ class PictViewDynamicForm extends libPictViewClass
 	sectionInputEvent(pEvent, pCompletedHashes, pTransactionGUID)
 	{
 		const tmpGroupCount = this.sectionDefinition.Groups.length;
+		const tmpTransactionGUID = (pTransactionGUID && typeof(pTransactionGUID) === 'string') ? pTransactionGUID : this.fable.getUUID();
+		if (pTransactionGUID !== tmpTransactionGUID)
+		{
+			this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);
+		}
 
 		for (let i = 0; i < tmpGroupCount; i++)
 		{
 			this.groupInputEvent(i, pEvent, pCompletedHashes, pTransactionGUID);
+		}
+		if (pTransactionGUID !== tmpTransactionGUID)
+		{
+			this.finalizeTransaction(tmpTransactionGUID);
 		}
 	}
 
