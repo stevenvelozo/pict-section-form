@@ -209,6 +209,7 @@ class PictViewDynamicForm extends libPictViewClass
 		this.pict.PictApplication.solve();
 		if (this.pict.views.PictFormMetacontroller)
 		{
+			// since the solver may have changed data in other secitons, remarshal all sections
 			this.pict.views.PictFormMetacontroller.marshalFormSections();
 		}
 		else
@@ -282,7 +283,15 @@ class PictViewDynamicForm extends libPictViewClass
 		}
 		// Run any dynamic input providers for the input hash.
 		this.pict.PictApplication.solve();
-		this.marshalToView();
+		if (this.pict.views.PictFormMetacontroller)
+		{
+			// since the solver may have changed data in other secitons, remarshal all sections
+			this.pict.views.PictFormMetacontroller.marshalFormSections();
+		}
+		else
+		{
+			this.marshalToView();
+		}
 	}
 
 	/**
