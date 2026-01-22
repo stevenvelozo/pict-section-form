@@ -425,6 +425,85 @@ class ImportExtraDataCSVCommand extends libPictCommandLineUtility.ServiceCommand
 						}
 					}
 				}
+				const tmpReferenceManifests = [];
+				for (const tmpReferenceManifestHash of Object.keys(this.workingManifest.ReferenceManifests || {}))
+				{
+					const tmpReferenceManifest = this.workingManifest.ReferenceManifests[tmpReferenceManifestHash];
+					tmpReferenceManifests.push(tmpReferenceManifest);
+					//TODO: should we recursively check nested reference manifests?
+				}
+				for (const tmpReferenceManifest of tmpReferenceManifests)
+				{
+					let tmpDescriptorKeys = Object.keys(tmpReferenceManifest.Descriptors);
+					for (let i = 0; i < tmpDescriptorKeys.length; i++)
+					{
+						let tmpDescriptor = tmpReferenceManifest.Descriptors[tmpDescriptorKeys[i]];
+						if ('PictForm' in tmpDescriptor)
+						{
+							if (tmpDescriptor.PictForm.InputType == 'Markdown')
+							{
+								this.log.info(`Checking for extra data Markdown for Descriptor [${tmpDescriptor.Hash}]...`);
+
+								let tmpPotentialMarkdownPath = libPath.join(this.CommandOptions.directory, `${tmpDescriptor.Hash}.md`);
+								if (!libFS.existsSync(tmpPotentialMarkdownPath))
+								{
+									this.log.warn(`No extra data Markdown found at [${tmpPotentialMarkdownPath}] ... checking with full cwd in path`);
+									tmpPotentialMarkdownPath = libPath.join(process.cwd(), this.CommandOptions.directory, `${tmpDescriptor.Hash}.md`);
+								}
+								if (!libFS.existsSync(tmpPotentialMarkdownPath))
+								{
+									this.log.warn(`No extra data Markdown found at [${tmpPotentialMarkdownPath}]`);
+									continue;
+								}
+
+								this.log.info(`...found extra data Markdown at [${tmpPotentialMarkdownPath}].`);
+								let tmpMarkdownContent = libFS.readFileSync(tmpPotentialMarkdownPath, 'utf8');
+								this.log.info(`...[${tmpPotentialMarkdownPath}] had ${tmpMarkdownContent.length} characters; assigning to Content`);
+								tmpDescriptor.Content = tmpMarkdownContent;
+							}
+							if (tmpDescriptor.PictForm.InputType == 'HTML')
+							{
+								this.log.info(`Checking for extra data HTML for Descriptor [${tmpDescriptor.Hash}]...`);
+
+								let tmpPotentialHTMLPath = libPath.join(this.CommandOptions.directory, `${tmpDescriptor.Hash}.html`);
+								if (!libFS.existsSync(tmpPotentialHTMLPath))
+								{
+									this.log.warn(`No extra data HTML found at [${tmpPotentialHTMLPath}] ... checking with full cwd in path`);
+									tmpPotentialHTMLPath = libPath.join(process.cwd(), this.CommandOptions.directory, `${tmpDescriptor.Hash}.html`);
+								}
+								if (!libFS.existsSync(tmpPotentialHTMLPath))
+								{
+									this.log.warn(`No extra data HTML found at [${tmpPotentialHTMLPath}]`);
+									continue;
+								}
+
+								this.log.info(`...found extra data HTML at [${tmpPotentialHTMLPath}].`);
+								let tmpMarkdownContent = libFS.readFileSync(tmpPotentialHTMLPath, 'utf8');
+								this.log.info(`...[${tmpPotentialHTMLPath}] had ${tmpMarkdownContent.length} characters; assigning to Content`);
+								tmpDescriptor.Content = tmpMarkdownContent;
+							}
+							let tmpSectionHash = tmpDescriptor?.PictForm?.Section;
+							if (tmpSectionHash)
+							{
+								if ((tmpSectionHash in this.inputToPicklistMapping) && this.inputToPicklistMapping[tmpSectionHash] && (tmpDescriptor.Hash in this.inputToPicklistMapping[tmpSectionHash]))
+								{
+									let tmpPickListHash = this.inputToPicklistMapping[tmpSectionHash][tmpDescriptor.Hash];
+									let tmpPickList = this.pickListConfigurations[tmpSectionHash][tmpPickListHash];
+									if (tmpPickList.ExplicitSourceAddress)
+									{
+										// TODO: We can set this even if it has default data...
+										// TODO: And we can have it auto marshal values into the location if it's empty but that could get messy.
+										tmpDescriptor.PictForm.SelectOptionsPickList = tmpPickList.Hash;
+									}
+									else
+									{
+										tmpDescriptor.PictForm.SelectOptions = tmpPickList.DefaultListData;
+									}
+								}
+							}
+						}
+					}
+				}
 
 				// 3. See if there are sections with submanifests, and, any options lists to create.
 				for (let i = 0; i < this.workingManifest.Sections.length; i++)
