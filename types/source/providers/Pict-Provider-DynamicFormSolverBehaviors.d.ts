@@ -23,6 +23,37 @@ declare class PictDynamicFormsSolverBehaviors extends libPictProvider {
     runSolvers(): void;
     injectBehaviors(pExpressionParser: any): boolean;
     /**
+     * Returns a new array containing the union of two input arrays, removing duplicate values.
+     *
+     * @param {Array} pArrayA - The first array to union.
+     * @param {Array} pArrayB - The second array to union.
+     * @returns {Array} A new array containing unique elements from both input arrays.
+     */
+    unionArrays(pArrayA: any[], pArrayB: any[]): any[];
+    /**
+     * Returns an array containing the elements that are present in the first array but not in the second array.
+     *
+     * @param {Array} pArrayA - The array from which to subtract elements.
+     * @param {Array} pArrayB - The array containing elements to exclude from the first array.
+     * @returns {Array} An array of elements found in pArrayA but not in pArrayB.
+     */
+    differenceArrays(pArrayA: any[], pArrayB: any[]): any[];
+    /**
+     * Returns a new array containing only the unique elements from the input array.
+     *
+     * @param {Array} pArray - The array from which to extract unique elements.
+     * @returns {Array} A new array with duplicate values removed.
+     */
+    uniqueArray(pArray: any[]): any[];
+    /**
+     * Sorts the given array in place using the default sort order.
+     * If the input is not an array, returns an empty array.
+     *
+     * @param {Array} pArray - The array to be sorted.
+     * @returns {Array} The sorted array, or an empty array if input is not an array.
+     */
+    sortArray(pArray: any[]): any[];
+    /**
      * @param {number|string} pSolverOrdinal
      * @param {boolean|string|number} pEnabled
      */
@@ -43,6 +74,24 @@ declare class PictDynamicFormsSolverBehaviors extends libPictProvider {
     checkSolverOrdinalEnabled(pSolveOrdinal: number | string): boolean;
     getSectionSelector(pSectionFormID: any): string;
     setSectionVisibility(pSectionHash: any, pVisible: any): boolean;
+    /**
+     * Shows multiple sections by their hash identifiers.
+     *
+     * Iterates over the provided array of section hash values and calls `showSection`
+     * for each one to display the corresponding section.
+     *
+     * @param {Array<string>} pSectionHashArray - An array of section hash strings to be shown.
+     */
+    showSections(pSectionHashArray: Array<string>): void;
+    /**
+     * Hides multiple sections specified by their hash values.
+     *
+     * Iterates over the provided array of section hashes and hides each section
+     * by calling the `hideSection` method for each hash.
+     *
+     * @param {Array<string>} pSectionHashArray - An array of section hash strings to be hidden.
+     */
+    hideSections(pSectionHashArray: Array<string>): void;
     hideSection(pSectionHash: any): boolean;
     showSection(pSectionHash: any): boolean;
     getGroupSelector(pSectionFormID: any, pGroupHash: any): string;
