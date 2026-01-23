@@ -96,6 +96,14 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		// Wire up the solver functions.
 		this.addSolverFunction(pExpressionParser, 'logvalues', 'fable.providers.DynamicFormSolverBehaviors.logValues', 'Logs a set of values to the console and returns the last one.');
 
+		this.addSolverFunction(pExpressionParser, 'unionarrays', 'fable.providers.DynamicFormSolverBehaviors.unionArrays', 'Return the union of two arrays.');
+		this.addSolverFunction(pExpressionParser, 'differencearrays', 'fable.providers.DynamicFormSolverBehaviors.differenceArrays', 'Return the difference of two arrays.');
+		this.addSolverFunction(pExpressionParser, 'uniquearray', 'fable.providers.DynamicFormSolverBehaviors.uniqueArray', 'Return a new array with only unique values from the input array.');
+		this.addSolverFunction(pExpressionParser, 'sortarray', 'fable.providers.DynamicFormSolverBehaviors.sortArray', 'Returns a sorted array from the input array.');
+
+		this.addSolverFunction(pExpressionParser, 'showsections', 'fable.providers.DynamicFormSolverBehaviors.showSections', 'Shows sections based on hashes in an array.');
+		this.addSolverFunction(pExpressionParser, 'hidesections', 'fable.providers.DynamicFormSolverBehaviors.hideSections', 'Hides sections based on hashes in an array.');
+
 		this.addSolverFunction(pExpressionParser, 'setsectionvisibility', 'fable.providers.DynamicFormSolverBehaviors.setSectionVisibility', 'Sets a sections visiblity to true or fales based on the second parameter.');
 		this.addSolverFunction(pExpressionParser, 'setgroupvisibility', 'fable.providers.DynamicFormSolverBehaviors.setGroupVisibility', 'Sets a group visiblity to true or fales based on the third parameter.');
 
@@ -115,6 +123,118 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		this.addSolverFunction(pExpressionParser, 'refreshtabularsection', 'fable.providers.DynamicFormSolverBehaviors.refreshTabularSection', 'Causes a tabular section to refresh its display.');
 
 		return false;
+	}
+
+	// TODO: These array functions probably belong in fable as core utilities; move them back later
+	/**
+	 * Returns a new array containing the union of two input arrays, removing duplicate values.
+	 *
+	 * @param {Array} pArrayA - The first array to union.
+	 * @param {Array} pArrayB - The second array to union.
+	 * @returns {Array} A new array containing unique elements from both input arrays.
+	 */
+	unionArrays(pArrayA, pArrayB)
+	{
+		let tmpSet = new Set();
+
+		if (Array.isArray(pArrayA))
+		{
+			for (let i = 0; i < pArrayA.length; i++)
+			{
+				tmpSet.add(pArrayA[i]);
+			}
+		}
+
+		if (Array.isArray(pArrayB))
+		{
+			for (let i = 0; i < pArrayB.length; i++)
+			{
+				tmpSet.add(pArrayB[i]);
+			}
+		}
+
+		return Array.from(tmpSet);
+	}
+
+	/**
+	 * Returns an array containing the elements that are present in the first array but not in the second array.
+	 *
+	 * @param {Array} pArrayA - The array from which to subtract elements.
+	 * @param {Array} pArrayB - The array containing elements to exclude from the first array.
+	 * @returns {Array} An array of elements found in pArrayA but not in pArrayB.
+	 */
+	differenceArrays(pArrayA, pArrayB)
+	{
+		let tmpSetA = new Set();
+		let tmpSetB = new Set();
+
+		if (Array.isArray(pArrayA))
+		{
+			for (let i = 0; i < pArrayA.length; i++)
+			{
+				tmpSetA.add(pArrayA[i]);
+			}
+		}
+
+		if (Array.isArray(pArrayB))
+		{
+			for (let i = 0; i < pArrayB.length; i++)
+			{
+				tmpSetB.add(pArrayB[i]);
+			}
+		}
+
+		let tmpResultSet = new Set();
+
+		tmpSetA.forEach(
+			(pValue) =>
+			{
+				if (!tmpSetB.has(pValue))
+				{
+					tmpResultSet.add(pValue);
+				}
+			}
+		);
+
+		return Array.from(tmpResultSet);
+	}
+
+	/**
+	 * Returns a new array containing only the unique elements from the input array.
+	 *
+	 * @param {Array} pArray - The array from which to extract unique elements.
+	 * @returns {Array} A new array with duplicate values removed.
+	 */
+	uniqueArray(pArray)
+	{
+		let tmpSet = new Set();
+
+		if (Array.isArray(pArray))
+		{
+			for (let i = 0; i < pArray.length; i++)
+			{
+				tmpSet.add(pArray[i]);
+			}
+		}
+
+		return Array.from(tmpSet);
+	}
+
+	/**
+	 * Sorts the given array in place using the default sort order.
+	 * If the input is not an array, returns an empty array.
+	 *
+	 * @param {Array} pArray - The array to be sorted.
+	 * @returns {Array} The sorted array, or an empty array if input is not an array.
+	 */
+	sortArray(pArray)
+	{
+		if (!Array.isArray(pArray))
+		{
+			return [];
+		}
+
+		return pArray.sort();
 	}
 
 	/**
@@ -167,6 +287,38 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		else
 		{
 			return this.hideSection(pSectionHash);
+		}
+	}
+
+	/**
+	 * Shows multiple sections by their hash identifiers.
+	 *
+	 * Iterates over the provided array of section hash values and calls `showSection`
+	 * for each one to display the corresponding section.
+	 *
+	 * @param {Array<string>} pSectionHashArray - An array of section hash strings to be shown.
+	 */
+	showSections(pSectionHashArray)
+	{
+		for (let i = 0; i < pSectionHashArray.length; i++)
+		{
+			this.showSection(pSectionHashArray[i]);
+		}
+	}
+
+	/**
+	 * Hides multiple sections specified by their hash values.
+	 *
+	 * Iterates over the provided array of section hashes and hides each section
+	 * by calling the `hideSection` method for each hash.
+	 *
+	 * @param {Array<string>} pSectionHashArray - An array of section hash strings to be hidden.
+	 */
+	hideSections(pSectionHashArray)
+	{
+		for (let i = 0; i < pSectionHashArray.length; i++)
+		{
+			this.hideSection(pSectionHashArray[i]);
 		}
 	}
 
