@@ -48,7 +48,7 @@ class ManifestConversionToCSV extends libFableServiceProviderBase
             "Entity",
             "EntityColumnFilter",
             "EntityDestination",
-            "SingleRecord",
+            "EntitySingleRecord",
             "TriggerGroup",
             "TriggerAddress",
             "TriggerAllInputs",
@@ -118,7 +118,7 @@ class ManifestConversionToCSV extends libFableServiceProviderBase
         tmpRow[this.CSV_COLUMN_MAP["Entity"]] = '';
         tmpRow[this.CSV_COLUMN_MAP["EntityColumnFilter"]] = '';
         tmpRow[this.CSV_COLUMN_MAP["EntityDestination"]] = '';
-        tmpRow[this.CSV_COLUMN_MAP["SingleRecord"]] = '';
+        tmpRow[this.CSV_COLUMN_MAP["EntitySingleRecord"]] = '';
 		/**
 		tmpDescriptor.PictForm.EntitiesBundle = [
 				{
@@ -155,7 +155,7 @@ class ManifestConversionToCSV extends libFableServiceProviderBase
 			}
 			if (tmpEntityBundle.SingleRecord)
 			{
-				tmpRow[this.CSV_COLUMN_MAP["SingleRecord"]] = 'true';
+				tmpRow[this.CSV_COLUMN_MAP["EntitySingleRecord"]] = 'true';
 			}
 		}
 

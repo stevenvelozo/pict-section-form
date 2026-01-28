@@ -558,23 +558,29 @@ class ManifestFactory extends libFableServiceProviderBase
 			}
 		}
 
-		if ((`Entity` in tmpRecord) && (typeof (tmpRecord.Entity) === 'string') && (tmpRecord.Entity != '')
-			&& (`EntityColumnFilter` in tmpRecord) && (typeof (tmpRecord.EntityColumnFilter) === 'string') && (tmpRecord.EntityColumnFilter != '')
-			&& (`EntityDestination` in tmpRecord) && (typeof (tmpRecord.EntityDestination) === 'string') && (tmpRecord.EntityDestination != ''))
+		if (typeof tmpRecord.Entity === 'string' && tmpRecord.Entity.trim() &&
+			(
+				(typeof tmpRecord.EntityColumnFilter === 'string' && tmpRecord.EntityColumnFilter.trim()) ||
+				(typeof tmpRecord.EntityFilterTemplate === 'string' && tmpRecord.EntityFilterTemplate.trim())
+			) &&
+			typeof tmpRecord.EntityDestination === 'string' && tmpRecord.EntityDestination.trim())
 		{
 			if (!Array.isArray(tmpDescriptor.PictForm.Providers))
 			{
 				tmpDescriptor.PictForm.Providers = [];
 			}
 
-			tmpDescriptor.PictForm.Providers.push('Pict-Input-AutofillTriggerGroup')
+			if (!tmpDescriptor.PictForm.Providers.includes('Pict-Input-EntityBundleRequest'))
+			{
+				tmpDescriptor.PictForm.Providers.push('Pict-Input-EntityBundleRequest')
+			}
 			tmpDescriptor.PictForm.EntitiesBundle = [
 				{
 					"Entity": tmpRecord.Entity,
-					"Filter": `FBV~${tmpRecord.EntityColumnFilter}~EQ~{~D:Record.Value~}`,
+					"Filter": (tmpRecord.EntityFilterTemplate && tmpRecord.EntityFilterTemplate.trim()) || `FBV~${tmpRecord.EntityColumnFilter.trim()}~EQ~{~D:Record.Value~}`,
 					"Destination": tmpRecord.EntityDestination,
 					// This marshals a single record
-					"SingleRecord": tmpRecord.EntitySingleRecord ? true : false
+					"SingleRecord": tmpRecord.EntitySingleRecord && tmpRecord.EntitySingleRecord !== 'false',
 				}
 			]
 		}

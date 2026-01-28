@@ -119,14 +119,14 @@
                 "Width": "6",
                 "SpreadsheetNotes": "Book from REST request",
                 "Providers": [
-                    "Pict-Input-AutofillTriggerGroup"
+                    "Pict-Input-EntityBundleRequest"
                 ],
                 "EntitiesBundle": [
                     {
                         "Entity": "Book",
                         "Filter": "FBV~IDBook~EQ~{~D:Record.Value~}",
-                        "Destination": "LoadedBook",
-                        "SingleRecord": false
+                        "Destination": "AppData.LoadedBook",
+                        "SingleRecord": true
                     }
                 ],
                 "Section": "REST_Request",
