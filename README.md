@@ -266,3 +266,87 @@ This [manyfest](https://github.com/stevenvelozo/manyfest) file describes a list
 of application state elements. And intersects these data elements with how
 they should be presented to the user in a form.  This can work for any layout
 of data in your application.
+
+## Documentation
+
+Comprehensive documentation is available in the [docs](docs/) folder:
+
+| Document | Description |
+|----------|-------------|
+| [Getting Started](docs/Getting_Started.md) | Quick start guide for new users |
+| [Architecture](docs/Pict_Section_Form_Architecture.md) | System architecture and design |
+| [Configuration](docs/Configuration.md) | Complete configuration reference |
+| [Input Types](docs/Input_Types.md) | Available input types |
+| [Templates](docs/Templates.md) | Template customization and macros |
+| [Solvers](docs/Solvers.md) | Expression solver system |
+| [Providers](docs/Providers.md) | Provider reference |
+| [Layouts](docs/Layouts.md) | Layout types and customization |
+
+### Example Applications
+
+Working examples demonstrating various features:
+
+| Example | Description |
+|---------|-------------|
+| [simple_form](docs/examples/simple_form/) | Basic form with solvers and visibility control |
+| [simple_table](docs/examples/simple_table/) | Minimal tabular layout example |
+| [simple_distill](docs/examples/simple_distill/) | Entity bundles and trigger groups |
+| [gradebook](docs/examples/gradebook/) | Multi-table app with localStorage |
+| [postcard_example](docs/examples/postcard_example/) | Theme switching and navigation |
+| [complex_table](docs/examples/complex_table/) | Full-featured with charts and entity bundles |
+| [complex_tuigrid](docs/examples/complex_tuigrid/) | TuiGrid with aggregations |
+| [manyfest_editor](docs/examples/manyfest_editor/) | Meta-configuration editor |
+
+### Input Providers
+
+Specialized input handlers for different data types:
+
+| Provider | Description |
+|----------|-------------|
+| [Select](docs/input_providers/001-select.md) | Dropdown lists with static/dynamic options |
+| [DateTime](docs/input_providers/002-datetime.md) | Date and time picker |
+| [Markdown](docs/input_providers/003-markdown.md) | Markdown content display |
+| [HTML](docs/input_providers/004-html.md) | Raw HTML content display |
+| [PreciseNumber](docs/input_providers/005-precise-number.md) | Formatted numbers with precision |
+| [Link](docs/input_providers/006-link.md) | Hyperlink inputs |
+| [Templated](docs/input_providers/007-templated.md) | Dynamic template rendering |
+| [TemplatedEntityLookup](docs/input_providers/008-templated-entity-lookup.md) | Entity fetch with template display |
+| [Chart](docs/input_providers/009-chart.md) | Chart.js visualizations |
+| [EntityBundleRequest](docs/input_providers/010-entity-bundle-request.md) | Cascading entity fetches |
+| [AutofillTriggerGroup](docs/input_providers/011-autofill-trigger-group.md) | Trigger-based autofill |
+| [TabGroupSelector](docs/input_providers/012-tab-group-selector.md) | Tab navigation for groups |
+| [TabSectionSelector](docs/input_providers/013-tab-section-selector.md) | Tab navigation for sections |
+
+## Installation
+
+```bash
+npm install pict-section-form
+```
+
+## Quick Example
+
+```javascript
+const libPictSectionForm = require('pict-section-form');
+
+// Create the form application
+const formApp = new libPictSectionForm.PictFormApplication(fable, {
+  pict_configuration: {
+    Product: "MyForm",
+    DefaultFormManifest: manifestJSON
+  }
+});
+
+// Initialize and render
+formApp.initialize();
+formApp.pict.views.PictFormMetacontroller.render();
+```
+
+## Ecosystem
+
+Pict Section Form is part of the Pict ecosystem:
+
+- [pict](https://github.com/stevenvelozo/pict) - Core application framework
+- [pict-view](https://github.com/stevenvelozo/pict-view) - View base class
+- [pict-provider](https://github.com/stevenvelozo/pict-provider) - Provider base class
+- [manyfest](https://github.com/stevenvelozo/manyfest) - Schema definitions
+- [fable](https://github.com/stevenvelozo/fable) - Service infrastructure

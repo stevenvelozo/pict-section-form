@@ -35,7 +35,20 @@ See the [Examples Overview](examples/) for a complete guide.
 
 | Document | Description |
 |----------|-------------|
-| [Chart Input](input_providers/009-chart.md) | Chart visualization input |
+| [Input Providers Overview](input_providers/) | Complete input providers guide |
+| [Select](input_providers/001-select.md) | Dropdown lists with static/dynamic options |
+| [DateTime](input_providers/002-datetime.md) | Date and time picker |
+| [Markdown](input_providers/003-markdown.md) | Markdown content display |
+| [HTML](input_providers/004-html.md) | Raw HTML content display |
+| [PreciseNumber](input_providers/005-precise-number.md) | Formatted numbers with precision |
+| [Link](input_providers/006-link.md) | Hyperlink inputs |
+| [Templated](input_providers/007-templated.md) | Dynamic template rendering |
+| [TemplatedEntityLookup](input_providers/008-templated-entity-lookup.md) | Entity fetch with templates |
+| [Chart](input_providers/009-chart.md) | Chart.js visualizations |
+| [EntityBundleRequest](input_providers/010-entity-bundle-request.md) | Cascading entity fetches |
+| [AutofillTriggerGroup](input_providers/011-autofill-trigger-group.md) | Trigger-based autofill |
+| [TabGroupSelector](input_providers/012-tab-group-selector.md) | Tab navigation for groups |
+| [TabSectionSelector](input_providers/013-tab-section-selector.md) | Tab navigation for sections |
 
 ## Overview
 
