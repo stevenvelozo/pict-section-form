@@ -1,4 +1,4 @@
-# Pict-Section-Form <small>1.0</small>
+# Pict-Section-Form <small>1</small>
 
 > A dynamic, configuration-driven forms framework built on the Pict application platform
 
