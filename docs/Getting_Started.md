@@ -283,7 +283,7 @@ Here's a more complete example combining multiple concepts:
         }
       ],
       "Solvers": [
-        "Order.Subtotal = sumalistarraycolumn(Order.Items, 'Total')"
+        "Order.Subtotal = SUM(Order.Items[].Total)"
       ]
     },
     {

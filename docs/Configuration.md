@@ -164,10 +164,6 @@ The `PictForm` object within a descriptor controls form-specific behavior.
 | `InputType` | string | Override default input type |
 | `Providers` | array | Additional input providers |
 | `CSSClasses` | array | CSS classes for the input |
-| `Visible` | boolean | Initial visibility |
-| `ReadOnly` | boolean | Make input read-only |
-| `Disabled` | boolean | Disable the input |
-| `Required` | boolean | Mark as required |
 | `Placeholder` | string | Placeholder text |
 
 ### Input-Type Specific Properties
@@ -308,7 +304,7 @@ Reference manifests define schemas for nested or related data:
       ],
       "Solvers": [
         "LineItem.Total = LineItem.Price * LineItem.Quantity",
-        "Order.Subtotal = sumalistarraycolumn(Order.Items, 'Total')"
+        "Order.Subtotal = SUM(Order.Items[].Total)"
       ]
     },
     {
@@ -330,8 +326,7 @@ Reference manifests define schemas for nested or related data:
         "Section": "Customer",
         "Group": "Identity",
         "Row": 1,
-        "Width": 12,
-        "Required": true
+        "Width": 12
       }
     },
     "Customer.Email": {
@@ -411,8 +406,7 @@ Reference manifests define schemas for nested or related data:
       "PictForm": {
         "Section": "Summary",
         "Row": 1,
-        "Width": 4,
-        "ReadOnly": true
+        "Width": 4
       }
     },
     "Order.Tax": {
@@ -422,8 +416,7 @@ Reference manifests define schemas for nested or related data:
       "PictForm": {
         "Section": "Summary",
         "Row": 1,
-        "Width": 4,
-        "ReadOnly": true
+        "Width": 4
       }
     },
     "Order.GrandTotal": {
@@ -434,7 +427,6 @@ Reference manifests define schemas for nested or related data:
         "Section": "Summary",
         "Row": 1,
         "Width": 4,
-        "ReadOnly": true,
         "CSSClasses": ["fw-bold", "fs-4"]
       }
     }
@@ -466,7 +458,7 @@ Reference manifests define schemas for nested or related data:
           "Name": "Total",
           "Hash": "Total",
           "DataType": "Number",
-          "PictForm": { "Width": 2, "ReadOnly": true }
+          "PictForm": { "Width": 2 }
         }
       }
     }

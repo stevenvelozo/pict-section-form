@@ -199,12 +199,12 @@ Style tabs as a wizard/stepper:
 ## Programmatic Navigation
 
 ```javascript
-// Navigate to a specific section
+// Navigate to a specific section (viewHash, inputHash, tabSectionHash)
 const tabProvider = pict.providers['Pict-Input-TabSectionSelector'];
-tabProvider.selectTabByViewHash(view, 'Step2');
+tabProvider.selectTabByViewHash('Navigation', 'CurrentStep', 'Step2');
 
 // Or via button click handler in template
-"<button onclick=\"{~P~}.providers['Pict-Input-TabSectionSelector'].selectTabByViewHash({~P~}.views.CurrentView, 'Step2')\">Next</button>"
+"<button onclick=\"{~P~}.providers['Pict-Input-TabSectionSelector'].selectTabByViewHash('{~D:Context[0].Hash~}', '{~D:Record.Hash~}', 'Step2')\">Next</button>"
 ```
 
 ## Navigation Buttons
@@ -226,10 +226,10 @@ Implement validation in a custom provider or via solvers:
 
 ```javascript
 // Example validation approach
-function navigateNext() {
+function navigateNext(pViewHash, pInputHash, pNextSectionHash) {
   if (validateCurrentSection()) {
     pict.providers['Pict-Input-TabSectionSelector']
-      .selectTabByViewHash(view, nextSectionHash);
+      .selectTabByViewHash(pViewHash, pInputHash, pNextSectionHash);
   } else {
     showValidationErrors();
   }

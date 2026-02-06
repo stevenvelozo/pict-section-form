@@ -320,26 +320,18 @@ pict.TemplateProvider.addTemplate(
 );
 ```
 
-## Input Visibility and State
+## Visibility and State
 
-All input types support common state properties:
-
-```json
-"PictForm": {
-  "Visible": true,      // Show/hide input
-  "ReadOnly": false,    // Make read-only
-  "Disabled": false,    // Disable input
-  "Required": false     // Mark as required
-}
-```
-
-These can be controlled dynamically via solvers:
+Visibility can be controlled at the section and group level via solvers:
 
 ```json
 "Solvers": [
-  "SetInputVisibility('EmailField', Customer.ContactMethod == 'email')"
+  "SetSectionVisibility('ShippingAddress', Order.RequiresShipping == true)",
+  "SetGroupVisibility('OrderSection', 'PaymentDetails', PaymentMethod == 'credit_card')"
 ]
 ```
+
+See [Solvers](Solvers.md) for the full list of visibility and styling functions.
 
 ## CSS Customization
 

@@ -183,8 +183,8 @@ Override the default styles with custom CSS:
 // Get the provider
 const tabProvider = pict.providers['Pict-Input-TabGroupSelector'];
 
-// Select a specific tab
-tabProvider.selectTabByViewHash(view, 'ContactInfo');
+// Select a specific tab (viewHash, inputHash, tabGroupHash)
+tabProvider.selectTabByViewHash('Profile', 'ProfileTabState', 'ContactInfo');
 ```
 
 ## Multiple Tab Sets

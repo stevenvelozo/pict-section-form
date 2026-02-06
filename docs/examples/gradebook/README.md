@@ -101,7 +101,7 @@ and multiple reference manifests.
       "Hash": "Title",
       "DataType": "String",
       "Default": "(unnamed assignment)",
-      "PictForm": { "ReadOnly": true }
+      "PictForm": { "InputType": "ReadOnly" }
     },
     "Weight": {
       "Name": "Weight",

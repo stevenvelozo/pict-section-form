@@ -108,31 +108,47 @@ Standard mathematical operators are supported:
 
 | Function | Description | Example |
 |----------|-------------|---------|
-| `concat(a, b)` | Concatenate strings | `concat('Hello', ' World')` |
-| `uppercase(s)` | Convert to uppercase | `uppercase('hello')` → 'HELLO' |
-| `lowercase(s)` | Convert to lowercase | `lowercase('HELLO')` → 'hello' |
-| `trim(s)` | Remove whitespace | `trim(' hello ')` → 'hello' |
-| `substring(s, start, length)` | Extract substring | `substring('hello', 0, 3)` → 'hel' |
+| `concat(a, b, ...)` | Concatenate values into a string | `concat('Hello', ' World')` |
+| `join(separator, a, b, ...)` | Join values with a separator | `join(', ', 'a', 'b', 'c')` |
+| `stringgetsegments(s, delimiter)` | Split string into segments | `stringgetsegments('a,b,c', ',')` |
+| `stringcountsegments(s, delimiter)` | Count segments in string | `stringcountsegments('a,b,c', ',')` → 3 |
+| `resolvehtmlentities(s)` | Resolve HTML entities in string | `resolvehtmlentities('&amp;')` |
 
-### Array Functions
+### Array Aggregation
+
+Use the `SUM()` function with array address syntax (`Address[].Field`) to
+aggregate values from arrays:
 
 | Function | Description |
 |----------|-------------|
-| `sumalistarraycolumn(array, column)` | Sum values in array column |
-| `averagealistarraycolumn(array, column)` | Average values in array column |
-| `countalistarraycolumn(array, column)` | Count non-null values |
-| `minalistarraycolumn(array, column)` | Minimum value in column |
-| `maxalistarraycolumn(array, column)` | Maximum value in column |
+| `SUM(Address[].Field)` | Sum values in an array column |
+| `avg(values...)` | Average of values |
+| `mean(values...)` | Mean of values |
+| `median(values...)` | Median of values |
+| `count(values...)` | Count elements |
+| `min(values...)` | Minimum value |
+| `max(values...)` | Maximum value |
 
-#### Array Function Examples
+#### Array Aggregation Examples
 
 ```json
 "Solvers": [
-  "Order.Subtotal = sumalistarraycolumn(Order.Items, 'Total')",
-  "Order.AverageItemPrice = averagealistarraycolumn(Order.Items, 'Price')",
-  "Order.ItemCount = countalistarraycolumn(Order.Items, 'ProductID')"
+  "Order.Subtotal = SUM(Order.Items[].Total)",
+  "Order.ItemCount = count(Order.Items)"
 ]
 ```
+
+### Array Manipulation
+
+| Function | Description |
+|----------|-------------|
+| `flatten(array)` | Flatten an array of solver inputs |
+| `slice(array, start, end)` | Slice an array |
+| `arrayconcat(array1, array2, ...)` | Concatenate multiple arrays |
+| `unionarrays(a, b)` | All unique elements from both arrays |
+| `differencearrays(a, b)` | Elements in a not in b |
+| `uniquearray(array)` | Return only unique values |
+| `sortarray(array)` | Return a sorted array |
 
 ### Object Functions
 
@@ -163,8 +179,7 @@ Standard mathematical operators are supported:
 | Function | Description |
 |----------|-------------|
 | `SetSectionVisibility(hash, visible)` | Show/hide a section |
-| `SetGroupVisibility(hash, visible)` | Show/hide a group |
-| `SetInputVisibility(hash, visible)` | Show/hide an input |
+| `SetGroupVisibility(sectionHash, groupHash, visible)` | Show/hide a group |
 | `ShowSections(hash1, hash2, ...)` | Show multiple sections |
 | `HideSections(hash1, hash2, ...)` | Hide multiple sections |
 
@@ -173,8 +188,7 @@ Standard mathematical operators are supported:
 ```json
 "Solvers": [
   "SetSectionVisibility('ShippingAddress', Order.RequiresShipping == true)",
-  "SetGroupVisibility('PaymentDetails', PaymentMethod == 'credit_card')",
-  "SetInputVisibility('OtherReason', ReasonCode == 'other')"
+  "SetGroupVisibility('OrderSection', 'PaymentDetails', PaymentMethod == 'credit_card')"
 ]
 ```
 
@@ -184,16 +198,35 @@ Standard mathematical operators are supported:
 |----------|-------------|
 | `ColorSectionBackground(hash, color)` | Set section background color |
 | `ColorGroupBackground(hash, color)` | Set group background color |
-| `StyleInput(hash, property, value)` | Apply CSS to input |
+| `ColorInputBackground(hash, color)` | Set input background color |
+| `ColorInputBackgroundTabular(hash, color)` | Set tabular input background color |
+| `GenerateHTMLHexColor(r, g, b)` | Generate hex color from RGB integers |
 
 #### Styling Examples
 
 ```json
 "Solvers": [
   "ColorGroupBackground('Totals', Amount < 0 ? '#ffcccc' : '#ccffcc')",
-  "StyleInput('Balance', 'font-weight', Balance < 0 ? 'bold' : 'normal')"
+  "ColorInputBackground('Balance', Balance < 0 ? '#ffcccc' : '#ffffff')"
 ]
 ```
+
+### Solver Control Functions
+
+| Function | Description |
+|----------|-------------|
+| `SetSolverOrdinalEnabled(ordinal, flag)` | Enable (1) or disable (0) a solver ordinal |
+| `EnableSolverOrdinal(ordinal)` | Enable a solver ordinal |
+| `DisableSolverOrdinal(ordinal)` | Disable a solver ordinal |
+| `RunSolvers()` | Trigger a full solve pass across all views |
+| `SetTabularRowLength(hash, length)` | Set the row count for a tabular data set |
+| `RefreshTabularSection(hash)` | Refresh a tabular section display |
+
+### Logging
+
+| Function | Description |
+|----------|-------------|
+| `logvalues(label, val1, val2, ...)` | Log values to the console and return the last one |
 
 ## Conditional Expressions
 
@@ -223,13 +256,12 @@ condition ? valueIfTrue : valueIfFalse
 ]
 ```
 
-### Array Operations
+### Array Set Operations
 
 | Function | Description |
 |----------|-------------|
 | `DifferenceArrays(a, b)` | Elements in a not in b |
-| `IntersectionArrays(a, b)` | Elements in both arrays |
-| `UnionArrays(a, b)` | All unique elements |
+| `UnionArrays(a, b)` | All unique elements from both arrays |
 
 ## Solver Execution Order
 
@@ -239,7 +271,7 @@ ordered appropriately:
 ```json
 "Solvers": [
   "LineItem.Total = LineItem.Price * LineItem.Quantity",
-  "Order.Subtotal = sumalistarraycolumn(Order.Items, 'Total')",
+  "Order.Subtotal = SUM(Order.Items[].Total)",
   "Order.Tax = Order.Subtotal * TaxRate",
   "Order.Total = Order.Subtotal + Order.Tax"
 ]

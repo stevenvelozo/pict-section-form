@@ -265,7 +265,7 @@ Compute chart data dynamically:
 aggregationhistogrambyobject(array, keyField, valueField)
 objectkeystoarray(object)
 objectvaluestoarray(object)
-sumalistarraycolumn(array, column)
+SUM(Address[].Field)
 ```
 
 ### Example Aggregation
