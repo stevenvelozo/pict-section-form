@@ -295,7 +295,6 @@ class PictFormMetacontroller extends libPictViewClass
 	 */
 	createDistinctManifest(pManifest, pUUID)
 	{
-		const tmpDescriptorHashes = Object.keys(pManifest?.Descriptors || {});
 		const tmpUUID = pUUID != null ? pUUID : this.pict.getUUID().replace(/-/g, '');
 		const tmpManifest = JSON.parse(JSON.stringify(pManifest));
 		for (const tmpSection of tmpManifest.Sections || [])
@@ -507,6 +506,54 @@ class PictFormMetacontroller extends libPictViewClass
 								tmpGroup.RecordSetSolvers[i].Expression = tmpUpdatedSolver;
 							}
 						}
+					}
+				}
+			}
+		}
+		if (Array.isArray(tmpManifest.ValidationSolvers))
+		{
+			for (let i = 0; i < tmpManifest.ValidationSolvers.length; i++)
+			{
+				/** @type {Record<string, any>|string} */
+				const tmpSolver = tmpManifest.ValidationSolvers[i];
+				const tmpSolverExpression = typeof tmpSolver === 'string' ? tmpSolver : tmpSolver.Expression;
+				if (!tmpSolverExpression)
+				{
+					continue;
+				}
+				let tmpUpdatedSolver = tmpSolverExpression;
+				//FIXME: what if there is a collision in a suffix-part and we replace too much?
+				for (const tmpMapping of tmpAddressMappings)
+				{
+					const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+					if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
+					{
+						//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} address from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`);
+					}
+					tmpUpdatedSolver = tmpUpdatedSolverIter;
+				}
+				for (const tmpMapping of tmpHashMappings)
+				{
+					const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
+					if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
+					{
+						//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} hash from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`);
+					}
+					tmpUpdatedSolver = tmpUpdatedSolverIter;
+				}
+				if (tmpUpdatedSolver !== tmpSolverExpression)
+				{
+					//FIXME: hack to remove duplicated tmpUUID prefixes
+					const tmpPrefix = `${tmpUUID}.`;
+					tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`(${escapeRegExp(tmpPrefix)})+`), tmpPrefix);
+					this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} from "${tmpSolverExpression}" to "${tmpUpdatedSolver}".`);
+					if (typeof tmpSolver === 'string')
+					{
+						tmpManifest.ValidationSolvers[i] = tmpUpdatedSolver;
+					}
+					else
+					{
+						tmpManifest.ValidationSolvers[i].Expression = tmpUpdatedSolver;
 					}
 				}
 			}

@@ -584,7 +584,7 @@
                     "Row": "1",
                     "Width": "6",
                     "Tooltip": "The PR is *very* important.",
-                    "Section": "Complex_Equation",
+                    "Section": "ComplexEquation",
                     "Group": "Complex_Equation"
                 },
                 "Default": "4.5"
@@ -598,7 +598,7 @@
                     "Row": "1",
                     "Width": "4",
                     "Tooltip": "Z _is not_ the z-index.",
-                    "Section": "Complex_Equation",
+                    "Section": "ComplexEquation",
                     "Group": "Complex_Equation"
                 },
                 "Default": "1.5"
@@ -612,7 +612,7 @@
                     "Row": "1",
                     "Width": "4",
                     "Tooltip": "C is the universal constant.",
-                    "Section": "Complex_Equation",
+                    "Section": "ComplexEquation",
                     "Group": "Complex_Equation"
                 },
                 "Default": "8.75"
@@ -625,7 +625,7 @@
                 "PictForm": {
                     "Row": "2",
                     "Width": "6",
-                    "Section": "Complex_Equation",
+                    "Section": "ComplexEquation",
                     "Group": "Complex_Equation"
                 }
             },
@@ -637,7 +637,7 @@
                 "PictForm": {
                     "Row": "2",
                     "Width": "6",
-                    "Section": "Complex_Equation",
+                    "Section": "ComplexEquation",
                     "Group": "Complex_Equation"
                 }
             },
@@ -884,7 +884,7 @@
             },
             {
                 "Name": "Complex Equation",
-                "Hash": "Complex_Equation",
+                "Hash": "ComplexEquation",
                 "Solvers": [
                     "CeResult = (160 * CePR * CeZ) / (CeC / 100) * CePR * CeZ + (160 * (1 - CeC / 100))",
                     "CeResultRounded = ROUND(CeResult,3)"
@@ -1358,6 +1358,9 @@
                 "ReferenceManifests": {}
             }
         },
-        "FormName": "Math Example Form"
+        "FormName": "Math Example Form",
+        "ValidationSolvers": [
+            "ColorInputBackground(\"ComplexEquation\", \"CeResultRounded\", IF(CeResultRounded,\">\",100000,\"#ff0000\",\"#00ff00\"), \"1\")"
+        ]
     }
 }

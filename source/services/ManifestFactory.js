@@ -732,7 +732,7 @@ class ManifestFactory extends libFableServiceProviderBase
 			tmpGroup.RecordManifest = tmpRecord.SubManifest;
 		}
 
-		if (tmpRecord['Equation'])
+		if (tmpRecord['Equation'] && !this._isTrue(tmpRecord['Validator']))
 		{
 			// Clean up the equation a bit to remove any leading/trailing spaces and replace HTML quotes
 			// that may have been added by the CSV or other source.
@@ -924,6 +924,47 @@ class ManifestFactory extends libFableServiceProviderBase
 	}
 
 	/**
+	 * Add a validation solver to a manifest from a tabular row.
+	 *
+	 * @param {Record<string, any>} pManifest - The manifest being built
+	 * @param {Record<string, any>} pRecord - The tabular row record -- expected to have at least a 'Form'
+	 */
+	tabularRowAddValidator(pManifest, pRecord)
+	{
+		if (pRecord['Equation'])
+		{
+			// Clean up the equation a bit to remove any leading/trailing spaces and replace HTML quotes
+			// that may have been added by the CSV or other source.
+			const tmpCleanEquation = pRecord['Equation'].trim();
+			let tmpEquationOrdinal = 1;
+			if (pRecord['Equation Ordinal'])
+			{
+				try
+				{
+					tmpEquationOrdinal = parseInt(pRecord['Equation Ordinal']);
+				}
+				catch (pError)
+				{
+					this.log.error(`Failed to parse Equation Ordinal for ${pRecord['Input Hash']}: ${pError}`);
+				}
+			}
+			this.log.trace(`Adding solver to ${pRecord.Form} Validation Solvers Ordinal ${tmpEquationOrdinal}: ${pRecord['Equation']}`);
+			if (!Array.isArray(pManifest.ValidationSolvers))
+			{
+				pManifest.ValidationSolvers = [];
+			}
+			if (tmpEquationOrdinal == 1)
+			{
+				pManifest.ValidationSolvers.push(tmpCleanEquation);
+			}
+			else
+			{
+				pManifest.ValidationSolvers.push({ Ordinal: tmpEquationOrdinal, Expression: tmpCleanEquation });
+			}
+		}
+	}
+
+	/**
 	 * This fires whenever a Tabular Row is adding a Descriptor to the Manifest.
 	 *
 	 * If you want to extend how descriptors are built, the code belongs in here.
@@ -1043,6 +1084,27 @@ class ManifestFactory extends libFableServiceProviderBase
 	}
 
 	/**
+	 * Helper function to determine if a value is "truthy" in the context of dynamic configuration.
+	 *
+	 * @param {any} pValue - The value to be evaluated
+	 *
+	 * @return {boolean} whether the value is considered true
+	 */
+	_isTrue(pValue)
+	{
+		if (typeof pValue === 'boolean')
+		{
+			return pValue;
+		}
+		if (typeof pValue === 'string')
+		{
+			const tmpValue = pValue.trim().toLowerCase();
+			return tmpValue === 'true' || tmpValue === 't' || tmpValue === 'yes' || tmpValue === 'y' || tmpValue === '1';
+		}
+		return pValue == true || pValue == 1;
+	}
+
+	/**
 	 * Create some manifests with a "factory" pattern.
 	 *
 	 * @param {any} pRecords - The records as an array of objects
@@ -1057,7 +1119,7 @@ class ManifestFactory extends libFableServiceProviderBase
 			return {};
 		}
 
-		const tmpManifests = {};
+		const tmpManifestFactories = {};
 
 		for (let i = 0; i < pRecords.length; i++)
 		{
@@ -1069,10 +1131,10 @@ class ManifestFactory extends libFableServiceProviderBase
 				continue;
 			}
 
-			if (!tmpManifests[tmpRecord.Form])
+			if (!tmpManifestFactories[tmpRecord.Form])
 			{
 				// Create the manifest if one doesn't exist
-				tmpManifests[tmpRecord.Form] = this.fable.instantiateServiceProviderWithoutRegistration('ManifestFactory',
+				tmpManifestFactories[tmpRecord.Form] = this.fable.instantiateServiceProviderWithoutRegistration('ManifestFactory',
 					{
 						Manifest:
 						{
@@ -1081,27 +1143,32 @@ class ManifestFactory extends libFableServiceProviderBase
 					}, `${this.UUID}-${tmpRecord.Form}`);
 			}
 
-			const tmpManifest = tmpManifests[tmpRecord.Form];
+			const tmpManifestFactory = tmpManifestFactories[tmpRecord.Form];
 
 			// Check if there is a Form Name to be set
 			if (tmpRecord['Form Name'])
 			{
-				tmpManifest.manifest.FormName = tmpRecord['Form Name'];
+				tmpManifestFactory.manifest.FormName = tmpRecord['Form Name'];
 			}
 			if (tmpRecord['Input Hash'])
 			{
-				this.tabularRowAddDescriptor(tmpManifest, tmpRecord);
+				this.tabularRowAddDescriptor(tmpManifestFactory, tmpRecord);
+			}
+			if (this._isTrue(tmpRecord['Validator']))
+			{
+				this.log.trace(`Adding validator from tabular row on form ${tmpRecord.Form}: ${tmpRecord.Equation}`);
+				this.tabularRowAddValidator(tmpManifestFactory.manifest, tmpRecord);
 			}
 		}
-		this.migrateAutofillTriggerGroupSolvers(tmpManifests);
+		this.migrateAutofillTriggerGroupSolvers(tmpManifestFactories);
 
-		this.log.info(`Generated ${Object.keys(tmpManifests).length} manifests.`);
+		this.log.info(`Generated ${Object.keys(tmpManifestFactories).length} manifests.`);
 
-		let tmpManifestKeys = Object.keys(tmpManifests);
+		let tmpManifestKeys = Object.keys(tmpManifestFactories);
 		let tmpOutputManifests = {};
 		for (let i = 0; i < tmpManifestKeys.length; i++)
 		{
-			tmpOutputManifests[tmpManifestKeys[i]] = tmpManifests[tmpManifestKeys[i]].manifest;
+			tmpOutputManifests[tmpManifestKeys[i]] = tmpManifestFactories[tmpManifestKeys[i]].manifest;
 		}
 		return tmpOutputManifests;
 	}

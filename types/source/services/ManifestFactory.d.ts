@@ -76,6 +76,13 @@ declare class ManifestFactory {
      */
     tabularRowAddDescriptor(pManifestFactory: any, pRecord: any): any;
     /**
+     * Add a validation solver to a manifest from a tabular row.
+     *
+     * @param {Record<string, any>} pManifest - The manifest being built
+     * @param {Record<string, any>} pRecord - The tabular row record -- expected to have at least a 'Form'
+     */
+    tabularRowAddValidator(pManifest: Record<string, any>, pRecord: Record<string, any>): void;
+    /**
      * This fires whenever a Tabular Row is adding a Descriptor to the Manifest.
      *
      * If you want to extend how descriptors are built, the code belongs in here.
@@ -87,6 +94,14 @@ declare class ManifestFactory {
      */
     onTabularRowAddDescriptor(pIncomingDescriptor: any, pSection: any, pGroup: any, pNewDescriptor: any): void;
     migrateAutofillTriggerGroupSolvers(pManifests: any): void;
+    /**
+     * Helper function to determine if a value is "truthy" in the context of dynamic configuration.
+     *
+     * @param {any} pValue - The value to be evaluated
+     *
+     * @return {boolean} whether the value is considered true
+     */
+    _isTrue(pValue: any): boolean;
     /**
      * Create some manifests with a "factory" pattern.
      *

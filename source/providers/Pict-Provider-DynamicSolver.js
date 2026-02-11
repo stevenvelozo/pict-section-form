@@ -38,7 +38,7 @@ class PictDynamicSolver extends libPictProvider
 	/**
 	 * Creates an instance of the PictDynamicSolver class.
 	 *
-	 * @param {import('fable')} pFable - The Fable instance.
+	 * @param {import('pict')} pFable - The Pict instance.
 	 * @param {Record<string, any>} [pOptions] - The options for the provider.
 	 * @param {string} [pServiceHash] - The service hash for the provider.
 	 */
@@ -47,7 +47,7 @@ class PictDynamicSolver extends libPictProvider
 		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(_DefaultProviderConfiguration)), pOptions);
 		super(pFable, tmpOptions, pServiceHash);
 
-		/** @type {import('pict')} */
+		/** @type {import('pict') & { ExpressionParser: any }} */
 		this.pict;
 		/** @type {import('pict') & { instantiateServiceProviderIfNotExists: (hash: string) => any, ExpressionParser: any }} */
 		this.fable;
@@ -531,6 +531,45 @@ class PictDynamicSolver extends libPictProvider
 	}
 
 	/**
+	 * Executes any validation solvers defined in the form manifest.
+	 *
+	 * @param {Object} pSolverResultsMap - The solver results map to use for executing validation solvers.
+	 * @param {boolean} [pPreventSolverCycles=false] - Whether to prevent solver cycles when executing validation solvers.
+	 */
+	executeValidationSolvers(pSolverResultsMap, pPreventSolverCycles = false)
+	{
+		const tmpValidationSolvers = this.pict.views.PictFormMetacontroller?.manifestDescription?.ValidationSolvers;
+		if (!Array.isArray(tmpValidationSolvers))
+		{
+			return;
+		}
+		const tmpMarshalDestination = this.pict.views.PictFormMetacontroller && this.pict.resolveStateFromAddress(this.pict.views.PictFormMetacontroller.viewMarshalDestination) || this.pict.AppData;
+		for (let i = 0; i < tmpValidationSolvers.length; i++)
+		{
+			const tmpSolver = this.checkSolver(tmpValidationSolvers[i]);
+			if (typeof(tmpSolver) === 'undefined')
+			{
+				continue;
+			}
+
+			if (pPreventSolverCycles && tmpSolver.Expression.match(this._RunSolversRegex))
+			{
+				if (this.pict.LogNoisiness > 0)
+				{
+					this.pict.log.warn(`Skipping Validation Solver ordinal ${tmpSolver.Ordinal} [${tmpSolver.Expression}] due to solver cycle prevention.`);
+				}
+				continue;
+			}
+
+			if (this.pict.LogNoisiness > 1)
+			{
+				this.pict.log.trace(`Running validation solver ordinal ${tmpSolver.Ordinal} [${tmpSolver.Expression}]`);
+			}
+			this.pict.ExpressionParser.solve(tmpSolver.Expression, tmpMarshalDestination, pSolverResultsMap, this.pict.manifest, this.pict.AppData);
+		}
+	}
+
+	/**
 	 * Checks if the given ordinal exists in the provided ordinal set.
 	 *
 	 * If not, it adds the ordinal to the set.
@@ -658,6 +697,8 @@ class PictDynamicSolver extends libPictProvider
 				this.executeViewSolvers(tmpOrdinalContainer.ViewSolvers, Number(tmpOrdinalKeys[i]), tmpSolveOutcome.SolverResultsMap);
 			}
 		}
+
+		this.executeValidationSolvers(tmpSolveOutcome.SolverResultsMap, tmpPreventSolverCycles);
 
 		// Now regenerate the metalists .. after the solve has happened.
 		this.pict.providers.DynamicMetaLists.buildViewSpecificLists(tmpViewHashes);

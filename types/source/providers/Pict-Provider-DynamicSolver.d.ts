@@ -3,8 +3,18 @@ export = PictDynamicSolver;
  * The PictDynamicSolver class is a provider that solves configuration-generated dynamic views.
  */
 declare class PictDynamicSolver extends libPictProvider {
-    /** @type {import('pict')} */
-    pict: import("pict");
+    /**
+     * Creates an instance of the PictDynamicSolver class.
+     *
+     * @param {import('pict')} pFable - The Pict instance.
+     * @param {Record<string, any>} [pOptions] - The options for the provider.
+     * @param {string} [pServiceHash] - The service hash for the provider.
+     */
+    constructor(pFable: import("pict"), pOptions?: Record<string, any>, pServiceHash?: string);
+    /** @type {import('pict') & { ExpressionParser: any }} */
+    pict: import("pict") & {
+        ExpressionParser: any;
+    };
     /** @type {import('pict') & { instantiateServiceProviderIfNotExists: (hash: string) => any, ExpressionParser: any }} */
     fable: import("pict") & {
         instantiateServiceProviderIfNotExists: (hash: string) => any;
@@ -104,6 +114,13 @@ declare class PictDynamicSolver extends libPictProvider {
      * @param {Object} pSolverResultsMap - The solver results map.
      */
     executeViewSolvers(pViewSolverArray: any[], pOrdinal: number, pSolverResultsMap: any): void;
+    /**
+     * Executes any validation solvers defined in the form manifest.
+     *
+     * @param {Object} pSolverResultsMap - The solver results map to use for executing validation solvers.
+     * @param {boolean} [pPreventSolverCycles=false] - Whether to prevent solver cycles when executing validation solvers.
+     */
+    executeValidationSolvers(pSolverResultsMap: any, pPreventSolverCycles?: boolean): void;
     /**
      * Checks if the given ordinal exists in the provided ordinal set.
      *
