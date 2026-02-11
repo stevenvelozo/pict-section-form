@@ -139,28 +139,28 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-Template-Input",
 			"Template": /*HTML*/`
 					<!-- DEFAULT Input {~"D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <input disabled type="text" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span> <input disabled type="text" data-i-control {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 `
 		},
 		{
 			"HashPostfix": "-Template-Input-DataType-String",
 			"Template": /*HTML*/`
 					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <input disabled type="text" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span> <input disabled type="text" data-i-control {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 `
 		},
 		{
 			"HashPostfix": "-Template-Input-DataType-Number",
 			"Template": /*HTML*/`
 					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <input disabled type="Number" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span> <input disabled type="Number" data-i-control {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 `
 		},
 		{
 			"HashPostfix": "-Template-Input-InputType-TextArea",
 			"Template": /*HTML*/`
 					<!-- InputType TextArea {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<span>{~D:Record.Name~}:</span> <textarea disabled {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~}></textarea>
+					<span>{~D:Record.Name~}:</span> <textarea disabled data-i-control {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~}></textarea>
 `
 		},
 		{
@@ -169,14 +169,14 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/`
 					<!-- InputType Option {~D:Record.Hash~} {~D:Record.DataType~} -->
 					<input disabled type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
-					<span>{~D:Record.Name~}:</span> <select disabled id="SELECT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}"></select>
+					<span>{~D:Record.Name~}:</span> <select disabled data-i-control id="SELECT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}"></select>
 `
 		},
 		{
 			"HashPostfix": "-Template-Input-InputType-Boolean",
 			"Template": /*HTML*/`
 					<!-- InputType Boolean {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input disabled type="checkbox" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<input disabled type="checkbox" data-i-control {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 `
 		},
 		{
@@ -185,7 +185,7 @@ Glug glug glug Oo... -->
 			"Template": /*HTML*/`
 					<!-- DataType DateTime {~D:Record.Hash~} {~D:Record.DataType~} -->
 					<input disabled type="hidden" {~D:Record.Macro.InputFullProperties~} value="">
-					<span>{~D:Record.Name~}:</span> <input disabled id="DATETIME-INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}" type="datetime-local" value="" />
+					<span>{~D:Record.Name~}:</span> <input disabled data-i-control id="DATETIME-INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}" type="datetime-local" value="" />
 `
 		},
 		/*
@@ -223,7 +223,7 @@ Glug glug glug Oo... -->
 					<!-- the TabSelector Input provider deals with populating this from the manifest. -->
 					<input disabled type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
 					<!-- <span>{~D:Record.Name~}:</span> -->
-					<div id="TAB-SELECT-FOR-{~D:Record.Macro.RawHTMLID~}"></div>
+					<div data-i-control id="TAB-SELECT-FOR-{~D:Record.Macro.RawHTMLID~}"></div>
 `
 		},
 		{
@@ -256,7 +256,7 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TuiGrid-Container",
 			"Template": /*HTML*/`
-			<div id="{~D:Record.TuiGridHTMLID~}"></div>
+			<div data-i-control id="{~D:Record.TuiGridHTMLID~}"></div>
 `
 		},
 		{
@@ -397,7 +397,7 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-TabularTemplate-Begin-Input",
 			"Template": /*HTML*/`
 					<!-- DEFAULT Input {~"D:Record.Hash~} {~D:Record.DataType~} -->
-					<input disabled type="text" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+					<input disabled type="text" data-i-control {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input",
@@ -417,7 +417,7 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-TabularTemplate-Begin-Input-DataType-String",
 			"Template": /*HTML*/`
 					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input disabled type="text" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+					<input disabled type="text" data-i-control {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-String",
@@ -428,7 +428,7 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-TabularTemplate-Begin-Input-DataType-Number",
 			"Template": /*HTML*/`
 					<!-- DataType Number {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input disabled type="Number" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+					<input disabled type="Number" data-i-control {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-Number",
@@ -439,7 +439,7 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-TextArea",
 			"Template": /*HTML*/`
 					<!-- InputType TextArea {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<textarea disabled {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+					<textarea disabled data-i-control {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-TextArea",
@@ -456,14 +456,14 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-Option",
 			"Template": /*HTML*/` value="">
-					<select disabled id="SELECT-TABULAR-DROPDOWN-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"></select>
+					<select disabled data-i-control id="SELECT-TABULAR-DROPDOWN-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')"></select>
 `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-Begin-Input-InputType-Boolean",
 			"Template": /*HTML*/`
 					<!-- InputType Boolean {~D:Record.Hash~} {~D:Record.DataType~} -->
-					<input disabled type="checkbox" {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
+					<input disabled type="checkbox" data-i-control {~D:Record.Macro.HTMLName~} {~D:Record.Macro.InformaryTabular~} `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-InputType-Boolean",
@@ -480,7 +480,7 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-End-Input-DataType-DateTime",
 			"Template": /*HTML*/` value="">
-					<input disabled id="DATETIME-TABULAR-INPUT-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')" type="datetime-local" value="" />
+					<input disabled data-i-control id="DATETIME-TABULAR-INPUT-{~D:Record.Macro.RawHTMLID~}-{~D:Context[2].Key~}" onchange="{~P~}.views['{~D:Context[0].Hash~}'].inputDataRequestTabular('{~D:Context[2].Group~}', '{~D:Record.PictForm.InputIndex~}', '{~D:Context[2].Key~}')" type="datetime-local" value="" />
 `
 		},
 		{

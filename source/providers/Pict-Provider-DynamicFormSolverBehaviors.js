@@ -649,7 +649,13 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return false;
 		}
 
-		let tmpElementSet = this.pict.ContentAssignment.getElement(`#${tmpInput.Macro.RawHTMLID}`);
+		const tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelector + `[data-i-control]`;
+		let tmpElementSet = this.pict.ContentAssignment.getElement(tmpVirtualInformaryHTMLSelector);
+
+		if (tmpElementSet.length < 1)
+		{
+			tmpElementSet = this.pict.ContentAssignment.getElement(`#${tmpInput.Macro.RawHTMLID}`);
+		}
 
 		if (tmpElementSet.length < 1)
 		{
@@ -702,8 +708,14 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return false;
 		}
 
-		//FIXME: is this reliable for all input types?
-		let tmpElementSet = this.pict.ContentAssignment.getElement(`#${pElementIDPrefix}${tmpInput.Macro.RawHTMLID}-${pRowIndex}`);
+		const tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular + `[data-i-control]`;
+		let tmpElementSet = this.pict.ContentAssignment.getElement(tmpVirtualInformaryHTMLSelector);
+
+		if (tmpElementSet.length < 1)
+		{
+			//FIXME: is this reliable for all input types? (no)
+			tmpElementSet = this.pict.ContentAssignment.getElement(`#${pElementIDPrefix}${tmpInput.Macro.RawHTMLID}-${pRowIndex}`);
+		}
 
 		if (tmpElementSet.length < 1)
 		{
