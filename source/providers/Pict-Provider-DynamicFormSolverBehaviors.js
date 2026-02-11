@@ -649,8 +649,7 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return false;
 		}
 
-		const tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelector + `[data-i-control]`;
-		let tmpElementSet = this.pict.ContentAssignment.getElement(tmpVirtualInformaryHTMLSelector);
+		let tmpElementSet = this.pict.ContentAssignment.getElement(tmpInput.Macro.HTMLSelectorControl);
 
 		if (tmpElementSet.length < 1)
 		{
@@ -708,8 +707,9 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 			return false;
 		}
 
-		const tmpVirtualInformaryHTMLSelector = tmpInput.Macro.HTMLSelectorTabular + `[data-i-control]`;
-		let tmpElementSet = this.pict.ContentAssignment.getElement(tmpVirtualInformaryHTMLSelector);
+		//FIXME: how do we get the input decorated with the index?
+		const tmpControlHTMLSelector = tmpInput.Macro.HTMLSelectorControlTabular + `[data-i-index="${pRowIndex}"]`;
+		let tmpElementSet = this.pict.ContentAssignment.getElement(tmpControlHTMLSelector);
 
 		if (tmpElementSet.length < 1)
 		{

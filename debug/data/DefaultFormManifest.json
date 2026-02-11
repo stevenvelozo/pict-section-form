@@ -634,8 +634,9 @@
             "Hash": "CeResultRounded",
             "Name": "Rounded 3",
             "DataAddress": "ComplexEquation.ResultRounded",
-            "DataType": "Number",
+            "DataType": "String",
             "PictForm": {
+                "InputType": "PreciseNumberReadOnly",
                 "Row": "2",
                 "Width": "6",
                 "Section": "ComplexEquation",

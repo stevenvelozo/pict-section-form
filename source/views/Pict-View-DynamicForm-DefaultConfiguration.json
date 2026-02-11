@@ -28,8 +28,12 @@
 			"Informary": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\" ",
 			"InformaryTabular": " data-i-form=\"{~D:Context[0].formID~}\" data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\" data-i-container=\"{~D:Record.PictForm.InformaryContainerAddress~}\" ",
 
+			"ControlAttr": " data-control=\"{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}\" ",
+
 			"HTMLSelector": "[data-i-form=\"{~D:Context[0].formID~}\"][data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\"]",
 			"HTMLSelectorTabular": "[data-i-form=\"{~D:Context[0].formID~}\"][data-i-datum=\"{~D:Record.PictForm.InformaryDataAddress~}\"][data-i-container=\"{~D:Record.PictForm.InformaryContainerAddress~}\"]",
+			"HTMLSelectorControl": "[data-control=\"{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}\"]",
+			"HTMLSelectorControlTabular": "[data-control=\"{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}\"]",
 
 			"RawHTMLID": "{~D:Context[0].UUID~}-FormInput-{~D:Record.Hash~}",
 

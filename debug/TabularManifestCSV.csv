@@ -57,7 +57,7 @@ MathExampleForm,,,,,,Complex Equation,ComplexEquation,Complex Equation,,Vertical
 MathExampleForm,,,,,,Complex Equation,ComplexEquation,Complex Equation,,,,,1,4,,,ComplexEquation.Z,Z,CeZ,,,Number,,,,,1.5,,Z _is not_ the z-index.,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 MathExampleForm,,,,,,Complex Equation,ComplexEquation,Complex Equation,,,,,1,4,,,ComplexEquation.C,C,CeC,,,Number,,,,,8.75,,C is the universal constant.,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 MathExampleForm,,,,,,Complex Equation,ComplexEquation,Complex Equation,,,,,2,6,,,ComplexEquation.Result,(160 * PR * Z) / (C / 100) * PR * Z + (160 * (1 - C / 100)),CeResult,,,Number,,,CeResult = (160 * CePR * CeZ) / (CeC / 100) * CePR * CeZ + (160 * (1 - CeC / 100)),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-MathExampleForm,,,,,,Complex Equation,ComplexEquation,Complex Equation,,,,,2,6,,,ComplexEquation.ResultRounded,Rounded 3,CeResultRounded,,,Number,,,"CeResultRounded = ROUND(CeResult,3)",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+MathExampleForm,,,,,,Complex Equation,ComplexEquation,Complex Equation,,,,,2,6,,,ComplexEquation.ResultRounded,Rounded 3,CeResultRounded,,,String,,PreciseNumberReadOnly,"CeResultRounded = ROUND(CeResult,3)",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 MathExampleForm,,,,,,,,,,,,,,,,,,,,,,,,,"ColorInputBackground(""ComplexEquation"", ""CeResultRounded"", IF(CeResultRounded,"">"",100000,""#ff0000"",""#00ff00""), ""1"")",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,TRUE
 MathExampleForm,,Rectangles,,,1,Rectangle Aggregation,,Rectangle Set,,,,false,1,1,20,,Rectangle,Rectangles,Rectangles,,,Array,,TabularAddress,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 MathExampleForm,,Rectangles,,,,Rectangle Aggregation,,Rectangle Set,,,,,1,1,,,Identifier,Identifier,RectangleIdentifier,,,String,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
