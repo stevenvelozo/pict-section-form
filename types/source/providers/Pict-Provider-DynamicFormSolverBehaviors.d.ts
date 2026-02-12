@@ -80,18 +80,18 @@ declare class PictDynamicFormsSolverBehaviors extends libPictProvider {
      * Iterates over the provided array of section hash values and calls `showSection`
      * for each one to display the corresponding section.
      *
-     * @param {Array<string>} pSectionHashArray - An array of section hash strings to be shown.
+     * @param {string | Array<string>} pSectionHashArray - An array of section hash strings to be shown.
      */
-    showSections(pSectionHashArray: Array<string>): void;
+    showSections(pSectionHashArray: string | Array<string>): void;
     /**
      * Hides multiple sections specified by their hash values.
      *
      * Iterates over the provided array of section hashes and hides each section
      * by calling the `hideSection` method for each hash.
      *
-     * @param {Array<string>} pSectionHashArray - An array of section hash strings to be hidden.
+     * @param {string | Array<string>} pSectionHashArray - An array of section hash strings to be hidden.
      */
-    hideSections(pSectionHashArray: Array<string>): void;
+    hideSections(pSectionHashArray: string | Array<string>): void;
     hideSection(pSectionHash: any): boolean;
     showSection(pSectionHash: any): boolean;
     getGroupSelector(pSectionFormID: any, pGroupHash: any): string;

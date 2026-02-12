@@ -296,13 +296,14 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 	 * Iterates over the provided array of section hash values and calls `showSection`
 	 * for each one to display the corresponding section.
 	 *
-	 * @param {Array<string>} pSectionHashArray - An array of section hash strings to be shown.
+	 * @param {string | Array<string>} pSectionHashArray - An array of section hash strings to be shown.
 	 */
 	showSections(pSectionHashArray)
 	{
-		for (let i = 0; i < pSectionHashArray.length; i++)
+		const tmpSectionHashArray = Array.isArray(pSectionHashArray) ? pSectionHashArray : [pSectionHashArray];
+		for (let i = 0; i < tmpSectionHashArray.length; i++)
 		{
-			this.showSection(pSectionHashArray[i]);
+			this.showSection(tmpSectionHashArray[i]);
 		}
 	}
 
@@ -312,13 +313,14 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 	 * Iterates over the provided array of section hashes and hides each section
 	 * by calling the `hideSection` method for each hash.
 	 *
-	 * @param {Array<string>} pSectionHashArray - An array of section hash strings to be hidden.
+	 * @param {string | Array<string>} pSectionHashArray - An array of section hash strings to be hidden.
 	 */
 	hideSections(pSectionHashArray)
 	{
-		for (let i = 0; i < pSectionHashArray.length; i++)
+		const tmpSectionHashArray = Array.isArray(pSectionHashArray) ? pSectionHashArray : [pSectionHashArray];
+		for (let i = 0; i < tmpSectionHashArray.length; i++)
 		{
-			this.hideSection(pSectionHashArray[i]);
+			this.hideSection(tmpSectionHashArray[i]);
 		}
 	}
 

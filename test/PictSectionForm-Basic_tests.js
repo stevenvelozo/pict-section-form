@@ -85,6 +85,7 @@ OrderedSolverApplication.default_configuration.pict_configuration.DefaultFormMan
 			[
 				{ Ordinal: 5, Expression: 'C = A + B' },
 				{ Ordinal: 40, Expression: 'D = C - B' },
+				'hidesections("OrderedSolverSection")',
 			],
 		},
 	],
@@ -280,6 +281,7 @@ suite
 											[
 												{ Ordinal: 5, Expression: 'AggregateValue = SUM(ValueArray)' },
 												{ Ordinal: 40, Expression: 'AggregateValue2 = SUM(DataTableAddress[].ValueAddress)' },
+												'hidesections("OrderedSolverSection")',
 											],
 										},
 									],
@@ -300,6 +302,10 @@ suite
 											_Pict.log.info('Loading the Application and associated views.');
 											const tmpDistinctManifest = _Pict.views.PictFormMetacontroller.createDistinctManifest(tmpManifest);
 											_Pict.log.info('Distinct Manifest:', tmpDistinctManifest);
+											Expect(tmpDistinctManifest.Sections[0].OriginalHash).to.equal(tmpManifest.Sections[0].Hash, 'Original section hash should be recorded in distinct manifest.');
+											Expect(tmpDistinctManifest.Sections[0].Hash).to.not.equal(tmpManifest.Sections[0].Hash, 'Section hash should be different in distinct manifest.');
+											Expect(tmpDistinctManifest.Sections[0].Solvers[2]).to.not.equal(tmpManifest.Sections[0].Solvers[2], 'Solver expression should be different in distinct manifest.');
+											Expect(tmpDistinctManifest.Sections[0].Solvers[2]).to.equal(`hidesections("${tmpDistinctManifest.Sections[0].Hash}")`, 'Solver expression should be updated to reflect new section hash in distinct manifest.');
 											tmpHashedAggregateValue = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue')[0];
 											tmpHashedAggregateValue2 = Object.entries(tmpDistinctManifest.Descriptors).find(([pKey, pValue]) => pValue.OriginalHash == 'AggregateValue2')[0];
 											const tmpInjectedSecionViews = _Pict.views.PictFormMetacontroller.injectManifest(tmpDistinctManifest);

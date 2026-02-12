@@ -297,14 +297,26 @@ class PictFormMetacontroller extends libPictViewClass
 	{
 		const tmpUUID = pUUID != null ? pUUID : this.pict.getUUID().replace(/-/g, '');
 		const tmpManifest = JSON.parse(JSON.stringify(pManifest));
+		/** @type {Record<string, string>} */
+		const tmpAddressTranslation = {};
 		for (const tmpSection of tmpManifest.Sections || [])
 		{
+			if (!tmpSection.Hash)
+			{
+				tmpSection.Hash = `${this.fable.getUUID()}`;
+			}
 			tmpSection.OriginalHash = tmpSection.Hash;
 			tmpSection.Hash = `${tmpSection.Hash}_${tmpUUID}`;
+			tmpAddressTranslation[tmpSection.OriginalHash] = tmpSection.Hash;
 			for (const tmpGroup of tmpSection.Groups || [])
 			{
+				if (!tmpGroup.Hash)
+				{
+					tmpGroup.Hash = `${this.fable.getUUID()}`;
+				}
 				tmpGroup.OriginalHash = tmpGroup.Hash;
 				tmpGroup.Hash = `${tmpGroup.Hash}_${tmpUUID}`;
+				tmpAddressTranslation[tmpGroup.OriginalHash] = tmpGroup.Hash;
 			}
 		}
 		/** @type {Record<string, ManifestDescriptor>} */
@@ -347,8 +359,6 @@ class PictFormMetacontroller extends libPictViewClass
 			tmpNewDescriptors[tmpDescriptor.DataAddress] = tmpDescriptor;
 		}
 		tmpManifest.Descriptors = tmpNewDescriptors;
-		/** @type {Record<string, string>} */
-		const tmpAddressTranslation = {};
 		/** @type {Record<string, string>} */
 		const tmpHashTranslation = {};
 		for (const tmpDescriptor of Object.values(tmpManifest?.Descriptors || {}))
