@@ -446,9 +446,11 @@ class PictViewDynamicForm extends libPictViewClass
 
 	/**
 	 * Gets a value by hash address.
+	 *
 	 * @param {string} pHashAddress
+	 * @return {any} The value at the specified hash address.
 	 */
-	getValueByHash(pHashAddress, pRowIndex)
+	getValueByHash(pHashAddress)
 	{
 		return this.sectionManifest.getValueByHash(this.getMarshalDestinationObject(), pHashAddress);
 	}
@@ -459,6 +461,7 @@ class PictViewDynamicForm extends libPictViewClass
 	 * @param {number} pGroupIndex
 	 * @param {number} pInputIndex
 	 * @param {number} pRowIndex
+	 * @return {any} The value at the specified hash address.
 	 */
 	getTabularValueByHash(pGroupIndex, pInputIndex, pRowIndex)
 	{

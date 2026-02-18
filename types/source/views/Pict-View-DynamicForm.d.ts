@@ -80,15 +80,18 @@ declare class PictViewDynamicForm extends libPictViewClass {
     getMarshalDestinationObject(): Record<string, any>;
     /**
      * Gets a value by hash address.
+     *
      * @param {string} pHashAddress
+     * @return {any} The value at the specified hash address.
      */
-    getValueByHash(pHashAddress: string, pRowIndex: any): any;
+    getValueByHash(pHashAddress: string): any;
     /**
      * Gets a value by hash address.
      *
      * @param {number} pGroupIndex
      * @param {number} pInputIndex
      * @param {number} pRowIndex
+     * @return {any} The value at the specified hash address.
      */
     getTabularValueByHash(pGroupIndex: number, pInputIndex: number, pRowIndex: number): any;
     /**
