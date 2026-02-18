@@ -350,3 +350,19 @@ Pict Section Form is part of the Pict ecosystem:
 - [pict-provider](https://github.com/stevenvelozo/pict-provider) - Provider base class
 - [manyfest](https://github.com/stevenvelozo/manyfest) - Schema definitions
 - [fable](https://github.com/stevenvelozo/fable) - Service infrastructure
+
+## Related Packages
+
+- [pict](https://github.com/stevenvelozo/pict) - MVC application framework
+- [pict-view](https://github.com/stevenvelozo/pict-view) - View base class
+- [pict-provider](https://github.com/stevenvelozo/pict-provider) - Data provider base class
+- [pict-template](https://github.com/stevenvelozo/pict-template) - Template engine
+- [manyfest](https://github.com/stevenvelozo/manyfest) - Schema-driven object navigation
+
+## License
+
+MIT
+
+## Contributing
+
+Pull requests are welcome. For details on our code of conduct, contribution process, and testing requirements, see the [Retold Contributing Guide](https://github.com/stevenvelozo/retold/blob/main/docs/contributing.md).

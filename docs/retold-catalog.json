@@ -1,0 +1,318 @@
+{
+	"Generated": "2026-02-18T04:49:26.197Z",
+	"GitHubOrg": "stevenvelozo",
+	"DefaultBranch": "master",
+	"Groups": [
+		{
+			"Name": "Utility",
+			"Key": "utility",
+			"Description": "Build tools, manifests, documentation, process supervision",
+			"Modules": [
+				{
+					"Name": "csvparser",
+					"Repo": "csvparser",
+					"Group": "utility",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		},
+		{
+			"Name": ".config",
+			"Key": ".config",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "code-server",
+					"Repo": "code-server",
+					"Group": ".config",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		},
+		{
+			"Name": "Debug",
+			"Key": "debug",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "data",
+					"Repo": "data",
+					"Group": "debug",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "input_data",
+					"Repo": "input_data",
+					"Group": "debug",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "input_data_intersections",
+					"Repo": "input_data_intersections",
+					"Group": "debug",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		},
+		{
+			"Name": "Dist",
+			"Key": "dist",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "indoctrinate_content_staging",
+					"Repo": "indoctrinate_content_staging",
+					"Group": "dist",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		},
+		{
+			"Name": "Docs",
+			"Key": "docs",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "examples",
+					"Repo": "examples",
+					"Group": "docs",
+					"Branch": "master",
+					"HasDocs": true,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": [
+						"examples/README.md",
+						"examples/complex_table/README.md",
+						"examples/complex_tuigrid/README.md",
+						"examples/gradebook/README.md",
+						"examples/manyfest_editor/README.md",
+						"examples/postcard_example/README.md",
+						"examples/simple_distill/README.md",
+						"examples/simple_form/README.md",
+						"examples/simple_table/README.md"
+					]
+				},
+				{
+					"Name": "input_providers",
+					"Repo": "input_providers",
+					"Group": "docs",
+					"Branch": "master",
+					"HasDocs": true,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": [
+						"input_providers/001-select.md",
+						"input_providers/002-datetime.md",
+						"input_providers/003-markdown.md",
+						"input_providers/004-html.md",
+						"input_providers/005-precise-number.md",
+						"input_providers/006-link.md",
+						"input_providers/007-templated.md",
+						"input_providers/008-templated-entity-lookup.md",
+						"input_providers/009-chart.md",
+						"input_providers/010-entity-bundle-request.md",
+						"input_providers/011-autofill-trigger-group.md",
+						"input_providers/012-tab-group-selector.md",
+						"input_providers/013-tab-section-selector.md",
+						"input_providers/README.md"
+					]
+				}
+			]
+		},
+		{
+			"Name": "Example_applications",
+			"Key": "example_applications",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "complex_table",
+					"Repo": "complex_table",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "complex_tuigrid",
+					"Repo": "complex_tuigrid",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "debug",
+					"Repo": "debug",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "gradebook",
+					"Repo": "gradebook",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "manyfest_editor",
+					"Repo": "manyfest_editor",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "postcard_example",
+					"Repo": "postcard_example",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "simple_distill",
+					"Repo": "simple_distill",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "simple_form",
+					"Repo": "simple_form",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "simple_table",
+					"Repo": "simple_table",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		},
+		{
+			"Name": "Source",
+			"Key": "source",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "application",
+					"Repo": "application",
+					"Group": "source",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "providers",
+					"Repo": "providers",
+					"Group": "source",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "services",
+					"Repo": "services",
+					"Group": "source",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "templates",
+					"Repo": "templates",
+					"Group": "source",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "views",
+					"Repo": "views",
+					"Group": "source",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		},
+		{
+			"Name": "Types",
+			"Key": "types",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "source",
+					"Repo": "source",
+					"Group": "types",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		}
+	]
+}
