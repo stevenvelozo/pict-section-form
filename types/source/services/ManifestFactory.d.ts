@@ -1,15 +1,11 @@
 export = ManifestFactory;
-declare class ManifestFactory {
+declare class ManifestFactory extends libFableServiceProviderBase {
     constructor(pFable: any, pOptions: any, pServiceHash: any);
     /** @type {import('pict') & { instantiateServiceProviderWithoutRegistration: (hash: string, options?: any, uuid?: string) => any, newManyfest: () => import('manyfest') }} */
     fable: import("pict") & {
         instantiateServiceProviderWithoutRegistration: (hash: string, options?: any, uuid?: string) => any;
         newManyfest: () => import("manyfest");
     };
-    /** @type {any} */
-    log: any;
-    /** @type {string} */
-    UUID: string;
     manifest: any;
     referenceManifestFactories: {};
     sectionHashLookup: {};
@@ -114,4 +110,5 @@ declare class ManifestFactory {
 declare namespace ManifestFactory {
     let default_configuration: Record<string, any>;
 }
+import libFableServiceProviderBase = require("fable-serviceproviderbase");
 //# sourceMappingURL=ManifestFactory.d.ts.map

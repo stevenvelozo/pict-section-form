@@ -16,8 +16,6 @@ declare class PictTemplateInputWithViewAndDescriptorAddressTemplate extends libP
         ManifestFactory: import("../services/ManifestFactory.js");
         DataFormat: any;
     };
-    /** @type {any} */
-    log: any;
     currentInputIndex: number;
     /**
      * Renders an arbitrary PICT input by hash, with a custom data type, input type and label.  The Record reference is ignored in this template.

@@ -1,5 +1,20 @@
 # Example Applications
 
+To run these example applications, you can just do the one-liner:
+
+```shell
+npx quack examples
+```
+
+Either from the root of this repository, or passing it this folder as a parameter.  
+
+You can still build these from their folder one at a time and the harness
+index.html will just work.  If you add a project to this in the subfolder
+and it can be built into a web app with a dist/index.html the harness will
+pick up the new example next time it's run.
+
+--
+
 These applications exercise the library from very basic to complex.
 
 ## The Basics

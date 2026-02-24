@@ -10,8 +10,6 @@ declare class PictTemplateProviderPluckJoinUnique extends libPictTemplate {
     pict: import("pict");
     /** @type {import('pict')} */
     fable: import("pict");
-    /** @type {any} */
-    log: any;
 }
 import libPictTemplate = require("pict-template");
 //# sourceMappingURL=Pict-Template-Proxy-PluckJoinUnique.d.ts.map

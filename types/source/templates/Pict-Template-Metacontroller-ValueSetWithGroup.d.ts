@@ -15,8 +15,6 @@ declare class PictTemplateMetacontrollerValueSet extends libPictTemplate {
     pict: import("pict");
     /** @type {import('pict')} */
     fable: import("pict");
-    /** @type {any} */
-    log: any;
     /**
      * Asynchronously renders a template with the provided template hash, record, callback, and context array.
      *

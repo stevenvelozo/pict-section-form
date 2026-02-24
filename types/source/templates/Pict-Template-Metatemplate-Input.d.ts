@@ -15,8 +15,6 @@ declare class PictTemplateMetatemplateInputTemplate extends libPictTemplate {
     fable: import("pict") & {
         ManifestFactory: import("../services/ManifestFactory.js");
     };
-    /** @type {any} */
-    log: any;
     currentInputIndex: number;
     /**
      * Renders the PICT Metacontroller Template.  The Record reference is ignored in this template.

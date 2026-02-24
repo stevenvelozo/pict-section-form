@@ -15,8 +15,6 @@ declare class PictTemplateInputWithViewAndHashAddressTemplate extends libPictTem
     fable: import("pict") & {
         ManifestFactory: import("../services/ManifestFactory.js");
     };
-    /** @type {any} */
-    log: any;
     currentInputIndex: number;
     /**
      * Renders an arbitrary PICT input by hash, with a custom data type, input type and label.  The Record reference is ignored in this template.

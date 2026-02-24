@@ -15,8 +15,6 @@ declare class PictTemplateControlFromDynamicManifest extends libPictTemplate {
     fable: import("pict") & {
         ManifestFactory: import("../services/ManifestFactory.js");
     };
-    /** @type {any} */
-    log: any;
     /**
      * Renders a view managed by the metacontroller based on the manifest schema hash.
      *

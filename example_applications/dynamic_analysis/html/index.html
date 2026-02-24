@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Fruit Nutrition Analysis Lab — Pict Example</title>
+		<!-- PICT Dynamic View CSS Container -->
+		<style id="PICT-CSS"></style>
+		<!-- Lab Notebook Theme — Pict Dynamic Analysis Example -->
+		<style>
+			*, *::before, *::after { box-sizing: border-box; }
+			body { margin: 0; padding: 0; font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #F0F4F8; color: #263238; }
+
+			/* ─── Header Bar ─── */
+			.pict-example-header { display: flex; align-items: stretch; background: #0D1B2A; border-bottom: 3px solid #00BCD4; }
+			.pict-example-badge { background: #00BCD4; color: #0D1B2A; padding: 0.6rem 1rem; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 0.5rem; }
+			.pict-example-badge svg { width: 14px; height: 14px; fill: #0D1B2A; flex-shrink: 0; }
+			.pict-example-app-name { padding: 0.6rem 1rem; color: #E0F7FA; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; }
+			.pict-example-module { margin-left: auto; padding: 0.6rem 1rem; color: #4DD0E1; font-size: 0.75rem; display: flex; align-items: center; letter-spacing: 0.03em; }
+
+			/* ─── Lab Controls ─── */
+			.lab-controls { background: #fff; border: 1px solid #B0BEC5; border-top: 4px solid #0D1B2A; border-radius: 6px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 2px 8px rgba(13,27,42,0.08); }
+			.lab-controls h2 { margin: 0 0 0.5rem 0; font-size: 1.15rem; color: #0D1B2A; }
+			.lab-controls p { margin: 0 0 1rem 0; font-size: 0.88rem; color: #546E7A; line-height: 1.5; }
+			.lab-controls .injection-buttons { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+			.lab-controls .injection-buttons button { background: #0D1B2A; color: #E0F7FA; border: none; padding: 0.6rem 1.5rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+			.lab-controls .injection-buttons button:hover { background: #1B2838; }
+			.lab-controls .injection-buttons button.calorie-btn { background: #FF5722; color: #fff; }
+			.lab-controls .injection-buttons button.calorie-btn:hover { background: #D84315; }
+			.lab-controls .injection-buttons button.macro-btn { background: #00897B; color: #fff; }
+			.lab-controls .injection-buttons button.macro-btn:hover { background: #00695C; }
+			.lab-controls .injection-counter { font-size: 0.78rem; color: #78909C; font-style: italic; margin-left: 0.5rem; }
+
+			/* ─── Content Area ─── */
+			.pict-example-content { padding: 1.5rem; overflow-x: auto; }
+			#Pict-Form-Container { background: #fff; border: 1px solid #B0BEC5; border-top: 4px solid #00BCD4; border-radius: 6px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(13,27,42,0.08); min-width: 1100px; }
+
+			/* ─── Form Elements ─── */
+			#Pict-Form-Container input[type="text"],
+			#Pict-Form-Container input[type="number"],
+			#Pict-Form-Container input[type="email"],
+			#Pict-Form-Container input[type="date"],
+			#Pict-Form-Container textarea,
+			#Pict-Form-Container select { border: 1px solid #CFD8DC; background: #FAFAFA; padding: 0.45rem 0.6rem; border-radius: 4px; font-size: 0.9rem; color: #263238; width: 100%; }
+			#Pict-Form-Container input:focus,
+			#Pict-Form-Container textarea:focus,
+			#Pict-Form-Container select:focus { outline: none; border-color: #00BCD4; box-shadow: 0 0 0 2px rgba(0,188,212,0.15); }
+			#Pict-Form-Container label { color: #37474F; font-weight: 600; font-size: 0.82rem; }
+			#Pict-Form-Container h2 { color: #0D1B2A; font-size: 1.1rem; border-bottom: 2px solid #00BCD4; padding-bottom: 0.35rem; margin-top: 1.25rem; }
+			#Pict-Form-Container h3 { color: #263238; font-size: 0.95rem; margin-top: 0.8rem; }
+			#Pict-Form-Container h4 { color: #546E7A; font-size: 0.85rem; }
+
+			/* ─── Table Styling ─── */
+			#Pict-Form-Container table { width: 100%; border-collapse: collapse; }
+			#Pict-Form-Container th { background: #0D1B2A; color: #E0F7FA; padding: 0.5rem 0.75rem; text-align: left; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+			#Pict-Form-Container td { padding: 0.4rem 0.6rem; border-bottom: 1px solid #ECEFF1; font-size: 0.82rem; background: #fff; }
+			#Pict-Form-Container tr:nth-child(even) td { background: #F5F7FA; }
+			#Pict-Form-Container tr:hover td { background: #E0F7FA; }
+
+			/* ─── Buttons ─── */
+			#Pict-Form-Container button,
+			#Pict-Form-Container input[type="button"],
+			#Pict-Form-Container input[type="submit"] { background: #00BCD4; color: #fff; border: none; padding: 0.5rem 1.25rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+			#Pict-Form-Container button:hover { background: #0097A7; }
+
+			/* ─── Injected Section Visual Distinction ─── */
+			#Pict-Form-Container .pict-form { margin-top: 0.75rem; }
+		</style>
+		<!-- Load Pict -->
+		<script src="./pict.js" type="text/javascript"></script>
+		<!-- Load Chart.js -->
+		<script src="./chart.umd.js"></script>
+		<!-- Bootstrap -->
+		<script type="text/javascript">Pict.safeOnDocumentReady(() => { Pict.safeLoadPictApplication(DynamicAnalysisApplication, 0)});</script>
+	</head>
+	<body>
+		<div class="pict-example-header">
+			<div class="pict-example-badge">
+				<svg viewBox="0 0 16 16"><polygon points="8,1 10,6 16,6 11,9.5 13,15 8,11.5 3,15 5,9.5 0,6 6,6"/></svg>
+				Pict Example
+			</div>
+			<div class="pict-example-app-name">Fruit Nutrition Analysis Lab</div>
+			<div class="pict-example-module">pict-section-form &middot; dynamic injection</div>
+		</div>
+		<div class="pict-example-content">
+			<div class="lab-controls">
+				<h2>Analysis Module Injection</h2>
+				<p>
+					Click a button below to dynamically inject an analysis module.
+					Each injection creates a <strong>distinct copy</strong> with uniquely scoped
+					solver expressions, computed fields, and charts &mdash; powered by tokenized
+					expression rewriting via <code>createDistinctManifest</code>.
+					Inject as many copies as you like; they all operate independently.
+				</p>
+				<div class="injection-buttons">
+					<button type="button" class="calorie-btn"
+						onclick="injectAnalysisModule(['CalorieAnalysis']);">
+						+ Calorie Distribution Analysis
+					</button>
+					<button type="button" class="macro-btn"
+						onclick="injectAnalysisModule(['MacroBreakdown']);">
+						+ Macronutrient Composition
+					</button>
+					<span class="injection-counter" id="InjectionCounter">No modules injected yet.</span>
+				</div>
+			</div>
+			<div id="Pict-Form-Container"></div>
+		</div>
+		<script src="./dynamic_analysis_application.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			var _injectionCount = 0;
+			function injectAnalysisModule(pManifestHashes)
+			{
+				_Pict.views.PictFormMetacontroller.injectManifestsByHash(pManifestHashes, 'FruitGrid');
+				_injectionCount++;
+				var tmpEl = document.getElementById('InjectionCounter');
+				if (tmpEl) tmpEl.textContent = _injectionCount + ' module' + (_injectionCount === 1 ? '' : 's') + ' injected.';
+				// injectManifestsByHash defers rendering with setTimeout(0);
+				// we need to solve and marshal after the views have rendered
+				setTimeout(function ()
+				{
+					_Pict.PictApplication.solve();
+					_Pict.views.PictFormMetacontroller.marshalToView();
+				}, 100);
+			}
+		</script>
+	</body>
+</html>

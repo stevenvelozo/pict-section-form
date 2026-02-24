@@ -1,10 +1,10 @@
 {
-    "name": "complex_tabular_application",
+    "name": "dynamic_analysis_application",
     "version": "1.0.0",
-    "description": "The most complex tabular application ever!",
-    "main": "Complex-Tabular-Application.js",
+    "description": "Fruit Nutrition Analysis Lab — dynamic section injection with solver rewriting, charts and histograms.",
+    "main": "Dynamic-Analysis-Application.js",
     "scripts": {
-        "start": "node Complex-Tabular-Application.js",
+        "start": "node Dynamic-Analysis-Application.js",
         "build": "npx quack build && npx quack copy"
     },
     "author": "steven",

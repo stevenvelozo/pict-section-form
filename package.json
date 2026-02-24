@@ -34,10 +34,10 @@
         "browser-env": "^3.3.0",
         "eslint": "^9.39.2",
         "jquery": "^4.0.0",
-        "pict": "^1.0.348",
+        "pict": "^1.0.351",
         "pict-application": "^1.0.32",
         "pict-service-commandlineutility": "^1.0.18",
-        "quackage": "^1.0.51",
+        "quackage": "^1.0.56",
         "tui-grid": "^4.21.22",
         "typescript": "^5.9.3"
     },
@@ -46,7 +46,7 @@
         "fable-serviceproviderbase": "^3.0.18",
         "marked": "^17.0.1",
         "pict-provider": "^1.0.10",
-        "pict-section-tuigrid": "^1.0.27",
+        "pict-section-tuigrid": "^1.0.30",
         "pict-template": "^1.0.14",
         "pict-view": "^1.0.66"
     },

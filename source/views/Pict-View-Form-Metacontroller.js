@@ -405,60 +405,225 @@ class PictFormMetacontroller extends libPictViewClass
 				}
 			}
 		}
-		//TODO: should we merge these two together for solvers?
-		const tmpAddressMappings = Object.entries(tmpAddressTranslation).map(([ pOldAddress, pNewAddress ]) => ({ From: pOldAddress, To: pNewAddress }));
-		tmpAddressMappings.sort((a, b) => b.From.length - a.From.length);
-		const tmpHashMappings = Object.entries(tmpHashTranslation).map(([ pOldHash, pNewHash ]) => ({ From: pOldHash, To: pNewHash }));
-		tmpHashMappings.sort((a, b) => b.From.length - a.From.length);
+		// Use the expression parser tokenizer for discrete token-based solver rewriting.
+		// This avoids the regex word-boundary issues when hash and address are the same string.
+		const tmpExpressionParser = this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
+		const tmpMarshalDestination = this.viewMarshalDestination;
+
+		/**
+		 * Rewrite a solver expression by tokenizing, replacing address/hash tokens, and recomposing.
+		 *
+		 * @param {string} pExpression - The solver expression string.
+		 * @return {string} The rewritten expression, or the original if no changes were made.
+		 */
+		const rewriteSolverExpression = (pExpression) =>
+		{
+			if (typeof(pExpression) !== 'string' || pExpression.length === 0)
+			{
+				return pExpression;
+			}
+
+			let tmpResultObject = {};
+			tmpExpressionParser.tokenize(pExpression, tmpResultObject);
+
+			let tmpTokens = Array.from(tmpResultObject.OriginalRawTokens);
+			let tmpModified = false;
+
+			// Function context stack for tracking string parameters inside annotated functions
+			let tmpFunctionStack = [];
+			let tmpParenDepth = 0;
+
+			for (let i = 0; i < tmpTokens.length; i++)
+			{
+				let tmpToken = tmpTokens[i];
+				let tmpTokenType = tmpExpressionParser.Tokenizer.getTokenType(tmpToken);
+
+				// Track parenthesis depth and function context
+				if (tmpToken === '(')
+				{
+					// Check if the previous token is a known function name
+					if (i > 0)
+					{
+						let tmpPrevToken = tmpTokens[i - 1].toLowerCase();
+						if (tmpPrevToken in tmpExpressionParser.functionMap)
+						{
+							tmpFunctionStack.push({ name: tmpPrevToken, paramIndex: 0, depth: tmpParenDepth });
+						}
+					}
+					tmpParenDepth++;
+					continue;
+				}
+				if (tmpToken === ')')
+				{
+					tmpParenDepth--;
+					if (tmpFunctionStack.length > 0 && tmpFunctionStack[tmpFunctionStack.length - 1].depth === tmpParenDepth)
+					{
+						tmpFunctionStack.pop();
+					}
+					continue;
+				}
+				if (tmpToken === ',')
+				{
+					if (tmpFunctionStack.length > 0 && tmpFunctionStack[tmpFunctionStack.length - 1].depth === tmpParenDepth - 1)
+					{
+						tmpFunctionStack[tmpFunctionStack.length - 1].paramIndex++;
+					}
+					continue;
+				}
+
+				// Token.Symbol -- check hash mappings then address mappings
+				if (tmpTokenType === 'Token.Symbol')
+				{
+					let tmpReplacement = null;
+
+					if (tmpToken in tmpHashTranslation)
+					{
+						tmpReplacement = tmpHashTranslation[tmpToken];
+					}
+					else if (tmpToken in tmpAddressTranslation)
+					{
+						tmpReplacement = tmpAddressTranslation[tmpToken];
+					}
+					// Check with viewMarshalDestination prefix stripped
+					else if (tmpMarshalDestination && tmpToken.startsWith(tmpMarshalDestination + '.'))
+					{
+						let tmpStripped = tmpToken.substring(tmpMarshalDestination.length + 1);
+						if (tmpStripped in tmpHashTranslation)
+						{
+							tmpReplacement = tmpMarshalDestination + '.' + tmpHashTranslation[tmpStripped];
+						}
+						else if (tmpStripped in tmpAddressTranslation)
+						{
+							tmpReplacement = tmpMarshalDestination + '.' + tmpAddressTranslation[tmpStripped];
+						}
+					}
+
+					if (tmpReplacement !== null)
+					{
+						tmpTokens[i] = tmpReplacement;
+						tmpModified = true;
+					}
+				}
+				// Token.StateAddress -- extract inner address, check mappings with and without marshal prefix
+				else if (tmpTokenType === 'Token.StateAddress')
+				{
+					let tmpInner = tmpToken.substring(1, tmpToken.length - 1);
+					let tmpReplacement = null;
+
+					if (tmpInner in tmpAddressTranslation)
+					{
+						tmpReplacement = '{' + tmpAddressTranslation[tmpInner] + '}';
+					}
+					else if (tmpInner in tmpHashTranslation)
+					{
+						tmpReplacement = '{' + tmpHashTranslation[tmpInner] + '}';
+					}
+					else if (tmpMarshalDestination && tmpInner.startsWith(tmpMarshalDestination + '.'))
+					{
+						let tmpStripped = tmpInner.substring(tmpMarshalDestination.length + 1);
+						if (tmpStripped in tmpAddressTranslation)
+						{
+							tmpReplacement = '{' + tmpMarshalDestination + '.' + tmpAddressTranslation[tmpStripped] + '}';
+						}
+						else if (tmpStripped in tmpHashTranslation)
+						{
+							tmpReplacement = '{' + tmpMarshalDestination + '.' + tmpHashTranslation[tmpStripped] + '}';
+						}
+					}
+
+					if (tmpReplacement !== null)
+					{
+						tmpTokens[i] = tmpReplacement;
+						tmpModified = true;
+					}
+				}
+				// Token.String inside an annotated function -- check if this parameter index has addresses
+				else if (tmpTokenType === 'Token.String' && tmpFunctionStack.length > 0)
+				{
+					let tmpCurrentFunc = tmpFunctionStack[tmpFunctionStack.length - 1];
+					let tmpFuncEntry = tmpExpressionParser.functionMap[tmpCurrentFunc.name];
+
+					if (tmpFuncEntry && Array.isArray(tmpFuncEntry.AddressParameterIndices) && tmpFuncEntry.AddressParameterIndices.includes(tmpCurrentFunc.paramIndex))
+					{
+						let tmpStringContent = tmpToken.substring(1, tmpToken.length - 1);
+						let tmpReplacement = null;
+
+						// Check hash mappings first (hash-style rewrite for string parameters)
+						if (tmpStringContent in tmpHashTranslation)
+						{
+							tmpReplacement = '"' + tmpHashTranslation[tmpStringContent] + '"';
+						}
+						else if (tmpStringContent in tmpAddressTranslation)
+						{
+							tmpReplacement = '"' + tmpAddressTranslation[tmpStringContent] + '"';
+						}
+						else if (tmpMarshalDestination && tmpStringContent.startsWith(tmpMarshalDestination + '.'))
+						{
+							let tmpStripped = tmpStringContent.substring(tmpMarshalDestination.length + 1);
+							if (tmpStripped in tmpHashTranslation)
+							{
+								tmpReplacement = '"' + tmpMarshalDestination + '.' + tmpHashTranslation[tmpStripped] + '"';
+							}
+							else if (tmpStripped in tmpAddressTranslation)
+							{
+								tmpReplacement = '"' + tmpMarshalDestination + '.' + tmpAddressTranslation[tmpStripped] + '"';
+							}
+						}
+
+						if (tmpReplacement !== null)
+						{
+							tmpTokens[i] = tmpReplacement;
+							tmpModified = true;
+						}
+					}
+				}
+			}
+
+			if (!tmpModified)
+			{
+				return pExpression;
+			}
+
+			return tmpExpressionParser.recompose(tmpTokens);
+		};
+
+		/**
+		 * Rewrite a single solver entry (string or object with Expression property).
+		 *
+		 * @param {Array} pSolverArray - The array of solvers to rewrite in.
+		 * @param {number} pIndex - The index of the solver to rewrite.
+		 * @param {string} pLogPrefix - Logging prefix for identification.
+		 */
+		const rewriteSolverEntry = (pSolverArray, pIndex, pLogPrefix) =>
+		{
+			const tmpSolver = pSolverArray[pIndex];
+			const tmpSolverExpression = typeof tmpSolver === 'string' ? tmpSolver : tmpSolver.Expression;
+			if (!tmpSolverExpression)
+			{
+				return;
+			}
+			const tmpUpdatedSolver = rewriteSolverExpression(tmpSolverExpression);
+			if (tmpUpdatedSolver !== tmpSolverExpression)
+			{
+				this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated ${pLogPrefix} ${pIndex} from "${tmpSolverExpression}" to "${tmpUpdatedSolver}".`);
+				if (typeof tmpSolver === 'string')
+				{
+					pSolverArray[pIndex] = tmpUpdatedSolver;
+				}
+				else
+				{
+					pSolverArray[pIndex].Expression = tmpUpdatedSolver;
+				}
+			}
+		};
+
 		for (const tmpSection of tmpManifest.Sections || [])
 		{
 			if (Array.isArray(tmpSection.Solvers) && tmpSection.Solvers.length > 0)
 			{
 				for (let i = 0; i < tmpSection.Solvers.length; i++)
 				{
-					/** @type {Record<string, any>|string} */
-					const tmpSolver = tmpSection.Solvers[i];
-					/** @type {string} */
-					const tmpSolverExpression = typeof tmpSolver === 'string' ? tmpSolver : tmpSolver.Expression;
-					if (!tmpSolverExpression)
-					{
-						continue;
-					}
-					let tmpUpdatedSolver = tmpSolverExpression;
-					//FIXME: what if there is a collision in a suffix-part and we replace too much?
-					for (const tmpMapping of tmpAddressMappings)
-					{
-						const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
-						if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
-						{
-							//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Iteratively updated section solver reference ${i} address from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`, tmpMapping);
-						}
-						tmpUpdatedSolver = tmpUpdatedSolverIter;
-					}
-					for (const tmpMapping of tmpHashMappings)
-					{
-						const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
-						if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
-						{
-							//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Iteratively updated section solver reference ${i} hash from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`, tmpMapping);
-						}
-						tmpUpdatedSolver = tmpUpdatedSolverIter;
-					}
-					if (tmpUpdatedSolver !== tmpSolverExpression)
-					{
-						//FIXME: hack to remove duplicated tmpUUID prefixes
-						const tmpPrefix = `${tmpUUID}.`;
-						tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`(${escapeRegExp(tmpPrefix)})+`), tmpPrefix);
-						this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated section solver reference ${i} from "${tmpSolverExpression}" to "${tmpUpdatedSolver}".`);
-						if (typeof tmpSolver === 'string')
-						{
-							tmpSection.Solvers[i] = tmpUpdatedSolver;
-						}
-						else
-						{
-							tmpSection.Solvers[i].Expression = tmpUpdatedSolver;
-						}
-					}
+					rewriteSolverEntry(tmpSection.Solvers, i, 'section solver reference');
 				}
 			}
 			for (const tmpGroup of tmpSection.Groups || [])
@@ -468,54 +633,12 @@ class PictFormMetacontroller extends libPictViewClass
 					let tmpRecordSetAddress = `${tmpUUID}.${tmpGroup.RecordSetAddress}`;
 					this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group record set address from "${tmpGroup.RecordSetAddress}" to "${tmpRecordSetAddress}".`);
 					tmpGroup.RecordSetAddress = tmpRecordSetAddress;
-
 				}
 				if (Array.isArray(tmpGroup.RecordSetSolvers) && tmpGroup.RecordSetSolvers.length > 0)
 				{
 					for (let i = 0; i < tmpGroup.RecordSetSolvers.length; i++)
 					{
-						/** @type {Record<string, any>|string} */
-						const tmpSolver = tmpGroup.RecordSetSolvers[i];
-						const tmpSolverExpression = typeof tmpSolver === 'string' ? tmpSolver : tmpSolver.Expression;
-						if (!tmpSolverExpression)
-						{
-							continue;
-						}
-						let tmpUpdatedSolver = tmpSolverExpression;
-						//FIXME: what if there is a collision in a suffix-part and we replace too much?
-						for (const tmpMapping of tmpAddressMappings)
-						{
-							const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
-							if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
-							{
-								//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} address from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`);
-							}
-							tmpUpdatedSolver = tmpUpdatedSolverIter;
-						}
-						for (const tmpMapping of tmpHashMappings)
-						{
-							const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
-							if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
-							{
-								//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} hash from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`);
-							}
-							tmpUpdatedSolver = tmpUpdatedSolverIter;
-						}
-						if (tmpUpdatedSolver !== tmpSolverExpression)
-						{
-							//FIXME: hack to remove duplicated tmpUUID prefixes
-							const tmpPrefix = `${tmpUUID}.`;
-							tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`(${escapeRegExp(tmpPrefix)})+`), tmpPrefix);
-							this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} from "${tmpSolverExpression}" to "${tmpUpdatedSolver}".`);
-							if (typeof tmpSolver === 'string')
-							{
-								tmpGroup.RecordSetSolvers[i] = tmpUpdatedSolver;
-							}
-							else
-							{
-								tmpGroup.RecordSetSolvers[i].Expression = tmpUpdatedSolver;
-							}
-						}
+						rewriteSolverEntry(tmpGroup.RecordSetSolvers, i, 'group solver reference');
 					}
 				}
 			}
@@ -524,48 +647,7 @@ class PictFormMetacontroller extends libPictViewClass
 		{
 			for (let i = 0; i < tmpManifest.ValidationSolvers.length; i++)
 			{
-				/** @type {Record<string, any>|string} */
-				const tmpSolver = tmpManifest.ValidationSolvers[i];
-				const tmpSolverExpression = typeof tmpSolver === 'string' ? tmpSolver : tmpSolver.Expression;
-				if (!tmpSolverExpression)
-				{
-					continue;
-				}
-				let tmpUpdatedSolver = tmpSolverExpression;
-				//FIXME: what if there is a collision in a suffix-part and we replace too much?
-				for (const tmpMapping of tmpAddressMappings)
-				{
-					const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
-					if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
-					{
-						//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} address from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`);
-					}
-					tmpUpdatedSolver = tmpUpdatedSolverIter;
-				}
-				for (const tmpMapping of tmpHashMappings)
-				{
-					const tmpUpdatedSolverIter = tmpUpdatedSolver.replace(new RegExp(`\\b${escapeRegExp(tmpMapping.From)}\\b`, 'g'), tmpMapping.To);
-					if (tmpUpdatedSolverIter !== tmpUpdatedSolver)
-					{
-						//this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} hash from "${tmpUpdatedSolver}" to "${tmpUpdatedSolverIter}".`);
-					}
-					tmpUpdatedSolver = tmpUpdatedSolverIter;
-				}
-				if (tmpUpdatedSolver !== tmpSolverExpression)
-				{
-					//FIXME: hack to remove duplicated tmpUUID prefixes
-					const tmpPrefix = `${tmpUUID}.`;
-					tmpUpdatedSolver = tmpUpdatedSolver.replace(new RegExp(`(${escapeRegExp(tmpPrefix)})+`), tmpPrefix);
-					this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated group solver reference ${i} from "${tmpSolverExpression}" to "${tmpUpdatedSolver}".`);
-					if (typeof tmpSolver === 'string')
-					{
-						tmpManifest.ValidationSolvers[i] = tmpUpdatedSolver;
-					}
-					else
-					{
-						tmpManifest.ValidationSolvers[i].Expression = tmpUpdatedSolver;
-					}
-				}
+				rewriteSolverEntry(tmpManifest.ValidationSolvers, i, 'validation solver reference');
 			}
 		}
 		return tmpManifest;
