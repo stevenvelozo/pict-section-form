@@ -29,6 +29,9 @@ module.exports.ManifestConversionToCSV = require('./services/ManifestConversionT
 // Reveal the support base class
 module.exports.PictFormSupportBase = require('./views/support/Pict-View-PSF-SupportBase.js');
 
+// The optional form persistence provider for offline data storage
+module.exports.PictFormPersistenceProvider = require('./providers/Pict-Provider-FormPersistence.js');
+
 
 // The extension views
 module.exports.ExtensionViews = (

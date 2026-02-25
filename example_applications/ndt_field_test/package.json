@@ -1,0 +1,32 @@
+{
+	"name": "ndt_field_test",
+	"version": "1.0.0",
+	"description": "Nuclear Density Testing field data collection with offline persistence.",
+	"main": "NDT-Application.js",
+	"scripts": {
+		"start": "node NDT-Application.js",
+		"build": "npx quack build && npx quack copy"
+	},
+	"author": "steven",
+	"license": "MIT",
+	"copyFilesSettings": {
+		"whenFileExists": "overwrite"
+	},
+	"copyFiles": [
+		{
+			"from": "./html/*",
+			"to": "./dist/"
+		},
+		{
+			"from": "../../node_modules/pict/dist/*",
+			"to": "./dist/"
+		},
+		{
+			"from": "./node_modules/chart.js/dist/chart.umd*",
+			"to": "./dist/"
+		}
+	],
+	"devDependencies": {
+		"chart.js": "^4.5.1"
+	}
+}

@@ -216,6 +216,11 @@ class PictViewDynamicForm extends libPictViewClass
 		{
 			this.marshalToView();
 		}
+		// Notify the FormPersistence provider if it exists, for autosave
+		if (this.pict.providers.FormPersistence)
+		{
+			this.pict.providers.FormPersistence.onFormDataChanged();
+		}
 	}
 
 
@@ -291,6 +296,11 @@ class PictViewDynamicForm extends libPictViewClass
 		else
 		{
 			this.marshalToView();
+		}
+		// Notify the FormPersistence provider if it exists, for autosave
+		if (this.pict.providers.FormPersistence)
+		{
+			this.pict.providers.FormPersistence.onFormDataChanged();
 		}
 	}
 

@@ -1,0 +1,73 @@
+{
+	"Projects":
+	[
+		{
+			"IDProject": "PRJ-001",
+			"Name": "I-40 Resurfacing — Mile 112-118",
+			"ContractNumber": "NMDOT-2024-0456",
+			"County": "Bernalillo",
+			"Route": "I-40 Westbound"
+		},
+		{
+			"IDProject": "PRJ-002",
+			"Name": "US-550 Overlay — Rio Rancho",
+			"ContractNumber": "NMDOT-2024-0789",
+			"County": "Sandoval",
+			"Route": "US-550 Northbound"
+		},
+		{
+			"IDProject": "PRJ-003",
+			"Name": "NM-14 Reconstruction — Cedar Crest",
+			"ContractNumber": "NMDOT-2024-1023",
+			"County": "Bernalillo",
+			"Route": "NM-14 Both Directions"
+		}
+	],
+	"Contractors":
+	[
+		{ "IDContractor": "CON-A", "Name": "Mountain West Paving Inc." },
+		{ "IDContractor": "CON-B", "Name": "Rio Grande Asphalt LLC" },
+		{ "IDContractor": "CON-C", "Name": "Desert Sun Construction" }
+	],
+	"MixDesigns":
+	[
+		{
+			"IDMixDesign": "MIX-SP3",
+			"Name": "SP-III Surface Course",
+			"NominalMaxAggSize": "12.5mm",
+			"BinderGrade": "PG 70-22",
+			"TargetAirVoids": 4.0,
+			"TargetVMA": 15.0,
+			"MaxDensity_pcf": 153.2,
+			"OptimumAsphaltContent": 5.4
+		},
+		{
+			"IDMixDesign": "MIX-SP4",
+			"Name": "SP-IV Binder Course",
+			"NominalMaxAggSize": "19.0mm",
+			"BinderGrade": "PG 70-22",
+			"TargetAirVoids": 4.0,
+			"TargetVMA": 13.5,
+			"MaxDensity_pcf": 151.8,
+			"OptimumAsphaltContent": 4.8
+		},
+		{
+			"IDMixDesign": "MIX-SP2",
+			"Name": "SP-II Wearing Course",
+			"NominalMaxAggSize": "9.5mm",
+			"BinderGrade": "PG 76-22",
+			"TargetAirVoids": 4.0,
+			"TargetVMA": 16.0,
+			"MaxDensity_pcf": 149.6,
+			"OptimumAsphaltContent": 6.1
+		}
+	],
+	"WorkItems":
+	[
+		{ "IDWorkItem": "WI-401", "ProjectID": "PRJ-001", "Description": "Surface Course — Lanes 1-2", "MixDesignID": "MIX-SP3" },
+		{ "IDWorkItem": "WI-402", "ProjectID": "PRJ-001", "Description": "Binder Course — Full Width", "MixDesignID": "MIX-SP4" },
+		{ "IDWorkItem": "WI-550A", "ProjectID": "PRJ-002", "Description": "Wearing Course — SB Lanes", "MixDesignID": "MIX-SP2" },
+		{ "IDWorkItem": "WI-550B", "ProjectID": "PRJ-002", "Description": "Binder Course — NB Lanes", "MixDesignID": "MIX-SP4" },
+		{ "IDWorkItem": "WI-14A", "ProjectID": "PRJ-003", "Description": "Surface Course — NB", "MixDesignID": "MIX-SP3" }
+	]
+}
