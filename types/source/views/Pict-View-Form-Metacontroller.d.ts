@@ -77,6 +77,27 @@ declare class PictFormMetacontroller extends libPictViewClass {
      */
     injectManifest(pManifest: Record<string, any>, pAfterSectionHash?: string): Array<import("./Pict-View-DynamicForm.js")>;
     /**
+     * Builds translation maps for addresses and hashes based on the manifest. This is used for rewriting solver expressions to map them to distinct manifests.
+     *
+     * @param {Record<string, any>} pManifest - The manifest to build translations from.
+     *
+     * @return {{ AddressTranslation: Record<string, string>, HashTranslation: Record<string, string> }} The translation maps for addresses and hashes.
+     */
+    buildManifestTranslations(pManifest: Record<string, any>): {
+        AddressTranslation: Record<string, string>;
+        HashTranslation: Record<string, string>;
+    };
+    /**
+     * Rewrite a solver expression by tokenizing, replacing address/hash tokens, and recomposing.
+     *
+     * @param {string} pExpression - The solver expression string.
+     * @param {Record<string, string>} pHashTranslation - A mapping of original hashes to new hashes for replacement.
+     * @param {Record<string, string>} pAddressTranslation - A mapping of original addresses to new addresses for replacement.
+     *
+     * @return {string} The rewritten expression, or the original if no changes were made.
+     */
+    rewriteSolverExpression(pExpression: string, pHashTranslation: Record<string, string>, pAddressTranslation: Record<string, string>): string;
+    /**
      * Changes:
      *   * The hashes of each section+group to be globally unique.
      *   * The data address of each element to map to a unique location.

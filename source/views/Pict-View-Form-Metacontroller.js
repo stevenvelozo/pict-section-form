@@ -284,6 +284,235 @@ class PictFormMetacontroller extends libPictViewClass
 	}
 
 	/**
+	 * Builds translation maps for addresses and hashes based on the manifest. This is used for rewriting solver expressions to map them to distinct manifests.
+	 *
+	 * @param {Record<string, any>} pManifest - The manifest to build translations from.
+	 *
+	 * @return {{ AddressTranslation: Record<string, string>, HashTranslation: Record<string, string> }} The translation maps for addresses and hashes.
+	 */
+	buildManifestTranslations(pManifest)
+	{
+		/** @type {Record<string, string>} */
+		const tmpAddressTranslation = {};
+		for (const tmpSection of pManifest.Sections || [])
+		{
+			if (tmpSection.OriginalHash)
+			{
+				tmpAddressTranslation[tmpSection.OriginalHash] = tmpSection.Hash;
+			}
+			for (const tmpGroup of tmpSection.Groups || [])
+			{
+				if (tmpGroup.OriginalHash)
+				{
+					tmpAddressTranslation[tmpGroup.OriginalHash] = tmpGroup.Hash;
+				}
+			}
+		}
+		/** @type {Record<string, string>} */
+		const tmpHashTranslation = {};
+		for (const tmpDescriptor of Object.values(pManifest?.Descriptors || {}))
+		{
+			if (tmpDescriptor.OriginalDataAddress)
+			{
+				tmpAddressTranslation[tmpDescriptor.OriginalDataAddress] = tmpDescriptor.DataAddress;
+			}
+			if (tmpDescriptor.OriginalHash)
+			{
+				tmpHashTranslation[tmpDescriptor.OriginalHash] = tmpDescriptor.Hash;
+			}
+		}
+		return { AddressTranslation: tmpAddressTranslation, HashTranslation: tmpHashTranslation };
+	}
+
+	/**
+	 * Rewrite a solver expression by tokenizing, replacing address/hash tokens, and recomposing.
+	 *
+	 * @param {string} pExpression - The solver expression string.
+	 * @param {Record<string, string>} pHashTranslation - A mapping of original hashes to new hashes for replacement.
+	 * @param {Record<string, string>} pAddressTranslation - A mapping of original addresses to new addresses for replacement.
+	 *
+	 * @return {string} The rewritten expression, or the original if no changes were made.
+	 */
+	rewriteSolverExpression(pExpression, pHashTranslation, pAddressTranslation)
+	{
+		const tmpHashTranslation = pHashTranslation || { };
+		const tmpAddressTranslation = pAddressTranslation || { };
+
+		// Use the expression parser tokenizer for discrete token-based solver rewriting.
+		// This avoids the regex word-boundary issues when hash and address are the same string.
+		const tmpExpressionParser = this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
+		const tmpMarshalDestination = this.viewMarshalDestination;
+
+		if (typeof(pExpression) !== 'string' || pExpression.length === 0)
+		{
+			return pExpression;
+		}
+
+		let tmpResultObject = {};
+		tmpExpressionParser.tokenize(pExpression, tmpResultObject);
+
+		let tmpTokens = Array.from(tmpResultObject.OriginalRawTokens);
+		let tmpModified = false;
+
+		// Function context stack for tracking string parameters inside annotated functions
+		let tmpFunctionStack = [];
+		let tmpParenDepth = 0;
+
+		for (let i = 0; i < tmpTokens.length; i++)
+		{
+			let tmpToken = tmpTokens[i];
+			let tmpTokenType = tmpExpressionParser.Tokenizer.getTokenType(tmpToken);
+
+			// Track parenthesis depth and function context
+			if (tmpToken === '(')
+			{
+				// Check if the previous token is a known function name
+				if (i > 0)
+				{
+					let tmpPrevToken = tmpTokens[i - 1].toLowerCase();
+					if (tmpPrevToken in tmpExpressionParser.functionMap)
+					{
+						tmpFunctionStack.push({ name: tmpPrevToken, paramIndex: 0, depth: tmpParenDepth });
+					}
+				}
+				tmpParenDepth++;
+				continue;
+			}
+			if (tmpToken === ')')
+			{
+				tmpParenDepth--;
+				if (tmpFunctionStack.length > 0 && tmpFunctionStack[tmpFunctionStack.length - 1].depth === tmpParenDepth)
+				{
+					tmpFunctionStack.pop();
+				}
+				continue;
+			}
+			if (tmpToken === ',')
+			{
+				if (tmpFunctionStack.length > 0 && tmpFunctionStack[tmpFunctionStack.length - 1].depth === tmpParenDepth - 1)
+				{
+					tmpFunctionStack[tmpFunctionStack.length - 1].paramIndex++;
+				}
+				continue;
+			}
+
+			// Token.Symbol -- check hash mappings then address mappings
+			if (tmpTokenType === 'Token.Symbol')
+			{
+				let tmpReplacement = null;
+
+				if (tmpToken in tmpHashTranslation)
+				{
+					tmpReplacement = tmpHashTranslation[tmpToken];
+				}
+				else if (tmpToken in tmpAddressTranslation)
+				{
+					tmpReplacement = tmpAddressTranslation[tmpToken];
+				}
+				// Check with viewMarshalDestination prefix stripped
+				else if (tmpMarshalDestination && tmpToken.startsWith(tmpMarshalDestination + '.'))
+				{
+					let tmpStripped = tmpToken.substring(tmpMarshalDestination.length + 1);
+					if (tmpStripped in tmpHashTranslation)
+					{
+						tmpReplacement = tmpMarshalDestination + '.' + tmpHashTranslation[tmpStripped];
+					}
+					else if (tmpStripped in tmpAddressTranslation)
+					{
+						tmpReplacement = tmpMarshalDestination + '.' + tmpAddressTranslation[tmpStripped];
+					}
+				}
+
+				if (tmpReplacement !== null)
+				{
+					tmpTokens[i] = tmpReplacement;
+					tmpModified = true;
+				}
+			}
+			// Token.StateAddress -- extract inner address, check mappings with and without marshal prefix
+			else if (tmpTokenType === 'Token.StateAddress')
+			{
+				let tmpInner = tmpToken.substring(1, tmpToken.length - 1);
+				let tmpReplacement = null;
+
+				if (tmpInner in tmpAddressTranslation)
+				{
+					tmpReplacement = '{' + tmpAddressTranslation[tmpInner] + '}';
+				}
+				else if (tmpInner in tmpHashTranslation)
+				{
+					tmpReplacement = '{' + tmpHashTranslation[tmpInner] + '}';
+				}
+				else if (tmpMarshalDestination && tmpInner.startsWith(tmpMarshalDestination + '.'))
+				{
+					let tmpStripped = tmpInner.substring(tmpMarshalDestination.length + 1);
+					if (tmpStripped in tmpAddressTranslation)
+					{
+						tmpReplacement = '{' + tmpMarshalDestination + '.' + tmpAddressTranslation[tmpStripped] + '}';
+					}
+					else if (tmpStripped in tmpHashTranslation)
+					{
+						tmpReplacement = '{' + tmpMarshalDestination + '.' + tmpHashTranslation[tmpStripped] + '}';
+					}
+				}
+
+				if (tmpReplacement !== null)
+				{
+					tmpTokens[i] = tmpReplacement;
+					tmpModified = true;
+				}
+			}
+			// Token.String inside an annotated function -- check if this parameter index has addresses
+			else if (tmpTokenType === 'Token.String' && tmpFunctionStack.length > 0)
+			{
+				let tmpCurrentFunc = tmpFunctionStack[tmpFunctionStack.length - 1];
+				let tmpFuncEntry = tmpExpressionParser.functionMap[tmpCurrentFunc.name];
+
+				if (tmpFuncEntry && Array.isArray(tmpFuncEntry.AddressParameterIndices) && tmpFuncEntry.AddressParameterIndices.includes(tmpCurrentFunc.paramIndex))
+				{
+					let tmpStringContent = tmpToken.substring(1, tmpToken.length - 1);
+					let tmpReplacement = null;
+
+					// Check hash mappings first (hash-style rewrite for string parameters)
+					if (tmpStringContent in tmpHashTranslation)
+					{
+						tmpReplacement = '"' + tmpHashTranslation[tmpStringContent] + '"';
+					}
+					else if (tmpStringContent in tmpAddressTranslation)
+					{
+						tmpReplacement = '"' + tmpAddressTranslation[tmpStringContent] + '"';
+					}
+					else if (tmpMarshalDestination && tmpStringContent.startsWith(tmpMarshalDestination + '.'))
+					{
+						let tmpStripped = tmpStringContent.substring(tmpMarshalDestination.length + 1);
+						if (tmpStripped in tmpHashTranslation)
+						{
+							tmpReplacement = '"' + tmpMarshalDestination + '.' + tmpHashTranslation[tmpStripped] + '"';
+						}
+						else if (tmpStripped in tmpAddressTranslation)
+						{
+							tmpReplacement = '"' + tmpMarshalDestination + '.' + tmpAddressTranslation[tmpStripped] + '"';
+						}
+					}
+
+					if (tmpReplacement !== null)
+					{
+						tmpTokens[i] = tmpReplacement;
+						tmpModified = true;
+					}
+				}
+			}
+		}
+
+		if (!tmpModified)
+		{
+			return pExpression;
+		}
+
+		return tmpExpressionParser.recompose(tmpTokens);
+	}
+
+	/**
 	 * Changes:
 	 *   * The hashes of each section+group to be globally unique.
 	 *   * The data address of each element to map to a unique location.
@@ -405,188 +634,6 @@ class PictFormMetacontroller extends libPictViewClass
 				}
 			}
 		}
-		// Use the expression parser tokenizer for discrete token-based solver rewriting.
-		// This avoids the regex word-boundary issues when hash and address are the same string.
-		const tmpExpressionParser = this.fable.instantiateServiceProviderIfNotExists('ExpressionParser');
-		const tmpMarshalDestination = this.viewMarshalDestination;
-
-		/**
-		 * Rewrite a solver expression by tokenizing, replacing address/hash tokens, and recomposing.
-		 *
-		 * @param {string} pExpression - The solver expression string.
-		 * @return {string} The rewritten expression, or the original if no changes were made.
-		 */
-		const rewriteSolverExpression = (pExpression) =>
-		{
-			if (typeof(pExpression) !== 'string' || pExpression.length === 0)
-			{
-				return pExpression;
-			}
-
-			let tmpResultObject = {};
-			tmpExpressionParser.tokenize(pExpression, tmpResultObject);
-
-			let tmpTokens = Array.from(tmpResultObject.OriginalRawTokens);
-			let tmpModified = false;
-
-			// Function context stack for tracking string parameters inside annotated functions
-			let tmpFunctionStack = [];
-			let tmpParenDepth = 0;
-
-			for (let i = 0; i < tmpTokens.length; i++)
-			{
-				let tmpToken = tmpTokens[i];
-				let tmpTokenType = tmpExpressionParser.Tokenizer.getTokenType(tmpToken);
-
-				// Track parenthesis depth and function context
-				if (tmpToken === '(')
-				{
-					// Check if the previous token is a known function name
-					if (i > 0)
-					{
-						let tmpPrevToken = tmpTokens[i - 1].toLowerCase();
-						if (tmpPrevToken in tmpExpressionParser.functionMap)
-						{
-							tmpFunctionStack.push({ name: tmpPrevToken, paramIndex: 0, depth: tmpParenDepth });
-						}
-					}
-					tmpParenDepth++;
-					continue;
-				}
-				if (tmpToken === ')')
-				{
-					tmpParenDepth--;
-					if (tmpFunctionStack.length > 0 && tmpFunctionStack[tmpFunctionStack.length - 1].depth === tmpParenDepth)
-					{
-						tmpFunctionStack.pop();
-					}
-					continue;
-				}
-				if (tmpToken === ',')
-				{
-					if (tmpFunctionStack.length > 0 && tmpFunctionStack[tmpFunctionStack.length - 1].depth === tmpParenDepth - 1)
-					{
-						tmpFunctionStack[tmpFunctionStack.length - 1].paramIndex++;
-					}
-					continue;
-				}
-
-				// Token.Symbol -- check hash mappings then address mappings
-				if (tmpTokenType === 'Token.Symbol')
-				{
-					let tmpReplacement = null;
-
-					if (tmpToken in tmpHashTranslation)
-					{
-						tmpReplacement = tmpHashTranslation[tmpToken];
-					}
-					else if (tmpToken in tmpAddressTranslation)
-					{
-						tmpReplacement = tmpAddressTranslation[tmpToken];
-					}
-					// Check with viewMarshalDestination prefix stripped
-					else if (tmpMarshalDestination && tmpToken.startsWith(tmpMarshalDestination + '.'))
-					{
-						let tmpStripped = tmpToken.substring(tmpMarshalDestination.length + 1);
-						if (tmpStripped in tmpHashTranslation)
-						{
-							tmpReplacement = tmpMarshalDestination + '.' + tmpHashTranslation[tmpStripped];
-						}
-						else if (tmpStripped in tmpAddressTranslation)
-						{
-							tmpReplacement = tmpMarshalDestination + '.' + tmpAddressTranslation[tmpStripped];
-						}
-					}
-
-					if (tmpReplacement !== null)
-					{
-						tmpTokens[i] = tmpReplacement;
-						tmpModified = true;
-					}
-				}
-				// Token.StateAddress -- extract inner address, check mappings with and without marshal prefix
-				else if (tmpTokenType === 'Token.StateAddress')
-				{
-					let tmpInner = tmpToken.substring(1, tmpToken.length - 1);
-					let tmpReplacement = null;
-
-					if (tmpInner in tmpAddressTranslation)
-					{
-						tmpReplacement = '{' + tmpAddressTranslation[tmpInner] + '}';
-					}
-					else if (tmpInner in tmpHashTranslation)
-					{
-						tmpReplacement = '{' + tmpHashTranslation[tmpInner] + '}';
-					}
-					else if (tmpMarshalDestination && tmpInner.startsWith(tmpMarshalDestination + '.'))
-					{
-						let tmpStripped = tmpInner.substring(tmpMarshalDestination.length + 1);
-						if (tmpStripped in tmpAddressTranslation)
-						{
-							tmpReplacement = '{' + tmpMarshalDestination + '.' + tmpAddressTranslation[tmpStripped] + '}';
-						}
-						else if (tmpStripped in tmpHashTranslation)
-						{
-							tmpReplacement = '{' + tmpMarshalDestination + '.' + tmpHashTranslation[tmpStripped] + '}';
-						}
-					}
-
-					if (tmpReplacement !== null)
-					{
-						tmpTokens[i] = tmpReplacement;
-						tmpModified = true;
-					}
-				}
-				// Token.String inside an annotated function -- check if this parameter index has addresses
-				else if (tmpTokenType === 'Token.String' && tmpFunctionStack.length > 0)
-				{
-					let tmpCurrentFunc = tmpFunctionStack[tmpFunctionStack.length - 1];
-					let tmpFuncEntry = tmpExpressionParser.functionMap[tmpCurrentFunc.name];
-
-					if (tmpFuncEntry && Array.isArray(tmpFuncEntry.AddressParameterIndices) && tmpFuncEntry.AddressParameterIndices.includes(tmpCurrentFunc.paramIndex))
-					{
-						let tmpStringContent = tmpToken.substring(1, tmpToken.length - 1);
-						let tmpReplacement = null;
-
-						// Check hash mappings first (hash-style rewrite for string parameters)
-						if (tmpStringContent in tmpHashTranslation)
-						{
-							tmpReplacement = '"' + tmpHashTranslation[tmpStringContent] + '"';
-						}
-						else if (tmpStringContent in tmpAddressTranslation)
-						{
-							tmpReplacement = '"' + tmpAddressTranslation[tmpStringContent] + '"';
-						}
-						else if (tmpMarshalDestination && tmpStringContent.startsWith(tmpMarshalDestination + '.'))
-						{
-							let tmpStripped = tmpStringContent.substring(tmpMarshalDestination.length + 1);
-							if (tmpStripped in tmpHashTranslation)
-							{
-								tmpReplacement = '"' + tmpMarshalDestination + '.' + tmpHashTranslation[tmpStripped] + '"';
-							}
-							else if (tmpStripped in tmpAddressTranslation)
-							{
-								tmpReplacement = '"' + tmpMarshalDestination + '.' + tmpAddressTranslation[tmpStripped] + '"';
-							}
-						}
-
-						if (tmpReplacement !== null)
-						{
-							tmpTokens[i] = tmpReplacement;
-							tmpModified = true;
-						}
-					}
-				}
-			}
-
-			if (!tmpModified)
-			{
-				return pExpression;
-			}
-
-			return tmpExpressionParser.recompose(tmpTokens);
-		};
-
 		/**
 		 * Rewrite a single solver entry (string or object with Expression property).
 		 *
@@ -602,7 +649,7 @@ class PictFormMetacontroller extends libPictViewClass
 			{
 				return;
 			}
-			const tmpUpdatedSolver = rewriteSolverExpression(tmpSolverExpression);
+			const tmpUpdatedSolver = this.rewriteSolverExpression(tmpSolverExpression, tmpHashTranslation, tmpAddressTranslation);
 			if (tmpUpdatedSolver !== tmpSolverExpression)
 			{
 				this.pict.log.info(`DocumentDynamicSectionManager.createDistinctManifest: Updated ${pLogPrefix} ${pIndex} from "${tmpSolverExpression}" to "${tmpUpdatedSolver}".`);

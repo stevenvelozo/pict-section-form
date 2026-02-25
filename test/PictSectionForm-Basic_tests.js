@@ -1102,6 +1102,11 @@ suite
 											const tmpSolver3 = tmpDistinctManifest.Sections[0].Solvers[3];
 											Expect(tmpSolver3.Expression).to.equal('Found = findfirstvaluebyexactmatch("Score_xyz98765", "DoubleScore_xyz98765", "test", "Score_xyz98765")');
 
+											const { HashTranslation, AddressTranslation } = _Pict.views.PictFormMetacontroller.buildManifestTranslations(tmpDistinctManifest);
+											const tmpSolver4 = 'Tmp = getvalue("Score") + {DoubleScore} + findfirstvaluebyexactmatch("Score", "DoubleScore", "test", "Score")';
+											const tmpRewrittenSolver4 = _Pict.views.PictFormMetacontroller.rewriteSolverExpression(tmpSolver4, HashTranslation, AddressTranslation);
+											Expect(tmpRewrittenSolver4).to.equal('Tmp = getvalue("Score_xyz98765") + {xyz98765.DoubleScore} + findfirstvaluebyexactmatch("Score_xyz98765", "DoubleScore_xyz98765", "test", "Score_xyz98765")');
+
 											_Pict.log.info('getvalue/setvalue address rewriting test passed.');
 											fDone();
 										}
