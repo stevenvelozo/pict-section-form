@@ -16,10 +16,10 @@
     "homepage": "https://github.com/stevenvelozo/pict-section-form#readme",
     "scripts": {
         "start": "node source/Pict-Section-Form.js",
-        "tests": "npx mocha -u tdd --exit -R spec --grep",
+        "tests": "npx quack test -g",
         "coverage": "npx quack coverage",
         "build": "npx quack build",
-        "test": "npx mocha -u tdd -R spec",
+        "test": "npx quack test",
         "lint": "eslint source/**",
         "types": "tsc -p .",
         "docker-dev-build": "docker build ./ -f Dockerfile_LUXURYCode -t pict-section-form-image:local",
