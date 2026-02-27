@@ -1,6 +1,6 @@
 {
     "name": "pict-section-form",
-    "version": "1.0.192",
+    "version": "1.0.193",
     "description": "Pict dynamic form sections",
     "main": "source/Pict-Section-Form.js",
     "directories": {
@@ -43,12 +43,12 @@
     },
     "dependencies": {
         "chart.js": "^4.5.1",
-        "fable-serviceproviderbase": "^3.0.18",
+        "fable-serviceproviderbase": "^3.0.19",
         "marked": "^17.0.3",
-        "pict-provider": "^1.0.11",
-        "pict-section-tuigrid": "^1.0.30",
-        "pict-template": "^1.0.14",
-        "pict-view": "^1.0.66"
+        "pict-provider": "^1.0.12",
+        "pict-section-tuigrid": "^1.0.31",
+        "pict-template": "^1.0.15",
+        "pict-view": "^1.0.67"
     },
     "mocha": {
         "diff": true,
