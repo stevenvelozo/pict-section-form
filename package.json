@@ -17,7 +17,7 @@
     "scripts": {
         "start": "node source/Pict-Section-Form.js",
         "tests": "npx mocha -u tdd --exit -R spec --grep",
-        "coverage": "npx nyc --reporter=lcov --reporter=text-lcov npx mocha -- -u tdd -R spec",
+        "coverage": "npx quack coverage",
         "build": "npx quack build",
         "test": "npx mocha -u tdd -R spec",
         "lint": "eslint source/**",
