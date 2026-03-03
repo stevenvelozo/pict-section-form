@@ -4,9 +4,7 @@
 	"description": "Authortopia: demonstrates global and tabular trigger groups in pict-section-form",
 	"main": "Authortopia-Application.js",
 	"scripts": {
-		"start": "node Bookstore-Data-Server.js",
-		"build": "npx quack build && npx quack copy",
-		"serve": "node Bookstore-Data-Server.js"
+		"build": "npx quack build && npx quack copy"
 	},
 	"author": "steven",
 	"license": "MIT",
