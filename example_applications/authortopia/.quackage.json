@@ -1,0 +1,9 @@
+{
+	"Executions":
+		{
+			"default":
+				{
+					"Browsers": "since 2022"
+				}
+		}
+}
