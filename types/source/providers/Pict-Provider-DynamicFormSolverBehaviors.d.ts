@@ -150,6 +150,46 @@ declare class PictDynamicFormsSolverBehaviors extends libPictProvider {
      * @returns {boolean}
      */
     colorElementBackground(pElementSet: Array<HTMLElement>, pColor: string, pCSSSelector?: string): boolean;
+    /**
+     * Gets a value from the global form data by hash, falling back to address resolution
+     * using the global manyfest from the metacontroller.
+     *
+     * @param {string} pHash - The hash to resolve from the global form data.
+     * @returns {any} The value at the hash, or undefined if not found.
+     */
+    getGlobalFormData(pHash: string): any;
+    /**
+     * Resolves a value from the global form data by manyfest address,
+     * using the global manyfest from the metacontroller and the viewMarshalDestination.
+     *
+     * @param {string} pAddress - The manyfest address to resolve from the global form data.
+     * @returns {any} The value at the address, or undefined if not found.
+     */
+    resolveGlobalFormData(pAddress: string): any;
+    /**
+     * Gets a value from a specific section's form data by hash or address.
+     *
+     * Uses the section view's sectionManifest and getMarshalDestinationObject
+     * to properly resolve the value within the section's scope.
+     *
+     * @param {string} pSectionHash - The hash of the section to get data from.
+     * @param {string} pHashOrAddress - The hash or address to resolve within the section.
+     * @returns {any} The value at the hash/address, or undefined if not found.
+     */
+    getSectionFormData(pSectionHash: string, pHashOrAddress: string): any;
+    /**
+     * Gets a value from a specific tabular section's row data by hash or address.
+     *
+     * Resolves the tabular record set from the section view, then gets the specific
+     * row's value using the group's supportingManifest.
+     *
+     * @param {string} pSectionHash - The hash of the section containing the tabular group.
+     * @param {string} pGroupHash - The hash of the tabular group.
+     * @param {number|string} pRowIndex - The index of the row (may be string due to arbitrary precision).
+     * @param {string} pHashOrAddress - The hash or address to resolve within the row.
+     * @returns {any} The value at the hash/address in the row, or undefined if not found.
+     */
+    getSectionTabularFormData(pSectionHash: string, pGroupHash: string, pRowIndex: number | string, pHashOrAddress: string): any;
     logValues(...args: any[]): any;
 }
 declare namespace PictDynamicFormsSolverBehaviors {

@@ -10,6 +10,7 @@ declare const _exports: {
     ManifestFactory: typeof import("./services/ManifestFactory.js");
     ManifestConversionToCSV: typeof import("./services/ManifestConversionToCSV.js");
     PictFormSupportBase: typeof import("./views/support/Pict-View-PSF-SupportBase.js");
+    PictFormPersistenceProvider: typeof import("./providers/Pict-Provider-FormPersistence.js");
     ExtensionViews: {
         LifecycleVisualization: typeof import("./views/support/Pict-View-PSF-LifeCycle-Visualization.js");
         DebugViewer: typeof import("./views/support/Pict-View-PSF-DebugViewer.js");
