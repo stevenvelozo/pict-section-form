@@ -1,0 +1,405 @@
+{
+	"Scope": "ScopeMathematics",
+
+	"Sections": [
+		{
+			"Hash": "GlobalConfig",
+			"Name": "Global Configuration",
+			"Description": "Settings that affect calculations across all sections",
+			"MetaTemplates":
+				[
+					{
+						"HashPostfix": "-Template-Wrap-Prefix",
+						"Template": "<h1>Scope Mathematics</h1><p>This example demonstrates cross-scope data access in solvers using <code>getGlobalFormData</code>, <code>resolveGlobalFormData</code>, <code>getSectionFormData</code>, and <code>getSectionTabularFormData</code>.</p><div><a href=\"#\" onclick=\"{~P~}.PictApplication.solve()\">[ solve ]</a> <a href=\"#\" onclick=\"{~P~}.views.PictFormMetacontroller.showSupportViewInlineEditor()\">[ debug ]</a></div><hr />"
+					}
+				],
+			"Solvers":
+				[
+					{
+						"Expression": "TotalItemsCost = resolveGlobalFormData(\"Summary.TotalItemsCost\")",
+						"Ordinal": 3
+					},
+					{
+						"Expression": "TotalPartsCost = resolveGlobalFormData(\"Summary.TotalPartsCost\")",
+						"Ordinal": 3
+					},
+					{
+						"Expression": "GrandTotal = TotalItemsCost + TotalPartsCost",
+						"Ordinal": 3
+					},
+					{
+						"Expression": "DiscountedTotal = GrandTotal * (1 - (TaxRate / 100))",
+						"Ordinal": 3
+					}
+				]
+		},
+		{
+			"Hash": "Items",
+			"Name": "Line Items",
+			"Description": "A table of items with quantities and prices",
+			"Groups": [
+				{
+					"Hash": "ItemList",
+					"Name": "Item List",
+					"Layout": "Tabular",
+					"RecordSetAddress": "Items.ItemList",
+					"RecordManifest": "ItemEditor",
+					"RecordSetSolvers":
+						[
+							"LineTotal = Quantity * UnitPrice"
+						]
+				}
+			],
+			"Solvers":
+				[
+					{
+						"Expression": "Summary.TotalItemsCost = SUM(ItemLineTotals)",
+						"Ordinal": 2
+					},
+					{
+						"Expression": "Summary.ItemCount = COUNT(ItemList)",
+						"Ordinal": 2
+					}
+				]
+		},
+		{
+			"Hash": "Parts",
+			"Name": "Parts Inventory",
+			"Description": "A second table to demonstrate cross-table data access",
+			"Groups": [
+				{
+					"Hash": "PartList",
+					"Name": "Parts",
+					"Layout": "Tabular",
+					"RecordSetAddress": "Parts.PartList",
+					"RecordManifest": "PartEditor",
+					"RecordSetSolvers":
+						[
+							"PartTotal = PartQuantity * PartCost"
+						]
+				}
+			],
+			"Solvers":
+				[
+					{
+						"Expression": "Summary.TotalPartsCost = SUM(PartTotals)",
+						"Ordinal": 2
+					},
+					{
+						"Expression": "Summary.PartCount = COUNT(PartList)",
+						"Ordinal": 2
+					}
+				]
+		},
+		{
+			"Hash": "CrossScope",
+			"Name": "Cross-Scope Calculations",
+			"Description": "Demonstrates reading data from other sections using scope functions",
+			"Solvers":
+				[
+					{
+						"Expression": "CrossScopeItemTotal = getSectionFormData(\"Items\", \"Summary.TotalItemsCost\")",
+						"Ordinal": 3
+					},
+					{
+						"Expression": "CrossScopePartTotal = getSectionFormData(\"Parts\", \"Summary.TotalPartsCost\")",
+						"Ordinal": 3
+					},
+					{
+						"Expression": "CrossScopeGrandTotal = CrossScopeItemTotal + CrossScopePartTotal",
+						"Ordinal": 3
+					},
+					{
+						"Expression": "GlobalTaxRate = getGlobalFormData(\"TaxRate\")",
+						"Ordinal": 3
+					},
+					{
+						"Expression": "CrossScopeDiscounted = CrossScopeGrandTotal * (1 - (GlobalTaxRate / 100))",
+						"Ordinal": 3
+					},
+					{
+						"Expression": "FirstItemName = getSectionTabularFormData(\"Items\", \"ItemList\", 0, \"ItemName\")",
+						"Ordinal": 3
+					},
+					{
+						"Expression": "FirstItemTotal = getSectionTabularFormData(\"Items\", \"ItemList\", 0, \"LineTotal\")",
+						"Ordinal": 3
+					},
+					{
+						"Expression": "FirstPartName = getSectionTabularFormData(\"Parts\", \"PartList\", 0, \"PartName\")",
+						"Ordinal": 3
+					},
+					{
+						"Expression": "FirstPartTotal = getSectionTabularFormData(\"Parts\", \"PartList\", 0, \"PartTotal\")",
+						"Ordinal": 3
+					}
+				]
+		},
+		{
+			"Hash": "Summary",
+			"Name": "Summary",
+			"Description": "Aggregated totals computed from global scope"
+		},
+		{
+			"Hash": "Documentation",
+			"Name": "",
+			"MetaTemplates":
+				[
+					{
+						"HashPostfix": "-Template-Wrap-Prefix",
+						"Template": "<hr /><h2>Solver Reference</h2><p>This example uses three solver ordinals to demonstrate execution order and cross-scope data access.</p><h3>Ordinal 1 &mdash; Row-Level RecordSetSolvers</h3><p>These run once per row in each tabular group, computing values within a single record.</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;margin-bottom:1em;width:100%'><tr style='background:#ddd'><th>Section</th><th>Expression</th><th>Description</th></tr><tr><td>Items</td><td><code>LineTotal = Quantity * UnitPrice</code></td><td>Multiplies quantity by unit price for each line item row.</td></tr><tr><td>Parts</td><td><code>PartTotal = PartQuantity * PartCost</code></td><td>Multiplies quantity by cost for each part row.</td></tr></table><h3>Ordinal 2 &mdash; Section Aggregation Solvers</h3><p>These run after row solvers and aggregate tabular data into summary values. The <code>[].Property</code> descriptor syntax extracts a flat array of values from each row for use with <code>SUM</code>.</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;margin-bottom:1em;width:100%'><tr style='background:#ddd'><th>Section</th><th>Expression</th><th>Description</th></tr><tr><td>Items</td><td><code>Summary.TotalItemsCost = SUM(ItemLineTotals)</code></td><td>Sums all LineTotal values via the <code>Items.ItemList[].LineTotal</code> collection extraction descriptor.</td></tr><tr><td>Items</td><td><code>Summary.ItemCount = COUNT(ItemList)</code></td><td>Counts the number of rows in the ItemList array.</td></tr><tr><td>Parts</td><td><code>Summary.TotalPartsCost = SUM(PartTotals)</code></td><td>Sums all PartTotal values via the <code>Parts.PartList[].PartTotal</code> collection extraction descriptor.</td></tr><tr><td>Parts</td><td><code>Summary.PartCount = COUNT(PartList)</code></td><td>Counts the number of rows in the PartList array.</td></tr></table><h3>Ordinal 3 &mdash; Cross-Scope Solvers</h3><p>These run last and demonstrate the four cross-scope data access functions.</p><h4><code>resolveGlobalFormData(address)</code></h4><p>Resolves a value from the global form data by manyfest address, using the metacontroller's <code>viewMarshalDestination</code> and <code>pict.manifest</code>.</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;margin-bottom:1em;width:100%'><tr style='background:#ddd'><th>Section</th><th>Expression</th></tr><tr><td>GlobalConfig</td><td><code>TotalItemsCost = resolveGlobalFormData(\"Summary.TotalItemsCost\")</code></td></tr><tr><td>GlobalConfig</td><td><code>TotalPartsCost = resolveGlobalFormData(\"Summary.TotalPartsCost\")</code></td></tr></table><h4><code>getGlobalFormData(hash)</code></h4><p>Gets a value from the global form data by descriptor hash, using the global manyfest's <code>getValueByHash</code>.</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;margin-bottom:1em;width:100%'><tr style='background:#ddd'><th>Section</th><th>Expression</th></tr><tr><td>CrossScope</td><td><code>GlobalTaxRate = getGlobalFormData(\"TaxRate\")</code></td></tr></table><h4><code>getSectionFormData(sectionHash, hashOrAddress)</code></h4><p>Gets a value from a specific section view's data using that section's <code>sectionManifest</code> and <code>getValueByHash</code>. Allows one section's solver to read another section's computed values.</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;margin-bottom:1em;width:100%'><tr style='background:#ddd'><th>Section</th><th>Expression</th></tr><tr><td>CrossScope</td><td><code>CrossScopeItemTotal = getSectionFormData(\"Items\", \"Summary.TotalItemsCost\")</code></td></tr><tr><td>CrossScope</td><td><code>CrossScopePartTotal = getSectionFormData(\"Parts\", \"Summary.TotalPartsCost\")</code></td></tr></table><h4><code>getSectionTabularFormData(sectionHash, groupHash, rowIndex, hashOrAddress)</code></h4><p>Gets a value from a specific row of a tabular group in another section. Resolves the tabular record set, indexes into it by row, and uses the group's <code>supportingManifest</code> to look up the value by hash. The <code>rowIndex</code> parameter accepts both numbers and strings (for arbitrary precision compatibility).</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;margin-bottom:1em;width:100%'><tr style='background:#ddd'><th>Section</th><th>Expression</th></tr><tr><td>CrossScope</td><td><code>FirstItemName = getSectionTabularFormData(\"Items\", \"ItemList\", 0, \"ItemName\")</code></td></tr><tr><td>CrossScope</td><td><code>FirstItemTotal = getSectionTabularFormData(\"Items\", \"ItemList\", 0, \"LineTotal\")</code></td></tr><tr><td>CrossScope</td><td><code>FirstPartName = getSectionTabularFormData(\"Parts\", \"PartList\", 0, \"PartName\")</code></td></tr><tr><td>CrossScope</td><td><code>FirstPartTotal = getSectionTabularFormData(\"Parts\", \"PartList\", 0, \"PartTotal\")</code></td></tr></table><h3>Computed Values (Ordinal 3)</h3><p>Standard arithmetic expressions that combine cross-scope results.</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;margin-bottom:1em;width:100%'><tr style='background:#ddd'><th>Section</th><th>Expression</th><th>Description</th></tr><tr><td>GlobalConfig</td><td><code>GrandTotal = TotalItemsCost + TotalPartsCost</code></td><td>Sum of item and part totals pulled via resolveGlobalFormData.</td></tr><tr><td>GlobalConfig</td><td><code>DiscountedTotal = GrandTotal * (1 - (TaxRate / 100))</code></td><td>Applies the discount rate to the grand total.</td></tr><tr><td>CrossScope</td><td><code>CrossScopeGrandTotal = CrossScopeItemTotal + CrossScopePartTotal</code></td><td>Sum of totals pulled via getSectionFormData.</td></tr><tr><td>CrossScope</td><td><code>CrossScopeDiscounted = CrossScopeGrandTotal * (1 - (GlobalTaxRate / 100))</code></td><td>Applies tax rate pulled via getGlobalFormData.</td></tr></table>"
+					}
+				]
+		}
+	],
+
+	"Descriptors":
+	{
+		"TaxRate":
+		{
+			"Name": "Discount Rate (%)",
+			"Hash": "TaxRate",
+			"DataType": "Number",
+			"Default": 10,
+			"PictForm": { "Section": "GlobalConfig", "Row": 1, "Width": 4 }
+		},
+		"CurrencySymbol":
+		{
+			"Name": "Currency Symbol",
+			"Hash": "CurrencySymbol",
+			"DataType": "String",
+			"Default": "$",
+			"PictForm": { "Section": "GlobalConfig", "Row": 1, "Width": 4 }
+		},
+		"ProjectName":
+		{
+			"Name": "Project Name",
+			"Hash": "ProjectName",
+			"DataType": "String",
+			"Default": "Sample Project",
+			"PictForm": { "Section": "GlobalConfig", "Row": 1, "Width": 4 }
+		},
+
+		"Items.ItemList":
+		{
+			"Name": "Line Items",
+			"Hash": "ItemList",
+			"DataType": "Array",
+			"Default": [
+				{ "ItemName": "Widget Alpha", "Quantity": 5, "UnitPrice": 12.50, "LineTotal": 62.50 },
+				{ "ItemName": "Widget Beta", "Quantity": 3, "UnitPrice": 25.00, "LineTotal": 75.00 },
+				{ "ItemName": "Widget Gamma", "Quantity": 10, "UnitPrice": 8.75, "LineTotal": 87.50 }
+			],
+			"PictForm": { "Section": "Items", "Group": "ItemList" }
+		},
+		"Items.ItemList[].LineTotal":
+		{
+			"Hash": "ItemLineTotals"
+		},
+
+		"Parts.PartList":
+		{
+			"Name": "Parts",
+			"Hash": "PartList",
+			"DataType": "Array",
+			"Default": [
+				{ "PartName": "Bolt M6x20", "PartQuantity": 100, "PartCost": 0.15, "PartTotal": 15.00 },
+				{ "PartName": "Washer M6", "PartQuantity": 100, "PartCost": 0.05, "PartTotal": 5.00 },
+				{ "PartName": "Nut M6", "PartQuantity": 50, "PartCost": 0.10, "PartTotal": 5.00 }
+			],
+			"PictForm": { "Section": "Parts", "Group": "PartList" }
+		},
+		"Parts.PartList[].PartTotal":
+		{
+			"Hash": "PartTotals"
+		},
+
+		"Summary.TotalItemsCost":
+		{
+			"Name": "Total Items Cost",
+			"Hash": "TotalItemsCost",
+			"DataType": "Number",
+			"PictForm": { "Section": "Summary", "Row": 1, "Width": 3 }
+		},
+		"Summary.TotalPartsCost":
+		{
+			"Name": "Total Parts Cost",
+			"Hash": "TotalPartsCost",
+			"DataType": "Number",
+			"PictForm": { "Section": "Summary", "Row": 1, "Width": 3 }
+		},
+		"Summary.ItemCount":
+		{
+			"Name": "Item Row Count",
+			"Hash": "ItemCount",
+			"DataType": "Number",
+			"PictForm": { "Section": "Summary", "Row": 1, "Width": 3 }
+		},
+		"Summary.PartCount":
+		{
+			"Name": "Part Row Count",
+			"Hash": "PartCount",
+			"DataType": "Number",
+			"PictForm": { "Section": "Summary", "Row": 1, "Width": 3 }
+		},
+
+		"GrandTotal":
+		{
+			"Name": "Grand Total (Global Scope)",
+			"Hash": "GrandTotal",
+			"DataType": "Number",
+			"PictForm": { "Section": "GlobalConfig", "Row": 2, "Width": 4 }
+		},
+		"DiscountedTotal":
+		{
+			"Name": "After Discount (Global Scope)",
+			"Hash": "DiscountedTotal",
+			"DataType": "Number",
+			"PictForm": { "Section": "GlobalConfig", "Row": 2, "Width": 4 }
+		},
+
+		"CrossScope.CrossScopeItemTotal":
+		{
+			"Name": "Items Total (via getSectionFormData)",
+			"Hash": "CrossScopeItemTotal",
+			"DataType": "Number",
+			"PictForm": { "Section": "CrossScope", "Row": 1, "Width": 6 }
+		},
+		"CrossScope.CrossScopePartTotal":
+		{
+			"Name": "Parts Total (via getSectionFormData)",
+			"Hash": "CrossScopePartTotal",
+			"DataType": "Number",
+			"PictForm": { "Section": "CrossScope", "Row": 1, "Width": 6 }
+		},
+		"CrossScope.CrossScopeGrandTotal":
+		{
+			"Name": "Grand Total (cross-scope sum)",
+			"Hash": "CrossScopeGrandTotal",
+			"DataType": "Number",
+			"PictForm": { "Section": "CrossScope", "Row": 2, "Width": 4 }
+		},
+		"CrossScope.GlobalTaxRate":
+		{
+			"Name": "Tax Rate (via getGlobalFormData)",
+			"Hash": "GlobalTaxRate",
+			"DataType": "Number",
+			"PictForm": { "Section": "CrossScope", "Row": 2, "Width": 4 }
+		},
+		"CrossScope.CrossScopeDiscounted":
+		{
+			"Name": "Discounted Total (cross-scope)",
+			"Hash": "CrossScopeDiscounted",
+			"DataType": "Number",
+			"PictForm": { "Section": "CrossScope", "Row": 2, "Width": 4 }
+		},
+		"CrossScope.FirstItemName":
+		{
+			"Name": "First Item Name (tabular scope)",
+			"Hash": "FirstItemName",
+			"DataType": "String",
+			"PictForm": { "Section": "CrossScope", "Row": 3, "Width": 3 }
+		},
+		"CrossScope.FirstItemTotal":
+		{
+			"Name": "First Item Total (tabular scope)",
+			"Hash": "FirstItemTotal",
+			"DataType": "Number",
+			"PictForm": { "Section": "CrossScope", "Row": 3, "Width": 3 }
+		},
+		"CrossScope.FirstPartName":
+		{
+			"Name": "First Part Name (tabular scope)",
+			"Hash": "FirstPartName",
+			"DataType": "String",
+			"PictForm": { "Section": "CrossScope", "Row": 3, "Width": 3 }
+		},
+		"CrossScope.FirstPartTotal":
+		{
+			"Name": "First Part Total (tabular scope)",
+			"Hash": "FirstPartTotal",
+			"DataType": "Number",
+			"PictForm": { "Section": "CrossScope", "Row": 3, "Width": 3 }
+		}
+	},
+
+	"ReferenceManifests":
+	{
+		"ItemEditor":
+		{
+			"Scope": "ItemEditor",
+			"Descriptors":
+			{
+				"ItemName":
+				{
+					"Name": "Item Name",
+					"Hash": "ItemName",
+					"DataType": "String",
+					"Default": "(new item)",
+					"PictForm": { "Section": "Items", "Group": "ItemList" }
+				},
+				"Quantity":
+				{
+					"Name": "Qty",
+					"Hash": "Quantity",
+					"DataType": "Number",
+					"Default": 1,
+					"PictForm": { "Section": "Items", "Group": "ItemList" }
+				},
+				"UnitPrice":
+				{
+					"Name": "Unit Price",
+					"Hash": "UnitPrice",
+					"DataType": "Number",
+					"Default": 0,
+					"PictForm": { "Section": "Items", "Group": "ItemList" }
+				},
+				"LineTotal":
+				{
+					"Name": "Line Total",
+					"Hash": "LineTotal",
+					"DataType": "Number",
+					"PictForm": { "Section": "Items", "Group": "ItemList" }
+				}
+			}
+		},
+		"PartEditor":
+		{
+			"Scope": "PartEditor",
+			"Descriptors":
+			{
+				"PartName":
+				{
+					"Name": "Part Name",
+					"Hash": "PartName",
+					"DataType": "String",
+					"Default": "(new part)",
+					"PictForm": { "Section": "Parts", "Group": "PartList" }
+				},
+				"PartQuantity":
+				{
+					"Name": "Qty",
+					"Hash": "PartQuantity",
+					"DataType": "Number",
+					"Default": 1,
+					"PictForm": { "Section": "Parts", "Group": "PartList" }
+				},
+				"PartCost":
+				{
+					"Name": "Unit Cost",
+					"Hash": "PartCost",
+					"DataType": "Number",
+					"Default": 0,
+					"PictForm": { "Section": "Parts", "Group": "PartList" }
+				},
+				"PartTotal":
+				{
+					"Name": "Part Total",
+					"Hash": "PartTotal",
+					"DataType": "Number",
+					"PictForm": { "Section": "Parts", "Group": "PartList" }
+				}
+			}
+		}
+	}
+}

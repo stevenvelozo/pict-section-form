@@ -1,0 +1,27 @@
+{
+	"name": "change_tracking",
+	"version": "1.0.0",
+	"description": "Demonstrates multi-input evaluate change pattern in pict-section-form solvers",
+	"main": "Change-Tracking-Application.js",
+	"scripts": {
+		"start": "node Change-Tracking-Application.js",
+		"build": "npx quack build && npx quack copy"
+	},
+	"author": "steven",
+	"license": "MIT",
+	"devDependencies": {
+	},
+	"copyFilesSettings": {
+		"whenFileExists": "overwrite"
+	},
+	"copyFiles": [
+		{
+			"from": "./html/*",
+			"to": "./dist/"
+		},
+		{
+			"from": "../../node_modules/pict/dist/*",
+			"to": "./dist/"
+		}
+	]
+}

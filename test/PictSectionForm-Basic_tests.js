@@ -91,6 +91,229 @@ OrderedSolverApplication.default_configuration.pict_configuration.DefaultFormMan
 	],
 };
 
+class CrossScopeSolverApplication extends DoNothingApplication
+{
+	constructor(pFable, pOptions, pServiceHash)
+	{
+		super(pFable, pOptions, pServiceHash);
+	}
+
+	onAfterSolve()
+	{
+		super.onAfterSolve();
+		this._testDone?.();
+	}
+
+	onAfterInitialize()
+	{
+	}
+}
+
+CrossScopeSolverApplication.default_configuration = JSON.parse(JSON.stringify(CrossScopeSolverApplication.default_configuration));
+CrossScopeSolverApplication.default_configuration.pict_configuration.DefaultFormManifest =
+{
+	Scope: 'CrossScopeSolverForm',
+	Sections:
+	[
+		{
+			Hash: 'Config',
+			Name: 'Configuration',
+		},
+		{
+			Hash: 'Items',
+			Name: 'Line Items',
+			Groups:
+			[
+				{
+					Hash: 'ItemList',
+					Name: 'Item List',
+					Layout: 'Tabular',
+					RecordSetAddress: 'Items.ItemList',
+					RecordManifest: 'ItemEditor',
+					RecordSetSolvers:
+					[
+						'LineTotal = Qty * Price',
+					],
+				},
+			],
+			Solvers:
+			[
+				{ Ordinal: 2, Expression: 'Summary.TotalCost = SUM(ItemLineTotals)' },
+				{ Ordinal: 2, Expression: 'Summary.ItemCount = COUNT(ItemList)' },
+			],
+		},
+		{
+			Hash: 'Results',
+			Name: 'Cross-Scope Results',
+			Solvers:
+			[
+				// Happy path: all 4 cross-scope functions
+				{ Ordinal: 3, Expression: 'Results.GlobalTaxRate = getGlobalFormData("TaxRate")' },
+				{ Ordinal: 3, Expression: 'Results.GlobalTotalCost = resolveGlobalFormData("Summary.TotalCost")' },
+				{ Ordinal: 3, Expression: 'Results.SectionTotalCost = getSectionFormData("Items", "TotalCost")' },
+				{ Ordinal: 3, Expression: 'Results.FirstItemName = getSectionTabularFormData("Items", "ItemList", 0, "ItemName")' },
+				{ Ordinal: 3, Expression: 'Results.FirstItemTotal = getSectionTabularFormData("Items", "ItemList", 0, "LineTotal")' },
+				// Undefined guards with IF: invalid lookups
+				{ Ordinal: 3, Expression: 'Results.BadSectionGuard = IF(getSectionFormData("NonExistent", "TotalCost"), "==", 0, 1, 0)' },
+				{ Ordinal: 3, Expression: 'Results.BadTabularGuard = IF(getSectionTabularFormData("Items", "ItemList", 99, "ItemName"), "==", 0, 1, 0)' },
+				{ Ordinal: 3, Expression: 'Results.BadGroupGuard = IF(getSectionTabularFormData("Items", "FakeGroup", 0, "ItemName"), "==", 0, 1, 0)' },
+				// Undefined guard with IF: valid lookup
+				{ Ordinal: 3, Expression: 'Results.GoodValueGuard = IF(getGlobalFormData("TaxRate"), ">", 0, 1, 0)' },
+			],
+		},
+		{
+			Hash: 'Summary',
+			Name: 'Summary',
+		},
+	],
+	Descriptors:
+	{
+		'TaxRate':
+		{
+			Name: 'Tax Rate',
+			Hash: 'TaxRate',
+			DataType: 'Number',
+			Default: 10,
+			PictForm: { Section: 'Config' },
+		},
+		'Items.ItemList':
+		{
+			Name: 'Item List',
+			Hash: 'ItemList',
+			DataType: 'Array',
+			Default:
+			[
+				{ ItemName: 'Alpha', Qty: 5, Price: 10, LineTotal: 50 },
+				{ ItemName: 'Beta', Qty: 3, Price: 20, LineTotal: 60 },
+				{ ItemName: 'Gamma', Qty: 10, Price: 5, LineTotal: 50 },
+			],
+			PictForm: { Section: 'Items', Group: 'ItemList' },
+		},
+		'Items.ItemList[].LineTotal':
+		{
+			Hash: 'ItemLineTotals',
+		},
+		'Summary.TotalCost':
+		{
+			Name: 'Total Cost',
+			Hash: 'TotalCost',
+			DataType: 'Number',
+			PictForm: { Section: 'Summary' },
+		},
+		'Summary.ItemCount':
+		{
+			Name: 'Item Count',
+			Hash: 'ItemCount',
+			DataType: 'Number',
+			PictForm: { Section: 'Summary' },
+		},
+		'Results.GlobalTaxRate':
+		{
+			Name: 'Global Tax Rate',
+			Hash: 'GlobalTaxRate',
+			DataType: 'Number',
+			PictForm: { Section: 'Results' },
+		},
+		'Results.GlobalTotalCost':
+		{
+			Name: 'Global Total Cost',
+			Hash: 'GlobalTotalCost',
+			DataType: 'Number',
+			PictForm: { Section: 'Results' },
+		},
+		'Results.SectionTotalCost':
+		{
+			Name: 'Section Total Cost',
+			Hash: 'SectionTotalCost',
+			DataType: 'Number',
+			PictForm: { Section: 'Results' },
+		},
+		'Results.FirstItemName':
+		{
+			Name: 'First Item Name',
+			Hash: 'FirstItemName',
+			DataType: 'String',
+			PictForm: { Section: 'Results' },
+		},
+		'Results.FirstItemTotal':
+		{
+			Name: 'First Item Total',
+			Hash: 'FirstItemTotal',
+			DataType: 'Number',
+			PictForm: { Section: 'Results' },
+		},
+		'Results.BadSectionGuard':
+		{
+			Name: 'Bad Section Guard',
+			Hash: 'BadSectionGuard',
+			DataType: 'Number',
+			PictForm: { Section: 'Results' },
+		},
+		'Results.BadTabularGuard':
+		{
+			Name: 'Bad Tabular Guard',
+			Hash: 'BadTabularGuard',
+			DataType: 'Number',
+			PictForm: { Section: 'Results' },
+		},
+		'Results.BadGroupGuard':
+		{
+			Name: 'Bad Group Guard',
+			Hash: 'BadGroupGuard',
+			DataType: 'Number',
+			PictForm: { Section: 'Results' },
+		},
+		'Results.GoodValueGuard':
+		{
+			Name: 'Good Value Guard',
+			Hash: 'GoodValueGuard',
+			DataType: 'Number',
+			PictForm: { Section: 'Results' },
+		},
+	},
+	ReferenceManifests:
+	{
+		ItemEditor:
+		{
+			Scope: 'ItemEditor',
+			Descriptors:
+			{
+				'ItemName':
+				{
+					Name: 'Item Name',
+					Hash: 'ItemName',
+					DataType: 'String',
+					Default: '(new item)',
+					PictForm: { Section: 'Items', Group: 'ItemList' },
+				},
+				'Qty':
+				{
+					Name: 'Qty',
+					Hash: 'Qty',
+					DataType: 'Number',
+					Default: 1,
+					PictForm: { Section: 'Items', Group: 'ItemList' },
+				},
+				'Price':
+				{
+					Name: 'Price',
+					Hash: 'Price',
+					DataType: 'Number',
+					Default: 0,
+					PictForm: { Section: 'Items', Group: 'ItemList' },
+				},
+				'LineTotal':
+				{
+					Name: 'Line Total',
+					Hash: 'LineTotal',
+					DataType: 'Number',
+					PictForm: { Section: 'Items', Group: 'ItemList' },
+				},
+			},
+		},
+	},
+};
+
 suite
 (
 	'PictSectionForm Basic',
@@ -1375,6 +1598,94 @@ suite
 									});
 
 								// This needs to be explicitly called now that we turned off auto solve
+								_Pict.PictApplication.solve();
+							}
+						);
+				}
+			);
+		suite
+			(
+				'Cross-Scope Solver Functions',
+				() =>
+				{
+					test(
+							'Cross-scope data access and undefined guards',
+							(fDone) =>
+							{
+								let _Pict;
+								const tmpApplicationClass = CrossScopeSolverApplication;
+								if (tmpApplicationClass && ('default_configuration' in tmpApplicationClass) && ('pict_configuration' in tmpApplicationClass.default_configuration))
+								{
+									_Pict = new libPict(tmpApplicationClass.default_configuration.pict_configuration);
+								}
+								else
+								{
+									_Pict = new libPict();
+								}
+
+								let tmpApplicationHash = 'DefaultApplication';
+								let tmpDefaultConfiguration = {};
+
+								if ('default_configuration' in tmpApplicationClass)
+								{
+									tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+
+									if ('Hash' in tmpApplicationClass.default_configuration)
+									{
+										tmpDefaultConfiguration = tmpApplicationClass.default_configuration;
+										tmpApplicationHash = tmpApplicationClass.default_configuration.Hash;
+									}
+								}
+								_Pict.log.info(`Loading the pict application [${tmpApplicationHash}] and associated views.`);
+
+								_Pict.addApplication(tmpApplicationHash, tmpDefaultConfiguration, tmpApplicationClass);
+
+								_Pict.PictApplication.testDone = () =>
+								{
+									try
+									{
+										// Ordinal 2: SUM and COUNT aggregation
+										Expect(_Pict.AppData.Summary.TotalCost).to.equal('160', 'TotalCost should be 160 (SUM of 50+60+50)');
+										Expect(parseInt(_Pict.AppData.Summary.ItemCount)).to.equal(3, 'ItemCount should be 3');
+
+										// Ordinal 3: getGlobalFormData
+										Expect(_Pict.AppData.Results.GlobalTaxRate).to.equal(10, 'GlobalTaxRate should be 10 via getGlobalFormData');
+
+										// Ordinal 3: resolveGlobalFormData
+										Expect(_Pict.AppData.Results.GlobalTotalCost).to.equal('160', 'GlobalTotalCost should be 160 via resolveGlobalFormData');
+
+										// Ordinal 3: getSectionFormData
+										Expect(_Pict.AppData.Results.SectionTotalCost).to.equal('160', 'SectionTotalCost should be 160 via getSectionFormData');
+
+										// Ordinal 3: getSectionTabularFormData
+										Expect(_Pict.AppData.Results.FirstItemName).to.equal('Alpha', 'FirstItemName should be Alpha via getSectionTabularFormData');
+										Expect(_Pict.AppData.Results.FirstItemTotal).to.equal('50', 'FirstItemTotal should be 50 via getSectionTabularFormData');
+
+										// Undefined guards: bad lookups return undefined, which is != 0 in IF, so result is 0 (the onFalse branch)
+										Expect(_Pict.AppData.Results.BadSectionGuard).to.equal('0', 'BadSectionGuard: non-existent section returns undefined (not equal to 0)');
+										Expect(_Pict.AppData.Results.BadTabularGuard).to.equal('0', 'BadTabularGuard: out-of-bounds row returns undefined (not equal to 0)');
+										Expect(_Pict.AppData.Results.BadGroupGuard).to.equal('0', 'BadGroupGuard: non-existent group returns undefined (not equal to 0)');
+
+										// Good value guard: valid lookup should pass IF check
+										Expect(_Pict.AppData.Results.GoodValueGuard).to.equal('1', 'GoodValueGuard: valid getGlobalFormData should be > 0');
+									}
+									catch (pError)
+									{
+										return fDone(pError);
+									}
+									fDone();
+								};
+
+								_Pict.PictApplication.initializeAsync(
+									function (pError)
+									{
+										if (pError)
+										{
+											_Pict.log.info('Error initializing the pict application: '+pError)
+										}
+										_Pict.log.info('Loading the Application and associated views.');
+									});
+
 								_Pict.PictApplication.solve();
 							}
 						);

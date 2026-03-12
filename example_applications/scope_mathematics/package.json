@@ -1,0 +1,27 @@
+{
+	"name": "scope_mathematics",
+	"version": "1.0.0",
+	"description": "Demonstrates cross-scope data access in pict-section-form solvers",
+	"main": "Scope-Mathematics-Application.js",
+	"scripts": {
+		"start": "node Scope-Mathematics-Application.js",
+		"build": "npx quack build && npx quack copy"
+	},
+	"author": "steven",
+	"license": "MIT",
+	"devDependencies": {
+	},
+	"copyFilesSettings": {
+		"whenFileExists": "overwrite"
+	},
+	"copyFiles": [
+		{
+			"from": "./html/*",
+			"to": "./dist/"
+		},
+		{
+			"from": "../../node_modules/pict/dist/*",
+			"to": "./dist/"
+		}
+	]
+}

@@ -127,6 +127,12 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		this.addSolverFunction(pExpressionParser, 'runsolvers', 'fable.providers.DynamicFormSolverBehaviors.runSolvers', 'Solves all views.');
 		this.addSolverFunction(pExpressionParser, 'refreshtabularsection', 'fable.providers.DynamicFormSolverBehaviors.refreshTabularSection', 'Causes a tabular section to refresh its display.', [0, 1]);
 
+		// Scope data access functions for cross-section and global data resolution
+		this.addSolverFunction(pExpressionParser, 'getglobalformdata', 'fable.providers.DynamicFormSolverBehaviors.getGlobalFormData', 'Gets a value from the global form data by hash.');
+		this.addSolverFunction(pExpressionParser, 'resolveglobalformdata', 'fable.providers.DynamicFormSolverBehaviors.resolveGlobalFormData', 'Resolves a value from the global form data by manyfest address.');
+		this.addSolverFunction(pExpressionParser, 'getsectionformdata', 'fable.providers.DynamicFormSolverBehaviors.getSectionFormData', 'Gets a value from a specific section by hash or address.', [0]);
+		this.addSolverFunction(pExpressionParser, 'getsectiontabularformdata', 'fable.providers.DynamicFormSolverBehaviors.getSectionTabularFormData', 'Gets a value from a specific tabular section row by hash or address.', [0, 1]);
+
 		return false;
 	}
 
@@ -765,6 +771,172 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		tmpElement.style.backgroundColor = pColor;
 
 		return true;
+	}
+
+	/**
+	 * Gets a value from the global form data by hash, falling back to address resolution
+	 * using the global manyfest from the metacontroller.
+	 *
+	 * @param {string} pHash - The hash to resolve from the global form data.
+	 * @returns {any} The value at the hash, or undefined if not found.
+	 */
+	getGlobalFormData(pHash)
+	{
+		if (!this.pict.views.PictFormMetacontroller)
+		{
+			this.log.warn('getGlobalFormData: No PictFormMetacontroller available.');
+			return undefined;
+		}
+
+		let tmpMarshalDestination = this.pict.views.PictFormMetacontroller.viewMarshalDestination;
+		let tmpMarshalDestinationObject = this.pict.resolveStateFromAddress(tmpMarshalDestination);
+
+		if ((typeof(tmpMarshalDestinationObject) !== 'object') || (tmpMarshalDestinationObject === null))
+		{
+			tmpMarshalDestinationObject = this.pict.AppData;
+		}
+
+		// Use the global pict manifest which has all descriptors added during bootstrapPictFormViewsFromManifest
+		return this.pict.manifest.getValueByHash(tmpMarshalDestinationObject, pHash);
+	}
+
+	/**
+	 * Resolves a value from the global form data by manyfest address,
+	 * using the global manyfest from the metacontroller and the viewMarshalDestination.
+	 *
+	 * @param {string} pAddress - The manyfest address to resolve from the global form data.
+	 * @returns {any} The value at the address, or undefined if not found.
+	 */
+	resolveGlobalFormData(pAddress)
+	{
+		if (!this.pict.views.PictFormMetacontroller)
+		{
+			this.log.warn('resolveGlobalFormData: No PictFormMetacontroller available.');
+			return undefined;
+		}
+
+		let tmpMarshalDestination = this.pict.views.PictFormMetacontroller.viewMarshalDestination;
+		let tmpMarshalDestinationObject = this.pict.resolveStateFromAddress(tmpMarshalDestination);
+
+		if ((typeof(tmpMarshalDestinationObject) !== 'object') || (tmpMarshalDestinationObject === null))
+		{
+			tmpMarshalDestinationObject = this.pict.AppData;
+		}
+
+		// Use the global pict manifest to resolve the address
+		return this.pict.manifest.getValueAtAddress(tmpMarshalDestinationObject, pAddress);
+	}
+
+	/**
+	 * Gets a value from a specific section's form data by hash or address.
+	 *
+	 * Uses the section view's sectionManifest and getMarshalDestinationObject
+	 * to properly resolve the value within the section's scope.
+	 *
+	 * @param {string} pSectionHash - The hash of the section to get data from.
+	 * @param {string} pHashOrAddress - The hash or address to resolve within the section.
+	 * @returns {any} The value at the hash/address, or undefined if not found.
+	 */
+	getSectionFormData(pSectionHash, pHashOrAddress)
+	{
+		if (!this.pict.views.PictFormMetacontroller)
+		{
+			this.log.warn('getSectionFormData: No PictFormMetacontroller available.');
+			return undefined;
+		}
+
+		let tmpSectionView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash);
+		if (!tmpSectionView)
+		{
+			this.log.warn(`getSectionFormData: Could not find section view with hash [${pSectionHash}].`);
+			return undefined;
+		}
+
+		return tmpSectionView.getValueByHash(pHashOrAddress);
+	}
+
+	/**
+	 * Gets a value from a specific tabular section's row data by hash or address.
+	 *
+	 * Resolves the tabular record set from the section view, then gets the specific
+	 * row's value using the group's supportingManifest.
+	 *
+	 * @param {string} pSectionHash - The hash of the section containing the tabular group.
+	 * @param {string} pGroupHash - The hash of the tabular group.
+	 * @param {number|string} pRowIndex - The index of the row (may be string due to arbitrary precision).
+	 * @param {string} pHashOrAddress - The hash or address to resolve within the row.
+	 * @returns {any} The value at the hash/address in the row, or undefined if not found.
+	 */
+	getSectionTabularFormData(pSectionHash, pGroupHash, pRowIndex, pHashOrAddress)
+	{
+		if (!this.pict.views.PictFormMetacontroller)
+		{
+			this.log.warn('getSectionTabularFormData: No PictFormMetacontroller available.');
+			return undefined;
+		}
+
+		let tmpSectionView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash);
+		if (!tmpSectionView)
+		{
+			this.log.warn(`getSectionTabularFormData: Could not find section view with hash [${pSectionHash}].`);
+			return undefined;
+		}
+
+		let tmpGroupIndex = tmpSectionView.getGroupIndexFromHash(pGroupHash);
+		if (tmpGroupIndex < 0)
+		{
+			this.log.warn(`getSectionTabularFormData: Could not find group with hash [${pGroupHash}] in section [${pSectionHash}].`);
+			return undefined;
+		}
+
+		let tmpGroup = tmpSectionView.getGroup(tmpGroupIndex);
+		if (!tmpGroup)
+		{
+			this.log.warn(`getSectionTabularFormData: Could not get group at index ${tmpGroupIndex} in section [${pSectionHash}].`);
+			return undefined;
+		}
+
+		let tmpTabularRecordSet = tmpSectionView.getTabularRecordSet(tmpGroupIndex);
+		if (!tmpTabularRecordSet)
+		{
+			this.log.warn(`getSectionTabularFormData: Could not find tabular record set for group [${pGroupHash}] in section [${pSectionHash}].`);
+			return undefined;
+		}
+
+		// RowIndex may be passed as a string due to arbitrary precision numbers in the solver
+		let tmpRowIndex = parseInt(pRowIndex.toString());
+		if (isNaN(tmpRowIndex) || tmpRowIndex < 0)
+		{
+			this.log.warn(`getSectionTabularFormData: Invalid row index [${pRowIndex}] for group [${pGroupHash}] in section [${pSectionHash}].`);
+			return undefined;
+		}
+
+		if (tmpRowIndex >= tmpTabularRecordSet.length)
+		{
+			this.log.warn(`getSectionTabularFormData: Row index [${tmpRowIndex}] out of bounds for group [${pGroupHash}] in section [${pSectionHash}] (length ${tmpTabularRecordSet.length}).`);
+			return undefined;
+		}
+		let tmpRecord = tmpTabularRecordSet[tmpRowIndex];
+
+		if (!tmpRecord || typeof(tmpRecord) !== 'object')
+		{
+			this.log.warn(`getSectionTabularFormData: No valid record at row index [${tmpRowIndex}] for group [${pGroupHash}] in section [${pSectionHash}].`);
+			return undefined;
+		}
+
+		// Use the group's supporting manifest to resolve the value
+		if (tmpGroup.supportingManifest)
+		{
+			return tmpGroup.supportingManifest.getValueByHash(tmpRecord, pHashOrAddress);
+		}
+
+		// Fallback to direct property access if no supporting manifest
+		if (pHashOrAddress in tmpRecord)
+		{
+			return tmpRecord[pHashOrAddress];
+		}
+
+		return undefined;
 	}
 
 	logValues()
