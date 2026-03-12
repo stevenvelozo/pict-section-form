@@ -60,11 +60,11 @@
 						"Ordinal": 25
 					},
 					{
-						"Expression": "CostPerUnit_LastSolve = CostPerUnit_Hidden",
+						"Expression": "CostPerUnit_LastSolve = CostPerUnit",
 						"Ordinal": 30
 					},
 					{
-						"Expression": "DollarAmount_LastSolve = DollarAmount_Hidden",
+						"Expression": "DollarAmount_LastSolve = DollarAmount",
 						"Ordinal": 30
 					}
 				]
@@ -93,8 +93,8 @@
 							"DollarAmount = IF(CostPerUnit_Changed, \"==\", 1, CostPerUnit * Quantity, DollarAmount)",
 							"CostPerUnit = IF(DollarAmount_Changed, \"==\", 1, DollarAmount / Quantity, CostPerUnit)",
 							"DollarAmount = IF(CostPerUnit_Changed + DollarAmount_Changed, \"==\", 0, Quantity * CostPerUnit, DollarAmount)",
-							"CostPerUnit_LastSolve = CostPerUnit_Hidden",
-							"DollarAmount_LastSolve = DollarAmount_Hidden"
+							"CostPerUnit_LastSolve = CostPerUnit",
+							"DollarAmount_LastSolve = DollarAmount"
 						]
 				}
 			]
@@ -106,7 +106,7 @@
 				[
 					{
 						"HashPostfix": "-Template-Wrap-Prefix",
-						"Template": "<hr /><h2>Multi-Input Evaluate Change Pattern</h2><p>This pattern uses a 6-phase solver chain to detect which of two tracked inputs changed and recompute the other. <strong>Quantity</strong> is a simple driver &mdash; changing it always recomputes DollarAmount. <strong>CostPerUnit</strong> and <strong>DollarAmount</strong> are the tracked pair &mdash; changing one updates the other.</p><h3>Phase Overview</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;margin-bottom:1em;width:100%'><tr style='background:#264653;color:#FAEDCD'><th>Ordinal</th><th>Phase</th><th>Description</th></tr><tr><td>5</td><td>Init</td><td>Seed <code>_LastSolve</code> cache from current input on first solve (when cache is 0).</td></tr><tr><td>10</td><td>Cache</td><td>Snapshot current CostPerUnit and DollarAmount into <code>_Hidden</code> fields.</td></tr><tr><td>15</td><td>Reset</td><td>Clear all <code>_Changed</code> flags to 0.</td></tr><tr><td>20</td><td>Detect</td><td>Compare <code>_Hidden</code> vs <code>_LastSolve</code> &mdash; if different, set <code>_Changed = 1</code>.</td></tr><tr><td>25</td><td>Recompute</td><td>If CostPerUnit changed &rarr; recompute DollarAmount. If DollarAmount changed &rarr; recompute CostPerUnit. If neither changed (Quantity edited) &rarr; recompute DollarAmount.</td></tr><tr><td>30</td><td>Update</td><td>Copy <code>_Hidden</code> back to <code>_LastSolve</code> for next cycle.</td></tr></table><h3>Note on Operators</h3><p>The <code>IF()</code> function does not support <code>!=</code>. To detect &ldquo;not equal,&rdquo; we use <code>IF(a, &quot;==&quot;, b, 0, 1)</code> &mdash; swapping the true/false outputs.</p><h3>JSON Solver Definitions (Section Solvers)</h3><p>These are the solver objects used in the <strong>UnitCost</strong> section with explicit ordinals:</p><pre style='background:#f5f0e8;border:1px solid #D4A373;padding:1em;overflow-x:auto;font-size:0.8rem;border-radius:4px'>[\n  { \"Expression\": \"CostPerUnit_LastSolve = IF(CostPerUnit_LastSolve, \\\"==\\\", 0, CostPerUnit, CostPerUnit_LastSolve)\", \"Ordinal\": 5 },\n  { \"Expression\": \"DollarAmount_LastSolve = IF(DollarAmount_LastSolve, \\\"==\\\", 0, DollarAmount, DollarAmount_LastSolve)\", \"Ordinal\": 5 },\n  { \"Expression\": \"CostPerUnit_Hidden = CostPerUnit\", \"Ordinal\": 10 },\n  { \"Expression\": \"DollarAmount_Hidden = DollarAmount\", \"Ordinal\": 10 },\n  { \"Expression\": \"CostPerUnit_Changed = 0\", \"Ordinal\": 15 },\n  { \"Expression\": \"DollarAmount_Changed = 0\", \"Ordinal\": 15 },\n  { \"Expression\": \"CostPerUnit_Changed = IF(CostPerUnit_Hidden, \\\"==\\\", CostPerUnit_LastSolve, 0, 1)\", \"Ordinal\": 20 },\n  { \"Expression\": \"DollarAmount_Changed = IF(DollarAmount_Hidden, \\\"==\\\", DollarAmount_LastSolve, 0, 1)\", \"Ordinal\": 20 },\n  { \"Expression\": \"DollarAmount = IF(CostPerUnit_Changed, \\\"==\\\", 1, CostPerUnit * Quantity, DollarAmount)\", \"Ordinal\": 25 },\n  { \"Expression\": \"CostPerUnit = IF(DollarAmount_Changed, \\\"==\\\", 1, DollarAmount / Quantity, CostPerUnit)\", \"Ordinal\": 25 },\n  { \"Expression\": \"DollarAmount = IF(CostPerUnit_Changed + DollarAmount_Changed, \\\"==\\\", 0, Quantity * CostPerUnit, DollarAmount)\", \"Ordinal\": 25 },\n  { \"Expression\": \"CostPerUnit_LastSolve = CostPerUnit_Hidden\", \"Ordinal\": 30 },\n  { \"Expression\": \"DollarAmount_LastSolve = DollarAmount_Hidden\", \"Ordinal\": 30 }\n]</pre><h3>CSV Solver Definitions</h3><p>The equivalent hidden descriptor rows and solver expressions in CSV format. Only the relevant columns are shown; all other columns are empty.</p><pre style='background:#f5f0e8;border:1px solid #D4A373;padding:1em;overflow-x:auto;font-size:0.75rem;border-radius:4px'>Form,DataOnly,Section Hash,Input Address,Input Hash,DataType,InputType,Equation,Equation Ordinal\nChangeTracking,1,UnitCost,UnitCost.CostPerUnit_LastSolve,CostPerUnit_LastSolve,Number,Hidden,\"CostPerUnit_LastSolve = IF(CostPerUnit_LastSolve, \"\"==\"\", 0, CostPerUnit, CostPerUnit_LastSolve)\",5\nChangeTracking,1,UnitCost,UnitCost.DollarAmount_LastSolve,DollarAmount_LastSolve,Number,Hidden,\"DollarAmount_LastSolve = IF(DollarAmount_LastSolve, \"\"==\"\", 0, DollarAmount, DollarAmount_LastSolve)\",5\nChangeTracking,1,UnitCost,UnitCost.CostPerUnit_Hidden,CostPerUnit_Hidden,Number,Hidden,\"CostPerUnit_Hidden = CostPerUnit\",10\nChangeTracking,1,UnitCost,UnitCost.DollarAmount_Hidden,DollarAmount_Hidden,Number,Hidden,\"DollarAmount_Hidden = DollarAmount\",10\nChangeTracking,1,UnitCost,UnitCost.CostPerUnit_Changed,CostPerUnit_Changed,Number,Hidden,\"CostPerUnit_Changed = 0\",15\nChangeTracking,1,UnitCost,UnitCost.DollarAmount_Changed,DollarAmount_Changed,Number,Hidden,\"DollarAmount_Changed = 0\",15\nChangeTracking,1,UnitCost,UnitCost.CostPerUnit_Changed,CostPerUnit_Changed,Number,Hidden,\"CostPerUnit_Changed = IF(CostPerUnit_Hidden, \"\"==\"\", CostPerUnit_LastSolve, 0, 1)\",20\nChangeTracking,1,UnitCost,UnitCost.DollarAmount_Changed,DollarAmount_Changed,Number,Hidden,\"DollarAmount_Changed = IF(DollarAmount_Hidden, \"\"==\"\", DollarAmount_LastSolve, 0, 1)\",20\nChangeTracking,,UnitCost,UnitCost.DollarAmount,DollarAmount,PreciseNumber,,\"DollarAmount = IF(CostPerUnit_Changed, \"\"==\"\", 1, CostPerUnit * Quantity, DollarAmount)\",25\nChangeTracking,,UnitCost,UnitCost.CostPerUnit,CostPerUnit,PreciseNumber,,\"CostPerUnit = IF(DollarAmount_Changed, \"\"==\"\", 1, DollarAmount / Quantity, CostPerUnit)\",25\nChangeTracking,,UnitCost,UnitCost.DollarAmount,DollarAmount,PreciseNumber,,\"DollarAmount = IF(CostPerUnit_Changed + DollarAmount_Changed, \"\"==\"\", 0, Quantity * CostPerUnit, DollarAmount)\",25\nChangeTracking,1,UnitCost,UnitCost.CostPerUnit_LastSolve,CostPerUnit_LastSolve,Number,Hidden,\"CostPerUnit_LastSolve = CostPerUnit_Hidden\",30\nChangeTracking,1,UnitCost,UnitCost.DollarAmount_LastSolve,DollarAmount_LastSolve,Number,Hidden,\"DollarAmount_LastSolve = DollarAmount_Hidden\",30</pre><h3>RecordSetSolver Definitions (Tabular)</h3><p>For tabular groups, the same logic is expressed as a string array in <code>RecordSetSolvers</code>. Ordinals are not available &mdash; expressions execute in array order, which preserves the phase sequencing:</p><pre style='background:#f5f0e8;border:1px solid #D4A373;padding:1em;overflow-x:auto;font-size:0.8rem;border-radius:4px'>\"RecordSetSolvers\": [\n  \"CostPerUnit_LastSolve = IF(CostPerUnit_LastSolve, \\\"==\\\", 0, CostPerUnit, CostPerUnit_LastSolve)\",\n  \"DollarAmount_LastSolve = IF(DollarAmount_LastSolve, \\\"==\\\", 0, DollarAmount, DollarAmount_LastSolve)\",\n  \"CostPerUnit_Hidden = CostPerUnit\",\n  \"DollarAmount_Hidden = DollarAmount\",\n  \"CostPerUnit_Changed = 0\",\n  \"DollarAmount_Changed = 0\",\n  \"CostPerUnit_Changed = IF(CostPerUnit_Hidden, \\\"==\\\", CostPerUnit_LastSolve, 0, 1)\",\n  \"DollarAmount_Changed = IF(DollarAmount_Hidden, \\\"==\\\", DollarAmount_LastSolve, 0, 1)\",\n  \"DollarAmount = IF(CostPerUnit_Changed, \\\"==\\\", 1, CostPerUnit * Quantity, DollarAmount)\",\n  \"CostPerUnit = IF(DollarAmount_Changed, \\\"==\\\", 1, DollarAmount / Quantity, CostPerUnit)\",\n  \"DollarAmount = IF(CostPerUnit_Changed + DollarAmount_Changed, \\\"==\\\", 0, Quantity * CostPerUnit, DollarAmount)\",\n  \"CostPerUnit_LastSolve = CostPerUnit_Hidden\",\n  \"DollarAmount_LastSolve = DollarAmount_Hidden\"\n]</pre>"
+						"Template": "<hr /><h2>Multi-Input Evaluate Change Pattern</h2><p>This pattern uses a 6-phase solver chain to detect which of two tracked inputs changed and recompute the other. <strong>Quantity</strong> is a simple driver &mdash; changing it always recomputes DollarAmount. <strong>CostPerUnit</strong> and <strong>DollarAmount</strong> are the tracked pair &mdash; changing one updates the other.</p><h3>Phase Overview</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;margin-bottom:1em;width:100%'><tr style='background:#264653;color:#FAEDCD'><th>Ordinal</th><th>Phase</th><th>Description</th></tr><tr><td>5</td><td>Init</td><td>Seed <code>_LastSolve</code> cache from current input on first solve (when cache is 0).</td></tr><tr><td>10</td><td>Cache</td><td>Snapshot current CostPerUnit and DollarAmount into <code>_Hidden</code> fields.</td></tr><tr><td>15</td><td>Reset</td><td>Clear all <code>_Changed</code> flags to 0.</td></tr><tr><td>20</td><td>Detect</td><td>Compare <code>_Hidden</code> vs <code>_LastSolve</code> &mdash; if different, set <code>_Changed = 1</code>.</td></tr><tr><td>25</td><td>Recompute</td><td>If CostPerUnit changed &rarr; recompute DollarAmount. If DollarAmount changed &rarr; recompute CostPerUnit. If neither changed (Quantity edited) &rarr; recompute DollarAmount.</td></tr><tr><td>30</td><td>Update</td><td>Copy final values to <code>_LastSolve</code> for next cycle (uses post-recompute values, not <code>_Hidden</code> snapshots).</td></tr></table><h3>Note on Operators</h3><p>The <code>IF()</code> function does not support <code>!=</code>. To detect &ldquo;not equal,&rdquo; we use <code>IF(a, &quot;==&quot;, b, 0, 1)</code> &mdash; swapping the true/false outputs.</p><h3>JSON Solver Definitions (Section Solvers)</h3><p>These are the solver objects used in the <strong>UnitCost</strong> section with explicit ordinals:</p><pre style='background:#f5f0e8;border:1px solid #D4A373;padding:1em;overflow-x:auto;font-size:0.8rem;border-radius:4px'>[\n  { \"Expression\": \"CostPerUnit_LastSolve = IF(CostPerUnit_LastSolve, \\\"==\\\", 0, CostPerUnit, CostPerUnit_LastSolve)\", \"Ordinal\": 5 },\n  { \"Expression\": \"DollarAmount_LastSolve = IF(DollarAmount_LastSolve, \\\"==\\\", 0, DollarAmount, DollarAmount_LastSolve)\", \"Ordinal\": 5 },\n  { \"Expression\": \"CostPerUnit_Hidden = CostPerUnit\", \"Ordinal\": 10 },\n  { \"Expression\": \"DollarAmount_Hidden = DollarAmount\", \"Ordinal\": 10 },\n  { \"Expression\": \"CostPerUnit_Changed = 0\", \"Ordinal\": 15 },\n  { \"Expression\": \"DollarAmount_Changed = 0\", \"Ordinal\": 15 },\n  { \"Expression\": \"CostPerUnit_Changed = IF(CostPerUnit_Hidden, \\\"==\\\", CostPerUnit_LastSolve, 0, 1)\", \"Ordinal\": 20 },\n  { \"Expression\": \"DollarAmount_Changed = IF(DollarAmount_Hidden, \\\"==\\\", DollarAmount_LastSolve, 0, 1)\", \"Ordinal\": 20 },\n  { \"Expression\": \"DollarAmount = IF(CostPerUnit_Changed, \\\"==\\\", 1, CostPerUnit * Quantity, DollarAmount)\", \"Ordinal\": 25 },\n  { \"Expression\": \"CostPerUnit = IF(DollarAmount_Changed, \\\"==\\\", 1, DollarAmount / Quantity, CostPerUnit)\", \"Ordinal\": 25 },\n  { \"Expression\": \"DollarAmount = IF(CostPerUnit_Changed + DollarAmount_Changed, \\\"==\\\", 0, Quantity * CostPerUnit, DollarAmount)\", \"Ordinal\": 25 },\n  { \"Expression\": \"CostPerUnit_LastSolve = CostPerUnit\", \"Ordinal\": 30 },\n  { \"Expression\": \"DollarAmount_LastSolve = DollarAmount\", \"Ordinal\": 30 }\n]</pre><h3>CSV Solver Definitions</h3><p>The equivalent hidden descriptor rows and solver expressions in CSV format. Only the relevant columns are shown; all other columns are empty.</p><pre style='background:#f5f0e8;border:1px solid #D4A373;padding:1em;overflow-x:auto;font-size:0.75rem;border-radius:4px'>Form,DataOnly,Section Hash,Input Address,Input Hash,DataType,InputType,Equation,Equation Ordinal\nChangeTracking,1,UnitCost,UnitCost.CostPerUnit_LastSolve,CostPerUnit_LastSolve,Number,Hidden,\"CostPerUnit_LastSolve = IF(CostPerUnit_LastSolve, \"\"==\"\", 0, CostPerUnit, CostPerUnit_LastSolve)\",5\nChangeTracking,1,UnitCost,UnitCost.DollarAmount_LastSolve,DollarAmount_LastSolve,Number,Hidden,\"DollarAmount_LastSolve = IF(DollarAmount_LastSolve, \"\"==\"\", 0, DollarAmount, DollarAmount_LastSolve)\",5\nChangeTracking,1,UnitCost,UnitCost.CostPerUnit_Hidden,CostPerUnit_Hidden,Number,Hidden,\"CostPerUnit_Hidden = CostPerUnit\",10\nChangeTracking,1,UnitCost,UnitCost.DollarAmount_Hidden,DollarAmount_Hidden,Number,Hidden,\"DollarAmount_Hidden = DollarAmount\",10\nChangeTracking,1,UnitCost,UnitCost.CostPerUnit_Changed,CostPerUnit_Changed,Number,Hidden,\"CostPerUnit_Changed = 0\",15\nChangeTracking,1,UnitCost,UnitCost.DollarAmount_Changed,DollarAmount_Changed,Number,Hidden,\"DollarAmount_Changed = 0\",15\nChangeTracking,1,UnitCost,UnitCost.CostPerUnit_Changed,CostPerUnit_Changed,Number,Hidden,\"CostPerUnit_Changed = IF(CostPerUnit_Hidden, \"\"==\"\", CostPerUnit_LastSolve, 0, 1)\",20\nChangeTracking,1,UnitCost,UnitCost.DollarAmount_Changed,DollarAmount_Changed,Number,Hidden,\"DollarAmount_Changed = IF(DollarAmount_Hidden, \"\"==\"\", DollarAmount_LastSolve, 0, 1)\",20\nChangeTracking,,UnitCost,UnitCost.DollarAmount,DollarAmount,PreciseNumber,,\"DollarAmount = IF(CostPerUnit_Changed, \"\"==\"\", 1, CostPerUnit * Quantity, DollarAmount)\",25\nChangeTracking,,UnitCost,UnitCost.CostPerUnit,CostPerUnit,PreciseNumber,,\"CostPerUnit = IF(DollarAmount_Changed, \"\"==\"\", 1, DollarAmount / Quantity, CostPerUnit)\",25\nChangeTracking,,UnitCost,UnitCost.DollarAmount,DollarAmount,PreciseNumber,,\"DollarAmount = IF(CostPerUnit_Changed + DollarAmount_Changed, \"\"==\"\", 0, Quantity * CostPerUnit, DollarAmount)\",25\nChangeTracking,1,UnitCost,UnitCost.CostPerUnit_LastSolve,CostPerUnit_LastSolve,Number,Hidden,\"CostPerUnit_LastSolve = CostPerUnit\",30\nChangeTracking,1,UnitCost,UnitCost.DollarAmount_LastSolve,DollarAmount_LastSolve,Number,Hidden,\"DollarAmount_LastSolve = DollarAmount\",30</pre><h3>RecordSetSolver Definitions (Tabular)</h3><p>For tabular groups, the same logic is expressed as a string array in <code>RecordSetSolvers</code>. Ordinals are not available &mdash; expressions execute in array order, which preserves the phase sequencing:</p><pre style='background:#f5f0e8;border:1px solid #D4A373;padding:1em;overflow-x:auto;font-size:0.8rem;border-radius:4px'>\"RecordSetSolvers\": [\n  \"CostPerUnit_LastSolve = IF(CostPerUnit_LastSolve, \\\"==\\\", 0, CostPerUnit, CostPerUnit_LastSolve)\",\n  \"DollarAmount_LastSolve = IF(DollarAmount_LastSolve, \\\"==\\\", 0, DollarAmount, DollarAmount_LastSolve)\",\n  \"CostPerUnit_Hidden = CostPerUnit\",\n  \"DollarAmount_Hidden = DollarAmount\",\n  \"CostPerUnit_Changed = 0\",\n  \"DollarAmount_Changed = 0\",\n  \"CostPerUnit_Changed = IF(CostPerUnit_Hidden, \\\"==\\\", CostPerUnit_LastSolve, 0, 1)\",\n  \"DollarAmount_Changed = IF(DollarAmount_Hidden, \\\"==\\\", DollarAmount_LastSolve, 0, 1)\",\n  \"DollarAmount = IF(CostPerUnit_Changed, \\\"==\\\", 1, CostPerUnit * Quantity, DollarAmount)\",\n  \"CostPerUnit = IF(DollarAmount_Changed, \\\"==\\\", 1, DollarAmount / Quantity, CostPerUnit)\",\n  \"DollarAmount = IF(CostPerUnit_Changed + DollarAmount_Changed, \\\"==\\\", 0, Quantity * CostPerUnit, DollarAmount)\",\n  \"CostPerUnit_LastSolve = CostPerUnit\",\n  \"DollarAmount_LastSolve = DollarAmount\"\n]</pre>"
 					}
 				]
 		}
@@ -194,9 +194,9 @@
 			"Hash": "Rows",
 			"DataType": "Array",
 			"Default": [
-				{ "ItemName": "Widget", "Quantity": 10, "CostPerUnit": 5.00, "DollarAmount": 50.00, "CostPerUnit_LastSolve": 0, "CostPerUnit_Hidden": 0, "CostPerUnit_Changed": 0, "DollarAmount_LastSolve": 0, "DollarAmount_Hidden": 0, "DollarAmount_Changed": 0 },
-				{ "ItemName": "Gadget", "Quantity": 4, "CostPerUnit": 12.50, "DollarAmount": 50.00, "CostPerUnit_LastSolve": 0, "CostPerUnit_Hidden": 0, "CostPerUnit_Changed": 0, "DollarAmount_LastSolve": 0, "DollarAmount_Hidden": 0, "DollarAmount_Changed": 0 },
-				{ "ItemName": "Sprocket", "Quantity": 20, "CostPerUnit": 2.25, "DollarAmount": 45.00, "CostPerUnit_LastSolve": 0, "CostPerUnit_Hidden": 0, "CostPerUnit_Changed": 0, "DollarAmount_LastSolve": 0, "DollarAmount_Hidden": 0, "DollarAmount_Changed": 0 }
+				{ "ItemName": "Widget", "Quantity": 10, "CostPerUnit": 5.00, "DollarAmount": 50.00 },
+				{ "ItemName": "Gadget", "Quantity": 4, "CostPerUnit": 12.50, "DollarAmount": 50.00 },
+				{ "ItemName": "Sprocket", "Quantity": 20, "CostPerUnit": 2.25, "DollarAmount": 45.00 }
 			],
 			"PictForm": { "Section": "LineItems", "Group": "Rows" }
 		}
@@ -240,54 +240,6 @@
 					"DataType": "PreciseNumber",
 					"Default": 0,
 					"PictForm": { "Section": "LineItems", "Group": "Rows", "DecimalPrecision": 2, "DigitsPrefix": "$" }
-				},
-				"CostPerUnit_LastSolve":
-				{
-					"Name": "CostPerUnit Last Solve",
-					"Hash": "CostPerUnit_LastSolve",
-					"DataType": "Number",
-					"Default": 0,
-					"PictForm": { "Section": "LineItems", "Group": "Rows", "InputType": "Hidden" }
-				},
-				"CostPerUnit_Hidden":
-				{
-					"Name": "CostPerUnit Hidden",
-					"Hash": "CostPerUnit_Hidden",
-					"DataType": "Number",
-					"Default": 0,
-					"PictForm": { "Section": "LineItems", "Group": "Rows", "InputType": "Hidden" }
-				},
-				"CostPerUnit_Changed":
-				{
-					"Name": "CostPerUnit Changed",
-					"Hash": "CostPerUnit_Changed",
-					"DataType": "Number",
-					"Default": 0,
-					"PictForm": { "Section": "LineItems", "Group": "Rows", "InputType": "Hidden" }
-				},
-				"DollarAmount_LastSolve":
-				{
-					"Name": "DollarAmount Last Solve",
-					"Hash": "DollarAmount_LastSolve",
-					"DataType": "Number",
-					"Default": 0,
-					"PictForm": { "Section": "LineItems", "Group": "Rows", "InputType": "Hidden" }
-				},
-				"DollarAmount_Hidden":
-				{
-					"Name": "DollarAmount Hidden",
-					"Hash": "DollarAmount_Hidden",
-					"DataType": "Number",
-					"Default": 0,
-					"PictForm": { "Section": "LineItems", "Group": "Rows", "InputType": "Hidden" }
-				},
-				"DollarAmount_Changed":
-				{
-					"Name": "DollarAmount Changed",
-					"Hash": "DollarAmount_Changed",
-					"DataType": "Number",
-					"Default": 0,
-					"PictForm": { "Section": "LineItems", "Group": "Rows", "InputType": "Hidden" }
 				}
 			}
 		}
