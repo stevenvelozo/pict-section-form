@@ -44,7 +44,7 @@
     "dependencies": {
         "chart.js": "^4.5.1",
         "fable-serviceproviderbase": "^3.0.19",
-        "marked": "^17.0.3",
+        "marked": "^4.3.0",
         "pict-provider": "^1.0.12",
         "pict-section-tuigrid": "^1.0.31",
         "pict-template": "^1.0.15",
