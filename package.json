@@ -37,7 +37,7 @@
         "pict": "^1.0.362",
         "pict-application": "^1.0.33",
         "pict-service-commandlineutility": "^1.0.19",
-        "quackage": "^1.0.65",
+        "quackage": "^1.1.0",
         "tui-grid": "^4.21.22",
         "typescript": "^5.9.3"
     },
