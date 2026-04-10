@@ -36,6 +36,7 @@
         "jquery": "^4.0.0",
         "pict": "^1.0.362",
         "pict-application": "^1.0.33",
+        "pict-docuserve": "^0.1.5",
         "pict-service-commandlineutility": "^1.0.19",
         "quackage": "^1.1.0",
         "tui-grid": "^4.21.22",
