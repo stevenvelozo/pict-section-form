@@ -41,8 +41,8 @@ Number of decimal places to display:
 ```
 
 Results:
-- `1234.5678` → `1234.57`
-- `100` → `100.00`
+- `1234.5678` -> `1234.57`
+- `100` -> `100.00`
 
 ### RoundingMethod
 
@@ -65,7 +65,7 @@ Add thousand separators to the number:
 ```
 
 Results:
-- `1234567.89` → `1,234,567.89`
+- `1234567.89` -> `1,234,567.89`
 
 ### DigitsPrefix
 
@@ -78,7 +78,7 @@ String to prepend to the formatted number:
 ```
 
 Results:
-- `1234.56` → `$1234.56`
+- `1234.56` -> `$1234.56`
 
 ### DigitsPostfix
 
@@ -91,7 +91,7 @@ String to append to the formatted number:
 ```
 
 Results:
-- `1234.56` → `1234.56 USD`
+- `1234.56` -> `1234.56 USD`
 
 ## Complete Example
 

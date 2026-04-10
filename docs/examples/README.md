@@ -94,17 +94,17 @@ node ServeExamples.js
 
 | Feature | simple_form | simple_table | simple_distill | gradebook | postcard | complex_table | complex_tuigrid | manyfest_editor |
 |---------|:-----------:|:------------:|:--------------:|:---------:|:--------:|:-------------:|:---------------:|:---------------:|
-| Basic Inputs | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Tabular Layout | | ✓ | | ✓ | | ✓ | | ✓ |
-| TuiGrid | | | | | | | ✓ | ✓ |
-| Solvers | ✓ | | ✓ | | | ✓ | ✓ | |
-| Row Solvers | | | | | | ✓ | ✓ | |
-| Pick Lists | | | ✓ | | | ✓ | ✓ | |
-| Entity Bundles | | | ✓ | | | ✓ | | |
-| Trigger Groups | | | ✓ | | | ✓ | | |
-| localStorage | | | | ✓ | | | | ✓ |
-| Custom Themes | | | | | ✓ | | | |
-| Navigation | | | | | ✓ | | | ✓ |
-| Charts | | | | | | ✓ | | |
-| DateTime | | | | | | ✓ | ✓ | |
-| JSON Editor | | | | | | | | ✓ |
+| Basic Inputs | [x] | [x] | [x] | [x] | [x] | [x] | [x] | [x] |
+| Tabular Layout | | [x] | | [x] | | [x] | | [x] |
+| TuiGrid | | | | | | | [x] | [x] |
+| Solvers | [x] | | [x] | | | [x] | [x] | |
+| Row Solvers | | | | | | [x] | [x] | |
+| Pick Lists | | | [x] | | | [x] | [x] | |
+| Entity Bundles | | | [x] | | | [x] | | |
+| Trigger Groups | | | [x] | | | [x] | | |
+| localStorage | | | | [x] | | | | [x] |
+| Custom Themes | | | | | [x] | | | |
+| Navigation | | | | | [x] | | | [x] |
+| Charts | | | | | | [x] | | |
+| DateTime | | | | | | [x] | [x] | |
+| JSON Editor | | | | | | | | [x] |

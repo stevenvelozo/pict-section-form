@@ -121,8 +121,8 @@ for export and editing.
 
 ### Marshal Operations
 
-- **toView** (`onMarshalToView`): AppData → Form inputs
-- **fromView** (`onMarshalFromView`): Form inputs → AppData
+- **toView** (`onMarshalToView`): AppData -> Form inputs
+- **fromView** (`onMarshalFromView`): Form inputs -> AppData
 
 The Informary provider handles the actual DOM operations, using data attributes
 to map form elements to their corresponding data addresses.

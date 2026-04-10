@@ -254,11 +254,11 @@ Create inputs that both trigger and respond:
 4. **Action**: Each listener reads from its TriggerAddress and updates
 
 ```
-[Select Change] → [EntityBundleRequest fetches] → [Fires TriggerGroup]
+[Select Change] -> [EntityBundleRequest fetches] -> [Fires TriggerGroup]
                                                          ↓
-[AutofillTriggerGroup A] ← reads from Address A ←──────────
-[AutofillTriggerGroup B] ← reads from Address B ←──────────
-[AutofillTriggerGroup C] ← reads from Address C ←──────────
+[AutofillTriggerGroup A] <- reads from Address A <-──────────
+[AutofillTriggerGroup B] <- reads from Address B <-──────────
+[AutofillTriggerGroup C] <- reads from Address C <-──────────
 ```
 
 ## Notes

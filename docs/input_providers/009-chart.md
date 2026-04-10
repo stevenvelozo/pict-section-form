@@ -60,7 +60,7 @@ The Chart provider uses a sophisticated three-tiered configuration system:
 ### Configuration Priority
 
 ```
-Raw → Address (overrides) → Solver (merges) → Final Configuration
+Raw -> Address (overrides) -> Solver (merges) -> Final Configuration
 ```
 
 ## Configuration Options

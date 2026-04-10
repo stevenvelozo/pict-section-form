@@ -96,13 +96,13 @@ Standard mathematical operators are supported:
 
 | Function | Description | Example |
 |----------|-------------|---------|
-| `abs(x)` | Absolute value | `abs(-5)` → 5 |
-| `round(x)` | Round to nearest integer | `round(3.7)` → 4 |
-| `floor(x)` | Round down | `floor(3.7)` → 3 |
-| `ceil(x)` | Round up | `ceil(3.2)` → 4 |
-| `min(a, b)` | Minimum value | `min(5, 3)` → 3 |
-| `max(a, b)` | Maximum value | `max(5, 3)` → 5 |
-| `sqrt(x)` | Square root | `sqrt(16)` → 4 |
+| `abs(x)` | Absolute value | `abs(-5)` -> 5 |
+| `round(x)` | Round to nearest integer | `round(3.7)` -> 4 |
+| `floor(x)` | Round down | `floor(3.7)` -> 3 |
+| `ceil(x)` | Round up | `ceil(3.2)` -> 4 |
+| `min(a, b)` | Minimum value | `min(5, 3)` -> 3 |
+| `max(a, b)` | Maximum value | `max(5, 3)` -> 5 |
+| `sqrt(x)` | Square root | `sqrt(16)` -> 4 |
 
 ### String Functions
 
@@ -111,7 +111,7 @@ Standard mathematical operators are supported:
 | `concat(a, b, ...)` | Concatenate values into a string | `concat('Hello', ' World')` |
 | `join(separator, a, b, ...)` | Join values with a separator | `join(', ', 'a', 'b', 'c')` |
 | `stringgetsegments(s, delimiter)` | Split string into segments | `stringgetsegments('a,b,c', ',')` |
-| `stringcountsegments(s, delimiter)` | Count segments in string | `stringcountsegments('a,b,c', ',')` → 3 |
+| `stringcountsegments(s, delimiter)` | Count segments in string | `stringcountsegments('a,b,c', ',')` -> 3 |
 | `resolvehtmlentities(s)` | Resolve HTML entities in string | `resolvehtmlentities('&amp;')` |
 
 ### Array Aggregation

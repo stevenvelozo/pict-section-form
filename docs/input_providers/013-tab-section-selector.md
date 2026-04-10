@@ -191,7 +191,7 @@ Style tabs as a wizard/stepper:
 }
 
 .pict-section-tab-button:not(:last-child)::after {
-  content: "→";
+  content: "->";
   margin-left: 10px;
 }
 ```

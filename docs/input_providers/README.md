@@ -102,8 +102,8 @@ All providers can implement these lifecycle hooks:
 | `onInputInitializeTabular` | After tabular render | Initialize tabular input |
 | `onDataChange` | Value changes | Handle user input |
 | `onDataChangeTabular` | Tabular value changes | Handle tabular input |
-| `onDataMarshalToForm` | Data → UI | Update display from data |
-| `onDataMarshalToFormTabular` | Data → tabular UI | Update tabular display |
+| `onDataMarshalToForm` | Data -> UI | Update display from data |
+| `onDataMarshalToFormTabular` | Data -> tabular UI | Update tabular display |
 | `onAfterMarshalToForm` | After all marshaling | Post-marshal actions |
 | `onDataRequest` | Reading value | Get current value |
 | `onAfterEventCompletion` | After trigger events | Handle trigger responses |
