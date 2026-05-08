@@ -19,21 +19,21 @@
 			.pict-example-module { margin-left: auto; padding: 0.6rem 1rem; color: #4DD0E1; font-size: 0.75rem; display: flex; align-items: center; letter-spacing: 0.03em; }
 
 			/* ─── Lab Controls ─── */
-			.lab-controls { background: #fff; border: 1px solid #B0BEC5; border-top: 4px solid #0D1B2A; border-radius: 6px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 2px 8px rgba(13,27,42,0.08); }
+			.lab-controls { background: var(--theme-color-background-panel, #fff); border: 1px solid #B0BEC5; border-top: 4px solid #0D1B2A; border-radius: 6px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 2px 8px rgba(13,27,42,0.08); }
 			.lab-controls h2 { margin: 0 0 0.5rem 0; font-size: 1.15rem; color: #0D1B2A; }
 			.lab-controls p { margin: 0 0 1rem 0; font-size: 0.88rem; color: #546E7A; line-height: 1.5; }
 			.lab-controls .injection-buttons { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
 			.lab-controls .injection-buttons button { background: #0D1B2A; color: #E0F7FA; border: none; padding: 0.6rem 1.5rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
 			.lab-controls .injection-buttons button:hover { background: #1B2838; }
-			.lab-controls .injection-buttons button.calorie-btn { background: #FF5722; color: #fff; }
+			.lab-controls .injection-buttons button.calorie-btn { background: #FF5722; color: var(--theme-color-background-panel, #fff); }
 			.lab-controls .injection-buttons button.calorie-btn:hover { background: #D84315; }
-			.lab-controls .injection-buttons button.macro-btn { background: #00897B; color: #fff; }
+			.lab-controls .injection-buttons button.macro-btn { background: #00897B; color: var(--theme-color-background-panel, #fff); }
 			.lab-controls .injection-buttons button.macro-btn:hover { background: #00695C; }
 			.lab-controls .injection-counter { font-size: 0.78rem; color: #78909C; font-style: italic; margin-left: 0.5rem; }
 
 			/* ─── Content Area ─── */
 			.pict-example-content { padding: 1.5rem; overflow-x: auto; }
-			#Pict-Form-Container { background: #fff; border: 1px solid #B0BEC5; border-top: 4px solid #00BCD4; border-radius: 6px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(13,27,42,0.08); min-width: 1100px; }
+			#Pict-Form-Container { background: var(--theme-color-background-panel, #fff); border: 1px solid #B0BEC5; border-top: 4px solid #00BCD4; border-radius: 6px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(13,27,42,0.08); min-width: 1100px; }
 
 			/* ─── Form Elements ─── */
 			#Pict-Form-Container input[type="text"],
@@ -41,7 +41,7 @@
 			#Pict-Form-Container input[type="email"],
 			#Pict-Form-Container input[type="date"],
 			#Pict-Form-Container textarea,
-			#Pict-Form-Container select { border: 1px solid #CFD8DC; background: #FAFAFA; padding: 0.45rem 0.6rem; border-radius: 4px; font-size: 0.9rem; color: #263238; width: 100%; }
+			#Pict-Form-Container select { border: 1px solid #CFD8DC; background: var(--theme-color-background-secondary, #FAFAFA); padding: 0.45rem 0.6rem; border-radius: 4px; font-size: 0.9rem; color: #263238; width: 100%; }
 			#Pict-Form-Container input:focus,
 			#Pict-Form-Container textarea:focus,
 			#Pict-Form-Container select:focus { outline: none; border-color: #00BCD4; box-shadow: 0 0 0 2px rgba(0,188,212,0.15); }
@@ -53,14 +53,14 @@
 			/* ─── Table Styling ─── */
 			#Pict-Form-Container table { width: 100%; border-collapse: collapse; }
 			#Pict-Form-Container th { background: #0D1B2A; color: #E0F7FA; padding: 0.5rem 0.75rem; text-align: left; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
-			#Pict-Form-Container td { padding: 0.4rem 0.6rem; border-bottom: 1px solid #ECEFF1; font-size: 0.82rem; background: #fff; }
+			#Pict-Form-Container td { padding: 0.4rem 0.6rem; border-bottom: 1px solid #ECEFF1; font-size: 0.82rem; background: var(--theme-color-background-panel, #fff); }
 			#Pict-Form-Container tr:nth-child(even) td { background: #F5F7FA; }
 			#Pict-Form-Container tr:hover td { background: #E0F7FA; }
 
 			/* ─── Buttons ─── */
 			#Pict-Form-Container button,
 			#Pict-Form-Container input[type="button"],
-			#Pict-Form-Container input[type="submit"] { background: #00BCD4; color: #fff; border: none; padding: 0.5rem 1.25rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+			#Pict-Form-Container input[type="submit"] { background: #00BCD4; color: var(--theme-color-background-panel, #fff); border: none; padding: 0.5rem 1.25rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
 			#Pict-Form-Container button:hover { background: #0097A7; }
 
 			/* ─── Injected Section Visual Distinction ─── */

@@ -12,8 +12,8 @@
 
 			/* --- Header Bar --- */
 			.app-header { display: flex; align-items: stretch; background: #1A365D; border-bottom: 3px solid #DD6B20; }
-			.app-badge { background: #DD6B20; color: #fff; padding: 0.6rem 1rem; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 0.5rem; }
-			.app-badge svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; }
+			.app-badge { background: #DD6B20; color: var(--theme-color-background-panel, #fff); padding: 0.6rem 1rem; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 0.5rem; }
+			.app-badge svg { width: 14px; height: 14px; fill: var(--theme-color-background-panel, #fff); flex-shrink: 0; }
 			.app-title { padding: 0.6rem 1rem; color: #EBF8FF; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; }
 			.app-module { margin-left: auto; padding: 0.6rem 1rem; color: #90CDF4; font-size: 0.75rem; display: flex; align-items: center; letter-spacing: 0.03em; }
 
@@ -21,21 +21,21 @@
 			.app-layout { display: flex; gap: 0; min-height: calc(100vh - 42px); }
 
 			/* --- Sidebar --- */
-			.sidebar { width: 380px; min-width: 380px; background: #fff; border-right: 1px solid #CBD5E0; display: flex; flex-direction: column; overflow-y: auto; }
+			.sidebar { width: 380px; min-width: 380px; background: var(--theme-color-background-panel, #fff); border-right: 1px solid #CBD5E0; display: flex; flex-direction: column; overflow-y: auto; }
 			.sidebar-section { padding: 1rem; border-bottom: 1px solid #E2E8F0; }
 			.sidebar-section h3 { margin: 0 0 0.75rem 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #718096; }
 			.sidebar-section h4 { margin: 0.5rem 0 0.25rem 0; font-size: 0.75rem; color: #4A5568; }
 
 			/* --- New Test Controls --- */
 			.new-test-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
-			.new-test-row select, .new-test-row input { flex: 1; padding: 0.4rem 0.5rem; border: 1px solid #CBD5E0; border-radius: 4px; font-size: 0.8rem; background: #fff; }
+			.new-test-row select, .new-test-row input { flex: 1; padding: 0.4rem 0.5rem; border: 1px solid #CBD5E0; border-radius: 4px; font-size: 0.8rem; background: var(--theme-color-background-panel, #fff); }
 			.btn { padding: 0.4rem 0.75rem; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
-			.btn-primary { background: #DD6B20; color: #fff; }
+			.btn-primary { background: #DD6B20; color: var(--theme-color-background-panel, #fff); }
 			.btn-primary:hover { background: #C05621; }
 			.btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
-			.btn-danger { background: #E53E3E; color: #fff; }
+			.btn-danger { background: #E53E3E; color: var(--theme-color-background-panel, #fff); }
 			.btn-danger:hover { background: #C53030; }
-			.btn-success { background: #38A169; color: #fff; }
+			.btn-success { background: #38A169; color: var(--theme-color-background-panel, #fff); }
 			.btn-success:hover { background: #2F855A; }
 			.btn-outline { background: transparent; border: 1px solid #CBD5E0; color: #4A5568; }
 			.btn-outline:hover { background: #EDF2F7; }
@@ -61,7 +61,7 @@
 
 			/* --- Main Content --- */
 			.main-content { flex: 1; padding: 1.25rem; overflow-x: auto; }
-			#Pict-Form-Container { background: #fff; border: 1px solid #CBD5E0; border-top: 4px solid #DD6B20; border-radius: 6px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(26,54,93,0.08); min-width: 800px; }
+			#Pict-Form-Container { background: var(--theme-color-background-panel, #fff); border: 1px solid #CBD5E0; border-top: 4px solid #DD6B20; border-radius: 6px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(26,54,93,0.08); min-width: 800px; }
 
 			/* --- Form Element Styling --- */
 			#Pict-Form-Container input[type="text"],
@@ -77,7 +77,7 @@
 			#Pict-Form-Container h3 { color: #2D3748; font-size: 0.95rem; }
 			#Pict-Form-Container button,
 			#Pict-Form-Container input[type="button"],
-			#Pict-Form-Container input[type="submit"] { background: #DD6B20; color: #fff; border: none; padding: 0.5rem 1.25rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+			#Pict-Form-Container input[type="submit"] { background: #DD6B20; color: var(--theme-color-background-panel, #fff); border: none; padding: 0.5rem 1.25rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
 			#Pict-Form-Container button:hover { background: #C05621; }
 			#Pict-Form-Container table { width: 100%; border-collapse: collapse; }
 			#Pict-Form-Container th { background: #1A365D; color: #EBF8FF; padding: 0.5rem 0.75rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }

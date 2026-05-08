@@ -38,18 +38,18 @@ class PictSupportExtension extends libPictProvider
 				/*css*/`
 					:root{
 						--PSF-Global-background-color: #dcdce5;
-						--PSF-Global-text-color: #333333;
+						--PSF-Global-text-color: var(--theme-color-text-primary, #333333);
 
 						--PSFExt-gutter-size: 5px;
 						--PSFExt-indentation-size: calc(2 * var(--PSFExt-gutter-size));
 						--PSFExt-Global-background-color: #dedede;
-						--PSFExt-Global-text-color: #333333;
-						--PSFExt-Section-background-color: #efefef;
+						--PSFExt-Global-text-color: var(--theme-color-text-primary, #333333);
+						--PSFExt-Section-background-color: var(--theme-color-background-tertiary, #efefef);
 						--PSFExt-Section-button-color: #5A52A3;
 						--PSFExt-Section-button-text-color: #D8D7E5;
 						--PSFExt-Section-token-color: #eAf3a2;
-						--PSFExt-Section-label-color: #999;
-						--PSFExt-Section-Data-background-color: #fafafa;
+						--PSFExt-Section-label-color: var(--theme-color-text-muted, #999);
+						--PSFExt-Section-Data-background-color: var(--theme-color-background-secondary, #fafafa);
 						--PSFExt-Section-Group-Header-background-color: #ebebff;
 						--PSFExt-Section-Group-Row-Header-background-color: #dcf0f0;
 						--PSFExt-Solver-Entry-text-color: #bb4a9c;
@@ -76,7 +76,7 @@ class PictSupportExtension extends libPictProvider
 						cursor: move;
 						padding: 4px 6px;
 						border-radius: 3px;
-						border: 1px solid #111;
+						border: 1px solid var(--theme-color-text-primary, #111);
 					}
 					#Pict-Form-Extensions-Container { 
 						flex-grow: 1;
@@ -85,7 +85,7 @@ class PictSupportExtension extends libPictProvider
 						color: var(--PSF-Global-text-color);
 						background-color: var(--PSF-Global-background-color);
 						padding: 10px;
-						border: 4px double #111;
+						border: 4px double var(--theme-color-text-primary, #111);
 						border-radius: 8px;
 						box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
 						font-size: 14px;
@@ -97,7 +97,7 @@ class PictSupportExtension extends libPictProvider
 						cursor: move;
 						padding: 4px 4px;
 						border-radius: 3px;
-						border: 1px solid #111;
+						border: 1px solid var(--theme-color-text-primary, #111);
 					}
 					.PSFExt-Extension-Footer {
 						text-align: right;
@@ -127,7 +127,7 @@ class PictSupportExtension extends libPictProvider
 					}
 					.PSFExt-Data-Header {
 						font-weight: bold;
-						border-bottom: 1px dotted #ccc;
+						border-bottom: 1px dotted var(--theme-color-border-default, #ccc);
 						padding: var(--PSFExt-gutter-size);
 					}
 					/** Section content */
@@ -165,7 +165,7 @@ class PictSupportExtension extends libPictProvider
 						text-decoration: underline;
 					}
 					.PSFExt-Section-Solver-Entry:not(:last-child) {
-						border-bottom: 1px solid #ccc;
+						border-bottom: 1px solid var(--theme-color-border-default, #ccc);
 					}
 					.PSFExt-Solver-Entry { 
 						font-family: "Courier New", "Lucida Console", monospace;
@@ -174,7 +174,7 @@ class PictSupportExtension extends libPictProvider
 						padding: var(--PSFExt-gutter-size);
 						line-height: 1.2;
 						color: var(--PSFExt-Solver-Entry-text-color);
-						border-bottom: 1px dotted #ccc;
+						border-bottom: 1px dotted var(--theme-color-border-default, #ccc);
 					}
 					.PSFExt-Solver-Result { 
 						font-family: "Courier New", "Lucida Console", monospace;
@@ -223,7 +223,7 @@ class PictSupportExtension extends libPictProvider
 						display: none;
 					}
 					.PSFExt-Section-Solver-DynamicInput {
-						background-color: #ffffff;
+						background-color: var(--theme-color-background-panel, #ffffff);
 					}
 					
 					/** empty states */
