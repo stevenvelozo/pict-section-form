@@ -71,6 +71,13 @@ class ComplexTabularApplication extends libPictSectionForm.PictFormApplication
 		// test defaulting to alternate tab
 		this.pict.AppData.UI.StatisticsTabState = "FruitStatistics";
 		this.pict.addProvider('CustomDataProvider', libCustomDataProvider.default_configuration, libCustomDataProvider);
+
+		// Demonstrate a customized comprehension destination -- comprehensions emitted by the
+		// addComprehensionEntity solver will land at AppData.RecipeWorkflowComprehensions instead
+		// of the default AppData.FormEntityComprehensions.  The Recipe section's solvers below
+		// populate OnSave / OnApprovalAction.{Submit,Approve} contexts that a downstream
+		// workflow can read directly.
+		this.pict.views.PictFormMetacontroller.comprehensionDestinationAddress = 'AppData.RecipeWorkflowComprehensions';
 	}
 
 	onInitialize()
@@ -174,6 +181,30 @@ module.exports.default_configuration.pict_configuration = {
 						`InspirationLink = CONCAT("https://www.google.com/search?q=", RecipeName, " recipe")`,
 						'cumulativeSummationResult = cumulativeSummation(getvalue("AppData.FruitData.FruityVice"), "nutritions.calories", "SummedCalories")',
 						`MAP VAR row FROM FruitData.FruityVice : ColorInputBackgroundTabular("FruitGrid", "FruitGrid", "PercentTotalFat", stepIndex, "#FFCCCC", IF(row.nutritions.percent_total_fat, ">", 0.25, 1, 0))`,
+
+						// Comprehension generation -- builds AppData.RecipeWorkflowComprehensions.
+						// The OnSave context captures the current recipe-level facts; later solvers below
+						// branch into OnApprovalAction.{Submit,Approve} based on the Proprietary flag.
+						{ Ordinal: 200, Expression: `addComprehensionEntity("OnSave", "Recipe", RecipeName, "Name", RecipeName)` },
+						{ Ordinal: 200, Expression: `addComprehensionEntity("OnSave", "Recipe", RecipeName, "Type", RecipeType)` },
+						{ Ordinal: 200, Expression: `addComprehensionEntity("OnSave", "Recipe", RecipeName, "Description", RecipeDescription)` },
+						{ Ordinal: 200, Expression: `addComprehensionEntity("OnSave", "Recipe", RecipeName, "Inventor", Inventor)` },
+						{ Ordinal: 200, Expression: `addComprehensionEntity("OnSave", "Recipe", RecipeName, "TotalCalories", TotalFruitCalories)` },
+						{ Ordinal: 200, Expression: `addComprehensionEntity("OnSave", "Recipe", RecipeName, "AverageFatPercent", AverageFatPercent)` },
+
+						// Per-fruit OnSave entries built off the FruitGrid -- one addComprehensionEntity
+						// call per (fruit, property).  Demonstrates how MAP VAR fans a single solver
+						// expression across every row of a recordset.
+						{ Ordinal: 210, Expression: `MAP VAR row FROM FruitData.FruityVice : addComprehensionEntity("OnSave", "Fruit", row.name, "Family", row.family)` },
+						{ Ordinal: 210, Expression: `MAP VAR row FROM FruitData.FruityVice : addComprehensionEntity("OnSave", "Fruit", row.name, "Order", row.order)` },
+						{ Ordinal: 210, Expression: `MAP VAR row FROM FruitData.FruityVice : addComprehensionEntity("OnSave", "Fruit", row.name, "Calories", row.nutritions.calories)` },
+
+						// Approval workflow -- nested OnApprovalAction context.  When Proprietary is true the
+						// recipe lands in OnApprovalAction.Submit (still pending review); otherwise it goes
+						// straight to OnApprovalAction.Approve.  Both branches share the same Recipe entity
+						// shape, just under different sub-contexts of OnApprovalAction.
+						{ Ordinal: 220, Expression: `addComprehensionEntity(IF(Proprietary, "==", 1, "OnApprovalAction.Submit", "OnApprovalAction.Approve"), "Recipe", RecipeName, "Status", IF(Proprietary, "==", 1, "Submitted", "Approved"))` },
+						{ Ordinal: 220, Expression: `addComprehensionEntity(IF(Proprietary, "==", 1, "OnApprovalAction.Submit", "OnApprovalAction.Approve"), "Recipe", RecipeName, "Reviewer", Inventor)` },
 					],
 
 				MetaTemplates:

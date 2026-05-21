@@ -133,6 +133,11 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		this.addSolverFunction(pExpressionParser, 'getsectionformdata', 'fable.providers.DynamicFormSolverBehaviors.getSectionFormData', 'Gets a value from a specific section by hash or address.', [0]);
 		this.addSolverFunction(pExpressionParser, 'getsectiontabularformdata', 'fable.providers.DynamicFormSolverBehaviors.getSectionTabularFormData', 'Gets a value from a specific tabular section row by hash or address.', [0, 1]);
 
+		// Comprehension generation -- writes a single Property/Value into the configured comprehension destination
+		// nested as Context -> Entity -> GUID -> Property.  Context is treated as a manyfest address so dotted
+		// contexts like "OnApprovalAction.Approve" produce nested context branches.  See docs/Comprehensions.md.
+		this.addSolverFunction(pExpressionParser, 'addcomprehensionentity', 'fable.providers.DynamicFormSolverBehaviors.addComprehensionEntity', 'Writes a property/value into the configured comprehension destination, nested as Context -> Entity -> GUID -> Property.');
+
 		return false;
 	}
 
@@ -950,6 +955,127 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		}
 		this.log.info(tmpLogLine);
 		return tmpLastValue;
+	}
+
+	/**
+	 * Resolves the comprehension destination object, creating intermediate objects along the configured
+	 * address if they don't exist.  The address is read from
+	 * `PictFormMetacontroller.comprehensionDestinationAddress` (default `AppData.FormEntityComprehensions`)
+	 * and resolved against the pict instance, so callers can target any subtree (`AppData.*`, `Bundle.*`, ...).
+	 *
+	 * @returns {Record<string, any>|null} The destination object (mutable), or null if the address resolves
+	 * to a non-object value the function can't safely write into (e.g. a number).
+	 */
+	resolveComprehensionDestination()
+	{
+		let tmpAddress = 'AppData.FormEntityComprehensions';
+		if (this.pict.views.PictFormMetacontroller && typeof this.pict.views.PictFormMetacontroller.comprehensionDestinationAddress === 'string'
+			&& this.pict.views.PictFormMetacontroller.comprehensionDestinationAddress.length > 0)
+		{
+			tmpAddress = this.pict.views.PictFormMetacontroller.comprehensionDestinationAddress;
+		}
+
+		let tmpExisting = this.pict.resolveStateFromAddress(tmpAddress);
+		if (tmpExisting && typeof tmpExisting === 'object')
+		{
+			return tmpExisting;
+		}
+		if (tmpExisting != null && typeof tmpExisting !== 'object')
+		{
+			this.log.warn(`addComprehensionEntity: comprehension destination [${tmpAddress}] resolves to a non-object value; refusing to overwrite.`);
+			return null;
+		}
+
+		// The address is empty -- materialize an object there.  setStateValueAtAddress walks the
+		// address creating intermediate objects on the way.
+		this.pict.setStateValueAtAddress(tmpAddress, null, {});
+		return this.pict.resolveStateFromAddress(tmpAddress);
+	}
+
+	/**
+	 * Writes a single property/value into the configured comprehension destination, nested as
+	 * `Context -> Entity -> GUID -> Property = Value`.
+	 *
+	 * `Context` is a manyfest address (dot-separated) so dotted contexts like
+	 * `OnApprovalAction.Approve` produce nested context branches.  `Entity`, `GUID`, and `Property`
+	 * are treated as opaque property names -- dots in them are NOT interpreted as nesting (so an
+	 * entity GUID like `0x73278432987` lands as a single key).
+	 *
+	 * Successive calls to the same `(Context, Entity, GUID)` accumulate properties on the same
+	 * record.  Successive calls to the same `(Context, Entity, GUID, Property)` overwrite.
+	 *
+	 * The destination address is configured on the metacontroller via
+	 * `comprehensionDestinationAddress` (default `AppData.FormEntityComprehensions`) -- see
+	 * `docs/Comprehensions.md`.
+	 *
+	 * @param {string} pContext - The comprehension context address (e.g. `"OnSave"`, `"OnApprovalAction.Approve"`).
+	 * @param {string} pEntity - The entity name (e.g. `"Book"`).
+	 * @param {string} pGUID - The external GUID for the record (e.g. `"0x73278432987"`).
+	 * @param {string} pProperty - The property to set on the record (e.g. `"Title"`).
+	 * @param {any} pValue - The value to write.
+	 *
+	 * @returns {any} `pValue` on success, `undefined` if the call was a no-op (invalid args / unwritable destination).
+	 */
+	addComprehensionEntity(pContext, pEntity, pGUID, pProperty, pValue)
+	{
+		// Every part of the path must be a non-empty stringifiable identifier -- silently swallowing
+		// missing parts would write the comprehension into the wrong place under a literal "undefined"
+		// key.  Warn and bail instead.
+		if (pContext == null || pEntity == null || pGUID == null || pProperty == null)
+		{
+			this.log.warn(`addComprehensionEntity: ignoring call with null/undefined parts (Context=[${pContext}], Entity=[${pEntity}], GUID=[${pGUID}], Property=[${pProperty}]).`);
+			return undefined;
+		}
+
+		let tmpContext = String(pContext);
+		let tmpEntity = String(pEntity);
+		let tmpGUID = String(pGUID);
+		let tmpProperty = String(pProperty);
+
+		if (tmpContext.length < 1 || tmpEntity.length < 1 || tmpGUID.length < 1 || tmpProperty.length < 1)
+		{
+			this.log.warn(`addComprehensionEntity: ignoring call with empty parts (Context=[${tmpContext}], Entity=[${tmpEntity}], GUID=[${tmpGUID}], Property=[${tmpProperty}]).`);
+			return undefined;
+		}
+
+		let tmpDestination = this.resolveComprehensionDestination();
+		if (!tmpDestination)
+		{
+			return undefined;
+		}
+
+		// Walk the context path manually so we don't have to worry about manyfest's address parsing
+		// for the entity/GUID/property keys (which may contain characters like '0x...' that are fine
+		// as keys but unusual as addresses).
+		let tmpContextParts = tmpContext.split('.');
+		let tmpCursor = tmpDestination;
+		for (let i = 0; i < tmpContextParts.length; i++)
+		{
+			let tmpKey = tmpContextParts[i];
+			if (tmpKey.length < 1)
+			{
+				continue;
+			}
+			if (!tmpCursor[tmpKey] || typeof tmpCursor[tmpKey] !== 'object')
+			{
+				tmpCursor[tmpKey] = {};
+			}
+			tmpCursor = tmpCursor[tmpKey];
+		}
+
+		if (!tmpCursor[tmpEntity] || typeof tmpCursor[tmpEntity] !== 'object')
+		{
+			tmpCursor[tmpEntity] = {};
+		}
+		let tmpEntityBucket = tmpCursor[tmpEntity];
+
+		if (!tmpEntityBucket[tmpGUID] || typeof tmpEntityBucket[tmpGUID] !== 'object')
+		{
+			tmpEntityBucket[tmpGUID] = {};
+		}
+		tmpEntityBucket[tmpGUID][tmpProperty] = pValue;
+
+		return pValue;
 	}
 }
 

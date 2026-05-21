@@ -222,6 +222,28 @@ aggregate values from arrays:
 | `SetTabularRowLength(hash, length)` | Set the row count for a tabular data set |
 | `RefreshTabularSection(hash)` | Refresh a tabular section display |
 
+### Comprehension Generation
+
+| Function | Description |
+|----------|-------------|
+| `addComprehensionEntity(Context, Entity, GUID, Property, Value)` | Writes a single Property/Value into a nested comprehension tree at `Context -> Entity -> GUID -> Property` in the configured destination (default `AppData.FormEntityComprehensions`). |
+
+The `Context` argument is treated as a manyfest address, so dotted contexts
+like `"OnApprovalAction.Approve"` produce nested context branches. Successive
+calls accumulate properties on the same record. See [Comprehensions](Comprehensions.md)
+for the basic walkthrough and [Comprehensions — Advanced](Comprehensions_Advanced.md)
+for computed contexts, `MAP VAR` patterns, and customized destinations.
+
+#### Comprehension Example
+
+```json
+"Solvers": [
+  "addComprehensionEntity(\"OnSave\", \"Book\", BookGUID, \"Title\", BookTitle)",
+  "addComprehensionEntity(\"OnSave\", \"Book\", BookGUID, \"Author\", BookAuthor)",
+  "addComprehensionEntity(\"OnApprovalAction.Approve\", \"Book\", BookGUID, \"Status\", \"Approved\")"
+]
+```
+
 ### Logging
 
 | Function | Description |
@@ -365,3 +387,5 @@ Use in solvers:
 - [Configuration](Configuration.md) - Solver configuration options
 - [Architecture](Pict_Section_Form_Architecture.md) - Solver system internals
 - [Input Types](Input_Types.md) - Input visibility control
+- [Comprehensions](Comprehensions.md) - `addComprehensionEntity` basics
+- [Comprehensions — Advanced](Comprehensions_Advanced.md) - Computed contexts, `MAP VAR`, customized destinations

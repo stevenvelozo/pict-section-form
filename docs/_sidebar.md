@@ -14,6 +14,8 @@
 - Advanced
 
   - [Solvers](Solvers.md)
+  - [Comprehensions](Comprehensions.md)
+  - [Comprehensions — Advanced](Comprehensions_Advanced.md)
   - [Providers](Providers.md)
 
 - Input Providers

@@ -1691,5 +1691,143 @@ suite
 						);
 				}
 			);
+
+		suite
+			(
+				'Comprehension Generation',
+				() =>
+				{
+					test(
+							'addComprehensionEntity writes nested structure at default destination',
+							(fDone) =>
+							{
+								let _Pict = new libPict(DoNothingApplication.default_configuration.pict_configuration);
+								_Pict.LogNoisiness = 1;
+								_Pict.addApplication('DefaultApplication', DoNothingApplication.default_configuration, DoNothingApplication);
+
+								_Pict.PictApplication.testDone = () =>
+								{
+									try
+									{
+										// Drive the solver once via runSolver to populate the comprehension.
+										_Pict.providers.DynamicSolver.runSolver('addComprehensionEntity("OnSave", "Book", "0x73278432987", "Title", "The Giving Tree")', true);
+										_Pict.providers.DynamicSolver.runSolver('addComprehensionEntity("OnSave", "Book", "0x73278432987", "Author", "Shel Silverstein")', true);
+										_Pict.providers.DynamicSolver.runSolver('addComprehensionEntity("OnSave", "Book", "0x73278432987", "ISBN", "8675309")', true);
+
+										const tmpComprehensions = _Pict.AppData.FormEntityComprehensions;
+										Expect(tmpComprehensions).to.be.an('object', 'Default comprehension destination should be materialized at AppData.FormEntityComprehensions');
+										Expect(tmpComprehensions.OnSave).to.be.an('object', 'OnSave context branch should exist');
+										Expect(tmpComprehensions.OnSave.Book).to.be.an('object', 'Book entity bucket should exist under OnSave');
+										Expect(tmpComprehensions.OnSave.Book['0x73278432987']).to.deep.equal(
+											{ Title: 'The Giving Tree', Author: 'Shel Silverstein', ISBN: '8675309' },
+											'Successive writes should accumulate on the same record');
+									}
+									catch (pError)
+									{
+										return fDone(pError);
+									}
+									fDone();
+								};
+
+								_Pict.PictApplication.initializeAsync(() => { });
+							}
+						);
+
+					test(
+							'addComprehensionEntity supports nested context addresses like OnApprovalAction.Approve',
+							(fDone) =>
+							{
+								let _Pict = new libPict(DoNothingApplication.default_configuration.pict_configuration);
+								_Pict.LogNoisiness = 1;
+								_Pict.addApplication('DefaultApplication', DoNothingApplication.default_configuration, DoNothingApplication);
+
+								_Pict.PictApplication.testDone = () =>
+								{
+									try
+									{
+										_Pict.providers.DynamicSolver.runSolver('addComprehensionEntity("OnApprovalAction.Submit", "Book", "0x111", "Status", "Submitted")', true);
+										_Pict.providers.DynamicSolver.runSolver('addComprehensionEntity("OnApprovalAction.Approve", "Book", "0x111", "Status", "Approved")', true);
+
+										const tmpRoot = _Pict.AppData.FormEntityComprehensions;
+										Expect(tmpRoot.OnApprovalAction).to.be.an('object', 'Nested context root must be an object');
+										Expect(tmpRoot.OnApprovalAction.Submit.Book['0x111'].Status).to.equal('Submitted');
+										Expect(tmpRoot.OnApprovalAction.Approve.Book['0x111'].Status).to.equal('Approved');
+									}
+									catch (pError)
+									{
+										return fDone(pError);
+									}
+									fDone();
+								};
+
+								_Pict.PictApplication.initializeAsync(() => { });
+							}
+						);
+
+					test(
+							'addComprehensionEntity honors a customized comprehensionDestinationAddress',
+							(fDone) =>
+							{
+								let _Pict = new libPict(DoNothingApplication.default_configuration.pict_configuration);
+								_Pict.LogNoisiness = 1;
+								_Pict.addApplication('DefaultApplication', DoNothingApplication.default_configuration, DoNothingApplication);
+
+								_Pict.PictApplication.testDone = () =>
+								{
+									try
+									{
+										_Pict.views.PictFormMetacontroller.comprehensionDestinationAddress = 'AppData.MyCustomComprehensions';
+										_Pict.providers.DynamicSolver.runSolver('addComprehensionEntity("OnSave", "Recipe", "Recipe_1", "Name", "Pancakes")', true);
+
+										Expect(_Pict.AppData.FormEntityComprehensions).to.equal(undefined, 'Default destination should remain untouched');
+										Expect(_Pict.AppData.MyCustomComprehensions.OnSave.Recipe.Recipe_1.Name).to.equal('Pancakes',
+											'Comprehension should land at the customized destination');
+									}
+									catch (pError)
+									{
+										return fDone(pError);
+									}
+									fDone();
+								};
+
+								_Pict.PictApplication.initializeAsync(() => { });
+							}
+						);
+
+					test(
+							'addComprehensionEntity ignores empty/null parts and never throws',
+							(fDone) =>
+							{
+								let _Pict = new libPict(DoNothingApplication.default_configuration.pict_configuration);
+								_Pict.LogNoisiness = 1;
+								_Pict.addApplication('DefaultApplication', DoNothingApplication.default_configuration, DoNothingApplication);
+
+								_Pict.PictApplication.testDone = () =>
+								{
+									try
+									{
+										// Direct call against the provider, since exercising null/undefined through the
+										// solver string syntax is awkward.
+										const tmpBehaviors = _Pict.providers.DynamicFormSolverBehaviors;
+										Expect(tmpBehaviors.addComprehensionEntity(null, 'Book', 'G1', 'P', 'V')).to.equal(undefined, 'null Context bails');
+										Expect(tmpBehaviors.addComprehensionEntity('OnSave', '', 'G1', 'P', 'V')).to.equal(undefined, 'empty Entity bails');
+										Expect(tmpBehaviors.addComprehensionEntity('OnSave', 'Book', undefined, 'P', 'V')).to.equal(undefined, 'undefined GUID bails');
+										Expect(tmpBehaviors.addComprehensionEntity('OnSave', 'Book', 'G1', '', 'V')).to.equal(undefined, 'empty Property bails');
+										// Successful call still works after the bad ones.
+										Expect(tmpBehaviors.addComprehensionEntity('OnSave', 'Book', 'G1', 'Title', 'OK')).to.equal('OK');
+										Expect(_Pict.AppData.FormEntityComprehensions.OnSave.Book.G1.Title).to.equal('OK');
+									}
+									catch (pError)
+									{
+										return fDone(pError);
+									}
+									fDone();
+								};
+
+								_Pict.PictApplication.initializeAsync(() => { });
+							}
+						);
+				}
+			);
 	}
 );
