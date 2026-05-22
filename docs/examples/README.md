@@ -114,3 +114,13 @@ node ServeExamples.js
 | Dynamic Columns | | | | [x] | | | | |
 | Row/Column Selection | | | | [x] | | | | |
 | Column Sorting | | | | [x] | | | | |
+
+## Live Examples
+
+<!-- docuserve:examples-index:start -->
+| Example | Complexity | Summary | Live |
+|---------|------------|---------|------|
+| [Complex Table](examples/complex%5Ftable/README.md) | Advanced | A full-featured tabular application with charts, row-level solvers, entity bundle requests, and pick lists. | [&#9654; Launch](examples/complex%5Ftable/index.html) |
+| [Gradebook](examples/gradebook/README.md) | Intermediate | An advanced tabular recordset with stacked headers, row labels, dynamic columns, row/column selection, and column sorting — built purely from manifest configuration. | [&#9654; Launch](examples/gradebook/index.html) |
+| [Simple Form](examples/simple%5Fform/README.md) | Basic | A minimal forms application demonstrating calculated fields, conditional visibility, and expression solvers. | [&#9654; Launch](examples/simple%5Fform/index.html) |
+<!-- docuserve:examples-index:end -->

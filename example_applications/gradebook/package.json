@@ -22,5 +22,13 @@
 			"from": "../../node_modules/pict/dist/*",
 			"to": "./dist/"
 		}
-	]
+	],
+	"retold": {
+		"ExampleApplication": {
+			"Stage": true,
+			"Title": "Gradebook",
+			"Summary": "An advanced tabular recordset with stacked headers, row labels, dynamic columns, row/column selection, and column sorting — built purely from manifest configuration.",
+			"Complexity": "Intermediate"
+		}
+	}
 }

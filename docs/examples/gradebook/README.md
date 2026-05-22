@@ -1,5 +1,10 @@
 # Gradebook — A Tabular Recordset Case Study
 
+<!-- docuserve:example-launch:start -->
+> **[&#9654; Launch the live app](examples/gradebook/index.html)** — runs in your browser, opens in a new tab.
+<!-- docuserve:example-launch:end -->
+
+
 The Gradebook example is a deep, end-to-end demonstration of **every advanced
 tabular capability** in Pict Section Form. It is a real classroom gradebook —
 students, assignments, grades, teacher commentary, and a performance

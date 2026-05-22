@@ -23,5 +23,13 @@
             "from": "../../node_modules/pict/dist/*",
             "to": "./dist/"
         }
-    ]
+    ],
+    "retold": {
+        "ExampleApplication": {
+            "Stage": true,
+            "Title": "Simple Form",
+            "Summary": "A minimal forms application demonstrating calculated fields, conditional visibility, and expression solvers.",
+            "Complexity": "Basic"
+        }
+    }
 }

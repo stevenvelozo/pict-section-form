@@ -75,6 +75,15 @@ npm install pict-section-form
 
 ## Example Applications
 
+
+<!-- docuserve:examples:start -->
+*Live, runnable example applications — each opens in a new browser tab:*
+
+- **[Complex Table](examples/complex%5Ftable/README.md)** — A full-featured tabular application with charts, row-level solvers, entity bundle requests, and pick lists. · [&#9654; Launch live app](examples/complex%5Ftable/index.html)
+- **[Gradebook](examples/gradebook/README.md)** — An advanced tabular recordset with stacked headers, row labels, dynamic columns, row/column selection, and column sorting — built purely from manifest configuration. · [&#9654; Launch live app](examples/gradebook/index.html)
+- **[Simple Form](examples/simple%5Fform/README.md)** — A minimal forms application demonstrating calculated fields, conditional visibility, and expression solvers. · [&#9654; Launch live app](examples/simple%5Fform/index.html)
+<!-- docuserve:examples:end -->
+
 - [simple_form](examples/simple_form/) - Basic form with solvers and visibility control
 - [simple_table](examples/simple_table/) - Minimal tabular layout example
 - [gradebook](examples/gradebook/) - Advanced tabular recordsets: stacked headers, row labels, dynamic columns, selection, sorting

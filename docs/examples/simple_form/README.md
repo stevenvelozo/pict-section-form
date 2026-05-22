@@ -1,5 +1,10 @@
 # Simple Form Example
 
+<!-- docuserve:example-launch:start -->
+> **[&#9654; Launch the live app](examples/simple%5Fform/index.html)** — runs in your browser, opens in a new tab.
+<!-- docuserve:example-launch:end -->
+
+
 The Simple Form example is the most basic forms application in the Pict Section Form
 framework. It demonstrates core concepts including form layout, calculated fields,
 conditional visibility, and dynamic styling.
