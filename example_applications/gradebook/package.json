@@ -1,0 +1,26 @@
+{
+	"name": "gradebook_application",
+	"version": "1.0.0",
+	"description": "Gradebook example exercising stacked headers, row labels, and dynamic columns.",
+	"main": "Gradebook-Application.js",
+	"scripts": {
+		"start": "node Gradebook-Application.js",
+		"build": "npx quack build && npx quack copy"
+	},
+	"author": "steven",
+	"license": "MIT",
+	"devDependencies": {},
+	"copyFilesSettings": {
+		"whenFileExists": "overwrite"
+	},
+	"copyFiles": [
+		{
+			"from": "./html/*",
+			"to": "./dist/"
+		},
+		{
+			"from": "../../node_modules/pict/dist/*",
+			"to": "./dist/"
+		}
+	]
+}

@@ -189,6 +189,13 @@ class ManifestFactory extends libFableServiceProviderBase
 					}
 					tmpInput.RowIdentifierTemplateHash = '{~D:Record.RowID~}';
 				}
+
+				// Resolve DynamicColumns generators once at init so the supporting manifest
+				// is fully populated before the layout template is generated.
+				if (Array.isArray(tmpGroup.DynamicColumns) && tmpGroup.DynamicColumns.length > 0)
+				{
+					this._resolveDynamicColumns(pView, tmpGroup);
+				}
 			}
 
 			// Check if there is a record set address; initialize it if it doesn't exist
@@ -230,6 +237,275 @@ class ManifestFactory extends libFableServiceProviderBase
 				}
 			}
 		}
+	}
+
+	/**
+	 * Resolve a single template string against a record context.
+	 *
+	 * @param {string} pTemplate - The template string to resolve.
+	 * @param {Object} pRecord - The record context to resolve against.
+	 * @returns {string} The resolved string, or '' on failure.
+	 */
+	_parseDynamicColumnTemplate(pTemplate, pRecord)
+	{
+		if (typeof pTemplate !== 'string')
+		{
+			return '';
+		}
+		if (pTemplate.indexOf('{') === -1)
+		{
+			return pTemplate;
+		}
+		try
+		{
+			let tmpResult = this.fable.parseTemplate(pTemplate, pRecord, null);
+			return (typeof tmpResult === 'string') ? tmpResult : '';
+		}
+		catch (pError)
+		{
+			this.log.warn(`PICT Form Tabular DynamicColumns template parse failed: ${pError && pError.message}`);
+			return '';
+		}
+	}
+
+	/**
+	 * Resolve a Tabular Group's DynamicColumns generators into descriptors on its supportingManifest.
+	 *
+	 * NON-DESTRUCTIVE: descriptor pruning is structural only -- row record data at
+	 * removed InformaryDataAddresses is never touched, so hidden data persists for
+	 * later restoration if the source row reappears.
+	 *
+	 * InformaryDataAddressTemplate is resolved ONCE at descriptor generation time
+	 * (Informary itself is a pure string concat at marshal time -- see
+	 * Pict-Provider-Informary.getComposedContainerAddress).
+	 *
+	 * @param {Object} pView - The view containing the group.
+	 * @param {Object} pGroup - The group object (must already have supportingManifest).
+	 * @returns {{added: Array<string>, removed: Array<string>, unchanged: Array<string>, changed: boolean}}
+	 */
+	_resolveDynamicColumns(pView, pGroup)
+	{
+		let tmpEmpty = { added: [], removed: [], unchanged: [], changed: false };
+		if (!pGroup || !Array.isArray(pGroup.DynamicColumns) || pGroup.DynamicColumns.length === 0)
+		{
+			return tmpEmpty;
+		}
+		if (!pGroup.supportingManifest)
+		{
+			this.log.warn(`PICT Form Tabular DynamicColumns on group [${pGroup.Hash}] skipped: no supportingManifest.`);
+			return tmpEmpty;
+		}
+		if (!Array.isArray(pGroup.DynamicColumnsState))
+		{
+			pGroup.DynamicColumnsState = [];
+		}
+
+		let tmpMarshalDestinationObject = pView.getMarshalDestinationObject();
+		let tmpSupportingManifest = pGroup.supportingManifest;
+
+		let tmpAggregateAdded = [];
+		let tmpAggregateRemoved = [];
+		let tmpAggregateUnchanged = [];
+		let tmpAggregateChanged = false;
+
+		for (let i = 0; i < pGroup.DynamicColumns.length; i++)
+		{
+			let tmpGenerator = pGroup.DynamicColumns[i];
+			if (!pGroup.DynamicColumnsState[i])
+			{
+				pGroup.DynamicColumnsState[i] = { LastHashes: [], LastHeaderGroups: [] };
+			}
+			let tmpState = pGroup.DynamicColumnsState[i];
+
+			if (typeof tmpGenerator.SourceAddress !== 'string' || tmpGenerator.SourceAddress.length === 0)
+			{
+				this.log.warn(`PICT Form Tabular DynamicColumns generator ${i} on group [${pGroup.Hash}] is missing SourceAddress.`);
+				continue;
+			}
+			if (typeof tmpGenerator.HashTemplate !== 'string' || tmpGenerator.HashTemplate.length === 0)
+			{
+				this.log.warn(`PICT Form Tabular DynamicColumns generator ${i} on group [${pGroup.Hash}] is missing HashTemplate.`);
+				continue;
+			}
+			if (typeof tmpGenerator.InformaryDataAddressTemplate !== 'string' || tmpGenerator.InformaryDataAddressTemplate.length === 0)
+			{
+				this.log.warn(`PICT Form Tabular DynamicColumns generator ${i} on group [${pGroup.Hash}] is missing InformaryDataAddressTemplate.`);
+				continue;
+			}
+
+			let tmpSourceArray = pView.sectionManifest.getValueByHash(tmpMarshalDestinationObject, tmpGenerator.SourceAddress);
+			if (!Array.isArray(tmpSourceArray))
+			{
+				tmpSourceArray = [];
+			}
+
+			// Build the desired descriptor set from the current source array.
+			let tmpDesiredHashes = [];
+			let tmpDesiredDescriptors = {};
+			let tmpDesiredHeaderGroups = [];
+			let tmpSeenHashes = {};
+			for (let k = 0; k < tmpSourceArray.length; k++)
+			{
+				let tmpSourceRow = tmpSourceArray[k];
+				let tmpHash = this._parseDynamicColumnTemplate(tmpGenerator.HashTemplate, tmpSourceRow);
+				if (!tmpHash)
+				{
+					continue;
+				}
+				if (tmpSeenHashes[tmpHash])
+				{
+					this.log.warn(`PICT Form Tabular DynamicColumns generator ${i} produced duplicate Hash [${tmpHash}] on group [${pGroup.Hash}]; later row wins.`);
+				}
+				tmpSeenHashes[tmpHash] = true;
+
+				let tmpName = tmpGenerator.NameTemplate
+					? this._parseDynamicColumnTemplate(tmpGenerator.NameTemplate, tmpSourceRow)
+					: tmpHash;
+				let tmpInformaryDataAddress = this._parseDynamicColumnTemplate(tmpGenerator.InformaryDataAddressTemplate, tmpSourceRow);
+				if (!tmpInformaryDataAddress)
+				{
+					this.log.warn(`PICT Form Tabular DynamicColumns generator ${i} produced empty InformaryDataAddress for row ${k} on group [${pGroup.Hash}]; skipping.`);
+					continue;
+				}
+				let tmpHeaderGroup = tmpGenerator.HeaderGroupTemplate
+					? this._parseDynamicColumnTemplate(tmpGenerator.HeaderGroupTemplate, tmpSourceRow)
+					: '';
+
+				let tmpDescriptor = {
+					Hash: tmpHash,
+					Name: tmpName || tmpHash,
+					DataType: tmpGenerator.DataType || 'String',
+					IsTabular: true,
+					_DynamicColumnGeneratorIndex: i,
+					_DynamicColumnHeaderGroup: tmpHeaderGroup,
+					PictForm: Object.assign({}, tmpGenerator.PictForm || {}, {
+						ViewHash: pView.Hash,
+						InformaryContainerAddress: pGroup.RecordSetAddress,
+						InformaryDataAddress: tmpInformaryDataAddress
+					})
+				};
+
+				tmpDesiredHashes.push(tmpHash);
+				tmpDesiredDescriptors[tmpHash] = tmpDescriptor;
+				tmpDesiredHeaderGroups.push(tmpHeaderGroup);
+			}
+
+			// Diff against the cached last state.
+			let tmpLastHashes = Array.isArray(tmpState.LastHashes) ? tmpState.LastHashes : [];
+			let tmpDesiredSet = {};
+			for (let h = 0; h < tmpDesiredHashes.length; h++)
+			{
+				tmpDesiredSet[tmpDesiredHashes[h]] = true;
+			}
+			let tmpRemoved = tmpLastHashes.filter((pHash) => { return !tmpDesiredSet[pHash]; });
+			let tmpLastSet = {};
+			for (let h = 0; h < tmpLastHashes.length; h++)
+			{
+				tmpLastSet[tmpLastHashes[h]] = true;
+			}
+			let tmpAdded = tmpDesiredHashes.filter((pHash) => { return !tmpLastSet[pHash]; });
+			let tmpUnchanged = tmpDesiredHashes.filter((pHash) => { return tmpLastSet[pHash]; });
+			let tmpHeaderGroupsChanged = JSON.stringify(tmpDesiredHeaderGroups) !== JSON.stringify(tmpState.LastHeaderGroups || []);
+			let tmpOrderChanged = JSON.stringify(tmpDesiredHashes) !== JSON.stringify(tmpLastHashes);
+
+			// Remove dropped descriptors from the supportingManifest entirely.
+			for (let r = 0; r < tmpRemoved.length; r++)
+			{
+				let tmpHashToRemove = tmpRemoved[r];
+				let tmpAddrIdx = tmpSupportingManifest.elementAddresses.indexOf(tmpHashToRemove);
+				if (tmpAddrIdx >= 0)
+				{
+					tmpSupportingManifest.elementAddresses.splice(tmpAddrIdx, 1);
+				}
+				delete tmpSupportingManifest.elementDescriptors[tmpHashToRemove];
+				if (tmpSupportingManifest.elementHashes && (tmpHashToRemove in tmpSupportingManifest.elementHashes))
+				{
+					delete tmpSupportingManifest.elementHashes[tmpHashToRemove];
+				}
+			}
+
+			// Re-place all descriptors for this generator in the desired order at the InsertAt position.
+			// First, pull them out so we can splice them back in as a contiguous block.
+			for (let h = 0; h < tmpDesiredHashes.length; h++)
+			{
+				let tmpAddr = tmpDesiredHashes[h];
+				let tmpExistingIdx = tmpSupportingManifest.elementAddresses.indexOf(tmpAddr);
+				if (tmpExistingIdx >= 0)
+				{
+					tmpSupportingManifest.elementAddresses.splice(tmpExistingIdx, 1);
+				}
+				// Preserve an already-registered descriptor OBJECT rather than swapping in a
+				// fresh one. The live descriptor carries the generated Macro (informary HTML
+				// bindings) and InputIndex stamped during the last template build. Replacing
+				// it with a fresh, Macro-less object silently breaks marshaling on any later
+				// render() that is NOT accompanied by a template rebuild -- e.g. moving,
+				// adding or deleting a row. Refresh only the data-derived fields in place.
+				let tmpExistingDescriptor = tmpSupportingManifest.elementDescriptors[tmpAddr];
+				if (tmpExistingDescriptor)
+				{
+					let tmpFreshDescriptor = tmpDesiredDescriptors[tmpAddr];
+					tmpExistingDescriptor.Name = tmpFreshDescriptor.Name;
+					tmpExistingDescriptor.DataType = tmpFreshDescriptor.DataType;
+					tmpExistingDescriptor.IsTabular = tmpFreshDescriptor.IsTabular;
+					tmpExistingDescriptor._DynamicColumnGeneratorIndex = tmpFreshDescriptor._DynamicColumnGeneratorIndex;
+					tmpExistingDescriptor._DynamicColumnHeaderGroup = tmpFreshDescriptor._DynamicColumnHeaderGroup;
+					if (!tmpExistingDescriptor.PictForm)
+					{
+						tmpExistingDescriptor.PictForm = {};
+					}
+					Object.assign(tmpExistingDescriptor.PictForm, tmpFreshDescriptor.PictForm);
+					tmpDesiredDescriptors[tmpAddr] = tmpExistingDescriptor;
+				}
+				else
+				{
+					tmpSupportingManifest.elementDescriptors[tmpAddr] = tmpDesiredDescriptors[tmpAddr];
+				}
+				if (!tmpSupportingManifest.elementHashes)
+				{
+					tmpSupportingManifest.elementHashes = {};
+				}
+				tmpSupportingManifest.elementHashes[tmpAddr] = tmpAddr;
+			}
+
+			// Compute insertion index.
+			let tmpInsertAt = tmpGenerator.InsertAt || 'End';
+			let tmpInsertionIndex;
+			if (tmpInsertAt === 'Start')
+			{
+				tmpInsertionIndex = 0;
+			}
+			else if (typeof tmpInsertAt === 'object' && tmpInsertAt !== null && typeof tmpInsertAt.After === 'string')
+			{
+				let tmpAfterIdx = tmpSupportingManifest.elementAddresses.indexOf(tmpInsertAt.After);
+				tmpInsertionIndex = (tmpAfterIdx < 0) ? tmpSupportingManifest.elementAddresses.length : tmpAfterIdx + 1;
+			}
+			else
+			{
+				tmpInsertionIndex = tmpSupportingManifest.elementAddresses.length;
+			}
+			for (let h = 0; h < tmpDesiredHashes.length; h++)
+			{
+				tmpSupportingManifest.elementAddresses.splice(tmpInsertionIndex + h, 0, tmpDesiredHashes[h]);
+			}
+
+			tmpState.LastHashes = tmpDesiredHashes.slice();
+			tmpState.LastHeaderGroups = tmpDesiredHeaderGroups.slice();
+
+			if (tmpAdded.length || tmpRemoved.length || tmpHeaderGroupsChanged || tmpOrderChanged)
+			{
+				tmpAggregateChanged = true;
+			}
+			tmpAggregateAdded.push.apply(tmpAggregateAdded, tmpAdded);
+			tmpAggregateRemoved.push.apply(tmpAggregateRemoved, tmpRemoved);
+			tmpAggregateUnchanged.push.apply(tmpAggregateUnchanged, tmpUnchanged);
+		}
+
+		return {
+			added: tmpAggregateAdded,
+			removed: tmpAggregateRemoved,
+			unchanged: tmpAggregateUnchanged,
+			changed: tmpAggregateChanged
+		};
 	}
 
 	/**

@@ -280,7 +280,7 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-Group-Prefix",
 			"Template": /*HTML*/`
-			<div {~D:Record.Macro.PictFormLayout~}>
+			<div id="GROUP-{~D:Context[0].formID~}-{~D:Record.Hash~}" {~D:Record.Macro.PictFormLayout~}>
 			<table>
 					<tbody>
 			<!-- Form Tabular Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
@@ -343,7 +343,7 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-TabularTemplate-HeaderCell",
 			"Template": /*HTML*/`
 						<!-- Descriptor {~D:Record.Name~} [{~D:Record.Hash~}] -> {~D:Record.Address~} -->
-						<th>{~D:Record.Name~}</th>
+						<th data-tabular-column-index="{~D:Record.PictForm.InputIndex~}">{~D:Record.Name~}</th>
 `
 		},
 		{
@@ -365,13 +365,13 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-Row-Prefix",
 			"Template": /*HTML*/`
-					<tr>{~T:TabularTemplateRow-ExtraPrefix~}
+					<tr data-tabular-row-index="{~D:Record.Key~}" data-tabular-group-index="{~D:Record.Group~}">{~T:TabularTemplateRow-ExtraPrefix~}
 `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-Cell-Prefix",
 			"Template": /*HTML*/`
-						<td><!-- {~D:Record.Name~}  -->
+						<td data-tabular-column-index="{~D:Record.PictForm.InputIndex~}"><!-- {~D:Record.Name~}  -->
 `
 		},
 		{

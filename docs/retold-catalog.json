@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-05-21T02:52:57.468Z",
+	"Generated": "2026-05-22T01:39:07.291Z",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
 	"Groups": [
@@ -199,16 +199,6 @@
 					"DocFiles": []
 				},
 				{
-					"Name": "debug",
-					"Repo": "debug",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
 					"Name": "dynamic_analysis",
 					"Repo": "dynamic_analysis",
 					"Group": "example_applications",
@@ -221,16 +211,6 @@
 				{
 					"Name": "gradebook",
 					"Repo": "gradebook",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "manyfest_editor",
-					"Repo": "manyfest_editor",
 					"Group": "example_applications",
 					"Branch": "master",
 					"HasDocs": false,
@@ -291,16 +271,6 @@
 				{
 					"Name": "simple_table",
 					"Repo": "simple_table",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "simple_table_from_object",
-					"Repo": "simple_table_from_object",
 					"Group": "example_applications",
 					"Branch": "master",
 					"HasDocs": false,

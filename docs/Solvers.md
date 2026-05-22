@@ -211,6 +211,40 @@ aggregate values from arrays:
 ]
 ```
 
+### Tabular Row & Column Styling
+
+These functions style a whole row or whole column of a tabular group — every
+cell across or down. The highlight pair toggles a CSS class on a `1` / `0`
+flag; the color pair sets (`1`) or clears (`0`) an inline background color.
+None of them touch form data — they are purely presentational and re-applied
+on each solve.
+
+| Function | Description |
+|----------|-------------|
+| `HighlightTabularRow(sectionHash, groupHash, rowIndex, flag)` | Add (`1`) / remove (`0`) the `pict-tabular-row-highlight` class on every cell of a row |
+| `HighlightTabularColumn(sectionHash, groupHash, columnIndex, flag)` | Add (`1`) / remove (`0`) the `pict-tabular-column-highlight` class on every cell of a column |
+| `ColorTabularRow(sectionHash, groupHash, rowIndex, color, flag)` | Set (`1`) / clear (`0`) the background color on every cell of a row |
+| `ColorTabularColumn(sectionHash, groupHash, columnIndex, color, flag)` | Set (`1`) / clear (`0`) the background color on every cell of a column |
+
+`rowIndex` is the zero-based row. `columnIndex` is the column's input index
+(its position among the group's descriptors). The highlight classes are
+defined by pict-section-form; their tint follows the
+`--pict-tabular-highlight-color` CSS custom property.
+
+#### Tabular Styling Examples
+
+```json
+"Solvers": [
+  "ColorTabularRow('Performance', 'PerformanceGrid', 0, IF(getSectionTabularFormData('Performance', 'PerformanceGrid', 0, 'Average'), '>=', 85, '#BFE3BF', '#EBB8B8'), 1)",
+  "HighlightTabularColumn('Gradebook', 'GradebookGrid', 4, 1)"
+]
+```
+
+These pair naturally with the `RowSelection` / `ColumnSelection` tabular
+options (see [Layouts](Layouts.md)): the selection state is stored in the form
+data, and a solver can read it and call the highlight/color functions to drive
+presentation.
+
 ### Solver Control Functions
 
 | Function | Description |

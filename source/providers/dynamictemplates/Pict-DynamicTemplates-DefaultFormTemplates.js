@@ -723,7 +723,7 @@ Glug glug glug Oo... -->
 		{
 			"HashPostfix": "-TabularTemplate-Group-Prefix",
 			"Template": /*HTML*/`
-			<div {~D:Record.Macro.PictFormLayout~}>
+			<div id="GROUP-{~D:Context[0].formID~}-{~D:Record.Hash~}" {~D:Record.Macro.PictFormLayout~}>
 			<table>
 					<tbody>
 			<!-- Form Tabular Template Group Prefix [{~D:Context[0].UUID~}]::[{~D:Context[0].Hash~}] {~D:Record.Hash~}::{~D:Record.Name~} -->
@@ -786,7 +786,7 @@ Glug glug glug Oo... -->
 			"HashPostfix": "-TabularTemplate-HeaderCell",
 			"Template": /*HTML*/`
 						<!-- Descriptor {~D:Record.Name~} [{~D:Record.Hash~}] -> {~D:Record.Address~} -->
-						<th>{~D:Record.Name~}</th>
+						<th data-tabular-column-index="{~D:Record.PictForm.InputIndex~}">{~D:Record.Name~}</th>
 `
 		},
 		{
@@ -802,19 +802,69 @@ Glug glug glug Oo... -->
 		 */
 
 		/*
+		 * BEGIN Tabular Template Extra Header Rows
+		 * Used for stacked/clustered headers (the Group's `Headers` config).
+		 * Each entry in Headers is one ADDITIONAL header row stacked above the
+		 * default column-name row. Cells carry { Label, ColumnSpan, CSSClass }.
+		 */
+		{
+			"HashPostfix": "-TabularTemplate-ExtraHeaderRow-Prefix",
+			"Template": /*HTML*/`
+					<tr class="pict-tabular-extra-header-row">
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-ExtraHeaderRow-Postfix",
+			"Template": /*HTML*/`
+					</tr>
+`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-ExtraHeaderCell",
+			"Template": /*HTML*/`<th colspan="{~D:Record.ColumnSpan~}" class="pict-tabular-extra-header-cell {~D:Record.CSSClass~}">{~D:Record.Label~}</th>`
+		},
+		/*
+		 * END Tabular Template Extra Header Rows
+		 */
+
+		/*
+		 * BEGIN Tabular Template Row Label Columns
+		 * Used for left-side label columns (the Group's `RowLabels` config).
+		 * Header cell renders one <th> per RowLabels entry. Per-row cell renders
+		 * one <td> per RowLabels entry; rowspans collapse consecutive equal
+		 * values when `Cluster: true`. Skipped cells emit nothing (a real <td>
+		 * upstream has already covered them via rowspan).
+		 */
+		{
+			"HashPostfix": "-TabularTemplate-RowLabel-HeaderCell",
+			"Template": /*HTML*/`<th class="pict-row-label-header">{~D:Record.Name~}</th>`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-RowLabel-Cell",
+			"Template": /*HTML*/`<td rowspan="{~D:Record.RowSpan~}" class="pict-row-label">{~D:Record.RenderedLabel~}</td>`
+		},
+		{
+			"HashPostfix": "-TabularTemplate-RowLabel-Cell-Skipped",
+			"Template": ``
+		},
+		/*
+		 * END Tabular Template Row Label Columns
+		 */
+
+		/*
 		 * BEGIN Tabular TemplateSet Templates (row and cell prefix/postfix ... tr/td)
 		 * (these are repeated for each "row" which is a record, and then wrap each "cell" which is a columnar input)
 		 */
 		{
 			"HashPostfix": "-TabularTemplate-Row-Prefix",
 			"Template": /*HTML*/`
-					<tr>{~T:TabularTemplateRow-ExtraPrefix~}
+					<tr data-tabular-row-index="{~D:Record.Key~}" data-tabular-group-index="{~D:Record.Group~}">{~T:TabularTemplateRow-ExtraPrefix~}
 `
 		},
 		{
 			"HashPostfix": "-TabularTemplate-Cell-Prefix",
 			"Template": /*HTML*/`
-						<td><!-- {~D:Record.Name~}  -->
+						<td data-tabular-column-index="{~D:Record.PictForm.InputIndex~}"><!-- {~D:Record.Name~}  -->
 `
 		},
 		{

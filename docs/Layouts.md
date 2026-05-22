@@ -160,6 +160,176 @@ TabularTemplate-RowPostfix
 TabularTemplate-TablePostfix
 ```
 
+### Stacked & Clustered Headers
+
+By default a tabular group has a single header row, one cell per column. The
+optional `Headers` property adds **extra header rows stacked above** that
+default ("prime") row. Each entry in `Headers` is one header row; each row is
+an array of cells.
+
+| Cell property | Type | Description |
+|---------------|------|-------------|
+| `Label` | string | Header text |
+| `ColumnSpan` | number | Number of data columns this cell spans (default 1) — this is how you "cluster" |
+| `CSSClass` | string | Optional class applied to the `<th>` |
+
+```json
+{
+  "Hash": "GradebookGrid",
+  "Layout": "Tabular",
+  "RecordSetAddress": "Grades",
+  "RecordManifest": "GradeRowEditor",
+  "Headers": [
+    [
+      { "Label": "First Semester", "ColumnSpan": 3, "CSSClass": "term-banner" },
+      { "Label": "Second Semester", "ColumnSpan": 4, "CSSClass": "term-banner" }
+    ]
+  ]
+}
+```
+
+Each header row's `ColumnSpan` total should equal the number of data columns;
+a mismatch is logged as a warning and the header will visually misalign.
+Header rows render top-to-bottom in array order, directly above the prime
+column-name row.
+
+### Row Label Columns
+
+The `RowLabels` property adds one or more **label columns down the left side**
+of the table (before the data columns). Each entry describes one label column.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `Name` | string | Header text for the label column |
+| `Template` | string | A Pict template resolved per row — the row record is at `Record.Value`, the row index at `Record.Key` |
+| `RowNumber` | boolean | When `true`, the label is the 1-based row number |
+| `SourceAddress` | string | An app-data address of a pre-slotted array; element `[rowIndex]` is the label |
+| `Cluster` | boolean | When `true`, consecutive equal labels collapse into one cell with `rowspan` |
+| `CSSClass` | string | Optional class applied to the label `<td>` |
+
+Provide exactly one of `Template`, `RowNumber`, or `SourceAddress` per entry.
+
+```json
+"RowLabels": [
+  { "Name": "Section", "Template": "{~D:Record.Value.Section~}", "Cluster": true },
+  { "Name": "Student", "Template": "{~D:Record.Value.StudentName~}" },
+  { "Name": "#", "RowNumber": true }
+]
+```
+
+`Cluster: true` is what produces the "merged cell" look — a column of repeated
+values (e.g. a class section) renders as a single tall cell spanning its run
+of rows. Any label column may be clustered; there is no "prime" label column.
+
+### Dynamic Columns
+
+`DynamicColumns` generates table columns at runtime from **another array** in
+the form data — for example, one grade column per assignment. Each entry is a
+generator:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `SourceAddress` | string | App-data address of the array driving the columns |
+| `HashTemplate` | string | Template producing each column's unique descriptor hash |
+| `NameTemplate` | string | Template producing each column's header text |
+| `InformaryDataAddressTemplate` | string | Template producing the per-row data address the cell binds to |
+| `HeaderGroupTemplate` | string | Optional — template producing a cluster label; auto-adds a clustered super-header row |
+| `DataType` | string | Data type for the generated descriptors |
+| `PictForm` | object | `PictForm` block merged onto each generated descriptor (e.g. `InputType`) |
+| `InsertAt` | string/object | `"End"` (default), `"Start"`, or `{ "After": "<hash>" }` |
+
+Inside each template the **source row** is the record (`Record.Field`).
+
+```json
+"DynamicColumns": [
+  {
+    "SourceAddress": "Assignments",
+    "HashTemplate": "Grade_{~D:Record.IDAssignment~}",
+    "NameTemplate": "{~D:Record.Title~}",
+    "InformaryDataAddressTemplate": "Grades.{~D:Record.IDAssignment~}",
+    "HeaderGroupTemplate": "{~D:Record.Topic~}",
+    "DataType": "Number",
+    "PictForm": { "InputType": "Number" }
+  }
+]
+```
+
+Dynamic columns are **non-destructive**: when a source row is removed the
+generated column disappears, but the underlying row data at the
+`InformaryDataAddress` is left untouched — re-adding the source row brings the
+column back with its data intact. The columns re-resolve automatically as the
+source array changes; no manual refresh call is needed.
+
+When `HeaderGroupTemplate` is set, an extra clustered super-header row is
+synthesized automatically: consecutive generated columns sharing the same
+header-group value merge into one spanning cell (e.g. assignments clustered by
+topic).
+
+### Editing Controls Position
+
+Tabular rows render del / up / down controls. `EditingControlsPosition`
+controls where:
+
+| Value | Behavior |
+|-------|----------|
+| `"right"` | Default — controls in a trailing column |
+| `"left"` | Controls in a leading column, before the data columns |
+| `"hidden"` | No editing controls (read-only style table) |
+
+```json
+{ "Layout": "Tabular", "EditingControlsPosition": "hidden" }
+```
+
+### Suppressing the Default Header Row
+
+Set `SuppressDefaultColumnHeaderRow: true` to omit the prime column-name row
+entirely — useful when custom `Headers` rows fully describe the columns.
+
+### Selectable Rows & Columns
+
+`RowSelection` and `ColumnSelection` add checkboxes that let the user pick
+rows / columns. The selected state is **stored in the form data**, so it
+persists with a save and can be read by solvers.
+
+Set either to `true` for defaults, or to an object:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `Enabled` | boolean | Set `false` to disable (same as omitting) |
+| `DataAddress` | string | Where the boolean selection array is stored (default `<GroupHash>_RowSelection` / `_ColumnSelection`) |
+| `HighlightClass` | string | Class auto-applied to selected rows/columns; set to `""` for solver-driven highlighting only |
+| `HeaderLabel` | string | Header text for the row-selection column |
+
+```json
+{
+  "Layout": "Tabular",
+  "RecordSetAddress": "Grades",
+  "RowSelection": true,
+  "ColumnSelection": true
+}
+```
+
+Checking a row (or column) highlights every cell across (or down) it and
+writes `true` into the selection array at the configured address. Because the
+array lives in the marshalled form data it round-trips with save / load.
+
+### Column Sorting
+
+`ColumnSorting: true` (off by default) injects a clickable sort control — a
+`<span>` carrying a sort SVG glyph from Pict's icon registry — into every
+prime header cell.
+
+```json
+{ "Layout": "Tabular", "RecordSetAddress": "Students", "ColumnSorting": true }
+```
+
+Clicking a column's control sorts the record set ascending; clicking the
+active column again toggles to descending. The glyph reflects state: a neutral
+double-arrow on idle columns, an up / down arrow on the active column. Sorting
+works for both static and dynamic columns (dynamic columns sort by their
+`InformaryDataAddress` value). Values that parse as numbers sort numerically;
+others sort lexically.
+
 ## RecordSet Layout
 
 Similar to tabular but renders each record as a full form section rather

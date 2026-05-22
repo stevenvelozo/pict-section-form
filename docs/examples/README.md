@@ -11,7 +11,7 @@ and patterns.
 | [simple_form](simple_form/) | Basic | Calculated fields, visibility control, solvers |
 | [simple_table](simple_table/) | Basic | Tabular layout, nested data, reference manifests |
 | [simple_distill](simple_distill/) | Intermediate | Entity bundles, trigger groups, templated inputs |
-| [gradebook](gradebook/) | Intermediate | Multiple tables, localStorage persistence |
+| [gradebook](gradebook/) | Intermediate | Stacked headers, row labels, dynamic columns, selection, sorting |
 | [postcard_example](postcard_example/) | Intermediate | Theme switching, navigation, custom providers |
 | [complex_table](complex_table/) | Advanced | Charts, row solvers, entity requests, pick lists |
 | [complex_tuigrid](complex_tuigrid/) | Advanced | TuiGrid, aggregations, DateTime inputs |
@@ -26,7 +26,8 @@ and patterns.
    manifests
 
 ### Intermediate Patterns
-3. **[gradebook](gradebook/)** - Multiple tables with localStorage persistence
+3. **[gradebook](gradebook/)** - Advanced tabular recordsets: stacked headers,
+   row labels, dynamic columns, selection, sorting, and styling solvers
 4. **[postcard_example](postcard_example/)** - Theme system and navigation patterns
 5. **[simple_distill](simple_distill/)** - Entity relationships and trigger groups
 
@@ -97,14 +98,19 @@ node ServeExamples.js
 | Basic Inputs | [x] | [x] | [x] | [x] | [x] | [x] | [x] | [x] |
 | Tabular Layout | | [x] | | [x] | | [x] | | [x] |
 | TuiGrid | | | | | | | [x] | [x] |
-| Solvers | [x] | | [x] | | | [x] | [x] | |
-| Row Solvers | | | | | | [x] | [x] | |
+| Solvers | [x] | | [x] | [x] | | [x] | [x] | |
+| Row Solvers | | | | [x] | | [x] | [x] | |
 | Pick Lists | | | [x] | | | [x] | [x] | |
 | Entity Bundles | | | [x] | | | [x] | | |
 | Trigger Groups | | | [x] | | | [x] | | |
-| localStorage | | | | [x] | | | | [x] |
+| localStorage | | | | | | | | [x] |
 | Custom Themes | | | | | [x] | | | |
-| Navigation | | | | | [x] | | | [x] |
+| Navigation | | | | [x] | [x] | | | [x] |
 | Charts | | | | | | [x] | | |
 | DateTime | | | | | | [x] | [x] | |
 | JSON Editor | | | | | | | | [x] |
+| Stacked Headers | | | | [x] | | | | |
+| Row Labels | | | | [x] | | | | |
+| Dynamic Columns | | | | [x] | | | | |
+| Row/Column Selection | | | | [x] | | | | |
+| Column Sorting | | | | [x] | | | | |

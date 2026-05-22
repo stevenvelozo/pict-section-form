@@ -77,7 +77,7 @@ npm install pict-section-form
 
 - [simple_form](examples/simple_form/) - Basic form with solvers and visibility control
 - [simple_table](examples/simple_table/) - Minimal tabular layout example
-- [gradebook](examples/gradebook/) - Multi-table app with localStorage
+- [gradebook](examples/gradebook/) - Advanced tabular recordsets: stacked headers, row labels, dynamic columns, selection, sorting
 - [complex_table](examples/complex_table/) - Full-featured with charts and entity bundles
 
 ## Related Packages

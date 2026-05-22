@@ -15,6 +15,8 @@ const libTemplateControlFromDynamicManifest = require('../templates/Pict-Templat
 const libTemplateControlFromDynamicManifestForHash = require('../templates/Pict-Template-ControlFromDynamicManifestForHash.js');
 const libTemplateGetViewSchemaValue = require('../templates/Pict-Template-DyanmicView-Value.js');
 const libTemplateGetViewSchemaValueByHash = require('../templates/Pict-Template-DyanmicView-ValueByHash.js');
+const libTemplateTabularRowLabels = require('../templates/Pict-Template-TabularRowLabels.js');
+const libTemplateTabularEditingControls = require('../templates/Pict-Template-TabularEditingControls.js');
 
 
 // TODO: This is temporary until we publish new pict
@@ -70,6 +72,8 @@ class PictDynamicFormsTemplates extends libPictProvider
 		this.pict.addTemplate(libTemplateControlFromDynamicManifestForHash);
 		this.pict.addTemplate(libTemplateGetViewSchemaValue);
 		this.pict.addTemplate(libTemplateGetViewSchemaValueByHash);
+		this.pict.addTemplate(libTemplateTabularRowLabels);
+		this.pict.addTemplate(libTemplateTabularEditingControls);
 
 		if (this.options?.MetaTemplateSet && typeof(this.options.MetaTemplateSet) === 'object')
 		{

@@ -42,7 +42,16 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		/** @type {string} */
 		this.cssHideSectionClass = 'pict-section-form-hidden-section';
 		this.cssHideGroupClass = 'pict-section-form-hidden-group';
-		this.cssSnippet = '.pict-section-form-hidden-section { display: none; } .pict-section-form-hidden-group { display: none; }';
+		/** @type {string} */
+		this.cssTabularRowHighlightClass = 'pict-tabular-row-highlight';
+		/** @type {string} */
+		this.cssTabularColumnHighlightClass = 'pict-tabular-column-highlight';
+		this.cssSnippet = '.pict-section-form-hidden-section { display: none; } .pict-section-form-hidden-group { display: none; }'
+			// Row/column highlight classes used by the highlighttabularrow / highlighttabularcolumn solvers.
+			// !important so the highlight beats host table-striping CSS; the color solvers set
+			// inline-important styles which in turn beat these (inline-important > stylesheet-important).
+			+ ' .pict-tabular-row-highlight > td, .pict-tabular-row-highlight > th { background-color: var(--pict-tabular-highlight-color, #FFF3CD) !important; }'
+			+ ' td.pict-tabular-column-highlight, th.pict-tabular-column-highlight { background-color: var(--pict-tabular-highlight-color, #FFF3CD) !important; }';
 
 		this.solverOrdinalMap = {};
 
@@ -118,6 +127,14 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 		this.addSolverFunction(pExpressionParser, 'colorgroupbackground', 'fable.providers.DynamicFormSolverBehaviors.colorGroupBackground', 'Colors a group background with a HTML hex color (e.g. #FF0000 for red).', [0, 1]);
 		this.addSolverFunction(pExpressionParser, 'colorinputbackground', 'fable.providers.DynamicFormSolverBehaviors.colorInputBackground', 'Colors an input background with a HTML hex color (e.g. #FF0000 for red).', [0, 1]);
 		this.addSolverFunction(pExpressionParser, 'colorinputbackgroundtabular', 'fable.providers.DynamicFormSolverBehaviors.colorInputBackgroundTabular', 'Colors a tabular input background with a HTML hex color (e.g. #FF0000 for red).', [0, 1, 2]);
+
+		// Whole-row and whole-column highlight/color for tabular groups. The highlight pair toggles a
+		// CSS class across every cell of a row/column based on a 1/0 flag; the color pair sets (1) or
+		// clears (0) an inline background color. None of these touch form data -- purely presentational.
+		this.addSolverFunction(pExpressionParser, 'highlighttabularrow', 'fable.providers.DynamicFormSolverBehaviors.highlightTabularRow', 'Adds (1) or removes (0) a highlight class on every cell of a tabular row.', [0, 1]);
+		this.addSolverFunction(pExpressionParser, 'highlighttabularcolumn', 'fable.providers.DynamicFormSolverBehaviors.highlightTabularColumn', 'Adds (1) or removes (0) a highlight class on every cell of a tabular column.', [0, 1]);
+		this.addSolverFunction(pExpressionParser, 'colortabularrow', 'fable.providers.DynamicFormSolverBehaviors.colorTabularRow', 'Sets (1) or clears (0) the background color on every cell of a tabular row.', [0, 1]);
+		this.addSolverFunction(pExpressionParser, 'colortabularcolumn', 'fable.providers.DynamicFormSolverBehaviors.colorTabularColumn', 'Sets (1) or clears (0) the background color on every cell of a tabular column.', [0, 1]);
 
 		this.addSolverFunction(pExpressionParser, 'setsolverordinalenabled', 'fable.providers.DynamicFormSolverBehaviors.setSolverOrdinalEnabled', 'Enables or disabled a solver ordinal to determine if it should run.');
 		this.addSolverFunction(pExpressionParser, 'enablesolverordinal', 'fable.providers.DynamicFormSolverBehaviors.enableSolverOrdinal', 'Enables a solver ordinal so that it can run.');
@@ -775,6 +792,188 @@ class PictDynamicFormsSolverBehaviors extends libPictProvider
 
 		tmpElement.style.backgroundColor = pColor;
 
+		return true;
+	}
+
+	/**
+	 * Interprets a solver-supplied 1/0 (or true/false) flag.
+	 *
+	 * Solver numbers arrive as arbitrary-precision strings, so a plain truthiness
+	 * check would treat the string "0" as true. This normalizes the common
+	 * "off" representations to false and everything else to true.
+	 *
+	 * @param {any} pFlag
+	 * @returns {boolean}
+	 */
+	isSolverFlagEnabled(pFlag)
+	{
+		return (pFlag != null)
+			&& (pFlag !== false)
+			&& (pFlag !== 0)
+			&& (pFlag !== '0')
+			&& (pFlag !== '')
+			&& (pFlag !== 'false');
+	}
+
+	/**
+	 * Resolves the DOM selector for a tabular group's container div.
+	 *
+	 * The tabular group div carries `id="GROUP-<formID>-<groupHash>"` (the same
+	 * convention the non-tabular group layout uses), so highlight/color solvers
+	 * can scope their cell queries to a single group.
+	 *
+	 * @param {string} pSectionHash - The hash of the section containing the group.
+	 * @param {string} pGroupHash - The hash of the tabular group.
+	 * @returns {string|null} A CSS selector for the group container, or null if unresolved.
+	 */
+	getTabularGroupSelector(pSectionHash, pGroupHash)
+	{
+		if (!this.pict.views.PictFormMetacontroller)
+		{
+			this.log.warn('PictDynamicFormsSolverBehaviors: getTabularGroupSelector has no PictFormMetacontroller.');
+			return null;
+		}
+		let tmpSectionView = this.pict.views.PictFormMetacontroller.getSectionViewFromHash(pSectionHash);
+		if (!tmpSectionView)
+		{
+			this.log.warn(`PictDynamicFormsSolverBehaviors: getTabularGroupSelector could not find section view with hash [${pSectionHash}].`);
+			return null;
+		}
+		return `#GROUP-${tmpSectionView.formID}-${pGroupHash}`;
+	}
+
+	/**
+	 * Adds (pApplyFlag truthy) or removes (pApplyFlag falsy) a highlight class on
+	 * every cell of a tabular row -- the row labels, editing controls and data
+	 * cells all get the class because it lands on the row's `<tr>`.
+	 *
+	 * @param {string} pSectionHash - The hash of the section containing the tabular group.
+	 * @param {string} pGroupHash - The hash of the tabular group.
+	 * @param {number|string} pRowIndex - The zero-based row index.
+	 * @param {number|string|boolean} pApplyFlag - 1/0 (or true/false) -- add or remove the class.
+	 * @param {string} [pHighlightClass] - Optional override for the class name.
+	 * @returns {boolean}
+	 */
+	highlightTabularRow(pSectionHash, pGroupHash, pRowIndex, pApplyFlag, pHighlightClass)
+	{
+		let tmpGroupSelector = this.getTabularGroupSelector(pSectionHash, pGroupHash);
+		if (!tmpGroupSelector)
+		{
+			return false;
+		}
+		let tmpClass = (typeof pHighlightClass === 'string' && pHighlightClass.length > 0) ? pHighlightClass : this.cssTabularRowHighlightClass;
+		let tmpRowSelector = `${tmpGroupSelector} tr[data-tabular-row-index="${pRowIndex}"]`;
+		if (this.isSolverFlagEnabled(pApplyFlag))
+		{
+			this.pict.ContentAssignment.addClass(tmpRowSelector, tmpClass);
+		}
+		else
+		{
+			this.pict.ContentAssignment.removeClass(tmpRowSelector, tmpClass);
+		}
+		return true;
+	}
+
+	/**
+	 * Adds (pApplyFlag truthy) or removes (pApplyFlag falsy) a highlight class on
+	 * every cell of a tabular column -- both the `<th>` header cell and every
+	 * `<td>` data cell that carries the matching `data-tabular-column-index`.
+	 *
+	 * @param {string} pSectionHash - The hash of the section containing the tabular group.
+	 * @param {string} pGroupHash - The hash of the tabular group.
+	 * @param {number|string} pColumnIndex - The column's input index (descriptor InputIndex).
+	 * @param {number|string|boolean} pApplyFlag - 1/0 (or true/false) -- add or remove the class.
+	 * @param {string} [pHighlightClass] - Optional override for the class name.
+	 * @returns {boolean}
+	 */
+	highlightTabularColumn(pSectionHash, pGroupHash, pColumnIndex, pApplyFlag, pHighlightClass)
+	{
+		let tmpGroupSelector = this.getTabularGroupSelector(pSectionHash, pGroupHash);
+		if (!tmpGroupSelector)
+		{
+			return false;
+		}
+		let tmpClass = (typeof pHighlightClass === 'string' && pHighlightClass.length > 0) ? pHighlightClass : this.cssTabularColumnHighlightClass;
+		let tmpColumnSelector = `${tmpGroupSelector} [data-tabular-column-index="${pColumnIndex}"]`;
+		if (this.isSolverFlagEnabled(pApplyFlag))
+		{
+			this.pict.ContentAssignment.addClass(tmpColumnSelector, tmpClass);
+		}
+		else
+		{
+			this.pict.ContentAssignment.removeClass(tmpColumnSelector, tmpClass);
+		}
+		return true;
+	}
+
+	/**
+	 * Sets (pApplyFlag truthy) or clears (pApplyFlag falsy) an inline background
+	 * color on every data cell of a tabular row.
+	 *
+	 * The color is applied with `important` priority so it beats both host
+	 * table-striping CSS and the highlight classes.
+	 *
+	 * @param {string} pSectionHash - The hash of the section containing the tabular group.
+	 * @param {string} pGroupHash - The hash of the tabular group.
+	 * @param {number|string} pRowIndex - The zero-based row index.
+	 * @param {string} pColor - The HTML color to apply (e.g. #FF0000).
+	 * @param {number|string|boolean} pApplyFlag - 1/0 (or true/false) -- apply or clear the color.
+	 * @returns {boolean}
+	 */
+	colorTabularRow(pSectionHash, pGroupHash, pRowIndex, pColor, pApplyFlag)
+	{
+		let tmpGroupSelector = this.getTabularGroupSelector(pSectionHash, pGroupHash);
+		if (!tmpGroupSelector)
+		{
+			return false;
+		}
+		let tmpApply = this.isSolverFlagEnabled(pApplyFlag) && (typeof pColor === 'string') && (pColor.length > 0);
+		let tmpElementSet = this.pict.ContentAssignment.getElement(`${tmpGroupSelector} tr[data-tabular-row-index="${pRowIndex}"] td`);
+		for (let i = 0; i < tmpElementSet.length; i++)
+		{
+			if (tmpApply)
+			{
+				tmpElementSet[i].style.setProperty('background-color', pColor, 'important');
+			}
+			else
+			{
+				tmpElementSet[i].style.removeProperty('background-color');
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Sets (pApplyFlag truthy) or clears (pApplyFlag falsy) an inline background
+	 * color on every cell of a tabular column -- header `<th>` plus all data `<td>`.
+	 *
+	 * @param {string} pSectionHash - The hash of the section containing the tabular group.
+	 * @param {string} pGroupHash - The hash of the tabular group.
+	 * @param {number|string} pColumnIndex - The column's input index (descriptor InputIndex).
+	 * @param {string} pColor - The HTML color to apply (e.g. #FF0000).
+	 * @param {number|string|boolean} pApplyFlag - 1/0 (or true/false) -- apply or clear the color.
+	 * @returns {boolean}
+	 */
+	colorTabularColumn(pSectionHash, pGroupHash, pColumnIndex, pColor, pApplyFlag)
+	{
+		let tmpGroupSelector = this.getTabularGroupSelector(pSectionHash, pGroupHash);
+		if (!tmpGroupSelector)
+		{
+			return false;
+		}
+		let tmpApply = this.isSolverFlagEnabled(pApplyFlag) && (typeof pColor === 'string') && (pColor.length > 0);
+		let tmpElementSet = this.pict.ContentAssignment.getElement(`${tmpGroupSelector} [data-tabular-column-index="${pColumnIndex}"]`);
+		for (let i = 0; i < tmpElementSet.length; i++)
+		{
+			if (tmpApply)
+			{
+				tmpElementSet[i].style.setProperty('background-color', pColor, 'important');
+			}
+			else
+			{
+				tmpElementSet[i].style.removeProperty('background-color');
+			}
+		}
 		return true;
 	}
 

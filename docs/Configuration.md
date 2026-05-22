@@ -85,6 +85,23 @@ Groups organize inputs within a section.
 | `CSSClasses` | array | No | CSS classes to apply |
 | `Visible` | boolean | No | Initial visibility (default: true) |
 
+#### Tabular Group Properties
+
+These additional properties apply only to groups with `Layout: "Tabular"`.
+See [Layouts](Layouts.md) for full details and examples.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `RecordManifest` | string | Reference manifest naming the columns |
+| `Headers` | array | Extra stacked / clustered header rows above the prime header |
+| `RowLabels` | array | Left-side label columns (template / row-number / pre-slotted; clusterable) |
+| `DynamicColumns` | array | Generators that build columns at runtime from another array |
+| `EditingControlsPosition` | string | `"right"` (default), `"left"`, or `"hidden"` |
+| `SuppressDefaultColumnHeaderRow` | boolean | Omit the prime column-name header row |
+| `RowSelection` | boolean/object | Add row checkboxes; selection persists in form data |
+| `ColumnSelection` | boolean/object | Add column checkboxes; selection persists in form data |
+| `ColumnSorting` | boolean | Add clickable sort controls to the prime header cells (default off) |
+
 ### Layout Types
 
 - `Record` - Standard form layout with rows and columns
