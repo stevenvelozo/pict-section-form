@@ -28,5 +28,13 @@
 	],
 	"devDependencies": {
 		"chart.js": "^4.5.1"
+	},
+	"retold": {
+		"ExampleApplication": {
+			"Stage": true,
+			"Title": "NDT Field Test",
+			"Summary": "A nuclear-density-testing field data-collection form with offline persistence and charted results.",
+			"Complexity": "Advanced"
+		}
 	}
 }

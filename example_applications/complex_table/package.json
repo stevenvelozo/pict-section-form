@@ -28,13 +28,5 @@
     ],
     "devDependencies": {
         "chart.js": "^4.5.1"
-    },
-    "retold": {
-        "ExampleApplication": {
-            "Stage": true,
-            "Title": "Complex Table",
-            "Summary": "A full-featured tabular application with charts, row-level solvers, entity bundle requests, and pick lists.",
-            "Complexity": "Advanced"
-        }
     }
 }

@@ -1,10 +1,5 @@
 # Complex Table Example
 
-<!-- docuserve:example-launch:start -->
-> **[&#9654; Launch the live app](examples/complex%5Ftable/index.html)** — runs in your browser, opens in a new tab.
-<!-- docuserve:example-launch:end -->
-
-
 The Complex Table example is a comprehensive demonstration of advanced tabular
 data management, calculated fields, chart integration, and dynamic form generation.
 

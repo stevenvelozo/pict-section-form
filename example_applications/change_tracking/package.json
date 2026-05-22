@@ -23,5 +23,13 @@
 			"from": "../../node_modules/pict/dist/*",
 			"to": "./dist/"
 		}
-	]
+	],
+	"retold": {
+		"ExampleApplication": {
+			"Stage": true,
+			"Title": "Change Tracking",
+			"Summary": "Demonstrates the multi-input evaluate-on-change solver pattern for reacting to several fields at once.",
+			"Complexity": "Intermediate"
+		}
+	}
 }

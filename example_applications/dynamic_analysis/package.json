@@ -28,5 +28,13 @@
     ],
     "devDependencies": {
         "chart.js": "^4.5.1"
+    },
+    "retold": {
+        "ExampleApplication": {
+            "Stage": true,
+            "Title": "Dynamic Analysis",
+            "Summary": "A fruit-nutrition analysis lab with dynamic section injection, solver rewriting, charts, and histograms.",
+            "Complexity": "Advanced"
+        }
     }
 }

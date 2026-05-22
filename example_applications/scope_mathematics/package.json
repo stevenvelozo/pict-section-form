@@ -23,5 +23,13 @@
 			"from": "../../node_modules/pict/dist/*",
 			"to": "./dist/"
 		}
-	]
+	],
+	"retold": {
+		"ExampleApplication": {
+			"Stage": true,
+			"Title": "Scope Mathematics",
+			"Summary": "Shows solvers reaching across scopes to read and combine data from other sections of the form.",
+			"Complexity": "Intermediate"
+		}
+	}
 }

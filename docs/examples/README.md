@@ -120,7 +120,10 @@ node ServeExamples.js
 <!-- docuserve:examples-index:start -->
 | Example | Complexity | Summary | Live |
 |---------|------------|---------|------|
-| [Complex Table](examples/complex%5Ftable/README.md) | Advanced | A full-featured tabular application with charts, row-level solvers, entity bundle requests, and pick lists. | [&#9654; Launch](examples/complex%5Ftable/index.html) |
+| [Change Tracking](examples/change%5Ftracking/README.md) | Intermediate | Demonstrates the multi-input evaluate-on-change solver pattern for reacting to several fields at once. | [&#9654; Launch](examples/change%5Ftracking/index.html) |
+| [Dynamic Analysis](examples/dynamic%5Fanalysis/README.md) | Advanced | A fruit-nutrition analysis lab with dynamic section injection, solver rewriting, charts, and histograms. | [&#9654; Launch](examples/dynamic%5Fanalysis/index.html) |
 | [Gradebook](examples/gradebook/README.md) | Intermediate | An advanced tabular recordset with stacked headers, row labels, dynamic columns, row/column selection, and column sorting — built purely from manifest configuration. | [&#9654; Launch](examples/gradebook/index.html) |
+| [NDT Field Test](examples/ndt%5Ffield%5Ftest/README.md) | Advanced | A nuclear-density-testing field data-collection form with offline persistence and charted results. | [&#9654; Launch](examples/ndt%5Ffield%5Ftest/index.html) |
+| [Scope Mathematics](examples/scope%5Fmathematics/README.md) | Intermediate | Shows solvers reaching across scopes to read and combine data from other sections of the form. | [&#9654; Launch](examples/scope%5Fmathematics/index.html) |
 | [Simple Form](examples/simple%5Fform/README.md) | Basic | A minimal forms application demonstrating calculated fields, conditional visibility, and expression solvers. | [&#9654; Launch](examples/simple%5Fform/index.html) |
 <!-- docuserve:examples-index:end -->
