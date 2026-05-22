@@ -44,3 +44,7 @@
   - [Complex Table](#/page/examples/complex_table/README)
   - [Complex TuiGrid](#/page/examples/complex_tuigrid/README)
   - [Manyfest Editor](#/page/examples/manyfest_editor/README)
+  - [Scope Mathematics](#/page/examples/scope_mathematics/README)
+  - [Change Tracking](#/page/examples/change_tracking/README)
+  - [NDT Field Test](#/page/examples/ndt_field_test/README)
+  - [Dynamic Analysis](#/page/examples/dynamic_analysis/README)
