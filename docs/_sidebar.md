@@ -36,11 +36,11 @@
 
 - Examples
 
-  - [Simple Form](examples/simple_form/)
-  - [Simple Table](examples/simple_table/)
-  - [Simple Distill](examples/simple_distill/)
-  - [Gradebook](examples/gradebook/)
-  - [Postcard Example](examples/postcard_example/)
-  - [Complex Table](examples/complex_table/)
-  - [Complex TuiGrid](examples/complex_tuigrid/)
-  - [Manyfest Editor](examples/manyfest_editor/)
+  - [Simple Form](#/page/examples/simple_form/README)
+  - [Simple Table](#/page/examples/simple_table/README)
+  - [Simple Distill](#/page/examples/simple_distill/README)
+  - [Gradebook](#/page/examples/gradebook/README)
+  - [Postcard Example](#/page/examples/postcard_example/README)
+  - [Complex Table](#/page/examples/complex_table/README)
+  - [Complex TuiGrid](#/page/examples/complex_tuigrid/README)
+  - [Manyfest Editor](#/page/examples/manyfest_editor/README)
