@@ -1,364 +1,220 @@
 {
-	"Generated": "2026-05-22T02:37:42.122Z",
+	"Generated": "2026-05-22T04:48:52.542Z",
+	"Mode": "module",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
-	"Groups": [
-		{
-			"Name": "Utility",
-			"Key": "utility",
-			"Description": "Build tools, manifests, documentation, process supervision",
-			"Modules": [
-				{
-					"Name": "csvparser",
-					"Repo": "csvparser",
-					"Group": "utility",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		},
-		{
-			"Name": ".config",
-			"Key": ".config",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "code-server",
-					"Repo": "code-server",
-					"Group": ".config",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		},
-		{
-			"Name": "Debug",
-			"Key": "debug",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "data",
-					"Repo": "data",
-					"Group": "debug",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "input_data",
-					"Repo": "input_data",
-					"Group": "debug",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "input_data_intersections",
-					"Repo": "input_data_intersections",
-					"Group": "debug",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		},
-		{
-			"Name": "Dist",
-			"Key": "dist",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "indoctrinate_content_staging",
-					"Repo": "indoctrinate_content_staging",
-					"Group": "dist",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		},
-		{
-			"Name": "Docs",
-			"Key": "docs",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "examples",
-					"Repo": "examples",
-					"Group": "docs",
-					"Branch": "master",
-					"HasDocs": true,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": [
-						"examples/README.md",
-						"examples/complex_table/README.md",
-						"examples/complex_table/complex_tabular_application.js",
-						"examples/complex_table/index.html",
-						"examples/complex_tuigrid/README.md",
-						"examples/gradebook/README.md",
-						"examples/gradebook/gradebook_application.min.js",
-						"examples/gradebook/index.html",
-						"examples/manyfest_editor/README.md",
-						"examples/postcard_example/README.md",
-						"examples/simple_distill/README.md",
-						"examples/simple_form/README.md",
-						"examples/simple_form/index.html",
-						"examples/simple_form/simple_application.js",
-						"examples/simple_table/README.md"
-					]
-				},
-				{
-					"Name": "input_providers",
-					"Repo": "input_providers",
-					"Group": "docs",
-					"Branch": "master",
-					"HasDocs": true,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": [
-						"input_providers/001-select.md",
-						"input_providers/002-datetime.md",
-						"input_providers/003-markdown.md",
-						"input_providers/004-html.md",
-						"input_providers/005-precise-number.md",
-						"input_providers/006-link.md",
-						"input_providers/007-templated.md",
-						"input_providers/008-templated-entity-lookup.md",
-						"input_providers/009-chart.md",
-						"input_providers/010-entity-bundle-request.md",
-						"input_providers/011-autofill-trigger-group.md",
-						"input_providers/012-tab-group-selector.md",
-						"input_providers/013-tab-section-selector.md",
-						"input_providers/README.md"
-					]
-				}
-			]
-		},
-		{
-			"Name": "Example_applications",
-			"Key": "example_applications",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": ".data",
-					"Repo": ".data",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "authortopia",
-					"Repo": "authortopia",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "change_tracking",
-					"Repo": "change_tracking",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "complex_table",
-					"Repo": "complex_table",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "complex_tuigrid",
-					"Repo": "complex_tuigrid",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "dynamic_analysis",
-					"Repo": "dynamic_analysis",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "gradebook",
-					"Repo": "gradebook",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "ndt_field_test",
-					"Repo": "ndt_field_test",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "postcard_example",
-					"Repo": "postcard_example",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "scope_mathematics",
-					"Repo": "scope_mathematics",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "simple_distill",
-					"Repo": "simple_distill",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "simple_form",
-					"Repo": "simple_form",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "simple_table",
-					"Repo": "simple_table",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		},
-		{
-			"Name": "Source",
-			"Key": "source",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "application",
-					"Repo": "application",
-					"Group": "source",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "providers",
-					"Repo": "providers",
-					"Group": "source",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "services",
-					"Repo": "services",
-					"Group": "source",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "templates",
-					"Repo": "templates",
-					"Group": "source",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "views",
-					"Repo": "views",
-					"Group": "source",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		},
-		{
-			"Name": "Types",
-			"Key": "types",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "source",
-					"Repo": "source",
-					"Group": "types",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		}
-	]
+	"Module": {
+		"Name": "pict-section-form",
+		"Repo": "pict-section-form",
+		"Group": "",
+		"Branch": "master",
+		"HasDocs": true,
+		"HasCover": true,
+		"Sidebar": [
+			{
+				"Title": "Getting Started",
+				"Children": [
+					{
+						"Title": "Introduction",
+						"Path": "README.md"
+					},
+					{
+						"Title": "Getting Started",
+						"Path": "Getting_Started.md"
+					},
+					{
+						"Title": "Architecture",
+						"Path": "Pict_Section_Form_Architecture.md"
+					}
+				]
+			},
+			{
+				"Title": "Configuration",
+				"Children": [
+					{
+						"Title": "Configuration",
+						"Path": "Configuration.md"
+					},
+					{
+						"Title": "Input Types",
+						"Path": "Input_Types.md"
+					},
+					{
+						"Title": "Templates",
+						"Path": "Templates.md"
+					},
+					{
+						"Title": "Layouts",
+						"Path": "Layouts.md"
+					}
+				]
+			},
+			{
+				"Title": "Advanced",
+				"Children": [
+					{
+						"Title": "Solvers",
+						"Path": "Solvers.md"
+					},
+					{
+						"Title": "Comprehensions",
+						"Path": "Comprehensions.md"
+					},
+					{
+						"Title": "Comprehensions — Advanced",
+						"Path": "Comprehensions_Advanced.md"
+					},
+					{
+						"Title": "Providers",
+						"Path": "Providers.md"
+					}
+				]
+			},
+			{
+				"Title": "Input Providers",
+				"Children": [
+					{
+						"Title": "Select",
+						"Path": "input_providers/001-select.md"
+					},
+					{
+						"Title": "DateTime",
+						"Path": "input_providers/002-datetime.md"
+					},
+					{
+						"Title": "Markdown",
+						"Path": "input_providers/003-markdown.md"
+					},
+					{
+						"Title": "HTML",
+						"Path": "input_providers/004-html.md"
+					},
+					{
+						"Title": "PreciseNumber",
+						"Path": "input_providers/005-precise-number.md"
+					},
+					{
+						"Title": "Link",
+						"Path": "input_providers/006-link.md"
+					},
+					{
+						"Title": "Templated",
+						"Path": "input_providers/007-templated.md"
+					},
+					{
+						"Title": "TemplatedEntityLookup",
+						"Path": "input_providers/008-templated-entity-lookup.md"
+					},
+					{
+						"Title": "Chart",
+						"Path": "input_providers/009-chart.md"
+					},
+					{
+						"Title": "EntityBundleRequest",
+						"Path": "input_providers/010-entity-bundle-request.md"
+					},
+					{
+						"Title": "AutofillTriggerGroup",
+						"Path": "input_providers/011-autofill-trigger-group.md"
+					},
+					{
+						"Title": "TabGroupSelector",
+						"Path": "input_providers/012-tab-group-selector.md"
+					},
+					{
+						"Title": "TabSectionSelector",
+						"Path": "input_providers/013-tab-section-selector.md"
+					}
+				]
+			},
+			{
+				"Title": "Examples",
+				"Children": [
+					{
+						"Title": "Simple Form",
+						"Path": "#/page/examples/simple_form/README"
+					},
+					{
+						"Title": "Simple Table",
+						"Path": "#/page/examples/simple_table/README"
+					},
+					{
+						"Title": "Simple Distill",
+						"Path": "#/page/examples/simple_distill/README"
+					},
+					{
+						"Title": "Gradebook",
+						"Path": "#/page/examples/gradebook/README"
+					},
+					{
+						"Title": "Postcard Example",
+						"Path": "#/page/examples/postcard_example/README"
+					},
+					{
+						"Title": "Complex Table",
+						"Path": "#/page/examples/complex_table/README"
+					},
+					{
+						"Title": "Complex TuiGrid",
+						"Path": "#/page/examples/complex_tuigrid/README"
+					},
+					{
+						"Title": "Manyfest Editor",
+						"Path": "#/page/examples/manyfest_editor/README"
+					}
+				]
+			}
+		],
+		"DocFiles": [
+			".nojekyll",
+			"Comprehensions.md",
+			"Comprehensions_Advanced.md",
+			"Configuration.md",
+			"Getting_Started.md",
+			"Input_Types.md",
+			"Layouts.md",
+			"Pict_Section_Form_Architecture.md",
+			"Providers.md",
+			"README.md",
+			"Solvers.md",
+			"Templates.md",
+			"_brand.json",
+			"_cover.md",
+			"_sidebar.md",
+			"_version.json",
+			"examples/README.md",
+			"examples/complex_table/README.md",
+			"examples/complex_table/complex_tabular_application.js",
+			"examples/complex_table/index.html",
+			"examples/complex_tuigrid/README.md",
+			"examples/gradebook/README.md",
+			"examples/gradebook/gradebook_application.min.js",
+			"examples/gradebook/index.html",
+			"examples/manyfest_editor/README.md",
+			"examples/postcard_example/README.md",
+			"examples/simple_distill/README.md",
+			"examples/simple_form/README.md",
+			"examples/simple_form/index.html",
+			"examples/simple_form/simple_application.js",
+			"examples/simple_table/README.md",
+			"index.html",
+			"input_providers/001-select.md",
+			"input_providers/002-datetime.md",
+			"input_providers/003-markdown.md",
+			"input_providers/004-html.md",
+			"input_providers/005-precise-number.md",
+			"input_providers/006-link.md",
+			"input_providers/007-templated.md",
+			"input_providers/008-templated-entity-lookup.md",
+			"input_providers/009-chart.md",
+			"input_providers/010-entity-bundle-request.md",
+			"input_providers/011-autofill-trigger-group.md",
+			"input_providers/012-tab-group-selector.md",
+			"input_providers/013-tab-section-selector.md",
+			"input_providers/README.md",
+			"retold-catalog.json",
+			"retold-keyword-index.json"
+		]
+	},
+	"Groups": []
 }
