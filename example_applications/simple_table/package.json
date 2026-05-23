@@ -22,5 +22,13 @@
             "from": "../../node_modules/pict/dist/*",
             "to": "./dist/"
         }
-    ]
+    ],
+    "retold": {
+        "ExampleApplication": {
+            "Stage": true,
+            "Title": "Simple Table",
+            "Summary": "A minimal tabular forms application demonstrating manifest-driven table layout, reference manifests, and dot-notation access into nested record data.",
+            "Complexity": "Basic"
+        }
+    }
 }

@@ -7,34 +7,26 @@ Templates can be customized at multiple levels to achieve any desired appearance
 
 Templates are rendered in a strict hierarchical order:
 
-```
-Form Level
-├── -Template-Form-Container-Header
-├── -Template-Form-Container-Wrap-Prefix
-│
-└── For each Section:
-    ├── -Template-Form-Container
-    │
-    └── -Template-Wrap-Prefix
-        ├── -Template-Section-Prefix
-        │
-        └── For each Group:
-            ├── -Template-Group-Prefix
-            │
-            └── For each Row:
-                ├── -Template-Row-Prefix
-                │   ├── For each Input:
-                │   │   └── -Template-Input-InputType-{type}
-                │   │      OR -Template-Input-DataType-{type}
-                │   │      OR -TabularTemplate-*
-                │   └── -Template-Row-Postfix
-                │
-                └── -Template-Group-Postfix
-        │
-        └── -Template-Section-Postfix
-    └── -Template-Wrap-Postfix
-│
-└── -Template-Form-Container-Wrap-Postfix
+```mermaid
+flowchart TD
+    F["Form Level"]
+    F --> FH["-Template-Form-Container-Header"]
+    F --> FWP["-Template-Form-Container-Wrap-Prefix"]
+    F --> SEC["For each Section"]
+    F --> FWX["-Template-Form-Container-Wrap-Postfix"]
+    SEC --> TFC["-Template-Form-Container"]
+    SEC --> WP["-Template-Wrap-Prefix"]
+    SEC --> WX["-Template-Wrap-Postfix"]
+    WP --> SP["-Template-Section-Prefix"]
+    WP --> GRP["For each Group"]
+    WP --> SX["-Template-Section-Postfix"]
+    GRP --> GP["-Template-Group-Prefix"]
+    GRP --> ROW["For each Row"]
+    GRP --> GX["-Template-Group-Postfix"]
+    ROW --> RP["-Template-Row-Prefix"]
+    ROW --> INP["For each Input"]
+    ROW --> RX["-Template-Row-Postfix"]
+    INP --> IT["-Template-Input-InputType-… or<br/>-Template-Input-DataType-… or<br/>-TabularTemplate-…"]
 ```
 
 ## Template Resolution

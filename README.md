@@ -1,5 +1,7 @@
 # PICT Forms Section
 
+> **[&#9654; Read the Pict-Section-Form Documentation](https://stevenvelozo.github.io/pict-section-form/)** — an interactive guide with live, runnable examples and the full API reference.
+
 A Form Section with programmatically definable content.  Simple, extensible 
 function APIs for adding groups, rows, entry elements and documentation or
 user workflow guidance.
@@ -269,33 +271,31 @@ of data in your application.
 
 ## Documentation
 
-Comprehensive documentation is available in the [docs](docs/) folder:
+The complete documentation — an interactive guide with live examples — is hosted at **[stevenvelozo.github.io/pict-section-form](https://stevenvelozo.github.io/pict-section-form/)**:
 
 | Document | Description |
 |----------|-------------|
-| [Getting Started](docs/Getting_Started.md) | Quick start guide for new users |
-| [Architecture](docs/Pict_Section_Form_Architecture.md) | System architecture and design |
-| [Configuration](docs/Configuration.md) | Complete configuration reference |
-| [Input Types](docs/Input_Types.md) | Available input types |
-| [Templates](docs/Templates.md) | Template customization and macros |
-| [Solvers](docs/Solvers.md) | Expression solver system |
-| [Providers](docs/Providers.md) | Provider reference |
-| [Layouts](docs/Layouts.md) | Layout types and customization |
+| [Getting Started](https://stevenvelozo.github.io/pict-section-form/#/page/Getting_Started) | Quick start guide for new users |
+| [Architecture](https://stevenvelozo.github.io/pict-section-form/#/page/Pict_Section_Form_Architecture) | System architecture and design |
+| [Configuration](https://stevenvelozo.github.io/pict-section-form/#/page/Configuration) | Complete configuration reference |
+| [Input Types](https://stevenvelozo.github.io/pict-section-form/#/page/Input_Types) | Available input types |
+| [Templates](https://stevenvelozo.github.io/pict-section-form/#/page/Templates) | Template customization and macros |
+| [Solvers](https://stevenvelozo.github.io/pict-section-form/#/page/Solvers) | Expression solver system |
+| [Providers](https://stevenvelozo.github.io/pict-section-form/#/page/Providers) | Provider reference |
+| [Layouts](https://stevenvelozo.github.io/pict-section-form/#/page/Layouts) | Layout types and customization |
 
 ### Example Applications
 
-Working examples demonstrating various features:
+Live, runnable example applications — click to open one in your browser:
 
 | Example | Description |
 |---------|-------------|
-| [simple_form](docs/examples/simple_form/) | Basic form with solvers and visibility control |
-| [simple_table](docs/examples/simple_table/) | Minimal tabular layout example |
-| [simple_distill](docs/examples/simple_distill/) | Entity bundles and trigger groups |
-| [gradebook](docs/examples/gradebook/) | Multi-table app with localStorage |
-| [postcard_example](docs/examples/postcard_example/) | Theme switching and navigation |
-| [complex_table](docs/examples/complex_table/) | Full-featured with charts and entity bundles |
-| [complex_tuigrid](docs/examples/complex_tuigrid/) | TuiGrid with aggregations |
-| [manyfest_editor](docs/examples/manyfest_editor/) | Meta-configuration editor |
+| [Simple Table](https://stevenvelozo.github.io/pict-section-form/examples/simple_table/) | Tabular layout, reference manifests, and dot-notation access into nested data |
+| [Gradebook](https://stevenvelozo.github.io/pict-section-form/examples/gradebook/) | Stacked headers, row labels, dynamic columns, row/column selection, and sorting |
+| [Scope Mathematics](https://stevenvelozo.github.io/pict-section-form/examples/scope_mathematics/) | Solvers that reach across sections and the global form scope |
+| [Change Tracking](https://stevenvelozo.github.io/pict-section-form/examples/change_tracking/) | A change-detecting solver state machine with bidirectional recompute |
+| [NDT Field Test](https://stevenvelozo.github.io/pict-section-form/examples/ndt_field_test/) | Offline persistence, pick lists, pass/fail row solvers, and charts |
+| [Dynamic Analysis](https://stevenvelozo.github.io/pict-section-form/examples/dynamic_analysis/) | Runtime section injection, solver rewriting, and solver-driven charts |
 
 ### Input Providers
 
@@ -303,19 +303,19 @@ Specialized input handlers for different data types:
 
 | Provider | Description |
 |----------|-------------|
-| [Select](docs/input_providers/001-select.md) | Dropdown lists with static/dynamic options |
-| [DateTime](docs/input_providers/002-datetime.md) | Date and time picker |
-| [Markdown](docs/input_providers/003-markdown.md) | Markdown content display |
-| [HTML](docs/input_providers/004-html.md) | Raw HTML content display |
-| [PreciseNumber](docs/input_providers/005-precise-number.md) | Formatted numbers with precision |
-| [Link](docs/input_providers/006-link.md) | Hyperlink inputs |
-| [Templated](docs/input_providers/007-templated.md) | Dynamic template rendering |
-| [TemplatedEntityLookup](docs/input_providers/008-templated-entity-lookup.md) | Entity fetch with template display |
-| [Chart](docs/input_providers/009-chart.md) | Chart.js visualizations |
-| [EntityBundleRequest](docs/input_providers/010-entity-bundle-request.md) | Cascading entity fetches |
-| [AutofillTriggerGroup](docs/input_providers/011-autofill-trigger-group.md) | Trigger-based autofill |
-| [TabGroupSelector](docs/input_providers/012-tab-group-selector.md) | Tab navigation for groups |
-| [TabSectionSelector](docs/input_providers/013-tab-section-selector.md) | Tab navigation for sections |
+| [Select](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/001-select) | Dropdown lists with static/dynamic options |
+| [DateTime](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/002-datetime) | Date and time picker |
+| [Markdown](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/003-markdown) | Markdown content display |
+| [HTML](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/004-html) | Raw HTML content display |
+| [PreciseNumber](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/005-precise-number) | Formatted numbers with precision |
+| [Link](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/006-link) | Hyperlink inputs |
+| [Templated](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/007-templated) | Dynamic template rendering |
+| [TemplatedEntityLookup](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/008-templated-entity-lookup) | Entity fetch with template display |
+| [Chart](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/009-chart) | Chart.js visualizations |
+| [EntityBundleRequest](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/010-entity-bundle-request) | Cascading entity fetches |
+| [AutofillTriggerGroup](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/011-autofill-trigger-group) | Trigger-based autofill |
+| [TabGroupSelector](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/012-tab-group-selector) | Tab navigation for groups |
+| [TabSectionSelector](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/013-tab-section-selector) | Tab navigation for sections |
 
 ## Installation
 

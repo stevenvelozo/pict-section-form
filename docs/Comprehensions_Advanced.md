@@ -13,7 +13,7 @@ This document goes deeper than [Comprehensions](Comprehensions.md):
 - **Resetting between solves**.
 
 The complete worked example for everything here lives at
-[`example_applications/complex_table/Complex-Tabular-Application.js`](../example_applications/complex_table/Complex-Tabular-Application.js)
+`example_applications/complex_table/Complex-Tabular-Application.js`
 — if you only read one thing, read that file. This page explains the *why* behind
 the patterns it uses.
 
@@ -147,7 +147,7 @@ mirroring the existing `viewMarshalDestination` knob — that controls where
 
 ### Option 1: in the application constructor
 
-This is what the [complex_table example](../example_applications/complex_table/Complex-Tabular-Application.js)
+This is what the complex_table example (`example_applications/complex_table/Complex-Tabular-Application.js`)
 does. After `super()` (which registers the metacontroller view via
 `PictFormApplication`), set the destination directly:
 
@@ -240,7 +240,7 @@ missing-or-emptied destination by re-materializing it on the next write.
 
 ## Full reference: the complex_table sample config
 
-The [complex_table example](../example_applications/complex_table/Complex-Tabular-Application.js)
+The complex_table example (`example_applications/complex_table/Complex-Tabular-Application.js`)
 exercises every pattern on this page in one application. The relevant pieces:
 
 ```js

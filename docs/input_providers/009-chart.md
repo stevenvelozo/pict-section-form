@@ -372,5 +372,5 @@ Pass any Chart.js options via `ChartJSOptionsCorePrototype`:
 ## Related Documentation
 
 - [Solvers](../Solvers.md) - Aggregation functions
-- [complex_table Example](../examples/complex_table/) - Chart usage
-- [complex_tuigrid Example](../examples/complex_tuigrid/) - Chart with TuiGrid
+- [NDT Field Test example](../examples/ndt_field_test/README.md) - Aggregation-histogram chart
+- [Dynamic Analysis example](../examples/dynamic_analysis/README.md) - Solver-driven bar and polar charts

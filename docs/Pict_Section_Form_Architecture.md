@@ -32,24 +32,11 @@ The framework follows several key principles:
 
 The view layer consists of two primary classes:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    PictFormMetacontroller                        │
-│   - Manages multiple form sections                               │
-│   - Orchestrates data marshaling                                 │
-│   - Controls solver execution                                    │
-│   - Handles initial bundle loading                               │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              │ manages
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    PictViewDynamicForm                           │
-│   - Represents a single form section                             │
-│   - Maintains section manifest instance                          │
-│   - Handles input provider lifecycle                             │
-│   - Manages group and row structures                             │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    MC["PictFormMetacontroller<br/>• Manages multiple form sections<br/>• Orchestrates data marshaling<br/>• Controls solver execution<br/>• Handles initial bundle loading"]
+    DF["PictViewDynamicForm<br/>• Represents a single form section<br/>• Maintains section manifest instance<br/>• Handles input provider lifecycle<br/>• Manages group and row structures"]
+    MC -->|manages| DF
 ```
 
 **PictViewDynamicForm** extends `pict-view` and represents a single form section.
@@ -95,29 +82,24 @@ for export and editing.
 
 ### Rendering Flow
 
-```
-1. Application instantiates PictFormMetacontroller
-2. For each Section in manifest:
-   a. PictViewDynamicForm is created
-   b. ManifestFactory parses descriptors into groups and rows
-   c. MetatemplateGenerator creates layout templates
-3. Forms are rendered to DOM using template hierarchy
-4. Solvers are executed (expressions resolve values)
-5. Input providers initialize UI controls
-6. Event handlers attach for changes
-```
+1. The application instantiates the `PictFormMetacontroller`.
+2. For each section in the manifest, a `PictViewDynamicForm` is created,
+   `ManifestFactory` parses its descriptors into groups and rows, and
+   `MetatemplateGenerator` builds the layout templates.
+3. The forms render to the DOM through the template hierarchy.
+4. Solvers execute — expressions resolve their values.
+5. Input providers initialize the UI controls.
+6. Event handlers attach for change detection.
 
 ### Data Change Flow
 
-```
-1. User modifies input value
-2. dataChanged() called on PictViewDynamicForm
-3. Informary marshals specific input from DOM to AppData
-4. Input providers run onDataChange hooks
-5. Application.solve() executes all solvers
-6. Metacontroller marshals all sections back to view
-7. Input providers run onDataMarshalToForm hooks
-```
+1. The user modifies an input value.
+2. `dataChanged()` is called on the `PictViewDynamicForm`.
+3. Informary marshals that input from the DOM into `AppData`.
+4. Input providers run their `onDataChange` hooks.
+5. `Application.solve()` executes all solvers.
+6. The metacontroller marshals every section back to the view.
+7. Input providers run their `onDataMarshalToForm` hooks.
 
 ### Marshal Operations
 
@@ -131,19 +113,19 @@ to map form elements to their corresponding data addresses.
 
 Templates are rendered in a strict hierarchy:
 
-```
-Form Container
-└── Section (for each)
-    ├── Section Prefix
-    └── Group (for each)
-        ├── Group Prefix
-        └── Row (for each)
-            ├── Row Prefix
-            ├── Input (for each)
-            │   └── Input Template (by InputType or DataType)
-            └── Row Postfix
-        └── Group Postfix
-    └── Section Postfix
+```mermaid
+flowchart TD
+    FC["Form Container"] --> S["Section (for each)"]
+    S --> SP["Section Prefix"]
+    S --> G["Group (for each)"]
+    S --> SX["Section Postfix"]
+    G --> GP["Group Prefix"]
+    G --> R["Row (for each)"]
+    G --> GX["Group Postfix"]
+    R --> RP["Row Prefix"]
+    R --> I["Input (for each)"]
+    R --> RX["Row Postfix"]
+    I --> IT["Input Template (by InputType or DataType)"]
 ```
 
 Templates support three levels of customization:

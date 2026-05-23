@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-05-22T05:01:02.014Z",
+	"Generated": "2026-05-23T01:53:55.307Z",
 	"Mode": "module",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
@@ -131,16 +131,8 @@
 				"Title": "Examples",
 				"Children": [
 					{
-						"Title": "Simple Form",
-						"Path": "#/page/examples/simple_form/README"
-					},
-					{
 						"Title": "Simple Table",
 						"Path": "#/page/examples/simple_table/README"
-					},
-					{
-						"Title": "Simple Distill",
-						"Path": "#/page/examples/simple_distill/README"
 					},
 					{
 						"Title": "Gradebook",
@@ -151,16 +143,20 @@
 						"Path": "#/page/examples/postcard_example/README"
 					},
 					{
-						"Title": "Complex Table",
-						"Path": "#/page/examples/complex_table/README"
+						"Title": "Scope Mathematics",
+						"Path": "#/page/examples/scope_mathematics/README"
 					},
 					{
-						"Title": "Complex TuiGrid",
-						"Path": "#/page/examples/complex_tuigrid/README"
+						"Title": "Change Tracking",
+						"Path": "#/page/examples/change_tracking/README"
 					},
 					{
-						"Title": "Manyfest Editor",
-						"Path": "#/page/examples/manyfest_editor/README"
+						"Title": "NDT Field Test",
+						"Path": "#/page/examples/ndt_field_test/README"
+					},
+					{
+						"Title": "Dynamic Analysis",
+						"Path": "#/page/examples/dynamic_analysis/README"
 					}
 				]
 			}
@@ -186,17 +182,12 @@
 			"examples/change_tracking/README.md",
 			"examples/change_tracking/change_tracking.js",
 			"examples/change_tracking/index.html",
-			"examples/complex_table/README.md",
-			"examples/complex_table/complex_tabular_application.js",
-			"examples/complex_table/index.html",
-			"examples/complex_tuigrid/README.md",
 			"examples/dynamic_analysis/README.md",
 			"examples/dynamic_analysis/dynamic_analysis_application.js",
 			"examples/dynamic_analysis/index.html",
 			"examples/gradebook/README.md",
 			"examples/gradebook/gradebook_application.min.js",
 			"examples/gradebook/index.html",
-			"examples/manyfest_editor/README.md",
 			"examples/ndt_field_test/README.md",
 			"examples/ndt_field_test/index.html",
 			"examples/ndt_field_test/ndt_field_test.js",
@@ -204,11 +195,9 @@
 			"examples/scope_mathematics/README.md",
 			"examples/scope_mathematics/index.html",
 			"examples/scope_mathematics/scope_mathematics.js",
-			"examples/simple_distill/README.md",
-			"examples/simple_form/README.md",
-			"examples/simple_form/index.html",
-			"examples/simple_form/simple_application.js",
 			"examples/simple_table/README.md",
+			"examples/simple_table/index.html",
+			"examples/simple_table/simple_tabular_application.min.js",
 			"index.html",
 			"input_providers/001-select.md",
 			"input_providers/002-datetime.md",
@@ -224,6 +213,7 @@
 			"input_providers/012-tab-group-selector.md",
 			"input_providers/013-tab-section-selector.md",
 			"input_providers/README.md",
+			"pict-docuserve.min.js",
 			"retold-catalog.json",
 			"retold-keyword-index.json"
 		]

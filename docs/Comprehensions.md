@@ -175,7 +175,7 @@ upserts, idempotency.
   addresses, computed contexts, per-row `MAP VAR` generation, customized
   destinations.
 - [Solvers](Solvers.md) — full solver function reference.
-- The [Complex Table example](../example_applications/complex_table/Complex-Tabular-Application.js)
+- The Complex Table example (`example_applications/complex_table/Complex-Tabular-Application.js`)
   builds a complete `RecipeWorkflowComprehensions` tree with `OnSave` and
   `OnApprovalAction.{Submit,Approve}` contexts off the Recipe section and the
   FruitGrid recordset.
