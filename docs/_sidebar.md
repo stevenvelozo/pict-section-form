@@ -18,6 +18,11 @@
   - [Comprehensions — Advanced](Comprehensions_Advanced.md)
   - [Providers](Providers.md)
 
+- Playground
+
+  - [Overview](playground.md)
+  - [Open the Playground](#/playground/section)
+
 - Input Providers
 
   - [Select](input_providers/001-select.md)

@@ -1,0 +1,57 @@
+{
+    "Scope": "PlaygroundForm",
+    "Sections":
+    [
+        {
+            "Hash": "ContactInfo",
+            "Name": "Contact Information",
+            "Description": "Try editing the inputs, then click Run to re-render.",
+            "Groups":
+            [
+                {
+                    "Hash": "ContactInfoGroup",
+                    "Name": "Your Details"
+                }
+            ]
+        }
+    ],
+    "Descriptors":
+    {
+        "Contact.FirstName":
+        {
+            "Name":     "First name",
+            "Hash":     "FirstName",
+            "DataType": "String",
+            "PictForm": { "Section": "ContactInfo", "Group": "ContactInfoGroup", "Row": 1, "Width": 6, "InputType": "Text" }
+        },
+        "Contact.LastName":
+        {
+            "Name":     "Last name",
+            "Hash":     "LastName",
+            "DataType": "String",
+            "PictForm": { "Section": "ContactInfo", "Group": "ContactInfoGroup", "Row": 1, "Width": 6, "InputType": "Text" }
+        },
+        "Contact.Email":
+        {
+            "Name":     "Email address",
+            "Hash":     "Email",
+            "DataType": "String",
+            "PictForm": { "Section": "ContactInfo", "Group": "ContactInfoGroup", "Row": 2, "Width": 12, "InputType": "Email" }
+        },
+        "Contact.FullName":
+        {
+            "Name":     "Full name (calculated)",
+            "Hash":     "FullName",
+            "DataType": "String",
+            "PictForm": { "Section": "ContactInfo", "Group": "ContactInfoGroup", "Row": 3, "Width": 12, "InputType": "Text" }
+        }
+    },
+    "Solvers":
+    [
+        {
+            "Ordinal":           1,
+            "Expression":        "CONCAT(\"Contact.FirstName\", \" \", \"Contact.LastName\")",
+            "ExpressionAddress": "Contact.FullName"
+        }
+    ]
+}

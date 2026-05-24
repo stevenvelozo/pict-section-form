@@ -1,0 +1,9 @@
+{
+    "Contact":
+    {
+        "FirstName": "Ada",
+        "LastName":  "Lovelace",
+        "Email":     "ada@analytical-engine.example",
+        "FullName":  ""
+    }
+}
