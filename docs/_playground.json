@@ -29,6 +29,12 @@
 			"Label":       "Initial AppData",
 			"Language":    "json",
 			"DefaultPath": "playground/appdata.json"
+		},
+		{
+			"Hash":        "application",
+			"Label":       "Application Code",
+			"Language":    "javascript",
+			"DefaultPath": "playground/application.js"
 		}
 	],
 	"Imports":

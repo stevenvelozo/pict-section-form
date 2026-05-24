@@ -3,13 +3,19 @@
 > **[&#9654; Open the Playground](#/playground/section)** — edit a manifest live and watch the form re-render.
 
 The Playground is a sandboxed editor for trying form configurations
-without spinning up an example application. Four editor tabs, an
+without spinning up an example application. Five editor tabs, an
 iframe sandbox, and a fresh-render `Run` button:
 
 - **Form Manifest** — sections, groups, inputs, solvers, reference manifests
 - **Pict Config** — `pict_configuration` (Product name, default theme, etc.)
 - **App Config** — outer application defaults (Name, Hash, lifecycle options)
 - **Initial AppData** — the data the form binds against on first render
+- **Application Code** — optional JavaScript that returns a class
+  extending `PictFormApplication`.  Use it to override lifecycle hooks
+  (`onBeforeInitializeAsync`, `onAfterInitializeAsync`), register
+  custom views/providers, or add helper methods that inline `onclick`
+  handlers in the manifest can call via `_Pict.PictApplication.<name>(...)`.
+  The starter file shows the shape.
 
 Press **Run** and the iframe rebuilds with the current editor contents.
 Each Run is a clean slate — there's no in-place state to invalidate
@@ -44,7 +50,9 @@ folder declaring four bits of metadata:
         { "Hash": "appConfig",  "Label": "App Config",      "Language": "json",
           "DefaultPath": "playground/app.json" },
         { "Hash": "appData",    "Label": "Initial AppData", "Language": "json",
-          "DefaultPath": "playground/appdata.json" }
+          "DefaultPath": "playground/appdata.json" },
+        { "Hash": "application","Label": "Application Code","Language": "javascript",
+          "DefaultPath": "playground/application.js" }
     ],
 
     "Imports":
