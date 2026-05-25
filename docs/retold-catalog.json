@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-05-23T01:53:55.307Z",
+	"Generated": "2026-05-24T23:49:39.501Z",
 	"Mode": "module",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
@@ -67,6 +67,19 @@
 					{
 						"Title": "Providers",
 						"Path": "Providers.md"
+					}
+				]
+			},
+			{
+				"Title": "Playground",
+				"Children": [
+					{
+						"Title": "Overview",
+						"Path": "playground.md"
+					},
+					{
+						"Title": "Open the Playground",
+						"Path": "#/playground/section"
 					}
 				]
 			},
@@ -176,6 +189,7 @@
 			"Templates.md",
 			"_brand.json",
 			"_cover.md",
+			"_playground.json",
 			"_sidebar.md",
 			"_version.json",
 			"examples/README.md",
@@ -213,7 +227,16 @@
 			"input_providers/012-tab-group-selector.md",
 			"input_providers/013-tab-section-selector.md",
 			"input_providers/README.md",
-			"pict-docuserve.min.js",
+			"playground/app.json",
+			"playground/appdata.json",
+			"playground/application.js",
+			"playground/manifest.json",
+			"playground/pict.json",
+			"playground/runtime/pict-application.min.js",
+			"playground/runtime/pict-section-form.min.js",
+			"playground/runtime/pict-section-modal.min.js",
+			"playground/runtime/pict.min.js",
+			"playground.md",
 			"retold-catalog.json",
 			"retold-keyword-index.json"
 		]

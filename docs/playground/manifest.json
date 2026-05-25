@@ -12,6 +12,10 @@
                     "Hash": "ContactInfoGroup",
                     "Name": "Your Details"
                 }
+            ],
+            "Solvers":
+            [
+                "Contact.FullName = CONCAT(Contact.FirstName, \" \", Contact.LastName)"
             ]
         }
     ],
@@ -45,13 +49,5 @@
             "DataType": "String",
             "PictForm": { "Section": "ContactInfo", "Group": "ContactInfoGroup", "Row": 3, "Width": 12, "InputType": "Text" }
         }
-    },
-    "Solvers":
-    [
-        {
-            "Ordinal":           1,
-            "Expression":        "CONCAT(\"Contact.FirstName\", \" \", \"Contact.LastName\")",
-            "ExpressionAddress": "Contact.FullName"
-        }
-    ]
+    }
 }
