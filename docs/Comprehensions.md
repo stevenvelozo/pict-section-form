@@ -3,7 +3,7 @@
 The `addComprehensionEntity` solver function builds **multi-context, multi-entity
 comprehensions** from form data — a JSON shape that can be inspected, diffed,
 and pushed to a Meadow REST API via
-[`meadow-integration load_comprehension`](https://github.com/stevenvelozo/meadow-integration).
+[`meadow-integration load_comprehension`](https://github.com/fable-retold/meadow-integration).
 
 Think of it as the "save side" of a form: a single function call lays down one
 property of one record under one workflow context, and many calls compose into a
@@ -71,7 +71,7 @@ Given these solvers on a Book form:
 ```
 
 Every leaf in this tree is a Meadow-shaped record keyed by external GUID — the
-exact format [`load_comprehension`](https://github.com/stevenvelozo/meadow-integration)
+exact format [`load_comprehension`](https://github.com/fable-retold/meadow-integration)
 expects.
 
 ## Where the result lands
@@ -165,7 +165,7 @@ Or write to a file and push from a CLI:
 npx meadow-integration load_comprehension out.json --prefix MYAPP
 ```
 
-See [meadow-integration: Comprehensions](https://github.com/stevenvelozo/meadow-integration/blob/main/docs/comprehensions.md)
+See [meadow-integration: Comprehensions](https://github.com/fable-retold/meadow-integration/blob/main/docs/comprehensions.md)
 for the full push semantics — GUID marshaling, foreign-key resolution, batch
 upserts, idempotency.
 

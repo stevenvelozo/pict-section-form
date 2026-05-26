@@ -8,12 +8,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/stevenvelozo/pict-section-form.git"
+        "url": "git+https://github.com/fable-retold/pict-section-form.git"
     },
     "bugs": {
-        "url": "https://github.com/stevenvelozo/pict-section-form/issues"
+        "url": "https://github.com/fable-retold/pict-section-form/issues"
     },
-    "homepage": "https://github.com/stevenvelozo/pict-section-form#readme",
+    "homepage": "https://github.com/fable-retold/pict-section-form#readme",
     "scripts": {
         "start": "node source/Pict-Section-Form.js",
         "tests": "npx quack test -g",

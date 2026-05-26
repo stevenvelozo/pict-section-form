@@ -7,7 +7,7 @@
 - Expression solvers for calculated fields and conditional logic
 - Extensible input types and flexible templates
 
-[GitHub](https://github.com/stevenvelozo/pict-section-form)
+[GitHub](https://github.com/fable-retold/pict-section-form)
 [Get Started](#pict-section-form)
 
 <!-- docuserve:examples:start -->

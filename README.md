@@ -1,6 +1,6 @@
 # PICT Forms Section
 
-> **[&#9654; Read the Pict-Section-Form Documentation](https://stevenvelozo.github.io/pict-section-form/)** — an interactive guide with live, runnable examples and the full API reference.
+> **[&#9654; Read the Pict-Section-Form Documentation](https://fable-retold.github.io/pict-section-form/)** — an interactive guide with live, runnable examples and the full API reference.
 
 A Form Section with programmatically definable content.  Simple, extensible 
 function APIs for adding groups, rows, entry elements and documentation or
@@ -264,25 +264,25 @@ Each section is represented within a manyfest.  You could have one manyfest for 
 }
 ```
 
-This [manyfest](https://github.com/stevenvelozo/manyfest) file describes a list
+This [manyfest](https://github.com/fable-retold/manyfest) file describes a list
 of application state elements. And intersects these data elements with how
 they should be presented to the user in a form.  This can work for any layout
 of data in your application.
 
 ## Documentation
 
-The complete documentation — an interactive guide with live examples — is hosted at **[stevenvelozo.github.io/pict-section-form](https://stevenvelozo.github.io/pict-section-form/)**:
+The complete documentation — an interactive guide with live examples — is hosted at **[stevenvelozo.github.io/pict-section-form](https://fable-retold.github.io/pict-section-form/)**:
 
 | Document | Description |
 |----------|-------------|
-| [Getting Started](https://stevenvelozo.github.io/pict-section-form/#/page/Getting_Started) | Quick start guide for new users |
-| [Architecture](https://stevenvelozo.github.io/pict-section-form/#/page/Pict_Section_Form_Architecture) | System architecture and design |
-| [Configuration](https://stevenvelozo.github.io/pict-section-form/#/page/Configuration) | Complete configuration reference |
-| [Input Types](https://stevenvelozo.github.io/pict-section-form/#/page/Input_Types) | Available input types |
-| [Templates](https://stevenvelozo.github.io/pict-section-form/#/page/Templates) | Template customization and macros |
-| [Solvers](https://stevenvelozo.github.io/pict-section-form/#/page/Solvers) | Expression solver system |
-| [Providers](https://stevenvelozo.github.io/pict-section-form/#/page/Providers) | Provider reference |
-| [Layouts](https://stevenvelozo.github.io/pict-section-form/#/page/Layouts) | Layout types and customization |
+| [Getting Started](https://fable-retold.github.io/pict-section-form/#/page/Getting_Started) | Quick start guide for new users |
+| [Architecture](https://fable-retold.github.io/pict-section-form/#/page/Pict_Section_Form_Architecture) | System architecture and design |
+| [Configuration](https://fable-retold.github.io/pict-section-form/#/page/Configuration) | Complete configuration reference |
+| [Input Types](https://fable-retold.github.io/pict-section-form/#/page/Input_Types) | Available input types |
+| [Templates](https://fable-retold.github.io/pict-section-form/#/page/Templates) | Template customization and macros |
+| [Solvers](https://fable-retold.github.io/pict-section-form/#/page/Solvers) | Expression solver system |
+| [Providers](https://fable-retold.github.io/pict-section-form/#/page/Providers) | Provider reference |
+| [Layouts](https://fable-retold.github.io/pict-section-form/#/page/Layouts) | Layout types and customization |
 
 ### Example Applications
 
@@ -290,12 +290,12 @@ Live, runnable example applications — click to open one in your browser:
 
 | Example | Description |
 |---------|-------------|
-| [Simple Table](https://stevenvelozo.github.io/pict-section-form/examples/simple_table/) | Tabular layout, reference manifests, and dot-notation access into nested data |
-| [Gradebook](https://stevenvelozo.github.io/pict-section-form/examples/gradebook/) | Stacked headers, row labels, dynamic columns, row/column selection, and sorting |
-| [Scope Mathematics](https://stevenvelozo.github.io/pict-section-form/examples/scope_mathematics/) | Solvers that reach across sections and the global form scope |
-| [Change Tracking](https://stevenvelozo.github.io/pict-section-form/examples/change_tracking/) | A change-detecting solver state machine with bidirectional recompute |
-| [NDT Field Test](https://stevenvelozo.github.io/pict-section-form/examples/ndt_field_test/) | Offline persistence, pick lists, pass/fail row solvers, and charts |
-| [Dynamic Analysis](https://stevenvelozo.github.io/pict-section-form/examples/dynamic_analysis/) | Runtime section injection, solver rewriting, and solver-driven charts |
+| [Simple Table](https://fable-retold.github.io/pict-section-form/examples/simple_table/) | Tabular layout, reference manifests, and dot-notation access into nested data |
+| [Gradebook](https://fable-retold.github.io/pict-section-form/examples/gradebook/) | Stacked headers, row labels, dynamic columns, row/column selection, and sorting |
+| [Scope Mathematics](https://fable-retold.github.io/pict-section-form/examples/scope_mathematics/) | Solvers that reach across sections and the global form scope |
+| [Change Tracking](https://fable-retold.github.io/pict-section-form/examples/change_tracking/) | A change-detecting solver state machine with bidirectional recompute |
+| [NDT Field Test](https://fable-retold.github.io/pict-section-form/examples/ndt_field_test/) | Offline persistence, pick lists, pass/fail row solvers, and charts |
+| [Dynamic Analysis](https://fable-retold.github.io/pict-section-form/examples/dynamic_analysis/) | Runtime section injection, solver rewriting, and solver-driven charts |
 
 ### Input Providers
 
@@ -303,19 +303,19 @@ Specialized input handlers for different data types:
 
 | Provider | Description |
 |----------|-------------|
-| [Select](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/001-select) | Dropdown lists with static/dynamic options |
-| [DateTime](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/002-datetime) | Date and time picker |
-| [Markdown](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/003-markdown) | Markdown content display |
-| [HTML](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/004-html) | Raw HTML content display |
-| [PreciseNumber](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/005-precise-number) | Formatted numbers with precision |
-| [Link](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/006-link) | Hyperlink inputs |
-| [Templated](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/007-templated) | Dynamic template rendering |
-| [TemplatedEntityLookup](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/008-templated-entity-lookup) | Entity fetch with template display |
-| [Chart](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/009-chart) | Chart.js visualizations |
-| [EntityBundleRequest](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/010-entity-bundle-request) | Cascading entity fetches |
-| [AutofillTriggerGroup](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/011-autofill-trigger-group) | Trigger-based autofill |
-| [TabGroupSelector](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/012-tab-group-selector) | Tab navigation for groups |
-| [TabSectionSelector](https://stevenvelozo.github.io/pict-section-form/#/page/input_providers/013-tab-section-selector) | Tab navigation for sections |
+| [Select](https://fable-retold.github.io/pict-section-form/#/page/input_providers/001-select) | Dropdown lists with static/dynamic options |
+| [DateTime](https://fable-retold.github.io/pict-section-form/#/page/input_providers/002-datetime) | Date and time picker |
+| [Markdown](https://fable-retold.github.io/pict-section-form/#/page/input_providers/003-markdown) | Markdown content display |
+| [HTML](https://fable-retold.github.io/pict-section-form/#/page/input_providers/004-html) | Raw HTML content display |
+| [PreciseNumber](https://fable-retold.github.io/pict-section-form/#/page/input_providers/005-precise-number) | Formatted numbers with precision |
+| [Link](https://fable-retold.github.io/pict-section-form/#/page/input_providers/006-link) | Hyperlink inputs |
+| [Templated](https://fable-retold.github.io/pict-section-form/#/page/input_providers/007-templated) | Dynamic template rendering |
+| [TemplatedEntityLookup](https://fable-retold.github.io/pict-section-form/#/page/input_providers/008-templated-entity-lookup) | Entity fetch with template display |
+| [Chart](https://fable-retold.github.io/pict-section-form/#/page/input_providers/009-chart) | Chart.js visualizations |
+| [EntityBundleRequest](https://fable-retold.github.io/pict-section-form/#/page/input_providers/010-entity-bundle-request) | Cascading entity fetches |
+| [AutofillTriggerGroup](https://fable-retold.github.io/pict-section-form/#/page/input_providers/011-autofill-trigger-group) | Trigger-based autofill |
+| [TabGroupSelector](https://fable-retold.github.io/pict-section-form/#/page/input_providers/012-tab-group-selector) | Tab navigation for groups |
+| [TabSectionSelector](https://fable-retold.github.io/pict-section-form/#/page/input_providers/013-tab-section-selector) | Tab navigation for sections |
 
 ## Installation
 
@@ -345,19 +345,19 @@ formApp.pict.views.PictFormMetacontroller.render();
 
 Pict Section Form is part of the Pict ecosystem:
 
-- [pict](https://github.com/stevenvelozo/pict) - Core application framework
-- [pict-view](https://github.com/stevenvelozo/pict-view) - View base class
-- [pict-provider](https://github.com/stevenvelozo/pict-provider) - Provider base class
-- [manyfest](https://github.com/stevenvelozo/manyfest) - Schema definitions
-- [fable](https://github.com/stevenvelozo/fable) - Service infrastructure
+- [pict](https://github.com/fable-retold/pict) - Core application framework
+- [pict-view](https://github.com/fable-retold/pict-view) - View base class
+- [pict-provider](https://github.com/fable-retold/pict-provider) - Provider base class
+- [manyfest](https://github.com/fable-retold/manyfest) - Schema definitions
+- [fable](https://github.com/fable-retold/fable) - Service infrastructure
 
 ## Related Packages
 
-- [pict](https://github.com/stevenvelozo/pict) - MVC application framework
-- [pict-view](https://github.com/stevenvelozo/pict-view) - View base class
-- [pict-provider](https://github.com/stevenvelozo/pict-provider) - Data provider base class
-- [pict-template](https://github.com/stevenvelozo/pict-template) - Template engine
-- [manyfest](https://github.com/stevenvelozo/manyfest) - Schema-driven object navigation
+- [pict](https://github.com/fable-retold/pict) - MVC application framework
+- [pict-view](https://github.com/fable-retold/pict-view) - View base class
+- [pict-provider](https://github.com/fable-retold/pict-provider) - Data provider base class
+- [pict-template](https://github.com/fable-retold/pict-template) - Template engine
+- [manyfest](https://github.com/fable-retold/manyfest) - Schema-driven object navigation
 
 ## License
 

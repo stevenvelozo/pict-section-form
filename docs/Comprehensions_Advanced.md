@@ -290,6 +290,6 @@ comprehensions -- reach for the meadow-integration toolchain directly:
 - `meadow-integration comprehensionintersect` to merge two comprehensions.
 - The `Comprehension` object's `Object.assign` semantics for in-code merges.
 
-See [meadow-integration: Comprehensions](https://github.com/stevenvelozo/meadow-integration/blob/main/docs/comprehensions.md)
+See [meadow-integration: Comprehensions](https://github.com/fable-retold/meadow-integration/blob/main/docs/comprehensions.md)
 for those tools. The solver helper is purpose-built for "as I edit this form,
 build the comprehension that will save it."
