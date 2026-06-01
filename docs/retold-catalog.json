@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-05-26T21:13:42.890Z",
+	"Generated": "2026-06-01T03:47:55.292Z",
 	"Mode": "module",
 	"GitHubOrg": "fable-retold",
 	"DefaultBranch": "master",
@@ -61,7 +61,7 @@
 						"Path": "Comprehensions.md"
 					},
 					{
-						"Title": "Comprehensions — Advanced",
+						"Title": "Comprehensions - Advanced",
 						"Path": "Comprehensions_Advanced.md"
 					},
 					{
@@ -197,12 +197,14 @@
 			"examples/change_tracking/change_tracking.js",
 			"examples/change_tracking/index.html",
 			"examples/dynamic_analysis/README.md",
+			"examples/dynamic_analysis/chart.umd.js",
 			"examples/dynamic_analysis/dynamic_analysis_application.js",
 			"examples/dynamic_analysis/index.html",
 			"examples/gradebook/README.md",
 			"examples/gradebook/gradebook_application.min.js",
 			"examples/gradebook/index.html",
 			"examples/ndt_field_test/README.md",
+			"examples/ndt_field_test/chart.umd.js",
 			"examples/ndt_field_test/index.html",
 			"examples/ndt_field_test/ndt_field_test.js",
 			"examples/postcard_example/README.md",
