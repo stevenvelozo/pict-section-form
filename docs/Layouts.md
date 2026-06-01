@@ -170,7 +170,7 @@ an array of cells.
 | Cell property | Type | Description |
 |---------------|------|-------------|
 | `Label` | string | Header text |
-| `ColumnSpan` | number | Number of data columns this cell spans (default 1) — this is how you "cluster" |
+| `ColumnSpan` | number | Number of data columns this cell spans (default 1) - this is how you "cluster" |
 | `CSSClass` | string | Optional class applied to the `<th>` |
 
 ```json
@@ -201,7 +201,7 @@ of the table (before the data columns). Each entry describes one label column.
 | Property | Type | Description |
 |----------|------|-------------|
 | `Name` | string | Header text for the label column |
-| `Template` | string | A Pict template resolved per row — the row record is at `Record.Value`, the row index at `Record.Key` |
+| `Template` | string | A Pict template resolved per row - the row record is at `Record.Value`, the row index at `Record.Key` |
 | `RowNumber` | boolean | When `true`, the label is the 1-based row number |
 | `SourceAddress` | string | An app-data address of a pre-slotted array; element `[rowIndex]` is the label |
 | `Cluster` | boolean | When `true`, consecutive equal labels collapse into one cell with `rowspan` |
@@ -217,14 +217,14 @@ Provide exactly one of `Template`, `RowNumber`, or `SourceAddress` per entry.
 ]
 ```
 
-`Cluster: true` is what produces the "merged cell" look — a column of repeated
+`Cluster: true` is what produces the "merged cell" look - a column of repeated
 values (e.g. a class section) renders as a single tall cell spanning its run
 of rows. Any label column may be clustered; there is no "prime" label column.
 
 ### Dynamic Columns
 
 `DynamicColumns` generates table columns at runtime from **another array** in
-the form data — for example, one grade column per assignment. Each entry is a
+the form data - for example, one grade column per assignment. Each entry is a
 generator:
 
 | Property | Type | Description |
@@ -233,7 +233,7 @@ generator:
 | `HashTemplate` | string | Template producing each column's unique descriptor hash |
 | `NameTemplate` | string | Template producing each column's header text |
 | `InformaryDataAddressTemplate` | string | Template producing the per-row data address the cell binds to |
-| `HeaderGroupTemplate` | string | Optional — template producing a cluster label; auto-adds a clustered super-header row |
+| `HeaderGroupTemplate` | string | Optional - template producing a cluster label; auto-adds a clustered super-header row |
 | `DataType` | string | Data type for the generated descriptors |
 | `PictForm` | object | `PictForm` block merged onto each generated descriptor (e.g. `InputType`) |
 | `InsertAt` | string/object | `"End"` (default), `"Start"`, or `{ "After": "<hash>" }` |
@@ -256,7 +256,7 @@ Inside each template the **source row** is the record (`Record.Field`).
 
 Dynamic columns are **non-destructive**: when a source row is removed the
 generated column disappears, but the underlying row data at the
-`InformaryDataAddress` is left untouched — re-adding the source row brings the
+`InformaryDataAddress` is left untouched - re-adding the source row brings the
 column back with its data intact. The columns re-resolve automatically as the
 source array changes; no manual refresh call is needed.
 
@@ -272,7 +272,7 @@ controls where:
 
 | Value | Behavior |
 |-------|----------|
-| `"right"` | Default — controls in a trailing column |
+| `"right"` | Default - controls in a trailing column |
 | `"left"` | Controls in a leading column, before the data columns |
 | `"hidden"` | No editing controls (read-only style table) |
 
@@ -283,7 +283,7 @@ controls where:
 ### Suppressing the Default Header Row
 
 Set `SuppressDefaultColumnHeaderRow: true` to omit the prime column-name row
-entirely — useful when custom `Headers` rows fully describe the columns.
+entirely - useful when custom `Headers` rows fully describe the columns.
 
 ### Selectable Rows & Columns
 
@@ -315,8 +315,8 @@ array lives in the marshalled form data it round-trips with save / load.
 
 ### Column Sorting
 
-`ColumnSorting: true` (off by default) injects a clickable sort control — a
-`<span>` carrying a sort SVG glyph from Pict's icon registry — into every
+`ColumnSorting: true` (off by default) injects a clickable sort control - a
+`<span>` carrying a sort SVG glyph from Pict's icon registry - into every
 prime header cell.
 
 ```json

@@ -26,7 +26,7 @@ flowchart TD
     ROW --> RP["-Template-Row-Prefix"]
     ROW --> INP["For each Input"]
     ROW --> RX["-Template-Row-Postfix"]
-    INP --> IT["-Template-Input-InputType-… or<br/>-Template-Input-DataType-… or<br/>-TabularTemplate-…"]
+    INP --> IT["-Template-Input-InputType-... or<br/>-Template-Input-DataType-... or<br/>-TabularTemplate-..."]
 ```
 
 ## Template Resolution

@@ -1,12 +1,12 @@
-# Simple Table — A Tabular Layout from a Manifest
+# Simple Table - A Tabular Layout from a Manifest
 
 <!-- docuserve:example-launch:start -->
-> **[&#9654; Launch the live app](examples/simple%5Ftable/index.html)** — runs in your browser, opens in a new tab.
+> **[Launch the live app](examples/simple%5Ftable/index.html)** - runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 
 The Simple Table example is the smallest useful Pict Section Form application:
-it renders an array of 49 fruit-nutrition records as an HTML table — and it
+it renders an array of 49 fruit-nutrition records as an HTML table - and it
 does so with **no view code at all**. The application file re-exports the
 framework's stock form application unchanged and attaches a single manifest.
 Everything you see is configuration.
@@ -28,14 +28,14 @@ case study: the same `Tabular` layout, stripped to its essentials.
 
 ## Key files
 
-- `Simple-Tabular-Application.js` — the entire app: a manifest, zero view code
-- `FruitData.json` — seed data (`DefaultAppData`)
-- `html/index.html` — HTML shell + theme CSS
+- `Simple-Tabular-Application.js` - the entire app: a manifest, zero view code
+- `FruitData.json` - seed data (`DefaultAppData`)
+- `html/index.html` - HTML shell + theme CSS
 
 ## The data model
 
 `FruitData.json` holds a single object. The table reads the array at
-`FruitData.FruityVice` — 49 records, each one a fruit:
+`FruitData.FruityVice` - 49 records, each one a fruit:
 
 ```js
 {
@@ -48,12 +48,12 @@ case study: the same `Tabular` layout, stripped to its essentials.
 }
 ```
 
-Note the flat fields (`name`, `family`, …) alongside a **nested** `nutritions`
-object — the table pulls columns from both levels.
+Note the flat fields (`name`, `family`, ...) alongside a **nested** `nutritions`
+object - the table pulls columns from both levels.
 
 ---
 
-## Feature 1 — A class-free bootstrap
+## Feature 1 - A class-free bootstrap
 
 Most example apps subclass `PictFormApplication`. Simple Table does not even do
 that. The application file re-exports the stock class and attaches a
@@ -70,13 +70,13 @@ module.exports.default_configuration.pict_configuration = {
 ```
 
 `DefaultAppData` seeds the application's data at load time, so the table is
-populated the moment the page opens — no fetch, no `onBeforeInitialize` hook.
+populated the moment the page opens - no fetch, no `onBeforeInitialize` hook.
 `DefaultFormManifest` is the form definition the rest of this page walks
 through.
 
 ---
 
-## Feature 2 — Sections and groups
+## Feature 2 - Sections and groups
 
 Every Pict Section Form manifest is a tree: `Sections` contain `Groups`, and
 each carries a `Hash` (its identity) and a `Name` (its label). Simple Table has
@@ -88,7 +88,7 @@ exactly one of each:
         "Hash": "FruitGrid",
         "Name": "Fruits of the World",
         "Groups": [
-            { "Hash": "FruitGrid", "Name": "FruitGrid", "Layout": "Tabular", /* … */ }
+            { "Hash": "FruitGrid", "Name": "FruitGrid", "Layout": "Tabular", /* ... */ }
         ]
     }
 ]
@@ -100,7 +100,7 @@ table.
 
 ---
 
-## Feature 3 — The Tabular layout group
+## Feature 3 - The Tabular layout group
 
 Three properties turn a group into a table:
 
@@ -114,16 +114,16 @@ Three properties turn a group into a table:
 }
 ```
 
-- `Layout: "Tabular"` — render records as an HTML table rather than a stacked form
-- `RecordSetAddress` — the address of the array to render, one row per element
-- `RecordManifest` — the name of the reference manifest that defines the columns
+- `Layout: "Tabular"` - render records as an HTML table rather than a stacked form
+- `RecordSetAddress` - the address of the array to render, one row per element
+- `RecordManifest` - the name of the reference manifest that defines the columns
 
 ---
 
-## Feature 4 — Reference manifests define the columns
+## Feature 4 - Reference manifests define the columns
 
 A `Tabular` group does not list its own columns. It points at a **reference
-manifest** — a named, reusable sub-manifest under `ReferenceManifests`. The
+manifest** - a named, reusable sub-manifest under `ReferenceManifests`. The
 group's `RecordManifest: "FruitEditor"` selects this one:
 
 ```js
@@ -141,15 +141,15 @@ group's `RecordManifest: "FruitEditor"` selects this one:
 
 Each descriptor under the reference manifest becomes one column. Because the
 manifest is *named and reusable*, the same column definition can drive several
-grids — see [Gradebook](../gradebook/README.md), where one reference manifest
+grids - see [Gradebook](../gradebook/README.md), where one reference manifest
 shape is reused across three tabs.
 
 ---
 
-## Feature 5 — Dot-notation into nested record data
+## Feature 5 - Dot-notation into nested record data
 
 A descriptor key is an address into the record, and that address can be
-**dotted**. The `Calories` column does not read a top-level field — it reaches
+**dotted**. The `Calories` column does not read a top-level field - it reaches
 into each record's nested `nutritions` object:
 
 ```js
@@ -166,9 +166,9 @@ that changes.
 
 ---
 
-## Feature 6 — Per-field types and defaults
+## Feature 6 - Per-field types and defaults
 
-Every descriptor declares a `DataType` (`String`, `Number`, `Array`, …) and may
+Every descriptor declares a `DataType` (`String`, `Number`, `Array`, ...) and may
 declare a `Default`. The type tells the framework how to render and coerce the
 value; the default fills in for records that lack the field:
 
@@ -194,7 +194,7 @@ npm run build
 ## Takeaways
 
 1. **A table is just a manifest.** One `Section`, one `Group`, and
-   `Layout: "Tabular"` — 49 records become a grid with no view code.
+   `Layout: "Tabular"` - 49 records become a grid with no view code.
 2. **Data is seeded, not fetched.** `DefaultAppData` populates the form at load
    time, so the example runs entirely offline.
 3. **Columns live in a reference manifest.** `RecordManifest` points the grid
@@ -207,6 +207,6 @@ npm run build
 
 ## Related documentation
 
-- [Layouts](../../Layouts.md) — the `Tabular` layout and its properties
-- [Configuration](../../Configuration.md) — manifest, section, and group reference
-- [Input Types](../../Input_Types.md) — descriptor `DataType` and input options
+- [Layouts](../../Layouts.md) - the `Tabular` layout and its properties
+- [Configuration](../../Configuration.md) - manifest, section, and group reference
+- [Input Types](../../Input_Types.md) - descriptor `DataType` and input options

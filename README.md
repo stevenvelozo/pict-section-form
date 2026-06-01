@@ -1,6 +1,6 @@
 # PICT Forms Section
 
-> **[&#9654; Read the Pict-Section-Form Documentation](https://fable-retold.github.io/pict-section-form/)** — an interactive guide with live, runnable examples and the full API reference.
+> **[Read the Pict-Section-Form Documentation](https://fable-retold.github.io/pict-section-form/)** - an interactive guide with live, runnable examples and the full API reference.
 
 A Form Section with programmatically definable content.  Simple, extensible 
 function APIs for adding groups, rows, entry elements and documentation or
@@ -271,7 +271,7 @@ of data in your application.
 
 ## Documentation
 
-The complete documentation — an interactive guide with live examples — is hosted at **[stevenvelozo.github.io/pict-section-form](https://fable-retold.github.io/pict-section-form/)**:
+The complete documentation - an interactive guide with live examples - is hosted at **[stevenvelozo.github.io/pict-section-form](https://fable-retold.github.io/pict-section-form/)**:
 
 | Document | Description |
 |----------|-------------|
@@ -286,7 +286,7 @@ The complete documentation — an interactive guide with live examples — is ho
 
 ### Example Applications
 
-Live, runnable example applications — click to open one in your browser:
+Live, runnable example applications - click to open one in your browser:
 
 | Example | Description |
 |---------|-------------|

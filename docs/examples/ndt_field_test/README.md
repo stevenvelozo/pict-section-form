@@ -1,7 +1,7 @@
-# NDT Field Test — Offline Persistence, Pick Lists, and Charts
+# NDT Field Test - Offline Persistence, Pick Lists, and Charts
 
 <!-- docuserve:example-launch:start -->
-> **[&#9654; Launch the live app](examples/ndt%5Ffield%5Ftest/index.html)** — runs in your browser, opens in a new tab.
+> **[Launch the live app](examples/ndt%5Ffield%5Ftest/index.html)** - runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 
@@ -13,7 +13,7 @@ PASS or FAIL while the form rolls the lot up into summary statistics and a
 histogram.
 
 Because an inspector works where there is no network, the example is built
-**offline-first** — a persistence provider autosaves every change to local
+**offline-first** - a persistence provider autosaves every change to local
 storage, and the app shell can juggle several saved tests at once.
 
 ## What it demonstrates
@@ -30,25 +30,25 @@ storage, and the app shell can juggle several saved tests at once.
 
 ## Key files
 
-- `NDT-Application.js` — the application: `NDTApplication`, the persistence wiring, and the inline manifest
-- `BundleData.json` — reference data (projects, contractors, mix designs, work items)
-- `html/index.html` — HTML shell + theme CSS
+- `NDT-Application.js` - the application: `NDTApplication`, the persistence wiring, and the inline manifest
+- `BundleData.json` - reference data (projects, contractors, mix designs, work items)
+- `html/index.html` - HTML shell + theme CSS
 
 ## The data model
 
 The form data is grouped into four objects:
 
-- **Header** — project, contractor, work item, mix design, inspector, date, weather, lot numbers
-- **MixInfo** — `MaxDensity_pcf`, `TargetAirVoids`, `OptimumAC`
-- **Readings** — a tabular array; each row is one nuclear-gauge reading
-- **Summary** — `AverageDensity`, `AverageCompaction`, `PassFail`
+- **Header** - project, contractor, work item, mix design, inspector, date, weather, lot numbers
+- **MixInfo** - `MaxDensity_pcf`, `TargetAirVoids`, `OptimumAC`
+- **Readings** - a tabular array; each row is one nuclear-gauge reading
+- **Summary** - `AverageDensity`, `AverageCompaction`, `PassFail`
 
-`BundleData.json` supplies the reference arrays — `Projects`, `Contractors`,
-`MixDesigns`, `WorkItems` — that the pick lists draw from.
+`BundleData.json` supplies the reference arrays - `Projects`, `Contractors`,
+`MixDesigns`, `WorkItems` - that the pick lists draw from.
 
 ---
 
-## Feature 1 — The FormPersistence provider
+## Feature 1 - The FormPersistence provider
 
 Unlike the manifest-only examples, NDT Field Test subclasses
 `PictFormApplication` so its constructor can register a persistence provider.
@@ -73,10 +73,10 @@ lists.
 
 ---
 
-## Feature 2 — Many tests, one form
+## Feature 2 - Many tests, one form
 
 Because each saved form has a GUID, the app shell can manage a whole library of
-tests. `loadTest` restores one — first its bundle context, then its data:
+tests. `loadTest` restores one - first its bundle context, then its data:
 
 ```js
 let tmpFormIndex = tmpPersistence.getFormIndex();
@@ -89,16 +89,16 @@ tmpPersistence.loadFormData(pGUID);
 tmpPersistence.setActiveFormGUID(pGUID);
 ```
 
-`createNewTest` is the mirror image — it persists the active form, then starts
+`createNewTest` is the mirror image - it persists the active form, then starts
 a fresh record.
 
 ---
 
-## Feature 3 — Static and dynamic pick lists
+## Feature 3 - Static and dynamic pick lists
 
 A pick list turns a reference array into a set of selectable options. Its
 `UpdateFrequency` decides how often it is rebuilt. The Project list is built
-**once** — projects do not change mid-test:
+**once** - projects do not change mid-test:
 
 ```js
 {
@@ -112,7 +112,7 @@ A pick list turns a reference array into a set of selectable options. Its
 }
 ```
 
-The Work Item list instead uses `"Always"`, so it re-resolves on every solve —
+The Work Item list instead uses `"Always"`, so it re-resolves on every solve -
 useful when the options depend on other, changing fields:
 
 ```js
@@ -128,7 +128,7 @@ A descriptor binds to a list with `InputType: "Option"` and
 
 ---
 
-## Feature 4 — Row-level pass/fail solvers
+## Feature 4 - Row-level pass/fail solvers
 
 The `Readings` grid carries `RecordSetSolvers` with ordinals. Ordinal 0
 computes the compaction percentage; ordinal 1 turns it into a verdict:
@@ -140,12 +140,12 @@ computes the compaction percentage; ordinal 1 turns it into a verdict:
 ]
 ```
 
-Every reading row scores itself the moment its density is entered — 92%
+Every reading row scores itself the moment its density is entered - 92%
 compaction is the pass threshold.
 
 ---
 
-## Feature 5 — Section aggregation solvers
+## Feature 5 - Section aggregation solvers
 
 The section that owns the grid averages the readings into the `Summary` object.
 The solvers consume aggregated-hash descriptors built over the readings column:
@@ -158,16 +158,16 @@ The solvers consume aggregated-hash descriptors built over the readings column:
 ```
 
 `ReadingDensity` and `ReadingCompactionPercent` are descriptors over
-`Readings[].WetDensity_pcf` and `Readings[].CompactionPercent` — the same
+`Readings[].WetDensity_pcf` and `Readings[].CompactionPercent` - the same
 collection-extraction idea used in
 [Scope Mathematics](../scope_mathematics/README.md).
 
 ---
 
-## Feature 6 — An aggregation-histogram chart
+## Feature 6 - An aggregation-histogram chart
 
 The results chart is a descriptor with `InputType: "Chart"`. Its labels and
-data are not static — they are **solver expressions**, recomputed every solve:
+data are not static - they are **solver expressions**, recomputed every solve:
 
 ```js
 "InputType": "Chart",
@@ -195,18 +195,18 @@ npm run build
 1. **Offline-first is a provider.** Registering `PictFormPersistenceProvider`
    gives the form debounced autosave to local storage with no extra code.
 2. **A form can be a record.** Each saved test has a GUID, so the app shell can
-   create, list, and reload many of them — bundle context included.
+   create, list, and reload many of them - bundle context included.
 3. **Pick lists choose their own freshness.** `UpdateFrequency: "Once"` builds
    a list a single time; `"Always"` rebuilds it on every solve.
 4. **Rows judge themselves.** Per-row `RecordSetSolvers` compute a value and
    then an `IF()`-based PASS/FAIL verdict for every reading.
 5. **Charts are solver output.** A `Chart` descriptor renders whatever its
-   `ChartLabelsSolver` and `DataSolver` expressions produce — here, a live
+   `ChartLabelsSolver` and `DataSolver` expressions produce - here, a live
    aggregation histogram.
 
 ## Related documentation
 
-- [Solvers](../../Solvers.md) — solvers, ordinals, and the aggregation functions
-- [Providers](../../Providers.md) — provider registration and the persistence provider
-- [Input Types](../../Input_Types.md) — the `Option` and `Chart` input types
-- [Layouts](../../Layouts.md) — the `Tabular` layout and `RecordSetSolvers`
+- [Solvers](../../Solvers.md) - solvers, ordinals, and the aggregation functions
+- [Providers](../../Providers.md) - provider registration and the persistence provider
+- [Input Types](../../Input_Types.md) - the `Option` and `Chart` input types
+- [Layouts](../../Layouts.md) - the `Tabular` layout and `RecordSetSolvers`

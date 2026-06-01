@@ -1,16 +1,16 @@
 # Form Playground
 
-> **[&#9654; Open the Playground](#/playground/section)** — edit a manifest live and watch the form re-render.
+> **[Open the Playground](#/playground/section)** - edit a manifest live and watch the form re-render.
 
 The Playground is a sandboxed editor for trying form configurations
 without spinning up an example application. Five editor tabs, an
 iframe sandbox, and a fresh-render `Run` button:
 
-- **Form Manifest** — sections, groups, inputs, solvers, reference manifests
-- **Pict Config** — `pict_configuration` (Product name, default theme, etc.)
-- **App Config** — outer application defaults (Name, Hash, lifecycle options)
-- **Initial AppData** — the data the form binds against on first render
-- **Application Code** — optional JavaScript that returns a class
+- **Form Manifest** - sections, groups, inputs, solvers, reference manifests
+- **Pict Config** - `pict_configuration` (Product name, default theme, etc.)
+- **App Config** - outer application defaults (Name, Hash, lifecycle options)
+- **Initial AppData** - the data the form binds against on first render
+- **Application Code** - optional JavaScript that returns a class
   extending `PictFormApplication`.  Use it to override lifecycle hooks
   (`onBeforeInitializeAsync`, `onAfterInitializeAsync`), register
   custom views/providers, or add helper methods that inline `onclick`
@@ -18,7 +18,7 @@ iframe sandbox, and a fresh-render `Run` button:
   The starter file shows the shape.
 
 Press **Run** and the iframe rebuilds with the current editor contents.
-Each Run is a clean slate — there's no in-place state to invalidate
+Each Run is a clean slate - there's no in-place state to invalidate
 between attempts, so a misconfigured manifest can't poison the next
 attempt.
 
@@ -82,12 +82,12 @@ same iframe contract, different runtime payload.
 - The **Reset** button restores every editor to its starter content
   and clears the matching `localStorage` keys.
 - A JSON parse error in any editor surfaces in the status badge over
-  the iframe and short-circuits the Run — the iframe stays on the
+  the iframe and short-circuits the Run - the iframe stays on the
   last successful render.
 
 ## Related documentation
 
-- [Configuration](Configuration.md) — the manifest, section, and group schema
-- [Input Types](Input_Types.md) — every input type the manifest can declare
-- [Layouts](Layouts.md) — stacked vs. tabular and how `Layout: "Tabular"` reads data
-- [Solvers](Solvers.md) — the expression engine that drives the `FullName` field in the starter manifest
+- [Configuration](Configuration.md) - the manifest, section, and group schema
+- [Input Types](Input_Types.md) - every input type the manifest can declare
+- [Layouts](Layouts.md) - stacked vs. tabular and how `Layout: "Tabular"` reads data
+- [Solvers](Solvers.md) - the expression engine that drives the `FullName` field in the starter manifest

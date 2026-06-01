@@ -1,14 +1,14 @@
-# Gradebook — A Tabular Recordset Case Study
+# Gradebook - A Tabular Recordset Case Study
 
 <!-- docuserve:example-launch:start -->
-> **[&#9654; Launch the live app](examples/gradebook/index.html)** — runs in your browser, opens in a new tab.
+> **[Launch the live app](examples/gradebook/index.html)** - runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 
 The Gradebook example is a deep, end-to-end demonstration of **every advanced
-tabular capability** in Pict Section Form. It is a real classroom gradebook —
+tabular capability** in Pict Section Form. It is a real classroom gradebook -
 students, assignments, grades, teacher commentary, and a performance
-breakdown — and **every screen is built purely from manifest configuration**.
+breakdown - and **every screen is built purely from manifest configuration**.
 There is no bespoke view code: the host application file is just a manifest.
 
 This page is a guided tour. It explains the design, then walks each feature
@@ -22,26 +22,26 @@ with the exact configuration the app uses.
 | Row label columns (clustered) | Section / Student / row-number columns down the left of every grid |
 | Dynamic columns from another array | Grade Book, Performance and Commentary grow one column per assignment |
 | Non-destructive columns | Removing an assignment hides its column but keeps the entered grades |
-| Selectable rows & columns | Grade Book — check a row and/or column to highlight it |
-| Column sorting | Students and Assignments — click a header to sort |
-| Tabular styling solvers | Performance — each student row is tinted by their average |
+| Selectable rows & columns | Grade Book - check a row and/or column to highlight it |
+| Column sorting | Students and Assignments - click a header to sort |
+| Tabular styling solvers | Performance - each student row is tinted by their average |
 | Tab navigation | `TabSectionSelector` switches between the five tabs |
 | Seeded example data | `GradebookData.json` loaded as `DefaultAppData` |
 
 ## Key files
 
-- `Gradebook-Application.js` — the entire app: one manifest, zero view code
-- `GradebookData.json` — seed data (`DefaultAppData`)
-- `html/index.html` — HTML shell + theme CSS
+- `Gradebook-Application.js` - the entire app: one manifest, zero view code
+- `GradebookData.json` - seed data (`DefaultAppData`)
+- `html/index.html` - HTML shell + theme CSS
 
 ## The data model
 
 Five arrays in app data, seeded from `GradebookData.json`:
 
-- `Students` — `{ Section, StudentName, StudentID }`
-- `Assignments` — `{ IDAssignment, Title, Topic, Points, Weight }`
-- `Grades` — one row per student, with a nested `Grades` object keyed by assignment id
-- `Commentary` — one row per student, with a nested `Notes` object keyed by assignment id
+- `Students` - `{ Section, StudentName, StudentID }`
+- `Assignments` - `{ IDAssignment, Title, Topic, Points, Weight }`
+- `Grades` - one row per student, with a nested `Grades` object keyed by assignment id
+- `Commentary` - one row per student, with a nested `Notes` object keyed by assignment id
 
 The Grade Book, Performance and Commentary grids are **intersections**: their
 rows come from `Grades` / `Commentary` and their columns are generated from
@@ -68,10 +68,10 @@ own section so it never gets swapped out when the user changes tabs.
 
 ---
 
-## Feature 1 — Stacked & clustered headers
+## Feature 1 - Stacked & clustered headers
 
 Every grid carries a banner row above the column names via the group's
-`Headers` property. The Students tab is the simplest case — one banner cell
+`Headers` property. The Students tab is the simplest case - one banner cell
 spanning all three data columns:
 
 ```js
@@ -103,7 +103,7 @@ column names.
 
 ---
 
-## Feature 2 — Row label columns
+## Feature 2 - Row label columns
 
 The `RowLabels` property adds label columns down the left edge. Each entry is
 one column. The Students grid clusters a single `Section` label:
@@ -114,7 +114,7 @@ one column. The Students grid clusters a single `Section` label:
 ]
 ```
 
-`Cluster: true` collapses consecutive equal values into one `rowspan` cell — so
+`Cluster: true` collapses consecutive equal values into one `rowspan` cell - so
 the three Section-A students show a single tall "A" cell. The Performance grid
 stacks three label columns, mixing a clustered template, a plain template, and
 a row number:
@@ -130,11 +130,11 @@ a row number:
 Inside a `Template`, the row record is at `Record.Value` and the row index at
 `Record.Key`. A label column can instead use `RowNumber: true` (the 1-based
 row number) or `SourceAddress` (a pre-slotted array indexed by row). There is
-no "prime" label column — any of them may be clustered.
+no "prime" label column - any of them may be clustered.
 
 ---
 
-## Feature 3 — Dynamic columns from another array
+## Feature 3 - Dynamic columns from another array
 
 The Grade Book grid has only two *static* descriptors (`Section`,
 `StudentName`, both marked `TabularHidden` so they live as row labels instead
@@ -163,16 +163,16 @@ array** by a `DynamicColumns` generator:
 
 For every row of `Assignments` this produces one column:
 
-- `HashTemplate` → a unique descriptor hash (`Grade_1`, `Grade_2`, …)
-- `NameTemplate` → the column header (the assignment title)
-- `InformaryDataAddressTemplate` → where each cell binds within the row
-  (`Grades.1` → `Grades[rowIndex].Grades["1"]`)
-- `HeaderGroupTemplate` → the cluster label for the auto super-header row
+- `HashTemplate` -> a unique descriptor hash (`Grade_1`, `Grade_2`, ...)
+- `NameTemplate` -> the column header (the assignment title)
+- `InformaryDataAddressTemplate` -> where each cell binds within the row
+  (`Grades.1` -> `Grades[rowIndex].Grades["1"]`)
+- `HeaderGroupTemplate` -> the cluster label for the auto super-header row
 
 ### Non-destructive by design
 
 Dynamic columns react to their source array, but they never destroy data. If
-an assignment is removed from `Assignments`, its column disappears — but the
+an assignment is removed from `Assignments`, its column disappears - but the
 grades already entered at `Grades[*].Grades["<id>"]` are left in place. Add the
 assignment back and the column returns with every grade intact. This is why a
 `DynamicColumns` generator is safe to drive from live, user-editable data.
@@ -181,7 +181,7 @@ assignment back and the column returns with every grade intact. This is why a
 
 Because the generator sets `HeaderGroupTemplate: "{~D:Record.Topic~}"`,
 pict-section-form synthesizes an extra header row above the column names and
-**clusters adjacent columns that share a topic** — Math, Science, Reading, Art,
+**clusters adjacent columns that share a topic** - Math, Science, Reading, Art,
 Writing each become one spanning cell. No extra configuration is required; the
 super-header is derived entirely from the generator.
 
@@ -191,7 +191,7 @@ different grids.
 
 ---
 
-## Feature 4 — Editing controls & read-only grids
+## Feature 4 - Editing controls & read-only grids
 
 By default each tabular row shows del / up / down controls on the right. The
 Performance grid is a summary view, so it hides them:
@@ -209,7 +209,7 @@ leading column.
 
 ---
 
-## Feature 5 — Selectable rows & columns
+## Feature 5 - Selectable rows & columns
 
 The Grade Book turns on both selection modes:
 
@@ -221,7 +221,7 @@ The Grade Book turns on both selection modes:
     "RecordManifest": "GradeRowEditor",
     "RowSelection": true,
     "ColumnSelection": true,
-    "DynamicColumns": [ /* … */ ]
+    "DynamicColumns": [ /* ... */ ]
 }
 ```
 
@@ -229,9 +229,9 @@ The Grade Book turns on both selection modes:
 adds a checkbox header row. Checking a row highlights every cell across it;
 checking a column highlights every cell down it; the intersection gets both.
 
-The selected state is **stored in the form data** — as boolean arrays at
+The selected state is **stored in the form data** - as boolean arrays at
 `GradebookGrid_RowSelection` and `GradebookGrid_ColumnSelection` by default
-(`<GroupHash>_RowSelection` / `_ColumnSelection`) — so it round-trips with a
+(`<GroupHash>_RowSelection` / `_ColumnSelection`) - so it round-trips with a
 save/load. Either property can also be an object for finer control:
 
 ```js
@@ -243,11 +243,11 @@ save/load. Either property can also be an object for finer control:
 ```
 
 Because the selection lives in the form data, a solver can read it and decide
-how to present it — the built-in highlight is just the default.
+how to present it - the built-in highlight is just the default.
 
 ---
 
-## Feature 6 — Column sorting
+## Feature 6 - Column sorting
 
 The Students and Assignments tabs enable sorting:
 
@@ -264,13 +264,13 @@ The Students and Assignments tabs enable sorting:
 `ColumnSorting: true` injects a `<span>` with a sort SVG glyph (from Pict's
 icon registry) into every prime header cell. Clicking sorts the record set
 ascending; clicking the active column again toggles descending. The glyph
-shows the state — a neutral double-arrow on idle columns, an up/down arrow on
+shows the state - a neutral double-arrow on idle columns, an up/down arrow on
 the sorted one. Sorting is off by default; it works on static and dynamic
 columns alike.
 
 ---
 
-## Feature 7 — Tabular styling solvers
+## Feature 7 - Tabular styling solvers
 
 The Performance tab colors each student row by their average grade. First a
 `RecordSetSolver` on the group computes the average for every row:
@@ -290,7 +290,7 @@ average to a band color:
         "colortabularrow(\"Performance\", \"PerformanceGrid\", 0, " +
         "IF(getSectionTabularFormData(\"Performance\", \"PerformanceGrid\", 0, \"Average\"), \">=\", 85, \"#BFE3BF\", " +
         "IF(getSectionTabularFormData(\"Performance\", \"PerformanceGrid\", 0, \"Average\"), \">=\", 75, \"#F5DFA8\", \"#EBB8B8\")), 1)" }
-    /* … one expression per student row … */
+    /* ... one expression per student row ... */
 ]
 ```
 
@@ -315,7 +315,7 @@ module.exports.default_configuration.pict_configuration = {
 };
 ```
 
-No server, no fetch — open the page and the classroom is populated.
+No server, no fetch - open the page and the classroom is populated.
 
 ## Running the example
 
@@ -328,7 +328,7 @@ npm run build
 ## Takeaways
 
 1. **Configuration, not code.** Five interactive grids, sorting, selection,
-   live coloring — and the application file contains only a manifest.
+   live coloring - and the application file contains only a manifest.
 2. **Intersections are first-class.** `DynamicColumns` turns "students × assignments"
    into a real editable grid without hand-written columns.
 3. **Non-destructive always.** Hiding a column never discards the data behind it.
@@ -338,6 +338,6 @@ npm run build
 
 ## Related documentation
 
-- [Layouts](../../Layouts.md) — tabular layout reference (all of the properties above)
-- [Solvers](../../Solvers.md) — the tabular styling solver functions
-- [Configuration](../../Configuration.md) — group property reference
+- [Layouts](../../Layouts.md) - tabular layout reference (all of the properties above)
+- [Solvers](../../Solvers.md) - the tabular styling solver functions
+- [Configuration](../../Configuration.md) - group property reference

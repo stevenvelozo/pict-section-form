@@ -1,11 +1,11 @@
-# Comprehensions — Advanced patterns
+# Comprehensions - Advanced patterns
 
 This document goes deeper than [Comprehensions](Comprehensions.md):
 
-- **Hash vs. address arguments** — when to write `BookGUID` (bare symbol),
+- **Hash vs. address arguments** - when to write `BookGUID` (bare symbol),
   `"AppData.Bundle.BookGUID"` (string address), `getvalue("...")` (explicit
   lookup), and when to mix them.
-- **Computed contexts** — `IF`/ternary results as the `Context` argument so a
+- **Computed contexts** - `IF`/ternary results as the `Context` argument so a
   single solver routes between `OnApprovalAction.Submit` and
   `OnApprovalAction.Approve`.
 - **Per-row generation** with `MAP VAR` over a recordset.
@@ -14,21 +14,21 @@ This document goes deeper than [Comprehensions](Comprehensions.md):
 
 The complete worked example for everything here lives at
 `example_applications/complex_table/Complex-Tabular-Application.js`
-— if you only read one thing, read that file. This page explains the *why* behind
+- if you only read one thing, read that file. This page explains the *why* behind
 the patterns it uses.
 
-## Argument resolution — hashes, addresses, and quoted strings
+## Argument resolution - hashes, addresses, and quoted strings
 
 The solver expression parser treats each argument to `addComprehensionEntity`
 the same way it would treat any other function argument:
 
 | Argument form | What happens |
 |---|---|
-| `BookGUID` | **Bare symbol** — resolved from the form's manifest. Looked up first by descriptor hash, then by address against the marshal destination. |
-| `Record.GUID` / `AppData.Bundle.X` | **Dotted symbol** — resolved as an address (the parser does NOT need quotes around addresses). |
-| `"OnSave"` / `"Book"` | **Quoted string** — taken literally, no resolution. |
-| `getvalue("AppData.X.Y")` | **Explicit lookup** — useful when you want to force address-resolution semantics on a value built up from other solvers. |
-| `IF(...)` / `CONCAT(...)` | **Nested function call** — the inner function's return value becomes the argument. |
+| `BookGUID` | **Bare symbol** - resolved from the form's manifest. Looked up first by descriptor hash, then by address against the marshal destination. |
+| `Record.GUID` / `AppData.Bundle.X` | **Dotted symbol** - resolved as an address (the parser does NOT need quotes around addresses). |
+| `"OnSave"` / `"Book"` | **Quoted string** - taken literally, no resolution. |
+| `getvalue("AppData.X.Y")` | **Explicit lookup** - useful when you want to force address-resolution semantics on a value built up from other solvers. |
+| `IF(...)` / `CONCAT(...)` | **Nested function call** - the inner function's return value becomes the argument. |
 
 In practice you mix freely:
 
@@ -60,10 +60,10 @@ the parser to look the symbol up. The first three arguments are almost always
 literal strings (Context, Entity name) plus one resolved value (GUID); the
 fourth is almost always a literal Property; the fifth is almost always resolved.
 
-## Computed contexts — routing with `IF`
+## Computed contexts - routing with `IF`
 
 The `Context` argument is a manyfest address. It's also just a string that the
-function uses to walk a nested object — which means a *computed* string works
+function uses to walk a nested object - which means a *computed* string works
 fine. The complex_table example routes between `OnApprovalAction.Submit` and
 `OnApprovalAction.Approve` based on a `Proprietary` boolean:
 
@@ -83,7 +83,7 @@ Both `Submit` and `Approve` branches sit under `OnApprovalAction`, which lets
 downstream code key off `Object.keys(comprehension.OnApprovalAction)` to discover
 which actions fired this solve.
 
-The same trick scales to richer routing — e.g. context-per-environment:
+The same trick scales to richer routing - e.g. context-per-environment:
 
 ```js
 `addComprehensionEntity(
@@ -111,7 +111,7 @@ the row bound to a name you choose (`row` is the convention). Combined with
 { Ordinal: 210, Expression: `MAP VAR row FROM FruitData.FruityVice : addComprehensionEntity("OnSave", "Fruit", row.name, "Calories", row.nutritions.calories)` }
 ```
 
-Inside the body, `row.X.Y` resolves against each row in turn — so you get
+Inside the body, `row.X.Y` resolves against each row in turn - so you get
 deep-property access without writing per-row solvers.
 
 After the solve runs against the bundled FruityVice data, the comprehension at
@@ -141,8 +141,8 @@ row, you have two reasonable options:
 
 ## Customizing the destination
 
-Each metacontroller has a `comprehensionDestinationAddress` property —
-mirroring the existing `viewMarshalDestination` knob — that controls where
+Each metacontroller has a `comprehensionDestinationAddress` property -
+mirroring the existing `viewMarshalDestination` knob - that controls where
 `addComprehensionEntity` writes. The default is `AppData.FormEntityComprehensions`.
 
 ### Option 1: in the application constructor

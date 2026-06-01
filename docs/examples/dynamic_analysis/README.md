@@ -1,13 +1,13 @@
-# Dynamic Analysis — Injecting Sections at Runtime
+# Dynamic Analysis - Injecting Sections at Runtime
 
 <!-- docuserve:example-launch:start -->
-> **[&#9654; Launch the live app](examples/dynamic%5Fanalysis/index.html)** — runs in your browser, opens in a new tab.
+> **[Launch the live app](examples/dynamic%5Fanalysis/index.html)** - runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 
 Every other example here defines a fixed form. Dynamic Analysis defines a form
 that **grows while you use it**. It is a Fruit Nutrition Analysis Lab: a
-49-fruit dataset, an overview dashboard, an explorer grid — and two analysis
+49-fruit dataset, an overview dashboard, an explorer grid - and two analysis
 modules you can inject, repeatedly, at runtime. Each injection is an
 independent, self-scoped copy that calculates without colliding with any other.
 
@@ -31,35 +31,35 @@ data addresses** with a fresh UUID so each copy is its own world.
 
 ## Key files
 
-- `Dynamic-Analysis-Application.js` — the application: a thin class and the entire inline manifest
-- `FruitData.json` — the 49-fruit seed dataset (`DefaultAppData`)
-- `html/index.html` — HTML shell + theme CSS
+- `Dynamic-Analysis-Application.js` - the application: a thin class and the entire inline manifest
+- `FruitData.json` - the 49-fruit seed dataset (`DefaultAppData`)
+- `html/index.html` - HTML shell + theme CSS
 
-The application class itself is almost empty — the injection machinery lives in
+The application class itself is almost empty - the injection machinery lives in
 the `pict-section-form` library. This example's job is to supply a manifest
 shaped for that machinery to consume.
 
 ## The data model
 
-`FruitData.json` seeds `FruitData.FruityVice` — 49 fruit records, each with
-flat fields (`name`, `family`, `genus`, …) and a nested `nutritions` object
+`FruitData.json` seeds `FruitData.FruityVice` - 49 fruit records, each with
+flat fields (`name`, `family`, `genus`, ...) and a nested `nutritions` object
 (`calories`, `fat`, `sugar`, `carbohydrates`, `protein`). Solvers populate
-further runtime addresses: `DatasetSummary.*`, `OverviewChart.*`, and — per
-injected module — independent `Analysis.*` / `Macro.*` objects.
+further runtime addresses: `DatasetSummary.*`, `OverviewChart.*`, and - per
+injected module - independent `Analysis.*` / `Macro.*` objects.
 
 ---
 
-## Feature 1 — Injectable modules are reference manifests
+## Feature 1 - Injectable modules are reference manifests
 
 The manifest's `ReferenceManifests` map holds more than the grid's row editor.
-It also holds two whole **modules** — each one a manifest fragment with its own
+It also holds two whole **modules** - each one a manifest fragment with its own
 `Scope`, `Sections`, and `Descriptors`:
 
 ```js
 "ReferenceManifests": {
-    "FruitEditor":     { "Scope": "FruitEditor", "Descriptors": { /* … */ } },
-    "CalorieAnalysis": { "Scope": "CalorieAnalysis", "Sections": [ /* … */ ], "Descriptors": { /* … */ } },
-    "MacroBreakdown":  { "Scope": "MacroBreakdown",  "Sections": [ /* … */ ], "Descriptors": { /* … */ } }
+    "FruitEditor":     { "Scope": "FruitEditor", "Descriptors": { /* ... */ } },
+    "CalorieAnalysis": { "Scope": "CalorieAnalysis", "Sections": [ /* ... */ ], "Descriptors": { /* ... */ } },
+    "MacroBreakdown":  { "Scope": "MacroBreakdown",  "Sections": [ /* ... */ ], "Descriptors": { /* ... */ } }
 }
 ```
 
@@ -67,7 +67,7 @@ A module sits dormant in `ReferenceManifests` until something injects it.
 
 ---
 
-## Feature 2 — Solver rewriting on injection
+## Feature 2 - Solver rewriting on injection
 
 When a module is injected, the framework calls `createDistinctManifest`. It
 clones the module and **rewrites every solver expression and data address** to
@@ -76,7 +76,7 @@ overwrite the first one's values:
 
 ```text
 getvalue("AppData.Analysis.TotalCalories")
-   →  getvalue("AppData.<UUID>.Analysis.TotalCalories")
+   ->  getvalue("AppData.<UUID>.Analysis.TotalCalories")
 ```
 
 The module's solvers are authored against the *un-scoped* address; the rewrite
@@ -85,9 +85,9 @@ injected any number of times.
 
 ---
 
-## Feature 3 — Address-rewritten function arguments
+## Feature 3 - Address-rewritten function arguments
 
-Rewriting is not limited to data addresses — solver *function arguments* are
+Rewriting is not limited to data addresses - solver *function arguments* are
 rewritten too. Functions like `hidesections` and `setsectionvisibility` declare
 which of their arguments are section hashes, so the hash `"CalorieDetail"` is
 rewritten to `"CalorieDetail_<UUID>"` for each injected copy:
@@ -102,7 +102,7 @@ copy's.
 
 ---
 
-## Feature 4 — Per-row record solvers
+## Feature 4 - Per-row record solvers
 
 The explorer grid is a `Tabular` group. Its `RecordSetSolvers` run once per
 fruit, computing derived nutrition columns in place:
@@ -120,7 +120,7 @@ zero macro.
 
 ---
 
-## Feature 5 — Aggregate solvers over array-element hashes
+## Feature 5 - Aggregate solvers over array-element hashes
 
 A descriptor whose address ends in `[].field` extracts that field from every
 record into a named array. Section `Solvers` then aggregate it:
@@ -139,10 +139,10 @@ record into a named array. Section `Solvers` then aggregate it:
 
 ---
 
-## Feature 6 — Reading and writing across AppData
+## Feature 6 - Reading and writing across AppData
 
 Solvers are not limited to their own descriptors. `getvalue` and `setvalue`
-reach anywhere in the data tree by address — here a module reads a global total
+reach anywhere in the data tree by address - here a module reads a global total
 and writes a normalized result back:
 
 ```js
@@ -154,7 +154,7 @@ setvalue("AppData.Analysis.NormalizedEnergy", EnergyDensityFromGlobal / 100)
 
 ---
 
-## Feature 7 — Solver-driven charts
+## Feature 7 - Solver-driven charts
 
 A chart is a descriptor with `InputType: "Chart"`. `ChartType` picks the
 Chart.js type, and the labels and every dataset are **solver expressions**:
@@ -168,7 +168,7 @@ Chart.js type, and the labels and every dataset are **solver expressions**:
 ]
 ```
 
-`ChartDatasetsSolvers` is an array, so a single chart can plot several series —
+`ChartDatasetsSolvers` is an array, so a single chart can plot several series -
 the macro-breakdown chart computes one dataset each for fat, carbohydrates,
 protein, and sugar. The lab also uses a `polarArea` chart with the same
 solver-driven shape.
@@ -178,7 +178,7 @@ solver-driven shape.
 ```bash
 cd example_applications/dynamic_analysis
 npm run build
-# serve ./dist and open index.html — inject a module to watch it self-scope
+# serve ./dist and open index.html - inject a module to watch it self-scope
 ```
 
 ## Takeaways
@@ -200,6 +200,6 @@ npm run build
 
 ## Related documentation
 
-- [Solvers](../../Solvers.md) — solver expressions, ordinals, and `getvalue` / `setvalue`
-- [Layouts](../../Layouts.md) — the `Tabular` layout and `RecordSetSolvers`
-- [Configuration](../../Configuration.md) — reference manifests and descriptors
+- [Solvers](../../Solvers.md) - solver expressions, ordinals, and `getvalue` / `setvalue`
+- [Layouts](../../Layouts.md) - the `Tabular` layout and `RecordSetSolvers`
+- [Configuration](../../Configuration.md) - reference manifests and descriptors

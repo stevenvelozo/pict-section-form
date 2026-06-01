@@ -213,10 +213,10 @@ aggregate values from arrays:
 
 ### Tabular Row & Column Styling
 
-These functions style a whole row or whole column of a tabular group — every
+These functions style a whole row or whole column of a tabular group - every
 cell across or down. The highlight pair toggles a CSS class on a `1` / `0`
 flag; the color pair sets (`1`) or clears (`0`) an inline background color.
-None of them touch form data — they are purely presentational and re-applied
+None of them touch form data - they are purely presentational and re-applied
 on each solve.
 
 | Function | Description |
@@ -265,7 +265,7 @@ presentation.
 The `Context` argument is treated as a manyfest address, so dotted contexts
 like `"OnApprovalAction.Approve"` produce nested context branches. Successive
 calls accumulate properties on the same record. See [Comprehensions](Comprehensions.md)
-for the basic walkthrough and [Comprehensions — Advanced](Comprehensions_Advanced.md)
+for the basic walkthrough and [Comprehensions - Advanced](Comprehensions_Advanced.md)
 for computed contexts, `MAP VAR` patterns, and customized destinations.
 
 #### Comprehension Example
@@ -422,4 +422,4 @@ Use in solvers:
 - [Architecture](Pict_Section_Form_Architecture.md) - Solver system internals
 - [Input Types](Input_Types.md) - Input visibility control
 - [Comprehensions](Comprehensions.md) - `addComprehensionEntity` basics
-- [Comprehensions — Advanced](Comprehensions_Advanced.md) - Computed contexts, `MAP VAR`, customized destinations
+- [Comprehensions - Advanced](Comprehensions_Advanced.md) - Computed contexts, `MAP VAR`, customized destinations

@@ -1,7 +1,7 @@
-# Change Tracking — A Solver State Machine
+# Change Tracking - A Solver State Machine
 
 <!-- docuserve:example-launch:start -->
-> **[&#9654; Launch the live app](examples/change%5Ftracking/index.html)** — runs in your browser, opens in a new tab.
+> **[Launch the live app](examples/change%5Ftracking/index.html)** - runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 
@@ -11,7 +11,7 @@ should be able to edit **any** of the three and have the others stay
 consistent. That requires the form to detect the edit and recompute in the
 right direction.
 
-Change Tracking builds exactly that — a small **state machine made entirely of
+Change Tracking builds exactly that - a small **state machine made entirely of
 solver expressions**. There is no JavaScript: a six-phase solver chain caches
 the previous values, compares them to the current ones, works out what changed,
 and recomputes accordingly.
@@ -21,7 +21,7 @@ and recomputes accordingly.
 | Capability | Where you see it |
 |------------|------------------|
 | Visible + hidden descriptor pairs | Each tracked field has hidden companions for bookkeeping |
-| Ordinal-phased solver chains | Six ordinals sequence init → cache → reset → detect → recompute → commit |
+| Ordinal-phased solver chains | Six ordinals sequence init -> cache -> reset -> detect -> recompute -> commit |
 | First-solve guards | An `IF()` seeds the cache only on the very first solve |
 | Change detection | A solver compares a snapshot against the cached last-solve value |
 | `IF()`-gated recompute | Guarded expressions recompute only the field that should change |
@@ -29,14 +29,14 @@ and recomputes accordingly.
 
 ## Key files
 
-- `Change-Tracking-Application.js` — the bootstrap: re-exports the stock app, attaches the manifest
-- `Change-Tracking_Manifest.json` — the manifest: descriptors and the solver chain
-- `html/index.html` — HTML shell + theme CSS
+- `Change-Tracking-Application.js` - the bootstrap: re-exports the stock app, attaches the manifest
+- `Change-Tracking_Manifest.json` - the manifest: descriptors and the solver chain
+- `html/index.html` - HTML shell + theme CSS
 
 ## The data model
 
-The `UnitCost` section has three **visible** `PreciseNumber` inputs —
-`Quantity`, `CostPerUnit`, `DollarAmount` — and six **hidden** `Number`
+The `UnitCost` section has three **visible** `PreciseNumber` inputs -
+`Quantity`, `CostPerUnit`, `DollarAmount` - and six **hidden** `Number`
 descriptors that exist purely as the state machine's memory:
 
 - `CostPerUnit_LastSolve`, `CostPerUnit_Hidden`, `CostPerUnit_Changed`
@@ -46,10 +46,10 @@ A `LineItems` section then repeats the whole exercise per row of a tabular grid.
 
 ---
 
-## Feature 1 — Visible and hidden descriptor pairs
+## Feature 1 - Visible and hidden descriptor pairs
 
 A descriptor does not have to be on screen. Setting `InputType: "Hidden"` keeps
-a value in the form data — solvable, savable — but draws no input. Change
+a value in the form data - solvable, savable - but draws no input. Change
 Tracking pairs each visible field with hidden companions:
 
 ```js
@@ -67,7 +67,7 @@ value, `_LastSolve` remembers it across solves, and `_Changed` is a flag.
 
 ---
 
-## Feature 2 — A six-phase solver chain
+## Feature 2 - A six-phase solver chain
 
 The section's `Solvers` array carries an `Ordinal` on every entry. The engine
 runs them in ascending order, so the chain is really six phases:
@@ -77,7 +77,7 @@ runs them in ascending order, so the chain is really six phases:
 | 5  | Seed the last-solve cache on the first run |
 | 10 | Snapshot the current inputs into `_Hidden` |
 | 15 | Reset the `_Changed` flags to 0 |
-| 20 | Detect changes — compare `_Hidden` to `_LastSolve` |
+| 20 | Detect changes - compare `_Hidden` to `_LastSolve` |
 | 25 | Recompute the dependent field |
 | 30 | Commit the settled values back into `_LastSolve` |
 
@@ -89,23 +89,23 @@ A single phase-10 entry looks like this:
 
 ---
 
-## Feature 3 — First-solve cache seeding
+## Feature 3 - First-solve cache seeding
 
 On the very first solve there is no "previous value", so a naive comparison
-would report a spurious change. Phase 5 guards against that with an `IF()` — it
+would report a spurious change. Phase 5 guards against that with an `IF()` - it
 seeds `_LastSolve` from the current input *only while it is still 0*:
 
 ```js
 CostPerUnit_LastSolve = IF(CostPerUnit_LastSolve, "==", 0, CostPerUnit, CostPerUnit_LastSolve)
 ```
 
-`IF()` here is the five-argument form — `IF(left, op, right, then, else)` — so
+`IF()` here is the five-argument form - `IF(left, op, right, then, else)` - so
 this reads "if `CostPerUnit_LastSolve == 0`, take `CostPerUnit`, otherwise keep
 `CostPerUnit_LastSolve`".
 
 ---
 
-## Feature 4 — Change detection
+## Feature 4 - Change detection
 
 Phase 15 clears the flags; phase 20 sets a flag when a field's snapshot differs
 from its cached last-solve value:
@@ -120,9 +120,9 @@ cost-per-unit field since the last solve.
 
 ---
 
-## Feature 5 — `IF()`-gated bidirectional recompute
+## Feature 5 - `IF()`-gated bidirectional recompute
 
-Phase 25 is the decision. Three guarded expressions cover the three cases — and
+Phase 25 is the decision. Three guarded expressions cover the three cases - and
 they run in order, so the last one can test "neither of the first two changed":
 
 ```js
@@ -131,21 +131,21 @@ CostPerUnit  = IF(DollarAmount_Changed, "==", 1, DollarAmount / Quantity, CostPe
 DollarAmount = IF(CostPerUnit_Changed + DollarAmount_Changed, "==", 0, Quantity * CostPerUnit, DollarAmount)
 ```
 
-- Cost-per-unit changed → recompute the dollar amount
-- Dollar amount changed → recompute the cost per unit
-- Neither changed (so quantity was edited) → recompute the dollar amount
+- Cost-per-unit changed -> recompute the dollar amount
+- Dollar amount changed -> recompute the cost per unit
+- Neither changed (so quantity was edited) -> recompute the dollar amount
 
-The third gate sums the two flags and tests for `0` — a compact way to say
+The third gate sums the two flags and tests for `0` - a compact way to say
 "nothing else changed". Phase 30 then copies the settled `CostPerUnit` and
 `DollarAmount` into their `_LastSolve` companions, so the next cycle compares
 against fresh values.
 
 ---
 
-## Feature 6 — The same chain, per row
+## Feature 6 - The same chain, per row
 
 The `LineItems` section proves the pattern is not tied to a single section. Its
-tabular group runs the identical logic as a `RecordSetSolvers` string array —
+tabular group runs the identical logic as a `RecordSetSolvers` string array -
 one entry per step, executed in array order, which preserves the phase sequence
 without explicit ordinals:
 
@@ -159,7 +159,7 @@ without explicit ordinals:
 ]
 ```
 
-(Abbreviated — the live manifest carries the full thirteen-step chain.)
+(Abbreviated - the live manifest carries the full thirteen-step chain.)
 
 ## Running the example
 
@@ -179,13 +179,13 @@ npm run build
    detection, and directional recompute are all five-argument `IF()`
    expressions.
 4. **Detect, then act.** Comparing a snapshot to a cached value tells the form
-   which field the user touched — and a guarded recompute keeps the others
+   which field the user touched - and a guarded recompute keeps the others
    consistent.
 5. **Section logic ports to rows.** The same chain drops into a tabular grid's
    `RecordSetSolvers` and runs once per row.
 
 ## Related documentation
 
-- [Solvers](../../Solvers.md) — solver expressions, ordinals, and the `IF()` function
-- [Input Types](../../Input_Types.md) — the `Hidden` and `PreciseNumber` input types
-- [Configuration](../../Configuration.md) — descriptors and section structure
+- [Solvers](../../Solvers.md) - solver expressions, ordinals, and the `IF()` function
+- [Input Types](../../Input_Types.md) - the `Hidden` and `PreciseNumber` input types
+- [Configuration](../../Configuration.md) - descriptors and section structure

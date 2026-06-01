@@ -13,10 +13,10 @@
 <!-- docuserve:examples:start -->
 | Example | Complexity | Launch |
 |---------|------------|--------|
-| [Change Tracking](examples/change%5Ftracking/README.md) | Intermediate | [&#9654; Launch](examples/change%5Ftracking/index.html) |
-| [Dynamic Analysis](examples/dynamic%5Fanalysis/README.md) | Advanced | [&#9654; Launch](examples/dynamic%5Fanalysis/index.html) |
-| [Gradebook](examples/gradebook/README.md) | Intermediate | [&#9654; Launch](examples/gradebook/index.html) |
-| [NDT Field Test](examples/ndt%5Ffield%5Ftest/README.md) | Advanced | [&#9654; Launch](examples/ndt%5Ffield%5Ftest/index.html) |
-| [Scope Mathematics](examples/scope%5Fmathematics/README.md) | Intermediate | [&#9654; Launch](examples/scope%5Fmathematics/index.html) |
-| [Simple Table](examples/simple%5Ftable/README.md) | Basic | [&#9654; Launch](examples/simple%5Ftable/index.html) |
+| [Change Tracking](examples/change%5Ftracking/README.md) | Intermediate | [Launch](examples/change%5Ftracking/index.html) |
+| [Dynamic Analysis](examples/dynamic%5Fanalysis/README.md) | Advanced | [Launch](examples/dynamic%5Fanalysis/index.html) |
+| [Gradebook](examples/gradebook/README.md) | Intermediate | [Launch](examples/gradebook/index.html) |
+| [NDT Field Test](examples/ndt%5Ffield%5Ftest/README.md) | Advanced | [Launch](examples/ndt%5Ffield%5Ftest/index.html) |
+| [Scope Mathematics](examples/scope%5Fmathematics/README.md) | Intermediate | [Launch](examples/scope%5Fmathematics/index.html) |
+| [Simple Table](examples/simple%5Ftable/README.md) | Basic | [Launch](examples/simple%5Ftable/index.html) |
 <!-- docuserve:examples:end -->

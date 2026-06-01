@@ -34,8 +34,8 @@ The view layer consists of two primary classes:
 
 ```mermaid
 flowchart TD
-    MC["PictFormMetacontroller<br/>• Manages multiple form sections<br/>• Orchestrates data marshaling<br/>• Controls solver execution<br/>• Handles initial bundle loading"]
-    DF["PictViewDynamicForm<br/>• Represents a single form section<br/>• Maintains section manifest instance<br/>• Handles input provider lifecycle<br/>• Manages group and row structures"]
+    MC["PictFormMetacontroller<br/>- Manages multiple form sections<br/>- Orchestrates data marshaling<br/>- Controls solver execution<br/>- Handles initial bundle loading"]
+    DF["PictViewDynamicForm<br/>- Represents a single form section<br/>- Maintains section manifest instance<br/>- Handles input provider lifecycle<br/>- Manages group and row structures"]
     MC -->|manages| DF
 ```
 
@@ -87,7 +87,7 @@ for export and editing.
    `ManifestFactory` parses its descriptors into groups and rows, and
    `MetatemplateGenerator` builds the layout templates.
 3. The forms render to the DOM through the template hierarchy.
-4. Solvers execute — expressions resolve their values.
+4. Solvers execute - expressions resolve their values.
 5. Input providers initialize the UI controls.
 6. Event handlers attach for change detection.
 
