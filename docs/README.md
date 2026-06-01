@@ -75,8 +75,8 @@ npm install pict-section-form
 
 ## Related Packages
 
-- [pict](https://github.com/fable-retold/pict) - Core application framework
-- [pict-view](https://github.com/fable-retold/pict-view) - View base class
-- [pict-provider](https://github.com/fable-retold/pict-provider) - Provider base class
-- [manyfest](https://github.com/fable-retold/manyfest) - Schema definitions
-- [fable](https://github.com/fable-retold/fable) - Service infrastructure
+- [pict](https://fable-retold.github.io/pict/) - Core application framework
+- [pict-view](https://fable-retold.github.io/pict-view/) - View base class
+- [pict-provider](https://fable-retold.github.io/pict-provider/) - Provider base class
+- [manyfest](https://fable-retold.github.io/manyfest/) - Schema definitions
+- [fable](https://fable-retold.github.io/fable/) - Service infrastructure
