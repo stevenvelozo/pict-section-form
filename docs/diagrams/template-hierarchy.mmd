@@ -1,0 +1,12 @@
+flowchart TD
+    FC["Form Container"] --> S["Section (for each)"]
+    S --> SP["Section Prefix"]
+    S --> G["Group (for each)"]
+    S --> SX["Section Postfix"]
+    G --> GP["Group Prefix"]
+    G --> R["Row (for each)"]
+    G --> GX["Group Postfix"]
+    R --> RP["Row Prefix"]
+    R --> I["Input (for each)"]
+    R --> RX["Row Postfix"]
+    I --> IT["Input Template (by InputType or DataType)"]

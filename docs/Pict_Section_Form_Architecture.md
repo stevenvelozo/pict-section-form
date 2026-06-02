@@ -32,12 +32,8 @@ The framework follows several key principles:
 
 The view layer consists of two primary classes:
 
-```mermaid
-flowchart TD
-    MC["PictFormMetacontroller<br/>- Manages multiple form sections<br/>- Orchestrates data marshaling<br/>- Controls solver execution<br/>- Handles initial bundle loading"]
-    DF["PictViewDynamicForm<br/>- Represents a single form section<br/>- Maintains section manifest instance<br/>- Handles input provider lifecycle<br/>- Manages group and row structures"]
-    MC -->|manages| DF
-```
+<!-- bespoke diagram: edit diagrams/views.mmd or .hints.json, then: npx pict-renderer-graph build modules/pict/pict-section-form/docs -->
+![Views](diagrams/views.svg)
 
 **PictViewDynamicForm** extends `pict-view` and represents a single form section.
 It maintains:
@@ -113,20 +109,8 @@ to map form elements to their corresponding data addresses.
 
 Templates are rendered in a strict hierarchy:
 
-```mermaid
-flowchart TD
-    FC["Form Container"] --> S["Section (for each)"]
-    S --> SP["Section Prefix"]
-    S --> G["Group (for each)"]
-    S --> SX["Section Postfix"]
-    G --> GP["Group Prefix"]
-    G --> R["Row (for each)"]
-    G --> GX["Group Postfix"]
-    R --> RP["Row Prefix"]
-    R --> I["Input (for each)"]
-    R --> RX["Row Postfix"]
-    I --> IT["Input Template (by InputType or DataType)"]
-```
+<!-- bespoke diagram: edit diagrams/template-hierarchy.mmd or .hints.json, then: npx pict-renderer-graph build modules/pict/pict-section-form/docs -->
+![Template Hierarchy](diagrams/template-hierarchy.svg)
 
 Templates support three levels of customization:
 1. **View-specific** - Templates specific to a single view instance

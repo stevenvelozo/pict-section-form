@@ -1,0 +1,4 @@
+flowchart TD
+    MC["PictFormMetacontroller<br/>- Manages multiple form sections<br/>- Orchestrates data marshaling<br/>- Controls solver execution<br/>- Handles initial bundle loading"]
+    DF["PictViewDynamicForm<br/>- Represents a single form section<br/>- Maintains section manifest instance<br/>- Handles input provider lifecycle<br/>- Manages group and row structures"]
+    MC -->|manages| DF
