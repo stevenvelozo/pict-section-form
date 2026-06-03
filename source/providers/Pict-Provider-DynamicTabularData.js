@@ -435,7 +435,16 @@ class DynamicTabularData extends libPictProvider
 					this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to delete row [${pRowIndex}] but the index is out of bounds.`);
 					return false;
 				}
+				let tmpOriginalLength = tmpDestinationObject.length;
 				tmpDestinationObject.splice(tmpRowIndex, 1);
+
+				// Position-keyed DynamicColumns (KeyBy:"Position") store dependent cell data by the
+				// source row's INDEX, so deleting a source row must shift every dependent row's
+				// positional cells down past the removed index -- otherwise the values below it
+				// re-associate to the wrong column. (Solver-filled cells re-derive on the next
+				// solve; user-entered cells would shift without this.) Must run BEFORE the
+				// dependent views re-resolve their columns below. No-op for value-keyed generators.
+				this._spliceDependentPositionalColumns(tmpGroup.RecordSetAddress, tmpRowIndex, tmpOriginalLength);
 
 				// Also render any other views that have this as the RecordSetAddress
 				// Filter the views by each Group.RecordSetAddress and find the ones with this RecordSetAddress
@@ -541,6 +550,102 @@ class DynamicTabularData extends libPictProvider
 			}
 			tmpView.rebuildCustomTemplate();
 			tmpView.render();
+		}
+	}
+
+	/**
+	 * For position-keyed DynamicColumns (KeyBy: "Position") sourced from
+	 * pSourceRecordSetAddress, shift each dependent row's positional cells down past
+	 * a just-removed source index so values stay aligned with their column. Cells are
+	 * addressed by resolving the generator's InformaryDataAddressTemplate with the
+	 * synthetic { __Index } record, the same way columns are generated. No-op for
+	 * value-keyed generators (their data stays attached to the stable value).
+	 *
+	 * @param {string} pSourceRecordSetAddress - RecordSetAddress of the deleted-from source.
+	 * @param {number} pDeletedIndex - Index of the source row that was removed.
+	 * @param {number} pOriginalLength - Source row count BEFORE the removal.
+	 */
+	_spliceDependentPositionalColumns(pSourceRecordSetAddress, pDeletedIndex, pOriginalLength)
+	{
+		if ((typeof pSourceRecordSetAddress !== 'string') || (pSourceRecordSetAddress.length < 1))
+		{
+			return;
+		}
+		if (!this.pict.views.PictFormMetacontroller)
+		{
+			return;
+		}
+		let tmpManifestFactory = this.fable.ManifestFactory;
+		if (!tmpManifestFactory || (typeof tmpManifestFactory._parseDynamicColumnTemplate !== 'function'))
+		{
+			return;
+		}
+		let tmpViews = this.pict.views.PictFormMetacontroller.filterViews((pViewToTest) => { return pViewToTest.isPictSectionForm; });
+		for (let v = 0; v < tmpViews.length; v++)
+		{
+			let tmpView = tmpViews[v];
+			let tmpGroups = tmpView.getGroups();
+			for (let g = 0; g < tmpGroups.length; g++)
+			{
+				let tmpGroup = tmpGroups[g];
+				if (!Array.isArray(tmpGroup.DynamicColumns) || (tmpGroup.DynamicColumns.length < 1))
+				{
+					continue;
+				}
+				let tmpDependentRows = tmpView.sectionManifest.getValueByHash(tmpView.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+				if (!Array.isArray(tmpDependentRows) || (tmpDependentRows.length < 1))
+				{
+					continue;
+				}
+				for (let c = 0; c < tmpGroup.DynamicColumns.length; c++)
+				{
+					let tmpGenerator = tmpGroup.DynamicColumns[c];
+					if (!tmpGenerator || (tmpGenerator.SourceAddress !== pSourceRecordSetAddress))
+					{
+						continue;
+					}
+					// Only position-keyed generators store data by index; value-keyed columns keep
+					// their data attached to the (stable) value, so they need no shifting.
+					if (tmpGenerator.KeyBy !== 'Position')
+					{
+						continue;
+					}
+					if (typeof tmpGenerator.InformaryDataAddressTemplate !== 'string')
+					{
+						continue;
+					}
+					// Resolve the positional cell address for each original column index once.
+					let tmpAddresses = [];
+					for (let k = 0; k < pOriginalLength; k++)
+					{
+						tmpAddresses[k] = tmpManifestFactory._parseDynamicColumnTemplate(tmpGenerator.InformaryDataAddressTemplate, { __Index: k, __RowNumber: k + 1 });
+					}
+					for (let r = 0; r < tmpDependentRows.length; r++)
+					{
+						let tmpRow = tmpDependentRows[r];
+						if (!tmpRow || (typeof tmpRow !== 'object'))
+						{
+							continue;
+						}
+						// Shift every cell below the deleted index down by one.
+						for (let k = pDeletedIndex; k < (pOriginalLength - 1); k++)
+						{
+							if (!tmpAddresses[k] || !tmpAddresses[k + 1])
+							{
+								continue;
+							}
+							let tmpNextValue = tmpView.sectionManifest.getValueByHash(tmpRow, tmpAddresses[k + 1]);
+							tmpView.sectionManifest.setValueByHash(tmpRow, tmpAddresses[k], tmpNextValue);
+						}
+						// Clear the now-orphaned final positional cell.
+						let tmpLastAddress = tmpAddresses[pOriginalLength - 1];
+						if (tmpLastAddress)
+						{
+							tmpView.sectionManifest.setValueByHash(tmpRow, tmpLastAddress, undefined);
+						}
+					}
+				}
+			}
 		}
 	}
 }
