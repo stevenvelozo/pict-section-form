@@ -530,6 +530,44 @@ suite('PictSectionForm Tabular Features', () =>
 				Expect(tmpDescriptorAfter.Name).to.equal('Addition', 'Name refreshed from the source row');
 			}, fDone);
 		});
+
+		test('Adding a source row rebuilds dependent dynamic-column views in the render phase (no blank-out)', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Grades',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Grades',
+				RecordManifest: 'GradeRowEditor',
+				DynamicColumns:
+				[
+					{
+						SourceAddress: 'Assignments',
+						HashTemplate: 'Grade_{~D:Record.IDAssignment~}',
+						NameTemplate: '{~D:Record.Title~}',
+						InformaryDataAddressTemplate: 'Grades.{~D:Record.IDAssignment~}',
+						DataType: 'Number',
+						PictForm: { InputType: 'Number' }
+					}
+				]
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				Expect(tmpGroup.supportingManifest.elementAddresses.indexOf('Grade_99')).to.equal(-1, 'no Grade_99 column before the source row is added');
+
+				// Simulate the source array growing the way createDynamicTableRow pushes a new
+				// row, then run the render-phase rebuild that Fix A performs BEFORE marshaling.
+				// The dependent view must re-resolve + rebuild its columns here -- not mid-marshal.
+				_Pict.AppData.Assignments.push({ IDAssignment: 99, Title: 'Pop Quiz', Topic: 'Math' });
+				_Pict.providers.DynamicTabularData._rebuildDependentDynamicColumnViews('Assignments');
+
+				Expect(tmpGroup.supportingManifest.elementAddresses.indexOf('Grade_99')).to.be.greaterThan(-1,
+					'dependent view re-resolved + rebuilt its columns when the source array grew');
+				Expect(tmpGroup.supportingManifest.elementDescriptors['Grade_99'].Name).to.equal('Pop Quiz',
+					'new column header resolved from the newly added source row');
+			}, fDone);
+		});
 	});
 
 	suite('Tabular highlight / color solvers', () =>

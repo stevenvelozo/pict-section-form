@@ -240,6 +240,15 @@ class DynamicTabularData extends libPictProvider
 					tmpViewsToRender[i].render();
 				}
 
+				// Rebuild any OTHER views whose DynamicColumns are sourced from this record set
+				// (e.g. a "% Passing" table whose columns are generated from this "Products" table)
+				// HERE, in the render phase -- BEFORE the marshal below -- so the column DOM is
+				// correct when the marshal fills it. Previously these dependent tables were only
+				// rebuilt from inside the Tabular layout's onDataMarshalToForm hook (mid-marshal),
+				// which left the freshly rebuilt cells unpopulated until a later edit/marshal --
+				// the "dependent table blanks out on row add/delete until you edit a field" bug.
+				this._rebuildDependentDynamicColumnViews(tmpGroup.RecordSetAddress);
+
 				// Run the solver
 				this.pict.providers.DynamicSolver.solveViews();
 
@@ -454,12 +463,84 @@ class DynamicTabularData extends libPictProvider
 					tmpViewsToRender[i].render();
 				}
 
+				// Rebuild any OTHER views whose DynamicColumns are sourced from this record set
+				// (e.g. a "% Passing" table whose columns are generated from this "Products" table)
+				// HERE, in the render phase -- BEFORE the marshal below -- so the column DOM is
+				// correct when the marshal fills it. Previously these dependent tables were only
+				// rebuilt from inside the Tabular layout's onDataMarshalToForm hook (mid-marshal),
+				// which left the freshly rebuilt cells unpopulated until a later edit/marshal --
+				// the "dependent table blanks out on row add/delete until you edit a field" bug.
+				this._rebuildDependentDynamicColumnViews(tmpGroup.RecordSetAddress);
+
 				// Run the solver
 				this.pict.providers.DynamicSolver.solveViews();
 
 				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
 				this.pict.views.PictFormMetacontroller.marshalFormSections();
 			}
+		}
+	}
+
+	/**
+	 * Rebuild every OTHER section-form view whose DynamicColumns are sourced from
+	 * pSourceRecordSetAddress: re-resolve their generated columns and rebuild their
+	 * template + DOM. Call this in the RENDER phase (after a source row was added or
+	 * removed, before solving + marshaling) so dependent tables paint their column
+	 * changes up front instead of mid-marshal. Idempotent and safe when there are no
+	 * dependent views (it simply finds none).
+	 *
+	 * @param {string} pSourceRecordSetAddress - RecordSetAddress whose rows drive the columns.
+	 */
+	_rebuildDependentDynamicColumnViews(pSourceRecordSetAddress)
+	{
+		if ((typeof pSourceRecordSetAddress !== 'string') || (pSourceRecordSetAddress.length < 1))
+		{
+			return;
+		}
+		if (!this.pict.views.PictFormMetacontroller)
+		{
+			return;
+		}
+		let tmpDependentViews = this.pict.views.PictFormMetacontroller.filterViews(
+			(pViewToTest) =>
+			{
+				if (!pViewToTest.isPictSectionForm)
+				{
+					return false;
+				}
+				let tmpGroups = pViewToTest.getGroups();
+				for (let i = 0; i < tmpGroups.length; i++)
+				{
+					let tmpDynamicColumns = tmpGroups[i].DynamicColumns;
+					if (!Array.isArray(tmpDynamicColumns))
+					{
+						continue;
+					}
+					for (let g = 0; g < tmpDynamicColumns.length; g++)
+					{
+						if (tmpDynamicColumns[g] && (tmpDynamicColumns[g].SourceAddress === pSourceRecordSetAddress))
+						{
+							return true;
+						}
+					}
+				}
+				return false;
+			});
+		for (let i = 0; i < tmpDependentViews.length; i++)
+		{
+			let tmpView = tmpDependentViews[i];
+			let tmpGroups = tmpView.getGroups();
+			for (let g = 0; g < tmpGroups.length; g++)
+			{
+				let tmpGroup = tmpGroups[g];
+				if (Array.isArray(tmpGroup.DynamicColumns) && (tmpGroup.DynamicColumns.length > 0) &&
+					this.fable.ManifestFactory && (typeof this.fable.ManifestFactory._resolveDynamicColumns === 'function'))
+				{
+					this.fable.ManifestFactory._resolveDynamicColumns(tmpView, tmpGroup);
+				}
+			}
+			tmpView.rebuildCustomTemplate();
+			tmpView.render();
 		}
 	}
 }
