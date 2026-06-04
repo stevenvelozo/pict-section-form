@@ -17,7 +17,7 @@
  */
 
 const libPictApplication = require('pict-application');
-const libPictSectionForm = require('pict-section-form');
+const libPictSectionForm = require('../../source/Pict-Section-Form.js');
 
 const libSuperheroes = require('./superheroes/Superheroes.js');
 
@@ -178,6 +178,22 @@ class SuperheroStudioApplication extends libPictSectionForm.PictFormApplication
 			JSON.parse(JSON.stringify(libSuperheroes[this._currentHeroSlug]));
 	}
 
+	onAfterInitializeAsync(fCallback)
+	{
+		// Point the form metacontroller at our AppData branch BEFORE super so
+		// the initial render reads from the right place.
+		if (this.pict.views.PictFormMetacontroller)
+		{
+			this.pict.views.PictFormMetacontroller.viewMarshalDestination = 'AppData.SuperheroForm';
+		}
+		super.onAfterInitializeAsync(() =>
+		{
+			try { this.marshalDataFromAppDataToView(); }
+			catch (pErr) { if (this.log) this.log.warn('[superhero_studio] initial marshal failed', { error: pErr.message }); }
+			return fCallback();
+		});
+	}
+
 	// -----------------------------------------------------------------
 	// Dropdown / page handlers (called from index.html inline onclick)
 	// -----------------------------------------------------------------
@@ -277,16 +293,20 @@ class SuperheroStudioApplication extends libPictSectionForm.PictFormApplication
 
 module.exports = SuperheroStudioApplication;
 
-module.exports.default_configuration =
-{
-	Name: 'Superhero Studio',
-	Hash: 'SuperheroStudio',
-	pict_configuration:
+// Extend the parent's default_configuration so MainViewportViewIdentifier
+// (= "PictFormMetacontroller") survives — without it the form has no
+// auto-render target and the page comes up blank.
+module.exports.default_configuration = Object.assign({},
+	libPictSectionForm.PictFormApplication.default_configuration,
 	{
-		Product: 'SuperheroStudio-Example',
-		DefaultFormManifest: _FormManifest
-	}
-};
+		Name: 'Superhero Studio',
+		Hash: 'SuperheroStudio',
+		pict_configuration:
+		{
+			Product: 'SuperheroStudio-Example',
+			DefaultFormManifest: _FormManifest
+		}
+	});
 
 // Expose the slug list so the HTML dropdown can render its options dynamically.
 module.exports.HeroSlugs = Object.keys(libSuperheroes);

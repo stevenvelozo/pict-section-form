@@ -15,7 +15,7 @@
  */
 
 const libPictApplication = require('pict-application');
-const libPictSectionForm = require('pict-section-form');
+const libPictSectionForm = require('../../source/Pict-Section-Form.js');
 
 const _FormDescriptors =
 {
@@ -78,6 +78,20 @@ class RichTextFormApplication extends libPictSectionForm.PictFormApplication
 
 		// Allow-images toggle backing flag (read by uploadImage stub).
 		this._imageUploaderEnabled = true;
+	}
+
+	onAfterInitializeAsync(fCallback)
+	{
+		if (this.pict.views.PictFormMetacontroller)
+		{
+			this.pict.views.PictFormMetacontroller.viewMarshalDestination = 'AppData.RichTextDemoForm';
+		}
+		super.onAfterInitializeAsync(() =>
+		{
+			try { this.marshalDataFromAppDataToView(); }
+			catch (pErr) { if (this.log) this.log.warn('[richtext_form] initial marshal failed', { error: pErr.message }); }
+			return fCallback();
+		});
 	}
 
 	/**
@@ -146,13 +160,17 @@ class RichTextFormApplication extends libPictSectionForm.PictFormApplication
 
 module.exports = RichTextFormApplication;
 
-module.exports.default_configuration =
-{
-	Name: 'RichText Form Example',
-	Hash: 'RichTextFormExample',
-	pict_configuration:
+// Extend the parent's default_configuration so MainViewportViewIdentifier
+// (= "PictFormMetacontroller") survives — without it the form has no
+// auto-render target and the page comes up blank.
+module.exports.default_configuration = Object.assign({},
+	libPictSectionForm.PictFormApplication.default_configuration,
 	{
-		Product: 'RichTextForm-Example',
-		DefaultFormManifest: _FormManifest
-	}
-};
+		Name: 'RichText Form Example',
+		Hash: 'RichTextFormExample',
+		pict_configuration:
+		{
+			Product: 'RichTextForm-Example',
+			DefaultFormManifest: _FormManifest
+		}
+	});
