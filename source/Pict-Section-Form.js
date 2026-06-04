@@ -39,3 +39,13 @@ module.exports.ExtensionViews = (
 		LifecycleVisualization: require('./views/support/Pict-View-PSF-LifeCycle-Visualization.js'),
 		DebugViewer: require('./views/support/Pict-View-PSF-DebugViewer.js')
 	});
+
+// Complex InputTypes — heavy editor deps (markdowneditor, excalidraw) are
+// lazy-required by the providers themselves on first setMode('edit'). The
+// require below is just for the provider class; nothing heavy loads here.
+module.exports.RichTextInput = require('./providers/inputs/Pict-Provider-Input-RichText.js');
+module.exports.DiagramInput  = require('./providers/inputs/Pict-Provider-Input-Diagram.js');
+
+// SVG palette → theme-CSS-variable rewriter. Re-exported so consumers can
+// theme stored SVGs without needing pict-section-excalidraw.
+module.exports.themeifySVG = require('./providers/inputs/util/Themeify-SVG.js').themeifySVG;

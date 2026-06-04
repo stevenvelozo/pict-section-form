@@ -20,6 +20,8 @@ behavior for different data types and interaction patterns.
 | 011 | [AutofillTriggerGroup](011-autofill-trigger-group.md) | (any) | Trigger-based autofill |
 | 012 | [TabGroupSelector](012-tab-group-selector.md) | TabGroupSelector | Tab navigation for groups |
 | 013 | [TabSectionSelector](013-tab-section-selector.md) | TabSectionSelector | Tab navigation for sections |
+| 014 | [RichText](014-rich-text.md) | RichText | Markdown editor (edit) + rendered markdown (view); pluggable image uploader |
+| 015 | [Diagram](015-diagram.md) | Diagram | Excalidraw (edit) + inline themed SVG (view); themeify on save |
 
 ## Provider Categories
 
@@ -60,6 +62,14 @@ Handle multi-section/multi-group navigation:
 Display data graphically:
 
 - **[Chart](009-chart.md)** - Chart.js integration
+
+### Editable Rich Providers
+
+Pair a heavy editor (edit mode) with a render-only view (view mode), with the
+heavy bundle lazy-loaded on the first edit toggle:
+
+- **[RichText](014-rich-text.md)** - Markdown editor + rendered markdown; pluggable image uploader
+- **[Diagram](015-diagram.md)** - Excalidraw + themed inline SVG; themeify on save
 
 ## Using Providers
 

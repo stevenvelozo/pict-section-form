@@ -1,6 +1,6 @@
 {
     "name": "pict-section-form",
-    "version": "1.0.199",
+    "version": "1.1.0",
     "description": "Pict dynamic form sections",
     "main": "source/Pict-Section-Form.js",
     "directories": {
@@ -50,6 +50,14 @@
         "pict-section-tuigrid": "^1.0.31",
         "pict-template": "^1.0.15",
         "pict-view": "^1.0.68"
+    },
+    "peerDependencies": {
+        "pict-section-markdowneditor": "^1.0.0",
+        "pict-section-excalidraw": "^1.0.0"
+    },
+    "peerDependenciesMeta": {
+        "pict-section-markdowneditor": { "optional": true },
+        "pict-section-excalidraw":     { "optional": true }
     },
     "mocha": {
         "diff": true,

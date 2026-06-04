@@ -100,7 +100,7 @@ node ServeExamples.js
 |---------|------------|---------|------|
 | [Change Tracking](change%5Ftracking/README.md) | Intermediate | Demonstrates the multi-input evaluate-on-change solver pattern for reacting to several fields at once. | [Launch](examples/change%5Ftracking/index.html) |
 | [Dynamic Analysis](dynamic%5Fanalysis/README.md) | Advanced | A fruit-nutrition analysis lab with dynamic section injection, solver rewriting, charts, and histograms. | [Launch](examples/dynamic%5Fanalysis/index.html) |
-| [Gradebook](gradebook/README.md) | Intermediate | An advanced tabular recordset with stacked headers, row labels, dynamic columns, row/column selection, and column sorting - built purely from manifest configuration. | [Launch](examples/gradebook/index.html) |
+| [Gradebook](gradebook/README.md) | Intermediate | An advanced tabular recordset with stacked headers, row labels, dynamic columns, row/column selection, and column sorting — built purely from manifest configuration. | [Launch](examples/gradebook/index.html) |
 | [NDT Field Test](ndt%5Ffield%5Ftest/README.md) | Advanced | A nuclear-density-testing field data-collection form with offline persistence and charted results. | [Launch](examples/ndt%5Ffield%5Ftest/index.html) |
 | [Scope Mathematics](scope%5Fmathematics/README.md) | Intermediate | Shows solvers reaching across scopes to read and combine data from other sections of the form. | [Launch](examples/scope%5Fmathematics/index.html) |
 | [Simple Table](simple%5Ftable/README.md) | Basic | A minimal tabular forms application demonstrating manifest-driven table layout, reference manifests, and dot-notation access into nested record data. | [Launch](examples/simple%5Ftable/index.html) |
