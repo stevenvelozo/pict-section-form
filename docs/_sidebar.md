@@ -38,6 +38,8 @@
   - [AutofillTriggerGroup](input_providers/011-autofill-trigger-group.md)
   - [TabGroupSelector](input_providers/012-tab-group-selector.md)
   - [TabSectionSelector](input_providers/013-tab-section-selector.md)
+  - [RichText](input_providers/014-rich-text.md)
+  - [Diagram](input_providers/015-diagram.md)
 
 - Examples
 
@@ -48,3 +50,6 @@
   - [Change Tracking](#/page/examples/change_tracking/README)
   - [NDT Field Test](#/page/examples/ndt_field_test/README)
   - [Dynamic Analysis](#/page/examples/dynamic_analysis/README)
+  - [RichText Form Input](#/page/examples/richtext_form/README)
+  - [Diagram Form Input](#/page/examples/diagram_form/README)
+  - [Superhero Studio](#/page/examples/superhero_studio/README)

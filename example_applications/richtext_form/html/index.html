@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>RichText Form Input — Pict Example</title>
+
+	<style id="PICT-CSS"></style>
+	<style>
+		*, *::before, *::after { box-sizing: border-box; }
+		body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #FAF8F4; color: #2A2520; }
+
+		.pict-example-header { display: flex; align-items: stretch; background: #264653; border-bottom: 3px solid #E76F51; }
+		.pict-example-badge { background: #E76F51; color: #FAEDCD; padding: 0.6rem 1rem; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
+		.pict-example-app-name { padding: 0.6rem 1rem; color: #FAEDCD; font-size: 1.1rem; font-weight: 600; }
+		.pict-example-module { margin-left: auto; padding: 0.6rem 1rem; color: #D4A373; font-size: 0.75rem; letter-spacing: 0.03em; align-self: center; }
+
+		.page-content { padding: 2rem; max-width: 920px; margin: 0 auto; }
+		.intro { color: #5A4A3C; font-size: 0.9rem; line-height: 1.6; margin-bottom: 24px; }
+		.intro code { background: #F0E8DA; padding: 1px 6px; border-radius: 3px; font-family: 'SFMono-Regular', Menlo, monospace; font-size: 0.85em; }
+
+		.controls { background: #FFFFFF; border: 1px solid #D4C4A8; border-radius: 6px; padding: 14px 16px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; font-size: 0.85rem; }
+		.controls label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+		.controls button { padding: 6px 14px; font-size: 0.85rem; font-weight: 600; color: #FAEDCD; background: #264653; border: none; border-radius: 4px; cursor: pointer; }
+		.controls button:hover { background: #E76F51; }
+
+		#PostkardFormContainer { background: #FFFFFF; border: 1px solid #D4C4A8; border-radius: 6px; padding: 20px; }
+
+		/* The form has one section + one input. */
+		.notes { margin-top: 24px; padding: 14px 16px; background: #FFF8E7; border-left: 3px solid #E9C46A; border-radius: 3px; font-size: 0.82rem; color: #5A4A3C; }
+		.notes strong { color: #2A2520; }
+	</style>
+</head>
+<body>
+	<header class="pict-example-header">
+		<span class="pict-example-badge">Pict Example</span>
+		<span class="pict-example-app-name">RichText Form Input</span>
+		<span class="pict-example-module">pict-section-markdowneditor</span>
+	</header>
+
+	<main class="page-content">
+		<p class="intro">
+			A pict-section-form field whose <code>InputType</code> is <code>RichText</code>. Boots in
+			<strong>view</strong> mode — just rendered markdown, no CodeMirror loaded. Click <em>Edit</em>
+			to flip into the editor (lazy-loads the markdown editor bundle on first toggle).
+		</p>
+
+		<div class="controls">
+			<button id="toggle-Body" onclick="window.RichTextFormExample.demo_toggleMode('Body')">Edit</button>
+
+			<label>
+				<input type="checkbox" id="allow-images" checked onchange="window.RichTextFormExample.demo_setAllowImages('Body', this.checked)">
+				Allow image paste
+			</label>
+
+			<label>
+				<input type="checkbox" id="use-uploader" checked onchange="window.RichTextFormExample.demo_setUploaderEnabled(this.checked)">
+				Use ImageUploader stub
+				<span style="color:#8A7F72; margin-left:6px; font-size:0.75rem;">(off = base64 inline)</span>
+			</label>
+		</div>
+
+		<div id="PostkardFormContainer"></div>
+
+		<div class="notes">
+			<strong>Verifying:</strong>
+			Open DevTools → Network. With <em>Edit</em> never clicked, no CodeMirror request fires. Click <em>Edit</em>
+			once and the markdown-editor bundle loads. Click <em>Done</em> to return to view mode — the editor view
+			is torn down, but its content lives in the field's hidden form input.
+		</div>
+	</main>
+
+	<script src="./pict.min.js"></script>
+	<script src="./richtext_form_example.min.js"></script>
+	<script>
+		Pict.safeOnDocumentReady(() =>
+		{
+			Pict.safeLoadPictApplication(window.RichtextFormExample || window.RichTextFormExample, 1);
+		});
+	</script>
+</body>
+</html>

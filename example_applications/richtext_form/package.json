@@ -1,0 +1,47 @@
+{
+	"name": "richtext_form_example",
+	"version": "1.0.0",
+	"description": "Pict-section-form RichText InputType demo — markdown editor (edit mode) + rendered markdown (view mode), with pluggable image uploader",
+	"main": "RichTextForm-Example-Application.js",
+	"scripts": {
+		"start": "node RichTextForm-Example-Application.js",
+		"build": "npx quack build && npx quack copy"
+	},
+	"author": "steven velozo <steven@velozo.com>",
+	"license": "MIT",
+	"copyFilesSettings": {
+		"whenFileExists": "overwrite"
+	},
+	"copyFiles": [
+		{
+			"from": "./html/*",
+			"to": "./dist/"
+		},
+		{
+			"from": "../../node_modules/pict/dist/*",
+			"to": "./dist/"
+		}
+	],
+	"dependencies": {
+		"pict": "^1.0.350",
+		"pict-application": "^1.0.19",
+		"pict-section-content": "^1.0.7",
+		"pict-section-form": "file:../..",
+		"pict-section-markdowneditor": "file:../../../pict-section-markdowneditor",
+		"pict-view": "^1.0.66"
+	},
+	"devDependencies": {
+		"@codemirror/lang-markdown": "^6.5.0",
+		"@codemirror/state": "^6.5.4",
+		"codemirror": "^6.0.2",
+		"esbuild": "^0.27.3"
+	},
+	"retold": {
+		"ExampleApplication": {
+			"Stage": true,
+			"Title": "RichText Form Input",
+			"Summary": "A pict-section-form field whose InputType is RichText — boots in view mode (rendered markdown), toggles into edit mode (CodeMirror) on demand. Demonstrates the AllowImages knob and the pluggable ImageUploader override.",
+			"Complexity": "Intermediate"
+		}
+	}
+}
