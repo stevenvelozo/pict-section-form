@@ -973,6 +973,30 @@ class TabularLayout extends libPictSectionGroupLayout
 	}
 
 	/**
+	 * Called after the tabular group template has been (re)rendered into the DOM.
+	 * Re-applies the selection highlight classes from the stored selection arrays so
+	 * a freshly rendered table shows its checked rows/columns highlighted without
+	 * waiting for a marshal or a solve. The render just rebuilt the row/cell DOM, so
+	 * any classes a previous pass applied are gone and must be restored here.
+	 *
+	 * This is what makes a solve-free load (e.g. a read-only form that must not run
+	 * solvers because they can mutate data) show its saved highlights immediately.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @returns {boolean}
+	 */
+	onGroupLayoutInitialize(pView, pGroup)
+	{
+		if (!pGroup)
+		{
+			return true;
+		}
+		this._reapplyTabularSelectionHighlights(pView, pGroup);
+		return true;
+	}
+
+	/**
 	 * Called after data is marshaled to the form. Re-runs DynamicColumns
 	 * resolution and row-label clustering so additions/removals of source
 	 * data flow into the rendered table without manual refresh calls.

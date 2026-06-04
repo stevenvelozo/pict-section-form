@@ -974,6 +974,66 @@ suite('PictSectionForm Tabular Features', () =>
 				Expect(_Pict.AppData.MyRowPicks[0]).to.equal(true);
 			}, fDone);
 		});
+
+		test('onGroupLayoutInitialize re-applies saved selection highlights after render WITHOUT a solve', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Students',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Students',
+				RecordManifest: 'StudentEditor',
+				RowSelection: true,
+				ColumnSelection: true
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+
+				// Simulate a loaded/saved form: selection state lives in the form data
+				// (row 1 and column 1 checked) but nothing has highlighted the DOM yet.
+				_Pict.AppData.Students_RowSelection = [ false, true, false ];
+				_Pict.AppData.Students_ColumnSelection = [ false, true ];
+
+				// Build the freshly-rendered table DOM the layout would have produced --
+				// no highlight classes on it yet (a render rebuilds the cells from scratch).
+				let tmpContainer = window.document.createElement('div');
+				tmpContainer.id = `GROUP-${tmpView.formID}-Students`;
+				tmpContainer.innerHTML = '<table>'
+					+ '<thead><tr><th data-tabular-column-index="0">H0</th><th data-tabular-column-index="1">H1</th></tr></thead>'
+					+ '<tbody>'
+					+ '<tr data-tabular-row-index="0"><td data-tabular-column-index="0">a</td><td data-tabular-column-index="1">b</td></tr>'
+					+ '<tr data-tabular-row-index="1"><td data-tabular-column-index="0">c</td><td data-tabular-column-index="1">d</td></tr>'
+					+ '<tr data-tabular-row-index="2"><td data-tabular-column-index="0">e</td><td data-tabular-column-index="1">f</td></tr>'
+					+ '</tbody></table>';
+				window.document.body.appendChild(tmpContainer);
+				try
+				{
+					// Nothing highlighted before the render-completion hook runs.
+					Expect(tmpContainer.querySelectorAll('.pict-tabular-row-highlight').length).to.equal(0, 'no row highlight before init');
+					Expect(tmpContainer.querySelectorAll('.pict-tabular-column-highlight').length).to.equal(0, 'no column highlight before init');
+
+					// The view's onAfterRender drives this hook on every render; calling it
+					// directly proves highlights are restored by render alone -- no solve, no marshal.
+					tmpLayout.onGroupLayoutInitialize(tmpView, tmpGroup);
+
+					let tmpRow1 = tmpContainer.querySelector('tr[data-tabular-row-index="1"]');
+					Expect(tmpRow1.classList.contains('pict-tabular-row-highlight')).to.equal(true, 'checked row 1 highlighted after init');
+					Expect(tmpContainer.querySelector('tr[data-tabular-row-index="0"]').classList.contains('pict-tabular-row-highlight')).to.equal(false, 'unchecked row 0 not highlighted');
+					Expect(tmpContainer.querySelector('tr[data-tabular-row-index="2"]').classList.contains('pict-tabular-row-highlight')).to.equal(false, 'unchecked row 2 not highlighted');
+
+					// Column 1 highlighted across the header and every body cell; column 0 untouched.
+					let tmpColumn1 = tmpContainer.querySelectorAll('[data-tabular-column-index="1"].pict-tabular-column-highlight');
+					Expect(tmpColumn1.length).to.equal(4, 'header + three body cells of checked column 1 highlighted');
+					Expect(tmpContainer.querySelectorAll('[data-tabular-column-index="0"].pict-tabular-column-highlight').length).to.equal(0, 'unchecked column 0 not highlighted');
+				}
+				finally
+				{
+					window.document.body.removeChild(tmpContainer);
+				}
+			}, fDone);
+		});
 	});
 
 	suite('Tabular column sorting (ColumnSorting)', () =>
