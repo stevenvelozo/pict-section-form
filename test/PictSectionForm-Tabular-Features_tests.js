@@ -530,6 +530,122 @@ suite('PictSectionForm Tabular Features', () =>
 				Expect(tmpDescriptorAfter.Name).to.equal('Addition', 'Name refreshed from the source row');
 			}, fDone);
 		});
+
+		test('Adding a source row rebuilds dependent dynamic-column views in the render phase (no blank-out)', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Grades',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Grades',
+				RecordManifest: 'GradeRowEditor',
+				DynamicColumns:
+				[
+					{
+						SourceAddress: 'Assignments',
+						HashTemplate: 'Grade_{~D:Record.IDAssignment~}',
+						NameTemplate: '{~D:Record.Title~}',
+						InformaryDataAddressTemplate: 'Grades.{~D:Record.IDAssignment~}',
+						DataType: 'Number',
+						PictForm: { InputType: 'Number' }
+					}
+				]
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				Expect(tmpGroup.supportingManifest.elementAddresses.indexOf('Grade_99')).to.equal(-1, 'no Grade_99 column before the source row is added');
+
+				// Simulate the source array growing the way createDynamicTableRow pushes a new
+				// row, then run the render-phase rebuild that Fix A performs BEFORE marshaling.
+				// The dependent view must re-resolve + rebuild its columns here -- not mid-marshal.
+				_Pict.AppData.Assignments.push({ IDAssignment: 99, Title: 'Pop Quiz', Topic: 'Math' });
+				_Pict.providers.DynamicTabularData._rebuildDependentDynamicColumnViews('Assignments');
+
+				Expect(tmpGroup.supportingManifest.elementAddresses.indexOf('Grade_99')).to.be.greaterThan(-1,
+					'dependent view re-resolved + rebuilt its columns when the source array grew');
+				Expect(tmpGroup.supportingManifest.elementDescriptors['Grade_99'].Name).to.equal('Pop Quiz',
+					'new column header resolved from the newly added source row');
+			}, fDone);
+		});
+	});
+
+	suite('Position-keyed dynamic columns (KeyBy: Position)', () =>
+	{
+		function makePositionApp()
+		{
+			return makeApplication({
+				Hash: 'Grades',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Grades',
+				RecordManifest: 'GradeRowEditor',
+				DynamicColumns:
+				[
+					{
+						SourceAddress: 'Assignments',
+						KeyBy: 'Position',
+						HashTemplate: 'PosCol_{~D:Record.__Index~}',
+						NameTemplate: 'Product {~D:Record.__RowNumber~}',
+						InformaryDataAddressTemplate: 'PosCol_{~D:Record.__Index~}',
+						DataType: 'String',
+						PictForm: { InputType: 'Text' }
+					}
+				]
+			});
+		}
+
+		test('Columns are keyed by source-row position; names use the 1-based __RowNumber', (fDone) =>
+		{
+			bootstrap(makePositionApp(), (_Pict) =>
+			{
+				let tmpGroup = _Pict.views['PictSectionForm-Class'].sectionDefinition.Groups[0];
+				let tmpAddrs = tmpGroup.supportingManifest.elementAddresses;
+				Expect(tmpAddrs.indexOf('PosCol_0')).to.be.greaterThan(-1, 'index 0 column');
+				Expect(tmpAddrs.indexOf('PosCol_1')).to.be.greaterThan(-1, 'index 1 column');
+				Expect(tmpAddrs.indexOf('PosCol_2')).to.be.greaterThan(-1, 'index 2 column');
+				Expect(tmpGroup.supportingManifest.elementDescriptors['PosCol_0'].Name).to.equal('Product 1');
+				Expect(tmpGroup.supportingManifest.elementDescriptors['PosCol_2'].Name).to.equal('Product 3');
+			}, fDone);
+		});
+
+		test('Duplicate identity values in the source do NOT produce a duplicate column (2.3)', (fDone) =>
+		{
+			bootstrap(makePositionApp(), (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				// Add a source row whose stored identity (IDAssignment/Title) duplicates an existing
+				// row -- the exact "DefaultRows[length] re-use" shape. Position-keying must still
+				// give it a distinct column, since identity comes from the index, not the value.
+				_Pict.AppData.Assignments.push({ IDAssignment: 2, Title: 'Photosynthesis', Topic: 'Science' });
+				_Pict.ManifestFactory._resolveDynamicColumns(tmpView, tmpGroup);
+				let tmpAddrs = tmpGroup.supportingManifest.elementAddresses;
+				Expect(tmpAddrs.indexOf('PosCol_3')).to.be.greaterThan(-1, 'a distinct 4th column despite the duplicate value');
+				let tmpPosColCount = tmpAddrs.filter((pAddr) => pAddr.indexOf('PosCol_') === 0).length;
+				Expect(tmpPosColCount).to.equal(4, 'exactly four distinct positional columns, no duplicate');
+			}, fDone);
+		});
+
+		test('Deleting a middle source row shifts dependent positional cells down (delete-splice)', (fDone) =>
+		{
+			bootstrap(makePositionApp(), (_Pict) =>
+			{
+				let tmpRow = _Pict.AppData.Grades[0];
+				// User-entered values across the three positional columns.
+				tmpRow.PosCol_0 = 'A0';
+				tmpRow.PosCol_1 = 'A1';
+				tmpRow.PosCol_2 = 'A2';
+
+				// Remove the middle source row (index 1) -- as deleteDynamicTableRow does -- then
+				// run the dependent-cell splice it would trigger (originalLength was 3).
+				_Pict.AppData.Assignments.splice(1, 1);
+				_Pict.providers.DynamicTabularData._spliceDependentPositionalColumns('Assignments', 1, 3);
+
+				Expect(tmpRow.PosCol_0).to.equal('A0', 'cell before the deleted index is unchanged');
+				Expect(tmpRow.PosCol_1).to.equal('A2', 'cell after the deleted index shifted down into its place');
+				Expect(tmpRow.PosCol_2).to.equal(undefined, 'the now-orphaned last cell was cleared');
+			}, fDone);
+		});
 	});
 
 	suite('Tabular highlight / color solvers', () =>
