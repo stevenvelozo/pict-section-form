@@ -347,7 +347,16 @@ class ManifestFactory extends libFableServiceProviderBase
 			for (let k = 0; k < tmpSourceArray.length; k++)
 			{
 				let tmpSourceRow = tmpSourceArray[k];
-				let tmpHash = this._parseDynamicColumnTemplate(tmpGenerator.HashTemplate, tmpSourceRow);
+				// Expose the source-row position to the generator templates WITHOUT mutating the
+				// stored row: a shallow copy carries __Index (0-based) and __RowNumber (1-based)
+				// alongside the row's own fields. This lets a generator key its columns by
+				// POSITION (KeyBy: "Position") -- e.g. HashTemplate "Col_{~D:Record.__Index~}",
+				// NameTemplate "Product {~D:Record.__RowNumber~}" -- so adding/removing a source
+				// row never collides on a stored identity value (no markers in the saved data).
+				let tmpTemplateRecord = (tmpSourceRow && (typeof tmpSourceRow === 'object'))
+					? Object.assign({}, tmpSourceRow, { __Index: k, __RowNumber: k + 1 })
+					: { Value: tmpSourceRow, __Index: k, __RowNumber: k + 1 };
+				let tmpHash = this._parseDynamicColumnTemplate(tmpGenerator.HashTemplate, tmpTemplateRecord);
 				if (!tmpHash)
 				{
 					continue;
@@ -359,16 +368,16 @@ class ManifestFactory extends libFableServiceProviderBase
 				tmpSeenHashes[tmpHash] = true;
 
 				let tmpName = tmpGenerator.NameTemplate
-					? this._parseDynamicColumnTemplate(tmpGenerator.NameTemplate, tmpSourceRow)
+					? this._parseDynamicColumnTemplate(tmpGenerator.NameTemplate, tmpTemplateRecord)
 					: tmpHash;
-				let tmpInformaryDataAddress = this._parseDynamicColumnTemplate(tmpGenerator.InformaryDataAddressTemplate, tmpSourceRow);
+				let tmpInformaryDataAddress = this._parseDynamicColumnTemplate(tmpGenerator.InformaryDataAddressTemplate, tmpTemplateRecord);
 				if (!tmpInformaryDataAddress)
 				{
 					this.log.warn(`PICT Form Tabular DynamicColumns generator ${i} produced empty InformaryDataAddress for row ${k} on group [${pGroup.Hash}]; skipping.`);
 					continue;
 				}
 				let tmpHeaderGroup = tmpGenerator.HeaderGroupTemplate
-					? this._parseDynamicColumnTemplate(tmpGenerator.HeaderGroupTemplate, tmpSourceRow)
+					? this._parseDynamicColumnTemplate(tmpGenerator.HeaderGroupTemplate, tmpTemplateRecord)
 					: '';
 
 				let tmpDescriptor = {
