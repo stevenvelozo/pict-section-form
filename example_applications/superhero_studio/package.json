@@ -1,7 +1,7 @@
 {
 	"name": "superhero_studio_example",
 	"version": "1.0.0",
-	"description": "Pict-section-form showcase that exercises both new complex InputTypes (RichText for the origin story, Diagram for the portrait) inside a superhero character-sheet form. A dropdown at the top loads five pre-baked superheroes complete with hand-drawn SVG portraits and markdown origin stories.",
+	"description": "Pict-section-form showcase that exercises both new complex InputTypes (RichText for the origin story, Diagram for the portrait) inside a superhero character-sheet form.",
 	"main": "SuperheroStudio-Example-Application.js",
 	"scripts": {
 		"start": "node SuperheroStudio-Example-Application.js",
@@ -9,29 +9,15 @@
 	},
 	"author": "steven velozo <steven@velozo.com>",
 	"license": "MIT",
+	"devDependencies": {},
 	"copyFilesSettings": {
 		"whenFileExists": "overwrite"
 	},
 	"copyFiles": [
-		{ "from": "./html/*",                                                       "to": "./dist/" },
-		{ "from": "../../node_modules/pict/dist/*",                                 "to": "./dist/" },
-		{ "from": "../../../pict-section-excalidraw/vendor/excalidraw-built/*",     "to": "./dist/" }
+		{ "from": "./html/*",                                                            "to": "./dist/" },
+		{ "from": "../../node_modules/pict/dist/*",                                      "to": "./dist/" },
+		{ "from": "../../node_modules/pict-section-excalidraw/vendor/excalidraw-built/*", "to": "./dist/" }
 	],
-	"dependencies": {
-		"pict":                        "^1.0.350",
-		"pict-application":            "^1.0.19",
-		"pict-section-content":        "^1.0.7",
-		"pict-section-excalidraw":     "file:../../../pict-section-excalidraw",
-		"pict-section-form":           "file:../..",
-		"pict-section-markdowneditor": "file:../../../pict-section-markdowneditor",
-		"pict-view":                   "^1.0.66"
-	},
-	"devDependencies": {
-		"@codemirror/lang-markdown": "^6.5.0",
-		"@codemirror/state":         "^6.5.4",
-		"codemirror":                "^6.0.2",
-		"esbuild":                   "^0.27.3"
-	},
 	"retold": {
 		"ExampleApplication": {
 			"Stage": true,

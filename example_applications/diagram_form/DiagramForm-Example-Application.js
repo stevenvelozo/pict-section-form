@@ -13,8 +13,8 @@
  *   re-rendering anything. No editor bundle touched.
  */
 
-const libPictApplication       = require('pict-application');
-const libPictSectionForm = require('pict-section-form');
+const libPictApplication = require('pict-application');
+const libPictSectionForm = require('../../source/Pict-Section-Form.js');
 
 const _FormDescriptors =
 {
@@ -91,6 +91,20 @@ class DiagramFormApplication extends libPictSectionForm.PictFormApplication
 		this.pict.AppData.DiagramDemoForm = { ArchDiagram: _DemoSvg };
 	}
 
+	onAfterInitializeAsync(fCallback)
+	{
+		if (this.pict.views.PictFormMetacontroller)
+		{
+			this.pict.views.PictFormMetacontroller.viewMarshalDestination = 'AppData.DiagramDemoForm';
+		}
+		super.onAfterInitializeAsync(() =>
+		{
+			try { this.marshalDataFromAppDataToView(); }
+			catch (pErr) { if (this.log) this.log.warn('[diagram_form] initial marshal failed', { error: pErr.message }); }
+			return fCallback();
+		});
+	}
+
 	demo_toggleMode(pInputHash)
 	{
 		let tmpProvider = this.pict.providers['Pict-Input-Diagram'];
@@ -115,13 +129,17 @@ class DiagramFormApplication extends libPictSectionForm.PictFormApplication
 
 module.exports = DiagramFormApplication;
 
-module.exports.default_configuration =
-{
-	Name: 'Diagram Form Example',
-	Hash: 'DiagramFormExample',
-	pict_configuration:
+// Extend the parent's default_configuration so MainViewportViewIdentifier
+// (= "PictFormMetacontroller") survives — without it the form has no
+// auto-render target and the page comes up blank.
+module.exports.default_configuration = Object.assign({},
+	libPictSectionForm.PictFormApplication.default_configuration,
 	{
-		Product: 'DiagramForm-Example',
-		DefaultFormManifest: _FormManifest
-	}
-};
+		Name: 'Diagram Form Example',
+		Hash: 'DiagramFormExample',
+		pict_configuration:
+		{
+			Product: 'DiagramForm-Example',
+			DefaultFormManifest: _FormManifest
+		}
+	});
