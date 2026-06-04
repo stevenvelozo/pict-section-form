@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-06-04T23:17:17.429Z",
+	"Generated": "2026-06-04T23:33:20.574Z",
 	"Mode": "module",
 	"GitHubOrg": "fable-retold",
 	"DefaultBranch": "master",
@@ -137,6 +137,14 @@
 					{
 						"Title": "TabSectionSelector",
 						"Path": "input_providers/013-tab-section-selector.md"
+					},
+					{
+						"Title": "RichText",
+						"Path": "input_providers/014-rich-text.md"
+					},
+					{
+						"Title": "Diagram",
+						"Path": "input_providers/015-diagram.md"
 					}
 				]
 			},
@@ -170,6 +178,18 @@
 					{
 						"Title": "Dynamic Analysis",
 						"Path": "#/page/examples/dynamic_analysis/README"
+					},
+					{
+						"Title": "RichText Form Input",
+						"Path": "#/page/examples/richtext_form/README"
+					},
+					{
+						"Title": "Diagram Form Input",
+						"Path": "#/page/examples/diagram_form/README"
+					},
+					{
+						"Title": "Superhero Studio",
+						"Path": "#/page/examples/superhero_studio/README"
 					}
 				]
 			}
@@ -205,6 +225,12 @@
 			"examples/change_tracking/README.md",
 			"examples/change_tracking/change_tracking.js",
 			"examples/change_tracking/index.html",
+			"examples/diagram_form/README.md",
+			"examples/diagram_form/diagram_form_example.min.js",
+			"examples/diagram_form/excalidraw-iframe-host.html",
+			"examples/diagram_form/excalidraw-wrapper.css",
+			"examples/diagram_form/index.html",
+			"examples/diagram_form/manifest.json",
 			"examples/dynamic_analysis/README.md",
 			"examples/dynamic_analysis/chart.umd.js",
 			"examples/dynamic_analysis/dynamic_analysis_application.js",
@@ -217,12 +243,21 @@
 			"examples/ndt_field_test/index.html",
 			"examples/ndt_field_test/ndt_field_test.js",
 			"examples/postcard_example/README.md",
+			"examples/richtext_form/README.md",
+			"examples/richtext_form/index.html",
+			"examples/richtext_form/richtext_form_example.min.js",
 			"examples/scope_mathematics/README.md",
 			"examples/scope_mathematics/index.html",
 			"examples/scope_mathematics/scope_mathematics.js",
 			"examples/simple_table/README.md",
 			"examples/simple_table/index.html",
 			"examples/simple_table/simple_tabular_application.min.js",
+			"examples/superhero_studio/README.md",
+			"examples/superhero_studio/excalidraw-iframe-host.html",
+			"examples/superhero_studio/excalidraw-wrapper.css",
+			"examples/superhero_studio/index.html",
+			"examples/superhero_studio/manifest.json",
+			"examples/superhero_studio/superhero_studio_example.min.js",
 			"index.html",
 			"input_providers/001-select.md",
 			"input_providers/002-datetime.md",

@@ -1,7 +1,7 @@
 {
 	"Name": "pict-section-form",
-	"Version": "1.0.199",
+	"Version": "1.1.0",
 	"Description": "Pict dynamic form sections",
-	"GeneratedAt": "2026-06-04T23:17:17.789Z",
-	"GitCommit": "75962c6"
+	"GeneratedAt": "2026-06-04T23:33:20.939Z",
+	"GitCommit": "6f2a4e2"
 }
