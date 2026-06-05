@@ -255,6 +255,20 @@ class PictInputRichText extends libPictSectionInputExtension
 			constructor(pSubFable, pSubOptions, pSubServiceHash)
 			{
 				super(pSubFable, pSubOptions, pSubServiceHash);
+
+				// Disable the cursor-tracking sidebar. The base markdowneditor
+				// follows the cursor's vertical position so the Bold/Italic
+				// sidebar reflows as the caret moves — useful for tall
+				// multi-segment notebooks, lethal for a single-segment form
+				// field. In a form the cursor often sits below the visible
+				// viewport (long paragraph, scrolled page) and the sidebar
+				// follows it down, landing the buttons off-screen. The user
+				// then clicks where they SAW the button and the click lands
+				// on whitespace. Keep the sidebar at its sticky-top resting
+				// position so Bold/Italic stay right where the user expects.
+				let tmpNoop = function () {};
+				this._updateSidebarPosition = tmpNoop;
+				this._resetSidebarPosition  = tmpNoop;
 			}
 
 			onContentChange(pSegmentIndex, pContent)
