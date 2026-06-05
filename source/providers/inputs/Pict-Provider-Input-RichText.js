@@ -317,6 +317,27 @@ class PictInputRichText extends libPictSectionInputExtension
 				// No uploader configured + AllowImages=true → default base64 inline.
 				return false;
 			}
+
+			/**
+			 * Push CodeMirror extensions before the editor mounts. We enable
+			 * line wrapping by default so long markdown paragraphs flow to
+			 * the next visual line instead of horizontally scrolling — the
+			 * almost-always-correct default for prose. Opt out via
+			 * `PictForm.RichText.WordWrap: false` in the descriptor.
+			 */
+			customConfigureExtensions(pExtensions, pSegmentIndex)
+			{
+				let tmpWantWrap = (tmpRichTextOpts.WordWrap !== false);
+				if (tmpWantWrap)
+				{
+					let tmpCM = this._codeMirrorModules;
+					if (tmpCM && tmpCM.EditorView && tmpCM.EditorView.lineWrapping)
+					{
+						pExtensions.push(tmpCM.EditorView.lineWrapping);
+					}
+				}
+				return pExtensions;
+			}
 		}
 
 		this.pict.addView(tmpViewHash, tmpEditorOpts, RichTextFormEditor);
