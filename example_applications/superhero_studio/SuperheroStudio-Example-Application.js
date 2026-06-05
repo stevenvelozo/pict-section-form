@@ -12,7 +12,7 @@
  *
  * A dropdown at the top loads one of five pre-baked superheroes — their
  * stats, portraits, and origin stories all flow into the form via
- * marshalDataFromAppDataToView(). Try toggling the portrait or origin into
+ * marshalDataFromAppDataToDynamicViews(). Try toggling the portrait or origin into
  * edit mode and editing them — the rest of the form keeps working.
  */
 
@@ -188,7 +188,7 @@ class SuperheroStudioApplication extends libPictSectionForm.PictFormApplication
 		}
 		super.onAfterInitializeAsync(() =>
 		{
-			try { this.marshalDataFromAppDataToView(); }
+			try { this.marshalDataFromAppDataToDynamicViews(); }
 			catch (pErr) { if (this.log) this.log.warn('[superhero_studio] initial marshal failed', { error: pErr.message }); }
 			return fCallback();
 		});
@@ -212,7 +212,7 @@ class SuperheroStudioApplication extends libPictSectionForm.PictFormApplication
 		this.pict.AppData.SuperheroForm = JSON.parse(JSON.stringify(tmpHero));
 
 		// Push the new record into the rendered form.
-		try { this.marshalDataFromAppDataToView(); }
+		try { this.marshalDataFromAppDataToDynamicViews(); }
 		catch (pErr) { if (this.log) this.log.warn('[superhero_studio] marshal failed', { error: pErr.message }); }
 
 		this._refreshToggleLabels();

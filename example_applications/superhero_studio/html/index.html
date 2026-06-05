@@ -89,7 +89,7 @@
 	<main class="page-content">
 		<div class="hero-bar">
 			<label for="hero-select">Load Superhero</label>
-			<select id="hero-select" onchange="window.SuperheroStudioExample.demo_loadHero(this.value)">
+			<select id="hero-select" onchange="_Pict.PictApplication.demo_loadHero(this.value)">
 				<option value="captain-verbose">Captain Verbose</option>
 				<option value="the-notebook">The Notebook</option>
 				<option value="markdown-marauder">Markdown Marauder</option>
@@ -107,10 +107,10 @@
 		</div>
 
 		<div class="field-action-bar">
-			<button id="toggle-Portrait" onclick="window.SuperheroStudioExample.demo_toggleMode('Portrait')">Edit</button>
+			<button id="toggle-Portrait" onclick="_Pict.PictApplication.demo_toggleMode('Portrait')">Edit</button>
 			<span class="hint">Toggle the Portrait field into Excalidraw — first click lazy-loads the editor bundle.</span>
 
-			<button id="toggle-OriginStory" onclick="window.SuperheroStudioExample.demo_toggleMode('OriginStory')" style="margin-left:18px;">Edit</button>
+			<button id="toggle-OriginStory" onclick="_Pict.PictApplication.demo_toggleMode('OriginStory')" style="margin-left:18px;">Edit</button>
 			<span class="hint">Toggle the Origin Story field into the markdown editor.</span>
 		</div>
 
@@ -126,7 +126,13 @@
 		</div>
 	</main>
 
+	<link rel="stylesheet" href="./excalidraw-wrapper.css">
 	<script src="./pict.min.js"></script>
+	<!-- Excalidraw vendor bundle (React + Excalidraw). The Diagram InputType
+	     looks for window.PictSectionExcalidrawVendor when the Portrait field
+	     flips to edit; without these tags Excalidraw won't mount. -->
+	<script src="./react-vendor.min.js"></script>
+	<script src="./excalidraw-wrapper.min.js"></script>
 	<script src="./superhero_studio_example.min.js"></script>
 	<script>
 		const _Themes =

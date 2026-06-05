@@ -34,27 +34,7 @@
 
 const libPictSectionInputExtension = require('../Pict-Provider-InputExtension.js');
 const libMarked                    = require('marked');
-
-// Heavy markdown-editor dep — lazy-required on the first setMode('edit') so
-// hosts that never edit (read-mostly forms) don't pull CodeMirror at module
-// load.
-let _MarkdownEditorClass = null;
-function _resolveMarkdownEditor()
-{
-	if (_MarkdownEditorClass) return _MarkdownEditorClass;
-	try
-	{
-		_MarkdownEditorClass = require('pict-section-markdowneditor');
-	}
-	catch (pErr)
-	{
-		throw new Error(
-			'[Pict-Input-RichText] Cannot mount edit mode — ' +
-			'pict-section-markdowneditor is not installed. ' +
-			'Add it to your app\'s dependencies (it\'s an optional peer of pict-section-form).');
-	}
-	return _MarkdownEditorClass;
-}
+const libMarkdownEditor            = require('pict-section-markdowneditor');
 
 // Form templates live in pict-section-form's default-template set, so no
 // runtime template injection is needed here. CSS still needs registering
@@ -269,17 +249,6 @@ class PictInputRichText extends libPictSectionInputExtension
 		// is meant to be extended (its constructor accepts options + the parent
 		// view class is libPictViewClass).
 		let tmpProvider = this;
-
-		// Lazy-resolve the markdown editor base class. Throws helpfully if the
-		// peer dep is missing.
-		let libMarkdownEditor;
-		try { libMarkdownEditor = _resolveMarkdownEditor(); }
-		catch (pErr)
-		{
-			if (this.log) this.log.error('[Pict-Input-RichText] ' + pErr.message);
-			if (typeof fCallback === 'function') fCallback(pErr);
-			return;
-		}
 
 		class RichTextFormEditor extends libMarkdownEditor
 		{

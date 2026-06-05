@@ -59,7 +59,7 @@
 		</p>
 
 		<div class="controls">
-			<button id="toggle-ArchDiagram" onclick="window.DiagramFormExample.demo_toggleMode('ArchDiagram')">Edit</button>
+			<button id="toggle-ArchDiagram" onclick="_Pict.PictApplication.demo_toggleMode('ArchDiagram')">Edit</button>
 
 			<span class="swatch" style="--swatch-color:#1B1F23" onclick="window.applyTheme('notebook')">Notebook</span>
 			<span class="swatch" style="--swatch-color:#EAEAEA" onclick="window.applyTheme('dark')">Dark</span>
@@ -77,7 +77,13 @@
 		</div>
 	</main>
 
+	<link rel="stylesheet" href="./excalidraw-wrapper.css">
 	<script src="https://cdn.jsdelivr.net/npm/pict@1/dist/pict.min.js"></script>
+	<!-- Excalidraw vendor bundle (React + Excalidraw). The Diagram InputType's
+	     editor mode looks for window.PictSectionExcalidrawVendor; without these
+	     tags, switching the field to edit shows a "wrapper not loaded" notice. -->
+	<script src="./react-vendor.min.js"></script>
+	<script src="./excalidraw-wrapper.min.js"></script>
 	<script src="./diagram_form_example.min.js"></script>
 	<script>
 		const _Themes =
