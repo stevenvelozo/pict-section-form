@@ -568,6 +568,72 @@ suite('PictSectionForm Tabular Features', () =>
 					'new column header resolved from the newly added source row');
 			}, fDone);
 		});
+
+		test('Renaming a source row reports namesChanged and refreshes the column header in place', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Grades',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Grades',
+				RecordManifest: 'GradeRowEditor',
+				DynamicColumns:
+				[
+					{
+						SourceAddress: 'Assignments',
+						HashTemplate: 'Grade_{~D:Record.IDAssignment~}',
+						NameTemplate: '{~D:Record.Title~}',
+						InformaryDataAddressTemplate: 'Grades.{~D:Record.IDAssignment~}',
+						DataType: 'Number',
+						PictForm: { InputType: 'Number' }
+					}
+				]
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				Expect(tmpGroup.supportingManifest.elementDescriptors['Grade_1'].Name).to.equal('Addition', 'baseline header label');
+
+				// Rename the source row's name-driving field -- no add / remove / reorder, so the
+				// column hash set is identical. The header label must still be flagged as changed.
+				_Pict.AppData.Assignments[0].Title = 'Renamed';
+				let tmpResult = _Pict.ManifestFactory._resolveDynamicColumns(tmpView, tmpGroup);
+
+				Expect(tmpResult.changed).to.equal(false, 'the column SET did not change (no add/remove/reorder)');
+				Expect(tmpResult.namesChanged).to.equal(true, 'an existing column label changed');
+				Expect(tmpGroup.supportingManifest.elementDescriptors['Grade_1'].Name).to.equal('Renamed',
+					'descriptor header label refreshed in place so a render() re-bakes it live');
+			}, fDone);
+		});
+
+		test('Steady-state re-run reports neither changed nor namesChanged', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Grades',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Grades',
+				RecordManifest: 'GradeRowEditor',
+				DynamicColumns:
+				[
+					{
+						SourceAddress: 'Assignments',
+						HashTemplate: 'Grade_{~D:Record.IDAssignment~}',
+						NameTemplate: '{~D:Record.Title~}',
+						InformaryDataAddressTemplate: 'Grades.{~D:Record.IDAssignment~}',
+						DataType: 'Number',
+						PictForm: { InputType: 'Number' }
+					}
+				]
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpResult = _Pict.ManifestFactory._resolveDynamicColumns(tmpView, tmpGroup);
+				Expect(tmpResult.changed).to.equal(false, 'no structural change on a steady-state re-run');
+				Expect(tmpResult.namesChanged).to.equal(false, 'no false label change on a steady-state re-run');
+			}, fDone);
+		});
 	});
 
 	suite('Position-keyed dynamic columns (KeyBy: Position)', () =>

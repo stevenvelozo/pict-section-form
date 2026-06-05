@@ -1004,6 +1004,8 @@ class TabularLayout extends libPictSectionGroupLayout
 	 * Loop guard: only triggers a template rebuild + re-render when the
 	 * desired set of dynamic descriptor hashes ACTUALLY changes from the
 	 * cached state, so steady state is a no-op (just a row-label recompute).
+	 * A label-only change (same columns, a source row renamed) takes the
+	 * lighter render()-only path so the header text re-bakes without a rebuild.
 	 *
 	 * @param {Object} pView
 	 * @param {Object} pGroup
@@ -1038,6 +1040,24 @@ class TabularLayout extends libPictSectionGroupLayout
 					pGroup._RebuildInProgress = false;
 				}
 				// The re-render rebuilt the table DOM -- restore selection highlights.
+				this._reapplyTabularSelectionHighlights(pView, pGroup);
+				return true;
+			}
+			if (tmpResult && tmpResult.namesChanged)
+			{
+				// The column SET is unchanged but an existing column's display label was
+				// refreshed (e.g. a source row renamed). _resolveDynamicColumns already
+				// updated the descriptor Name in place; a render() re-bakes the header
+				// labels from it -- no structural template rebuild required.
+				pGroup._RebuildInProgress = true;
+				try
+				{
+					pView.render();
+				}
+				finally
+				{
+					pGroup._RebuildInProgress = false;
+				}
 				this._reapplyTabularSelectionHighlights(pView, pGroup);
 				return true;
 			}

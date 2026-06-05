@@ -281,11 +281,11 @@ class ManifestFactory extends libFableServiceProviderBase
 	 *
 	 * @param {Object} pView - The view containing the group.
 	 * @param {Object} pGroup - The group object (must already have supportingManifest).
-	 * @returns {{added: Array<string>, removed: Array<string>, unchanged: Array<string>, changed: boolean}}
+	 * @returns {{added: Array<string>, removed: Array<string>, unchanged: Array<string>, changed: boolean, namesChanged: boolean}}
 	 */
 	_resolveDynamicColumns(pView, pGroup)
 	{
-		let tmpEmpty = { added: [], removed: [], unchanged: [], changed: false };
+		let tmpEmpty = { added: [], removed: [], unchanged: [], changed: false, namesChanged: false };
 		if (!pGroup || !Array.isArray(pGroup.DynamicColumns) || pGroup.DynamicColumns.length === 0)
 		{
 			return tmpEmpty;
@@ -307,6 +307,7 @@ class ManifestFactory extends libFableServiceProviderBase
 		let tmpAggregateRemoved = [];
 		let tmpAggregateUnchanged = [];
 		let tmpAggregateChanged = false;
+		let tmpAggregateNamesChanged = false;
 
 		for (let i = 0; i < pGroup.DynamicColumns.length; i++)
 		{
@@ -453,6 +454,16 @@ class ManifestFactory extends libFableServiceProviderBase
 				if (tmpExistingDescriptor)
 				{
 					let tmpFreshDescriptor = tmpDesiredDescriptors[tmpAddr];
+					// A column whose hash is UNCHANGED can still have a refreshed display label
+					// or header group when the source row's name-driving field is edited (e.g.
+					// renaming a product). The structural diff above only tracks the hash SET, so
+					// flag a label-only change separately -- the layout uses it to re-bake header
+					// text via a render() without a full (and costlier) template rebuild.
+					if (tmpExistingDescriptor.Name !== tmpFreshDescriptor.Name
+						|| tmpExistingDescriptor._DynamicColumnHeaderGroup !== tmpFreshDescriptor._DynamicColumnHeaderGroup)
+					{
+						tmpAggregateNamesChanged = true;
+					}
 					tmpExistingDescriptor.Name = tmpFreshDescriptor.Name;
 					tmpExistingDescriptor.DataType = tmpFreshDescriptor.DataType;
 					tmpExistingDescriptor.IsTabular = tmpFreshDescriptor.IsTabular;
@@ -513,7 +524,8 @@ class ManifestFactory extends libFableServiceProviderBase
 			added: tmpAggregateAdded,
 			removed: tmpAggregateRemoved,
 			unchanged: tmpAggregateUnchanged,
-			changed: tmpAggregateChanged
+			changed: tmpAggregateChanged,
+			namesChanged: tmpAggregateNamesChanged
 		};
 	}
 
