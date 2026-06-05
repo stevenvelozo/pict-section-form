@@ -4342,7 +4342,7 @@ if(tmpIsRootRenderable&&pRenderable&&pRenderable.TransactionHash){this.pict.Tran
 	 * Lifecycle hook that triggers after data is marshaled into the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
-	 */onAfterMarshalToViewAsync(fCallback){this.onAfterMarshalToView();return fCallback();}/** @return {boolean} - True if the object is a PictView. */get isPictView(){return true;}}module.exports=PictView;},{"../package.json":38,"fable-serviceproviderbase":4}],40:[function(require,module,exports){module.exports={"name":"pict-section-form","version":"1.1.2","description":"Pict dynamic form sections","main":"source/Pict-Section-Form.js","directories":{"test":"test"},"repository":{"type":"git","url":"git+https://github.com/fable-retold/pict-section-form.git"},"bugs":{"url":"https://github.com/fable-retold/pict-section-form/issues"},"homepage":"https://github.com/fable-retold/pict-section-form#readme","scripts":{"start":"node source/Pict-Section-Form.js","tests":"npx quack test -g","coverage":"npx quack coverage","build":"npx quack build","test":"npx quack test","lint":"eslint source/**","types":"tsc -p .","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-section-form-image:local","docker-dev-run":"docker run -it -d --name pict-section-form-dev -p 48888:8080 -p 49999:9999 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-section-form\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-section-form-image:local","docker-dev-shell":"docker exec -it pict-section-form-dev /bin/bash"},"types":"types/source/Pict-Section-Form.d.ts","author":"steven velozo <steven@velozo.com>","license":"MIT","devDependencies":{"@eslint/js":"^9.39.2","browser-env":"^3.3.0","eslint":"^9.39.2","jquery":"^4.0.0","pict":"^1.0.372","pict-application":"^1.0.34","pict-docuserve":"^1.4.4","pict-service-commandlineutility":"^1.0.19","quackage":"^1.3.0","tui-grid":"^4.21.22","typescript":"^5.9.3"},"dependencies":{"chart.js":"^4.5.1","fable-serviceproviderbase":"^3.0.19","marked":"^4.3.0","pict-provider":"^1.0.13","pict-section-excalidraw":"^1.0.2","pict-section-markdowneditor":"^1.0.17","pict-section-tuigrid":"^1.0.31","pict-template":"^1.0.15","pict-view":"^1.0.68"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]}};},{}],41:[function(require,module,exports){// The container for all the Pict-Section-Form related code.
+	 */onAfterMarshalToViewAsync(fCallback){this.onAfterMarshalToView();return fCallback();}/** @return {boolean} - True if the object is a PictView. */get isPictView(){return true;}}module.exports=PictView;},{"../package.json":38,"fable-serviceproviderbase":4}],40:[function(require,module,exports){module.exports={"name":"pict-section-form","version":"1.1.3","description":"Pict dynamic form sections","main":"source/Pict-Section-Form.js","directories":{"test":"test"},"repository":{"type":"git","url":"git+https://github.com/fable-retold/pict-section-form.git"},"bugs":{"url":"https://github.com/fable-retold/pict-section-form/issues"},"homepage":"https://github.com/fable-retold/pict-section-form#readme","scripts":{"start":"node source/Pict-Section-Form.js","tests":"npx quack test -g","coverage":"npx quack coverage","build":"npx quack build","test":"npx quack test","lint":"eslint source/**","types":"tsc -p .","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-section-form-image:local","docker-dev-run":"docker run -it -d --name pict-section-form-dev -p 48888:8080 -p 49999:9999 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-section-form\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-section-form-image:local","docker-dev-shell":"docker exec -it pict-section-form-dev /bin/bash"},"types":"types/source/Pict-Section-Form.d.ts","author":"steven velozo <steven@velozo.com>","license":"MIT","devDependencies":{"@eslint/js":"^9.39.2","browser-env":"^3.3.0","eslint":"^9.39.2","jquery":"^4.0.0","pict":"^1.0.372","pict-application":"^1.0.34","pict-docuserve":"^1.4.4","pict-service-commandlineutility":"^1.0.19","quackage":"^1.3.0","tui-grid":"^4.21.22","typescript":"^5.9.3"},"dependencies":{"chart.js":"^4.5.1","fable-serviceproviderbase":"^3.0.19","marked":"^4.3.0","pict-provider":"^1.0.13","pict-section-excalidraw":"^1.0.2","pict-section-markdowneditor":"^1.0.17","pict-section-tuigrid":"^1.0.31","pict-template":"^1.0.15","pict-view":"^1.0.68"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]}};},{}],41:[function(require,module,exports){// The container for all the Pict-Section-Form related code.
 // The main dynamic view class
 module.exports=require('./views/Pict-View-DynamicForm.js');//module.exports.default_configuration = require('./views/Pict-View-DynamicForm-DefaultConfiguration.json');
 // The dynamic application dependencies
@@ -6962,9 +6962,25 @@ let tmpInputSelectValue;try{tmpInputSelectValue=this.pict.ContentAssignment.read
 {
 	padding: 0;
 	min-height: 420px;
+	display: flex;
 }
 
-/* The Excalidraw view brings its own chrome inside the slot. */
+/* The Excalidraw view brings its own chrome inside the slot. Force the wrap
+ * and the Excalidraw root to fill so the canvas doesn't collapse to 0
+ * height inside the form slot. */
+.pict-section-form-diagram-edit > .pict-excalidraw-wrap,
+.pict-section-form-diagram-edit > .pict-excalidraw-wrap > .pict-excalidraw-mount
+{
+	flex: 1 1 auto;
+	min-height: 420px;
+}
+
+.pict-section-form-diagram-edit .excalidraw
+{
+	width: 100%;
+	height: 100%;
+	min-height: 420px;
+}
 
 .pict-section-form-diagram-toggle
 {

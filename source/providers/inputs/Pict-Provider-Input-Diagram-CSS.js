@@ -60,9 +60,25 @@ module.exports = /*css*/`
 {
 	padding: 0;
 	min-height: 420px;
+	display: flex;
 }
 
-/* The Excalidraw view brings its own chrome inside the slot. */
+/* The Excalidraw view brings its own chrome inside the slot. Force the wrap
+ * and the Excalidraw root to fill so the canvas doesn't collapse to 0
+ * height inside the form slot. */
+.pict-section-form-diagram-edit > .pict-excalidraw-wrap,
+.pict-section-form-diagram-edit > .pict-excalidraw-wrap > .pict-excalidraw-mount
+{
+	flex: 1 1 auto;
+	min-height: 420px;
+}
+
+.pict-section-form-diagram-edit .excalidraw
+{
+	width: 100%;
+	height: 100%;
+	min-height: 420px;
+}
 
 .pict-section-form-diagram-toggle
 {

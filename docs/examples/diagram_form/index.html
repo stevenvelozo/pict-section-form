@@ -78,6 +78,11 @@
 	</main>
 
 	<link rel="stylesheet" href="./excalidraw-wrapper.css">
+	<script>
+		// Tell Excalidraw where to fetch its fonts + locale chunks from. Must be
+		// set BEFORE the wrapper bundle loads.
+		window.EXCALIDRAW_ASSET_PATH = './excalidraw-assets/';
+	</script>
 	<script src="https://cdn.jsdelivr.net/npm/pict@1/dist/pict.min.js"></script>
 	<!-- Excalidraw vendor bundle (React + Excalidraw). The Diagram InputType's
 	     editor mode looks for window.PictSectionExcalidrawVendor; without these
