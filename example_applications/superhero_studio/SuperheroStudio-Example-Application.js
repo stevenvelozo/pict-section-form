@@ -231,19 +231,38 @@ class SuperheroStudioApplication extends libPictSectionForm.PictFormApplication
 	}
 
 	/**
-	 * Demo image uploader for the RichText origin-story field. In a real app
-	 * this would POST to your image-storage endpoint and call back with the
-	 * permanent URL. Here we mint a fake CDN URL after a brief delay.
+	 * Demo image uploader for the RichText origin-story field. A real app
+	 * would POST to its storage endpoint and call back with the permanent
+	 * URL. For this in-browser-only demo we read the file as a base64 data
+	 * URI so the inserted image actually renders — the host hook still runs
+	 * (and you can see it in the console), but the result is an inline image
+	 * instead of a fake CDN URL pointing nowhere.
 	 */
 	uploadImage(pFile, pInputDescriptor, fCallback)
 	{
-		setTimeout(() =>
+		try
 		{
-			let tmpFakeURL = '/uploads/heroes/' + Date.now() + '-' +
-				(pFile.name || 'image.png').replace(/[^A-Za-z0-9._-]/g, '_');
-			fCallback(null, tmpFakeURL);
-			if (this.log) this.log.info('[superhero_studio] uploadImage resolved', { url: tmpFakeURL });
-		}, 600);
+			let tmpReader = new FileReader();
+			tmpReader.onload = () =>
+			{
+				let tmpDataURI = tmpReader.result;
+				if (this.log) this.log.info('[superhero_studio] uploadImage resolved (inline base64)',
+					{ name: pFile.name, type: pFile.type, bytes: pFile.size });
+				fCallback(null, tmpDataURI);
+			};
+			tmpReader.onerror = () =>
+			{
+				let tmpErr = (tmpReader.error && tmpReader.error.message) || 'FileReader failed';
+				if (this.log) this.log.warn('[superhero_studio] uploadImage failed', { error: tmpErr });
+				fCallback(new Error(tmpErr));
+			};
+			tmpReader.readAsDataURL(pFile);
+		}
+		catch (pErr)
+		{
+			if (this.log) this.log.warn('[superhero_studio] uploadImage threw', { error: pErr.message });
+			fCallback(pErr);
+		}
 		return true;
 	}
 

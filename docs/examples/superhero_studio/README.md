@@ -148,17 +148,15 @@ The Origin Story field has `AllowImages: true` and names an uploader. When the u
 ```javascript
 uploadImage(pFile, pInputDescriptor, fCallback)
 {
-    setTimeout(() =>
-    {
-        let tmpFakeURL = '/uploads/heroes/' + Date.now() + '-' +
-            (pFile.name || 'image.png').replace(/[^A-Za-z0-9._-]/g, '_');
-        fCallback(null, tmpFakeURL);
-    }, 600);
+    let tmpReader = new FileReader();
+    tmpReader.onload  = () => fCallback(null, tmpReader.result);   // data:image/png;base64,…
+    tmpReader.onerror = () => fCallback(new Error('FileReader failed'));
+    tmpReader.readAsDataURL(pFile);
     return true;   // we are handling this asynchronously
 }
 ```
 
-Returning `true` signals to the underlying `pict-section-markdowneditor` that the caller will resolve the URL. A real app would POST to its storage endpoint here. Set `AllowImages: false` to refuse images entirely; the editor surfaces the rejection in a status pill instead of inserting a half-baked data URI.
+Returning `true` signals to the underlying `pict-section-markdowneditor` that the caller will resolve the URL. The demo's hook reads the file as a base64 data URI so the inserted image renders inline — a real app would POST to its storage endpoint and call back with the permanent URL instead. Set `AllowImages: false` to refuse images entirely; the editor surfaces the rejection in a status pill instead of inserting a half-baked data URI. If `AllowImages: true` but no `ImageUploader` is configured, the editor falls through to its built-in FileReader → base64 inline path (the exact same visible result, just driven by the editor's default rather than the host hook).
 
 ## The five superheroes
 
