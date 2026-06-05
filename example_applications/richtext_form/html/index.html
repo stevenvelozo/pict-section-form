@@ -46,15 +46,15 @@
 		</p>
 
 		<div class="controls">
-			<button id="toggle-Body" onclick="window.RichTextFormExample.demo_toggleMode('Body')">Edit</button>
+			<button id="toggle-Body" onclick="_Pict.PictApplication.demo_toggleMode('Body')">Edit</button>
 
 			<label>
-				<input type="checkbox" id="allow-images" checked onchange="window.RichTextFormExample.demo_setAllowImages('Body', this.checked)">
+				<input type="checkbox" id="allow-images" checked onchange="_Pict.PictApplication.demo_setAllowImages('Body', this.checked)">
 				Allow image paste
 			</label>
 
 			<label>
-				<input type="checkbox" id="use-uploader" checked onchange="window.RichTextFormExample.demo_setUploaderEnabled(this.checked)">
+				<input type="checkbox" id="use-uploader" checked onchange="_Pict.PictApplication.demo_setUploaderEnabled(this.checked)">
 				Use ImageUploader stub
 				<span style="color:#8A7F72; margin-left:6px; font-size:0.75rem;">(off = base64 inline)</span>
 			</label>

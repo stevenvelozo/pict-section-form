@@ -99,7 +99,7 @@ class DiagramFormApplication extends libPictSectionForm.PictFormApplication
 		}
 		super.onAfterInitializeAsync(() =>
 		{
-			try { this.marshalDataFromAppDataToView(); }
+			try { this.marshalDataFromAppDataToDynamicViews(); }
 			catch (pErr) { if (this.log) this.log.warn('[diagram_form] initial marshal failed', { error: pErr.message }); }
 			return fCallback();
 		});

@@ -37,27 +37,7 @@
  */
 
 const libPictSectionInputExtension = require('../Pict-Provider-InputExtension.js');
-
-// Heavy excalidraw dep — lazy-required on the first setMode('edit') so hosts
-// that never edit (read-mostly forms with inline SVGs) don't pull the
-// Excalidraw vendor bundle at module load.
-let _ExcalidrawClass = null;
-function _resolveExcalidraw()
-{
-	if (_ExcalidrawClass) return _ExcalidrawClass;
-	try
-	{
-		_ExcalidrawClass = require('pict-section-excalidraw');
-	}
-	catch (pErr)
-	{
-		throw new Error(
-			'[Pict-Input-Diagram] Cannot mount edit mode — ' +
-			'pict-section-excalidraw is not installed. ' +
-			'Add it to your app\'s dependencies (it\'s an optional peer of pict-section-form).');
-	}
-	return _ExcalidrawClass;
-}
+const libPictSectionExcalidraw     = require('pict-section-excalidraw');
 
 // Form templates live in pict-section-form's default-template set, so no
 // runtime template injection is needed here. CSS still needs registering.
@@ -340,16 +320,6 @@ class PictInputDiagram extends libPictSectionInputExtension
 					}
 				}
 			};
-
-			// Lazy-resolve the excalidraw view base. Throws helpfully if absent.
-			let libPictSectionExcalidraw;
-			try { libPictSectionExcalidraw = _resolveExcalidraw(); }
-			catch (pLoadErr)
-			{
-				if (this.log) this.log.error('[Pict-Input-Diagram] ' + pLoadErr.message);
-				if (typeof fCallback === 'function') fCallback(pLoadErr);
-				return;
-			}
 
 			this.pict.addView(tmpViewHash, tmpEditorOpts, libPictSectionExcalidraw);
 			let tmpEditorView = this.pict.views[tmpViewHash];

@@ -88,7 +88,7 @@ class RichTextFormApplication extends libPictSectionForm.PictFormApplication
 		}
 		super.onAfterInitializeAsync(() =>
 		{
-			try { this.marshalDataFromAppDataToView(); }
+			try { this.marshalDataFromAppDataToDynamicViews(); }
 			catch (pErr) { if (this.log) this.log.warn('[richtext_form] initial marshal failed', { error: pErr.message }); }
 			return fCallback();
 		});
