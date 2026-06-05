@@ -1,7 +1,0 @@
-{
-	"Name": "superhero_studio_example",
-	"Version": "1.0.0",
-	"Description": "Pict-section-form showcase that exercises both new complex InputTypes (RichText for the origin story, Diagram for the portrait) inside a superhero character-sheet form.",
-	"GeneratedAt": "2026-06-05T00:13:21.987Z",
-	"GitCommit": "2a3d95a"
-}
