@@ -14,9 +14,10 @@
 		"whenFileExists": "overwrite"
 	},
 	"copyFiles": [
-		{ "from": "./html/*",                                                            "to": "./dist/" },
-		{ "from": "../../node_modules/pict/dist/*",                                      "to": "./dist/" },
-		{ "from": "../../node_modules/pict-section-excalidraw/vendor/excalidraw-built/*", "to": "./dist/" }
+		{ "from": "./html/*",                                                                       "to": "./dist/" },
+		{ "from": "../../node_modules/pict/dist/*",                                                 "to": "./dist/" },
+		{ "from": "../../node_modules/pict-section-excalidraw/vendor/excalidraw-built/*",           "to": "./dist/" },
+		{ "from": "../../node_modules/pict-section-excalidraw/vendor/excalidraw-built/assets/**/*", "to": "./dist/excalidraw-assets/" }
 	],
 	"retold": {
 		"ExampleApplication": {

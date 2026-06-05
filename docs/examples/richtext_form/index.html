@@ -71,6 +71,9 @@
 	</main>
 
 	<script src="https://cdn.jsdelivr.net/npm/pict@1/dist/pict.min.js"></script>
+	<!-- CodeMirror bundle — the markdown editor auto-detects window.CodeMirrorModules
+	     on first setMode('edit'). Without this, the editor mounts to a blank slot. -->
+	<script src="./codemirror-bundle.js"></script>
 	<script src="./richtext_form_example.min.js"></script>
 	<script>
 		Pict.safeOnDocumentReady(() =>

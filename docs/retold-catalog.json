@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-06-05T00:14:26.491Z",
+	"Generated": "2026-06-05T01:12:47.318Z",
 	"Mode": "module",
 	"GitHubOrg": "fable-retold",
 	"DefaultBranch": "master",
@@ -246,6 +246,7 @@
 			"examples/ndt_field_test/ndt_field_test.js",
 			"examples/postcard_example/README.md",
 			"examples/richtext_form/README.md",
+			"examples/richtext_form/codemirror-bundle.js",
 			"examples/richtext_form/index.html",
 			"examples/richtext_form/richtext_form_example.min.js",
 			"examples/scope_mathematics/README.md",
@@ -255,6 +256,7 @@
 			"examples/simple_table/index.html",
 			"examples/simple_table/simple_tabular_application.min.js",
 			"examples/superhero_studio/README.md",
+			"examples/superhero_studio/codemirror-bundle.js",
 			"examples/superhero_studio/excalidraw-iframe-host.html",
 			"examples/superhero_studio/excalidraw-wrapper.css",
 			"examples/superhero_studio/excalidraw-wrapper.min.js",
@@ -289,11 +291,6 @@
 			"playground/runtime/pict-section-modal.min.js",
 			"playground/runtime/pict.min.js",
 			"playground.md",
-			"retold-catalog.json",
-			"retold-keyword-index.json",
-			".nojekyll",
-			"_version.json",
-			"index.html",
 			"retold-catalog.json",
 			"retold-keyword-index.json"
 		]

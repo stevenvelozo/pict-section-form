@@ -127,12 +127,20 @@
 	</main>
 
 	<link rel="stylesheet" href="./excalidraw-wrapper.css">
+	<script>
+		// Tell Excalidraw where to fetch its fonts + locale chunks from. Must be
+		// set BEFORE the wrapper bundle loads.
+		window.EXCALIDRAW_ASSET_PATH = './excalidraw-assets/';
+	</script>
 	<script src="./pict.min.js"></script>
 	<!-- Excalidraw vendor bundle (React + Excalidraw). The Diagram InputType
 	     looks for window.PictSectionExcalidrawVendor when the Portrait field
 	     flips to edit; without these tags Excalidraw won't mount. -->
 	<script src="./react-vendor.min.js"></script>
 	<script src="./excalidraw-wrapper.min.js"></script>
+	<!-- CodeMirror bundle — the markdown editor auto-detects window.CodeMirrorModules
+	     when the Origin Story field flips to edit. -->
+	<script src="./codemirror-bundle.js"></script>
 	<script src="./superhero_studio_example.min.js"></script>
 	<script>
 		const _Themes =
