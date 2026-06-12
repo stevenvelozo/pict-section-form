@@ -34,6 +34,19 @@ class VerticalRecordLayout extends libPictSectionGroupLayout
 			pGroup.Rows = [];
 		}
 
+		pGroup.Rows.sort((rowA, rowB) =>
+		{
+			if (rowA.RowNumber && rowB.RowNumber)
+			{
+				return rowA.RowNumber >= rowB.RowNumber ? 1 : -1;
+			}
+			if (!rowA.RowNumber && !rowB.RowNumber)
+			{
+				return rowA.Hash >= rowB.Hash ? 1 : -1;
+			}
+			return rowA.RowNumber ? 1 : -1;
+		});
+
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-Group-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
 		// Every input has its own "row" in the vertical layout
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-Template-VerticalRow-Prefix`, `getGroup("${pGroup.GroupIndex}")`);

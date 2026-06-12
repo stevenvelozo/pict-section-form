@@ -122,6 +122,10 @@ class ManifestFactory extends libFableServiceProviderBase
 					tmpGroup.Rows = [];
 				}
 
+				if (Number(tmpDescriptor.PictForm.Row))
+				{
+					tmpDescriptor.PictForm.Row = Number(tmpDescriptor.PictForm.Row);
+				}
 				let tmpRowHash = (typeof (tmpDescriptor.PictForm.Row) == 'string') ? tmpDescriptor.PictForm.Row :
 					(typeof (tmpDescriptor.PictForm.Row) == 'number') ? `Row_${tmpDescriptor.PictForm.Row.toString()}` :
 						'Row_Default';
@@ -133,6 +137,7 @@ class ManifestFactory extends libFableServiceProviderBase
 				if (!tmpRow)
 				{
 					tmpRow = { Hash: tmpRowHash, Name: tmpRowHash, Inputs: [] };
+					tmpRow.RowNumber = typeof (tmpDescriptor.PictForm.Row) == 'number' ? tmpDescriptor.PictForm.Row : 0;
 					tmpGroup.Rows.push(tmpRow);
 					tmpRow.Inputs.push(tmpDescriptor);
 				}

@@ -26,6 +26,19 @@ class RecordLayout extends libPictSectionGroupLayout
 	 */
 	generateGroupLayoutTemplate(pView, pGroup)
 	{
+		pGroup.Rows.sort((rowA, rowB) =>
+		{
+			if (rowA.RowNumber && rowB.RowNumber)
+			{
+				return rowA.RowNumber >= rowB.RowNumber ? 1 : -1;
+			}
+			if (!rowA.RowNumber && !rowB.RowNumber)
+			{
+				return rowA.Hash >= rowB.Hash ? 1 : -1;
+			}
+			return rowA.RowNumber ? 1 : -1;
+		});
+
 		// loop over descriptors that have my group set?
 		// set their GroupIndex from pGroup
 		for (let j = 0; j < pGroup.Rows.length; j++)

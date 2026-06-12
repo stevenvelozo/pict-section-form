@@ -29,6 +29,19 @@ class RecordLayout extends libPictSectionGroupLayout
 		let tmpMetatemplateGenerator = this.pict.providers.MetatemplateGenerator;
 		let tmpTemplate = '';
 
+		pGroup.Rows.sort((rowA, rowB) =>
+		{
+			if (rowA.RowNumber && rowB.RowNumber)
+			{
+				return rowA.RowNumber >= rowB.RowNumber ? 1 : -1;
+			}
+			if (!rowA.RowNumber && !rowB.RowNumber)
+			{
+				return rowA.Hash >= rowB.Hash ? 1 : -1;
+			}
+			return rowA.RowNumber ? 1 : -1;
+		});
+
 		if (!('Rows' in pGroup))
 		{
 			pGroup.Rows = [];
