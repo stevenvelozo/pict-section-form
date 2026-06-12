@@ -318,13 +318,21 @@ class DynamicTabularData extends libPictProvider
 					this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] to [${pNewRowIndex}] but the index is out of bounds.`);
 					return false;
 				}
+				let tmpOriginalLength = tmpDestinationObject.length;
 				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
 				tmpDestinationObject.splice(tmpNewRowIndex, 0, tmpElementToBeMoved[0]);
-				this.pict.providers.DynamicSolver.solveViews();
-				pView.render();
-				//pView.marshalToView();
-				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
-				this.pict.views.PictFormMetacontroller.marshalFormSections();
+
+				// Position-keyed DynamicColumns (KeyBy:"Position") store dependent cell data by the
+				// source row's INDEX, so a source reorder must apply the same permutation to every
+				// dependent row's positional cells -- otherwise user-entered values stay put while
+				// their column re-labels to a different source row. Must run BEFORE the dependent
+				// views re-resolve their columns below. No-op for value-keyed generators.
+				this._moveDependentPositionalColumns(tmpGroup.RecordSetAddress, tmpRowIndex, tmpNewRowIndex, tmpOriginalLength);
+
+				// Render (source + dependent views) BEFORE solving so dependent DynamicColumns tables
+				// don't blank until the next edit, and the solve's DOM side effects survive. Matches
+				// the add/delete handlers' order.
+				this._repaintAfterRowReorder(tmpGroup);
 			}
 		}
 	}
@@ -353,17 +361,23 @@ class DynamicTabularData extends libPictProvider
 					this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] down but it's already at the bottom.`);
 					return false;
 				}
+				let tmpOriginalLength = tmpDestinationObject.length;
 				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
-				tmpDestinationObject.splice(tmpRowIndex + 1, 0, tmpElementToBeMoved[0]);
-				// Render BEFORE solving so the solve's DOM side effects (e.g. SetGroupVisibility
-				// hiding a validation message) act on the freshly rebuilt DOM and survive. A
-				// solve-then-render order discards them, because render() rebuilds the group DOM
-				// without the solver-applied class. Matches the add/delete handlers' order.
-				pView.render();
-				this.pict.providers.DynamicSolver.solveViews();
-				//pView.marshalToView();
-				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
-				this.pict.views.PictFormMetacontroller.marshalFormSections();
+				let tmpNewRowIndex = tmpRowIndex + 1;
+				tmpDestinationObject.splice(tmpNewRowIndex, 0, tmpElementToBeMoved[0]);
+
+				// Position-keyed DynamicColumns (KeyBy:"Position") store dependent cell data by the
+				// source row's INDEX, so a source reorder must apply the same permutation to every
+				// dependent row's positional cells -- otherwise user-entered values stay put while
+				// their column re-labels to a different source row. Must run BEFORE the dependent
+				// views re-resolve their columns below. No-op for value-keyed generators.
+				this._moveDependentPositionalColumns(tmpGroup.RecordSetAddress, tmpRowIndex, tmpNewRowIndex, tmpOriginalLength);
+
+				// Render (source + dependent views) BEFORE solving so the solve's DOM side effects
+				// (e.g. SetGroupVisibility hiding a validation message) act on the freshly rebuilt
+				// DOM and survive, and so dependent DynamicColumns tables don't blank until the next
+				// edit. Matches the add/delete handlers' order.
+				this._repaintAfterRowReorder(tmpGroup);
 			}
 		}
 	}
@@ -397,17 +411,23 @@ class DynamicTabularData extends libPictProvider
 					this.log.error(`Dynamic View [${pView.UUID}]::[${pView.Hash}] Group ${tmpGroup.Hash} attempting to move row [${pRowIndex}] but the index is out of bounds.`);
 					return false;
 				}
+				let tmpOriginalLength = tmpDestinationObject.length;
 				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
-				tmpDestinationObject.splice(tmpRowIndex - 1, 0, tmpElementToBeMoved[0]);
-				// Render BEFORE solving so the solve's DOM side effects (e.g. SetGroupVisibility
-				// hiding a validation message) act on the freshly rebuilt DOM and survive. A
-				// solve-then-render order discards them, because render() rebuilds the group DOM
-				// without the solver-applied class. Matches the add/delete handlers' order.
-				pView.render();
-				this.pict.providers.DynamicSolver.solveViews();
-				//pView.marshalToView();
-				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
-				this.pict.views.PictFormMetacontroller.marshalFormSections();
+				let tmpNewRowIndex = tmpRowIndex - 1;
+				tmpDestinationObject.splice(tmpNewRowIndex, 0, tmpElementToBeMoved[0]);
+
+				// Position-keyed DynamicColumns (KeyBy:"Position") store dependent cell data by the
+				// source row's INDEX, so a source reorder must apply the same permutation to every
+				// dependent row's positional cells -- otherwise user-entered values stay put while
+				// their column re-labels to a different source row. Must run BEFORE the dependent
+				// views re-resolve their columns below. No-op for value-keyed generators.
+				this._moveDependentPositionalColumns(tmpGroup.RecordSetAddress, tmpRowIndex, tmpNewRowIndex, tmpOriginalLength);
+
+				// Render (source + dependent views) BEFORE solving so the solve's DOM side effects
+				// (e.g. SetGroupVisibility hiding a validation message) act on the freshly rebuilt
+				// DOM and survive, and so dependent DynamicColumns tables don't blank until the next
+				// edit. Matches the add/delete handlers' order.
+				this._repaintAfterRowReorder(tmpGroup);
 			}
 		}
 	}
@@ -655,6 +675,165 @@ class DynamicTabularData extends libPictProvider
 				}
 			}
 		}
+	}
+
+	/**
+	 * For position-keyed DynamicColumns (KeyBy: "Position") sourced from
+	 * pSourceRecordSetAddress, REORDER each dependent row's positional cells to
+	 * mirror a source row that moved from pOldIndex to pNewIndex. The source array
+	 * was already spliced (remove at pOldIndex, insert at pNewIndex); this applies
+	 * the identical permutation to every dependent row's positional cell VALUES so
+	 * the data stays attached to its column when the columns re-resolve to the new
+	 * source order. Without it, a reorder leaves user-entered cells under the wrong
+	 * (renamed) column. Solver-filled rows re-derive on the next solve regardless;
+	 * applying the move to them too is harmless (the solve overwrites them). No-op
+	 * for value-keyed generators (their data stays attached to the stable value).
+	 *
+	 * Must run AFTER the source splice and BEFORE the dependent views re-resolve +
+	 * the marshal repaints them. Symmetric with _spliceDependentPositionalColumns.
+	 *
+	 * @param {string} pSourceRecordSetAddress - RecordSetAddress of the moved-within source.
+	 * @param {number} pOldIndex - Source row's index before the move.
+	 * @param {number} pNewIndex - Source row's index after the move.
+	 * @param {number} pLength - Source row count (unchanged by a move).
+	 */
+	_moveDependentPositionalColumns(pSourceRecordSetAddress, pOldIndex, pNewIndex, pLength)
+	{
+		if ((typeof pSourceRecordSetAddress !== 'string') || (pSourceRecordSetAddress.length < 1))
+		{
+			return;
+		}
+		if (pOldIndex === pNewIndex)
+		{
+			return;
+		}
+		if (!this.pict.views.PictFormMetacontroller)
+		{
+			return;
+		}
+		let tmpManifestFactory = this.fable.ManifestFactory;
+		if (!tmpManifestFactory || (typeof tmpManifestFactory._parseDynamicColumnTemplate !== 'function'))
+		{
+			return;
+		}
+		let tmpViews = this.pict.views.PictFormMetacontroller.filterViews((pViewToTest) => { return pViewToTest.isPictSectionForm; });
+		for (let v = 0; v < tmpViews.length; v++)
+		{
+			let tmpView = tmpViews[v];
+			let tmpGroups = tmpView.getGroups();
+			for (let g = 0; g < tmpGroups.length; g++)
+			{
+				let tmpGroup = tmpGroups[g];
+				if (!Array.isArray(tmpGroup.DynamicColumns) || (tmpGroup.DynamicColumns.length < 1))
+				{
+					continue;
+				}
+				let tmpDependentRows = tmpView.sectionManifest.getValueByHash(tmpView.getMarshalDestinationObject(), tmpGroup.RecordSetAddress);
+				if (!Array.isArray(tmpDependentRows) || (tmpDependentRows.length < 1))
+				{
+					continue;
+				}
+				for (let c = 0; c < tmpGroup.DynamicColumns.length; c++)
+				{
+					let tmpGenerator = tmpGroup.DynamicColumns[c];
+					if (!tmpGenerator || (tmpGenerator.SourceAddress !== pSourceRecordSetAddress))
+					{
+						continue;
+					}
+					// Only position-keyed generators store data by index; value-keyed columns keep
+					// their data attached to the (stable) value, so they need no reordering.
+					if (tmpGenerator.KeyBy !== 'Position')
+					{
+						continue;
+					}
+					if (typeof tmpGenerator.InformaryDataAddressTemplate !== 'string')
+					{
+						continue;
+					}
+					// Resolve the positional cell address for each column index once.
+					let tmpAddresses = [];
+					for (let k = 0; k < pLength; k++)
+					{
+						tmpAddresses[k] = tmpManifestFactory._parseDynamicColumnTemplate(tmpGenerator.InformaryDataAddressTemplate, { __Index: k, __RowNumber: k + 1 });
+					}
+					for (let r = 0; r < tmpDependentRows.length; r++)
+					{
+						let tmpRow = tmpDependentRows[r];
+						if (!tmpRow || (typeof tmpRow !== 'object'))
+						{
+							continue;
+						}
+						// Read the current positional cell values, apply the identical
+						// remove-at-old / insert-at-new permutation, then write them back.
+						let tmpValues = [];
+						for (let k = 0; k < pLength; k++)
+						{
+							tmpValues[k] = tmpAddresses[k] ? tmpView.sectionManifest.getValueByHash(tmpRow, tmpAddresses[k]) : undefined;
+						}
+						let tmpMoved = tmpValues.splice(pOldIndex, 1);
+						tmpValues.splice(pNewIndex, 0, tmpMoved[0]);
+						for (let k = 0; k < pLength; k++)
+						{
+							if (tmpAddresses[k])
+							{
+								tmpView.sectionManifest.setValueByHash(tmpRow, tmpAddresses[k], tmpValues[k]);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Shared tail for the row-reorder handlers (move up / move down / set index).
+	 * Repaints the moved source table and every dependent view, in the RENDER phase
+	 * BEFORE solving + marshaling, then solves and marshals. Mirrors what the add /
+	 * delete handlers do so a reorder doesn't blank dependent DynamicColumns tables
+	 * (or the rest of their section) until the next edit. Render happens before the
+	 * solve so the solve's DOM side effects (e.g. SetGroupVisibility) land on the
+	 * freshly rebuilt DOM and survive.
+	 *
+	 * @param {Object} pGroup - The reordered group (its RecordSetAddress drives dependents).
+	 */
+	_repaintAfterRowReorder(pGroup)
+	{
+		// Render every view that renders this record set as a table (the source table itself
+		// plus any sibling views bound to the same RecordSetAddress).
+		let tmpViewsToRender = this.pict.views.PictFormMetacontroller.filterViews(
+			(pViewToTestForGroup) =>
+			{
+				if (!pViewToTestForGroup.isPictSectionForm)
+				{
+					return false;
+				}
+				let tmpGroupsToTest = pViewToTestForGroup.getGroups();
+				for (let i = 0; i < tmpGroupsToTest.length; i++)
+				{
+					if (tmpGroupsToTest[i].RecordSetAddress == pGroup.RecordSetAddress)
+					{
+						return true;
+					}
+				}
+				return false;
+			});
+		for (let i = 0; i < tmpViewsToRender.length; i++)
+		{
+			tmpViewsToRender[i].render();
+		}
+
+		// Rebuild any OTHER views whose DynamicColumns are sourced from this record set
+		// HERE, in the render phase -- BEFORE the marshal below -- so the column DOM is
+		// correct (and re-labeled to the new order) when the marshal fills it. Without
+		// this the dependent table is only rebuilt mid-marshal (onDataMarshalToForm),
+		// which renders AFTER the cells were filled and blanks them until the next edit.
+		this._rebuildDependentDynamicColumnViews(pGroup.RecordSetAddress);
+
+		// Run the solver
+		this.pict.providers.DynamicSolver.solveViews();
+
+		// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
+		this.pict.views.PictFormMetacontroller.marshalFormSections();
 	}
 }
 
