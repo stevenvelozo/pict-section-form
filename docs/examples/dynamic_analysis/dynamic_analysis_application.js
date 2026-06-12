@@ -2817,7 +2817,7 @@ if(tmpIsRootRenderable&&pRenderable&&pRenderable.TransactionHash){this.pict.Tran
 	 * Lifecycle hook that triggers after data is marshaled into the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
-	 */onAfterMarshalToViewAsync(fCallback){this.onAfterMarshalToView();return fCallback();}/** @return {boolean} - True if the object is a PictView. */get isPictView(){return true;}}module.exports=PictView;},{"../package.json":38,"fable-serviceproviderbase":4}],40:[function(require,module,exports){module.exports={"name":"pict-section-form","version":"1.1.3","description":"Pict dynamic form sections","main":"source/Pict-Section-Form.js","directories":{"test":"test"},"repository":{"type":"git","url":"git+https://github.com/fable-retold/pict-section-form.git"},"bugs":{"url":"https://github.com/fable-retold/pict-section-form/issues"},"homepage":"https://github.com/fable-retold/pict-section-form#readme","scripts":{"start":"node source/Pict-Section-Form.js","tests":"npx quack test -g","coverage":"npx quack coverage","build":"npx quack build","test":"npx quack test","lint":"eslint source/**","types":"tsc -p .","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-section-form-image:local","docker-dev-run":"docker run -it -d --name pict-section-form-dev -p 48888:8080 -p 49999:9999 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-section-form\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-section-form-image:local","docker-dev-shell":"docker exec -it pict-section-form-dev /bin/bash"},"types":"types/source/Pict-Section-Form.d.ts","author":"steven velozo <steven@velozo.com>","license":"MIT","devDependencies":{"@eslint/js":"^9.39.2","browser-env":"^3.3.0","eslint":"^9.39.2","jquery":"^4.0.0","pict":"^1.0.372","pict-application":"^1.0.34","pict-docuserve":"^1.4.4","pict-service-commandlineutility":"^1.0.19","quackage":"^1.3.0","tui-grid":"^4.21.22","typescript":"^5.9.3"},"dependencies":{"chart.js":"^4.5.1","fable-serviceproviderbase":"^3.0.19","marked":"^4.3.0","pict-provider":"^1.0.13","pict-section-excalidraw":"^1.0.2","pict-section-markdowneditor":"^1.0.17","pict-section-tuigrid":"^1.0.31","pict-template":"^1.0.15","pict-view":"^1.0.68"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]}};},{}],41:[function(require,module,exports){// The container for all the Pict-Section-Form related code.
+	 */onAfterMarshalToViewAsync(fCallback){this.onAfterMarshalToView();return fCallback();}/** @return {boolean} - True if the object is a PictView. */get isPictView(){return true;}}module.exports=PictView;},{"../package.json":38,"fable-serviceproviderbase":4}],40:[function(require,module,exports){module.exports={"name":"pict-section-form","version":"1.2.0","description":"Pict dynamic form sections","main":"source/Pict-Section-Form.js","directories":{"test":"test"},"repository":{"type":"git","url":"git+https://github.com/fable-retold/pict-section-form.git"},"bugs":{"url":"https://github.com/fable-retold/pict-section-form/issues"},"homepage":"https://github.com/fable-retold/pict-section-form#readme","scripts":{"start":"node source/Pict-Section-Form.js","tests":"npx quack test -g","coverage":"npx quack coverage","build":"npx quack build","test":"npx quack test","lint":"eslint source/**","types":"tsc -p .","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-section-form-image:local","docker-dev-run":"docker run -it -d --name pict-section-form-dev -p 48888:8080 -p 49999:9999 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-section-form\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-section-form-image:local","docker-dev-shell":"docker exec -it pict-section-form-dev /bin/bash"},"types":"types/source/Pict-Section-Form.d.ts","author":"steven velozo <steven@velozo.com>","license":"MIT","devDependencies":{"@eslint/js":"^9.39.2","browser-env":"^3.3.0","eslint":"^9.39.2","jquery":"^4.0.0","pict":"^1.0.373","pict-application":"^1.0.34","pict-docuserve":"^1.4.19","pict-service-commandlineutility":"^1.0.19","quackage":"^1.3.0","tui-grid":"^4.21.22","typescript":"^5.9.3"},"dependencies":{"chart.js":"^4.5.1","fable-serviceproviderbase":"^3.0.19","marked":"^4.3.0","pict-provider":"^1.0.13","pict-section-excalidraw":"^1.0.3","pict-section-markdowneditor":"^1.0.17","pict-section-tuigrid":"^1.0.31","pict-template":"^1.0.15","pict-view":"^1.0.68"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]}};},{}],41:[function(require,module,exports){// The container for all the Pict-Section-Form related code.
 // The main dynamic view class
 module.exports=require('./views/Pict-View-DynamicForm.js');//module.exports.default_configuration = require('./views/Pict-View-DynamicForm-DefaultConfiguration.json');
 // The dynamic application dependencies
@@ -4548,7 +4548,7 @@ pView.setDataTabularByHash(pInput.PictForm.GroupIndex,pInput.Hash,pRowIndex,tmpV
 	 * @param {string} pHTMLSelector - The HTML selector of the input.
 	 * @param {string} pTransactionGUID - The transaction GUID, if any.
 	 * @returns {any} - The result of the super.onDataChange method.
-	 */onDataChange(pView,pInput,pValue,pHTMLSelector,pTransactionGUID){let tmpTriggerGroupConfigurations=this.getTriggerGroupConfigurationArray(pInput);if(Array.isArray(tmpTriggerGroupConfigurations)&&this.pict.views.PictFormMetacontroller){for(let i=0;i<tmpTriggerGroupConfigurations.length;i++){const tmpGroupConfig=tmpTriggerGroupConfigurations[i];if(tmpGroupConfig.TriggerAllInputs){if(Array.isArray(tmpGroupConfig.PreSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PreSolvers,"AutofillTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," pre-trigger"));}pView.registerOnTransactionCompleteCallback(pTransactionGUID,()=>{if(Array.isArray(tmpGroupConfig.PostSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PostSolvers,"AutofillTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," post-trigger"));}});this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent("TriggerGroup:".concat(tmpGroupConfig.TriggerGroupHash,":DataChange:").concat(pInput.Hash||pInput.DataAddress,":").concat(this.pict.getUUID()),pTransactionGUID);}}}return super.onDataChange(pView,pInput,pValue,pHTMLSelector,pTransactionGUID);}/**
+	 */onDataChange(pView,pInput,pValue,pHTMLSelector,pTransactionGUID){let tmpTriggerGroupConfigurations=this.getTriggerGroupConfigurationArray(pInput);if(Array.isArray(tmpTriggerGroupConfigurations)&&this.pict.views.PictFormMetacontroller){for(let i=0;i<tmpTriggerGroupConfigurations.length;i++){const tmpGroupConfig=tmpTriggerGroupConfigurations[i];if(tmpGroupConfig.TriggerAllInputs){if(Array.isArray(tmpGroupConfig.PreSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PreSolvers,"AutofillTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," pre-trigger"));}pView.registerOnTransactionCompleteCallback(pTransactionGUID,()=>{if(Array.isArray(tmpGroupConfig.PostSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PostSolvers,"AutofillTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," post-trigger"));const tmpMarshalScope=tmpGroupConfig.MarshalOnComplete;if(tmpMarshalScope===true){this.pict.views.PictFormMetacontroller.marshalToView();}else if(tmpMarshalScope){this.pict.views.PictFormMetacontroller.marshalSectionToView(tmpMarshalScope.Section);this.pict.views.PictFormMetacontroller.marshalInputToView(tmpMarshalScope.Input);}}});this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent("TriggerGroup:".concat(tmpGroupConfig.TriggerGroupHash,":DataChange:").concat(pInput.Hash||pInput.DataAddress,":").concat(this.pict.getUUID()),pTransactionGUID);}}}return super.onDataChange(pView,pInput,pValue,pHTMLSelector,pTransactionGUID);}/**
 	 * Handles the change event for tabular data.
 	 *
 	 * @param {Object} pView - The view object.
@@ -4558,7 +4558,7 @@ pView.setDataTabularByHash(pInput.PictForm.GroupIndex,pInput.Hash,pRowIndex,tmpV
 	 * @param {number} pRowIndex - The index of the row.
 	 * @param {string} pTransactionGUID - The transaction GUID, if any.
 	 * @returns {any} - The result of the super method.
-	 */onDataChangeTabular(pView,pInput,pValue,pHTMLSelector,pRowIndex,pTransactionGUID){let tmpTriggerGroupConfigurations=this.getTriggerGroupConfigurationArray(pInput);if(Array.isArray(tmpTriggerGroupConfigurations)&&this.pict.views.PictFormMetacontroller){for(let i=0;i<tmpTriggerGroupConfigurations.length;i++){const tmpGroupConfig=tmpTriggerGroupConfigurations[i];if(tmpGroupConfig.TriggerAllInputs){if(Array.isArray(tmpGroupConfig.PreSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PreSolvers,"AutofillTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," tabular pre-trigger"));}pView.registerOnTransactionCompleteCallback(pTransactionGUID,()=>{if(Array.isArray(tmpGroupConfig.PostSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PostSolvers,"AutofillTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," tabular post-trigger"));}});this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent("TriggerGroup:".concat(tmpGroupConfig.TriggerGroupHash,":DataChange:").concat(pInput.Hash||pInput.DataAddress,":").concat(this.pict.getUUID()),pTransactionGUID);}}}return super.onDataChangeTabular(pView,pInput,pValue,pHTMLSelector,pRowIndex,pTransactionGUID);}/**
+	 */onDataChangeTabular(pView,pInput,pValue,pHTMLSelector,pRowIndex,pTransactionGUID){let tmpTriggerGroupConfigurations=this.getTriggerGroupConfigurationArray(pInput);if(Array.isArray(tmpTriggerGroupConfigurations)&&this.pict.views.PictFormMetacontroller){for(let i=0;i<tmpTriggerGroupConfigurations.length;i++){const tmpGroupConfig=tmpTriggerGroupConfigurations[i];if(tmpGroupConfig.TriggerAllInputs){if(Array.isArray(tmpGroupConfig.PreSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PreSolvers,"AutofillTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," tabular pre-trigger"));}pView.registerOnTransactionCompleteCallback(pTransactionGUID,()=>{if(Array.isArray(tmpGroupConfig.PostSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PostSolvers,"AutofillTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," tabular post-trigger"));const tmpMarshalScope=tmpGroupConfig.MarshalOnComplete;if(tmpMarshalScope===true){this.pict.views.PictFormMetacontroller.marshalToView();}else if(tmpMarshalScope){this.pict.views.PictFormMetacontroller.marshalSectionToView(tmpMarshalScope.Section);this.pict.views.PictFormMetacontroller.marshalInputToView(tmpMarshalScope.Input);}}});this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent("TriggerGroup:".concat(tmpGroupConfig.TriggerGroupHash,":DataChange:").concat(pInput.Hash||pInput.DataAddress,":").concat(this.pict.getUUID()),pTransactionGUID);}}}return super.onDataChangeTabular(pView,pInput,pValue,pHTMLSelector,pRowIndex,pTransactionGUID);}/**
 	 * This input extension only responds to events
 	 *
 	 * @param {Object} pView - The view object.
@@ -4572,7 +4572,7 @@ pView.setDataTabularByHash(pInput.PictForm.GroupIndex,pInput.Hash,pRowIndex,tmpV
 if('TriggerAddress'in tmpAutoFillTriggerGroup){// Autofill based on the address list as it isn't a select option
 this.autoFillFromAddressList(pView,pInput,tmpAutoFillTriggerGroup,pHTMLSelector);}if(tmpAutoFillTriggerGroup.SelectOptionsRefresh){// Regenerate the picklist
 // Because the pick lists are view specific, we need to lookup the view the input is in
-let tmpInputView=this.pict.views[pInput.PictForm.ViewHash];this.pict.providers.DynamicMetaLists.rebuildListByHash(pInput.PictForm.SelectOptionsPickList);this.pict.providers['Pict-Input-Select'].refreshSelectList(tmpInputView,tmpInputView.getGroup(pInput.PictForm.GroupIndex),tmpInputView.getRow(pInput.PictForm.GroupIndex,pInput.PictForm.Row),pInput,pValue,pHTMLSelector);tmpInputView.manualMarshalDataToViewByInput(pInput,tmpEventGUID);}if(Array.isArray(tmpAutoFillTriggerGroup.PostSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpAutoFillTriggerGroup.PostSolvers,"AutofillTriggerGroup hash ".concat(tmpAutoFillTriggerGroup.TriggerGroupHash," post-autofill"));}}return super.onAfterEventCompletion(pView,pInput,pValue,pHTMLSelector,pEvent,pTransactionGUID);}/**
+let tmpInputView=this.pict.views[pInput.PictForm.ViewHash];this.pict.providers.DynamicMetaLists.rebuildListByHash(pInput.PictForm.SelectOptionsPickList);this.pict.providers['Pict-Input-Select'].refreshSelectList(tmpInputView,tmpInputView.getGroup(pInput.PictForm.GroupIndex),tmpInputView.getRow(pInput.PictForm.GroupIndex,pInput.PictForm.Row),pInput,pValue,pHTMLSelector);tmpInputView.manualMarshalDataToViewByInput(pInput,tmpEventGUID);}if(Array.isArray(tmpAutoFillTriggerGroup.PostSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpAutoFillTriggerGroup.PostSolvers,"AutofillTriggerGroup hash ".concat(tmpAutoFillTriggerGroup.TriggerGroupHash," post-autofill"));const tmpMarshalScope=tmpAutoFillTriggerGroup.MarshalOnComplete;if(tmpMarshalScope===true){this.pict.views.PictFormMetacontroller.marshalToView();}else if(tmpMarshalScope){this.pict.views.PictFormMetacontroller.marshalSectionToView(tmpMarshalScope.Section);this.pict.views.PictFormMetacontroller.marshalInputToView(tmpMarshalScope.Input);}}}return super.onAfterEventCompletion(pView,pInput,pValue,pHTMLSelector,pEvent,pTransactionGUID);}/**
 	 * Handles events for the Pict-Provider-InputExtension.
 	 *
 	 * @param {Object} pView - The view object.
@@ -4881,15 +4881,63 @@ let tmpInputSelectValue;try{tmpInputSelectValue=this.pict.ContentAssignment.read
  *   provider.commit(inputHash, fCallback)
  */const libPictSectionInputExtension=require('../Pict-Provider-InputExtension.js');const libPictSectionExcalidraw=require('pict-section-excalidraw');// Form templates live in pict-section-form's default-template set, so no
 // runtime template injection is needed here. CSS still needs registering.
-const libCSS=require('./Pict-Provider-Input-Diagram-CSS.js');const libThemeify=require('./util/Themeify-SVG.js');const _DefaultProviderConfiguration={ProviderIdentifier:'Pict-Input-Diagram',AutoInitialize:true,AutoInitializeOrdinal:0,AutoSolveWithApp:false};class PictInputDiagram extends libPictSectionInputExtension{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},JSON.parse(JSON.stringify(_DefaultProviderConfiguration)),pOptions);super(pFable,tmpOptions,pServiceHash);/** @type {import('pict')} */this.pict;/** @type {any}            */this.log;// inputHash → { mode, slotID, lastValue (SVG string), viewInstance?, viewHash?, input }
-this._instances={};// Register the scoped CSS.
+const libCSS=require('./Pict-Provider-Input-Diagram-CSS.js');const libThemeify=require('./util/Themeify-SVG.js');const _DefaultProviderConfiguration={ProviderIdentifier:'Pict-Input-Diagram',AutoInitialize:true,AutoInitializeOrdinal:0,AutoSolveWithApp:false};/**
+ * @typedef {Object} Instance
+ * @property {string} mode - 'edit' or 'view'
+ * @property {string} slotID - The HTML ID of the content slot for this input
+ * @property {string} lastValue - The last known value (SVG string)
+ * @property {Object} viewInstance - The editor view instance (if in edit mode)
+ * @property {string} viewHash - The hash of the editor view (if in edit mode)
+ * @property {Object} input - The input definition object
+ */class PictInputDiagram extends libPictSectionInputExtension{/**
+	 * Creates an instance of the PictInputExtensionProvider class.
+	 *
+	 * @param {import('pict')} pFable - The Pict instance.
+	 * @param {Record<string, any>} [pOptions] - The options for the provider.
+	 * @param {string} [pServiceHash] - The service hash for the provider.
+	 */constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},JSON.parse(JSON.stringify(_DefaultProviderConfiguration)),pOptions);super(pFable,tmpOptions,pServiceHash);/** @type {import('pict')} */this.pict;/** @type {any}            */this.log;// inputHash → { mode, slotID, lastValue (SVG string), viewInstance?, viewHash?, input }
+/** @type {Record<String, Instance>} */this._instances={};// Register the scoped CSS.
 if(this.pict&&this.pict.CSSMap&&typeof this.pict.CSSMap.addCSS==='function'){this.pict.CSSMap.addCSS('Pict-Input-Diagram-CSS',libCSS,500);}}// ----------------------------------------------------------------------------
 // Helpers
 // ----------------------------------------------------------------------------
-getContentDisplayHTMLID(pInputHTMLID){return"#DISPLAY-FOR-".concat(pInputHTMLID);}getTabularContentDisplayInputID(pInputHTMLID,pRowIndex){return"#DISPLAY-FOR-TABULAR-".concat(pInputHTMLID,"-").concat(pRowIndex);}_resolveValue(pInput,pValue){if(typeof pValue==='string'&&pValue.length>0)return pValue;if(pInput&&pInput.Content&&typeof pInput.Content==='string')return pInput.Content;if(pInput&&pInput.Default&&typeof pInput.Default==='string')return pInput.Default;return'';}_isLikelySvg(pValue){return typeof pValue==='string'&&/<svg[\s>]/i.test(pValue);}_assignSlotContent(pSlotID,pHTML){if(this.pict&&this.pict.ContentAssignment&&typeof this.pict.ContentAssignment.assignContent==='function'){this.pict.ContentAssignment.assignContent(pSlotID,pHTML);return true;}return false;}_writeHiddenInputValue(pInputHTMLID,pValue){let tmpEl=typeof document!=='undefined'?document.getElementById(pInputHTMLID):null;if(!tmpEl)return false;tmpEl.value=pValue==null?'':String(pValue);try{tmpEl.dispatchEvent(new Event('change',{bubbles:true}));}catch(pErr){/* jsdom may lack Event */}return true;}_resolveVendor(){if(typeof window==='undefined')return null;return window.PictSectionExcalidrawVendor||null;}/**
+/**
+	 * @param {string} pInputHTMLID - The RawHTMLID of the input.
+	 * @returns {string} The HTML ID selector for the content display slot corresponding to the input.
+	 */getContentDisplayHTMLID(pInputHTMLID){return"#DISPLAY-FOR-".concat(pInputHTMLID);}/**
+	 * @param {string} pInputHTMLID - The RawHTMLID of the input.
+	 * @param {number} pRowIndex - The row index for tabular inputs.
+	 * @returns {string} The HTML ID selector for the content display slot corresponding to the tabular input.
+	 */getTabularContentDisplayInputID(pInputHTMLID,pRowIndex){return"#DISPLAY-FOR-TABULAR-".concat(pInputHTMLID,"-").concat(pRowIndex);}/**
+	 * Resolve the value to use for display/editing, following this precedence:
+	 * 1. The provided pValue (if a non-empty string)
+	 * 2. The input's Content property (if a non-empty string)
+	 * 3. The input's Default property (if a non-empty string)
+	 * 4. An empty string if none of the above are valid
+	 *
+	 * @param {Object} pInput - The input definition object.
+	 * @param {any} pValue - The value provided for the input.
+	 * @returns {string} The resolved value to use for display/editing.
+	 */_resolveValue(pInput,pValue){if(typeof pValue==='string'&&pValue.length>0)return pValue;if(pInput&&pInput.Content&&typeof pInput.Content==='string')return pInput.Content;if(pInput&&pInput.Default&&typeof pInput.Default==='string')return pInput.Default;return'';}/**
+	 * @param {any} pValue - The value to check.
+	 * @return {boolean} True if the value is a string that appears to contain an <svg> element, false otherwise.
+	 */_isLikelySvg(pValue){return typeof pValue==='string'&&/<svg[\s>]/i.test(pValue);}/**
+	 * @param {string} pSlotID - The HTML ID of the content slot to assign.
+	 * @param {string} pHTML - The HTML string to assign to the slot.
+	 * @returns {boolean} True if the assignment was successful, false otherwise.
+	 */_assignSlotContent(pSlotID,pHTML){if(this.pict&&this.pict.ContentAssignment&&typeof this.pict.ContentAssignment.assignContent==='function'){this.pict.ContentAssignment.assignContent(pSlotID,pHTML);return true;}return false;}/**
+	 * @param {string} pInputHTMLID - The RawHTMLID of the input whose hidden value field should be updated.
+	 * @param {string} pValue - The SVG string to set as the value of the hidden input field.
+	 * @returns {boolean} True if the value was successfully written and a change event dispatched, false otherwise.
+	 */_writeHiddenInputValue(pInputHTMLID,pValue){let tmpEl=typeof document!=='undefined'?document.getElementById(pInputHTMLID):null;if(!tmpEl)return false;tmpEl.value=pValue==null?'':String(pValue);try{tmpEl.dispatchEvent(new Event('change',{bubbles:true}));}catch(pErr){/* jsdom may lack Event */}return true;}_resolveVendor(){if(typeof window==='undefined')return null;return window.PictSectionExcalidrawVendor||null;}/**
 	 * Wrap an SVG string in a thin <div> for the view-mode slot. If the value
 	 * is empty or not an SVG, show an "(empty)" placeholder.
-	 */_buildViewHTML(pValue){if(this._isLikelySvg(pValue)){return"<div class=\"pict-section-form-diagram-view\">".concat(pValue,"</div>");}return"<div class=\"pict-section-form-diagram-view is-empty\">(empty diagram)</div>";}_setSlotModeClass(pInput,pMode){if(typeof document==='undefined')return;let tmpRawHTMLID=pInput.Macro.RawHTMLID;let tmpOuter=document.getElementById(tmpRawHTMLID)||document.querySelector(this.getContentDisplayHTMLID(tmpRawHTMLID));if(!tmpOuter||!tmpOuter.classList)return;tmpOuter.classList.remove('mode-edit','mode-view','pict-section-form-diagram-edit');if(pMode==='edit'){tmpOuter.classList.add('mode-edit','pict-section-form-diagram-edit');}else{tmpOuter.classList.add('mode-view');}}// ----------------------------------------------------------------------------
+	 *
+	 * @param {string} pValue - The SVG string to wrap for display.
+	 * @returns {string} The HTML string to assign to the view slot.
+	 */_buildViewHTML(pValue){if(this._isLikelySvg(pValue)){return"<div class=\"pict-section-form-diagram-view\">".concat(pValue,"</div>");}return"<div class=\"pict-section-form-diagram-view is-empty\">(empty diagram)</div>";}/**
+	 * @param {Object} pInput - The input definition object.
+	 * @param {string} pMode - The mode to set ('edit' or 'view').
+	 */_setSlotModeClass(pInput,pMode){if(typeof document==='undefined')return;let tmpRawHTMLID=pInput.Macro.RawHTMLID;let tmpOuter=document.getElementById(tmpRawHTMLID)||document.querySelector(this.getContentDisplayHTMLID(tmpRawHTMLID));if(!tmpOuter||!tmpOuter.classList)return;tmpOuter.classList.remove('mode-edit','mode-view','pict-section-form-diagram-edit');if(pMode==='edit'){tmpOuter.classList.add('mode-edit','pict-section-form-diagram-edit');}else{tmpOuter.classList.add('mode-view');}}// ----------------------------------------------------------------------------
 // View mode
 // ----------------------------------------------------------------------------
 _mountView(pView,pInput,pValue){let tmpRawHTMLID=pInput.Macro.RawHTMLID;let tmpSlotID=this.getContentDisplayHTMLID(tmpRawHTMLID);let tmpValue=this._resolveValue(pInput,pValue);this._assignSlotContent(tmpSlotID,this._buildViewHTML(tmpValue));this._setSlotModeClass(pInput,'view');let tmpInst=this._instances[pInput.Hash]||{};tmpInst.mode='view';tmpInst.slotID=tmpSlotID;tmpInst.lastValue=tmpValue;tmpInst.input=pInput;tmpInst.viewInstance=null;this._instances[pInput.Hash]=tmpInst;}// ----------------------------------------------------------------------------
@@ -4916,7 +4964,32 @@ getMode(pInputHash){let tmpInst=this._instances[pInputHash];return tmpInst?tmpIn
 let tmpThemeColors=tmpInst.themeColors!==false;let tmpProvider=this;let tmpRawHTMLID=tmpInst.input.Macro.RawHTMLID;try{let tmpExportPromise=tmpInst.viewInstance.exportSvg({exportEmbedScene:true,exportBackground:false});Promise.resolve(tmpExportPromise).then(pSvgEl=>{let tmpSvgStr=pSvgEl&&typeof pSvgEl.outerHTML==='string'?pSvgEl.outerHTML:null;if(tmpSvgStr){if(tmpThemeColors)tmpSvgStr=libThemeify.themeifySVG(tmpSvgStr);tmpProvider._writeHiddenInputValue(tmpRawHTMLID,tmpSvgStr);tmpInst.lastValue=tmpSvgStr;}if(typeof fCallback==='function')fCallback(null);},pErr=>{if(typeof fCallback==='function')fCallback(pErr);});}catch(pErr){if(typeof fCallback==='function')fCallback(pErr);}}// ----------------------------------------------------------------------------
 // Lifecycle hooks
 // ----------------------------------------------------------------------------
-onInputInitialize(pView,pGroup,pRow,pInput,pValue,pHTMLSelector,pTransactionGUID){this._mountView(pView,pInput,pValue);return super.onInputInitialize(pView,pGroup,pRow,pInput,pValue,pHTMLSelector,pTransactionGUID);}onInputInitializeTabular(pView,pGroup,pInput,pValue,pHTMLSelector,pRowIndex,pTransactionGUID){let tmpErr=new Error('Diagram InputType is not supported inside Tabular rows in Phase 1.');if(this.log)this.log.warn('[Pict-Input-Diagram] tabular not supported',{inputHash:pInput&&pInput.Hash});throw tmpErr;}onDataMarshalToForm(pView,pGroup,pRow,pInput,pValue,pHTMLSelector,pTransactionGUID){let tmpInst=this._instances[pInput.Hash];if(!tmpInst){this._mountView(pView,pInput,pValue);}else if(tmpInst.mode==='view'){this._mountView(pView,pInput,pValue);}else{// Edit mode: hot-replace the editor's scene.
+onInputInitialize(pView,pGroup,pRow,pInput,pValue,pHTMLSelector,pTransactionGUID){this._mountView(pView,pInput,pValue);return super.onInputInitialize(pView,pGroup,pRow,pInput,pValue,pHTMLSelector,pTransactionGUID);}/**
+	 * A tabular input has been initialized (rendered into the DOM)
+	 *
+	 * Called when an input has this Provider hash in its 'Providers' array.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group definition object.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value of the input object
+	 * @param {string} pHTMLSelector - The HTML selector for the input object (it will return an array).
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
+	 * @param {number} pRowIndex - The row index of the tabular data
+	 *
+	 * @return {boolean}
+	 */onInputInitializeTabular(pView,pGroup,pInput,pValue,pHTMLSelector,pRowIndex,pTransactionGUID){super.onInputInitializeTabular(pView,pGroup,pInput,pValue,pHTMLSelector,pRowIndex,pTransactionGUID);let tmpErr=new Error('Diagram InputType is not supported inside Tabular rows in Phase 1.');if(this.log)this.log.warn('[Pict-Input-Diagram] tabular not supported',{inputHash:pInput&&pInput.Hash});throw tmpErr;}/**
+	 * Fires when data is marshaled to the form for this input.
+	 *
+	 * @param {Object} pView - The view object.
+	 * @param {Object} pGroup - The group definition object.
+	 * @param {number} pRow - The Row index.
+	 * @param {Object} pInput - The input object.
+	 * @param {any} pValue - The value to marshal.
+	 * @param {string} pHTMLSelector - The HTML selector.
+	 * @param {string} pTransactionGUID - The transaction GUID for the event dispatch.
+	 * @returns {boolean} - Returns true if the data was successfully marshaled to the form.
+	 */onDataMarshalToForm(pView,pGroup,pRow,pInput,pValue,pHTMLSelector,pTransactionGUID){let tmpInst=this._instances[pInput.Hash];if(!tmpInst){this._mountView(pView,pInput,pValue);}else if(tmpInst.mode==='view'){this._mountView(pView,pInput,pValue);}else{// Edit mode: hot-replace the editor's scene.
 tmpInst.lastValue=typeof pValue==='string'?pValue:tmpInst.lastValue;this._extractSceneFromSvg(tmpInst.lastValue,(pErr,pScene)=>{if(pErr||!pScene)return;if(tmpInst.viewInstance&&typeof tmpInst.viewInstance.setScene==='function'){try{tmpInst.viewInstance.setScene(pScene);}catch(pSetErr){if(this.log)this.log.warn('[Pict-Input-Diagram] setScene threw after marshal',{error:pSetErr.message});}}});}return super.onDataMarshalToForm(pView,pGroup,pRow,pInput,pValue,pHTMLSelector,pTransactionGUID);}onDataMarshalToFormTabular(pView,pGroup,pInput,pValue,pHTMLSelector,pRowIndex,pTransactionGUID){return super.onDataMarshalToFormTabular(pView,pGroup,pInput,pValue,pHTMLSelector,pRowIndex,pTransactionGUID);}}module.exports=PictInputDiagram;module.exports.default_configuration=_DefaultProviderConfiguration;},{"../Pict-Provider-InputExtension.js":53,"./Pict-Provider-Input-Diagram-CSS.js":63,"./util/Themeify-SVG.js":78,"pict-section-excalidraw":20}],65:[function(require,module,exports){const libPictSectionInputExtension=require('../Pict-Provider-InputExtension.js');/**
  * CustomInputHandler class for Entity Bundle Requests.
  *
@@ -4983,7 +5056,7 @@ if(pCustomRequestInformation.Destination){this.pict.manifest.setValueByHash(this
 if(typeof pInput!=='object'||!('PictForm'in pInput)||!('EntitiesBundle'in pInput.PictForm)||!Array.isArray(pInput.PictForm.EntitiesBundle)){this.log.warn("Input at ".concat(pHTMLSelector," is set as an EntityBundleRequest input but no array of entity requests was found"));return null;}const tmpLoadGUID="BundleLoad-".concat(this.pict.getUUID());if(pTransactionGUID){pView.registerEventTransactionAsyncOperation(pTransactionGUID,tmpLoadGUID);}let tmpInput=pInput;let tmpValue=pValue;let tmpAnticipate=this.fable.newAnticipate();if(tmpInput.PictForm.EntitiesBundle.length>0&&tmpInput.PictForm.EntitiesBundle[0].PictMode){tmpAnticipate.anticipate(fNext=>{this.pict.EntityProvider.gatherDataFromServer(tmpInput.PictForm.EntitiesBundle,pError=>{// in case of an empty array, or all tasks being synchronous, wait for the next tick so we don't get event ordering problems
 setTimeout(()=>fNext(pError),0);});});}else{const tmpStateStack=[];/** @type {Record<string, any>} */let tmpState={Value:tmpValue,Input:tmpInput,View:pView};for(let i=0;i<tmpInput.PictForm.EntitiesBundle.length;i++){let tmpEntityBundleEntry=tmpInput.PictForm.EntitiesBundle[i];tmpAnticipate.anticipate(fNext=>{try{switch(tmpEntityBundleEntry.Type){case'Custom':return this.gatherCustomDataSet(fNext,tmpEntityBundleEntry,pView,tmpInput,tmpValue);case'SetStateAddress':tmpStateStack.push(tmpState);tmpState=this.fable.manifest.getValueByHash(this.fable,tmpEntityBundleEntry.StateAddress);if(typeof tmpState==='undefined'){tmpState={};this.fable.manifest.setValueByHash(this.fable,tmpEntityBundleEntry.StateAddress,tmpState);}break;case'PopState':if(tmpStateStack.length>0){tmpState=tmpStateStack.pop();}else{this.log.warn("EntityBundleRequest encountered a PopState without a matching SetStateAddress.");}break;case'MapJoin':this.pict.EntityProvider.mapJoin(tmpEntityBundleEntry,this.pict.EntityProvider.prepareState(tmpState,tmpEntityBundleEntry));break;case'ProjectDataset':this.pict.EntityProvider.projectDataset(tmpEntityBundleEntry,this.pict.EntityProvider.prepareState(tmpState,tmpEntityBundleEntry));break;// This is the default case, for a meadow entity set or single entity
 case'MeadowEntity':default:return this.gatherEntitySet(fNext,tmpEntityBundleEntry,pView,tmpInput,tmpValue);}}catch(pError){this.log.error("EntityBundleRequest error gathering entity set: ".concat(pError),pError);}return fNext();});}// in case of an empty array, or all tasks being synchronous, wait for the next tick so we don't get event ordering problems
-tmpAnticipate.anticipate(fNext=>setTimeout(fNext,0));}tmpAnticipate.anticipate(fNext=>{if(tmpInput.PictForm.EntityBundleTriggerGroup&&this.pict.views.PictFormMetacontroller){const tmpGroupConfig=this.getTriggerGroupConfigurationArray(tmpInput,tmpInput.PictForm.EntityBundleTriggerGroup)[0];if(tmpGroupConfig&&Array.isArray(tmpGroupConfig.PreSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PreSolvers,"EntityBundleTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," pre-trigger"));}let tmpTransactionGUID;if(tmpGroupConfig&&Array.isArray(tmpGroupConfig.PostSolvers)){tmpTransactionGUID=pTransactionGUID||this.pict.getUUID();if(tmpTransactionGUID!==pTransactionGUID){this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);}pView.registerOnTransactionCompleteCallback(tmpTransactionGUID,()=>{if(Array.isArray(tmpGroupConfig.PostSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PostSolvers,"EntityBundleTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," tabular post-trigger"));}});}// Trigger the autofill global event
+tmpAnticipate.anticipate(fNext=>setTimeout(fNext,0));}tmpAnticipate.anticipate(fNext=>{if(tmpInput.PictForm.EntityBundleTriggerGroup&&this.pict.views.PictFormMetacontroller){const tmpGroupConfig=this.getTriggerGroupConfigurationArray(tmpInput,tmpInput.PictForm.EntityBundleTriggerGroup)[0];if(tmpGroupConfig&&Array.isArray(tmpGroupConfig.PreSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PreSolvers,"EntityBundleTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," pre-trigger"));}let tmpTransactionGUID;if(tmpGroupConfig&&Array.isArray(tmpGroupConfig.PostSolvers)){tmpTransactionGUID=pTransactionGUID||this.pict.getUUID();if(tmpTransactionGUID!==pTransactionGUID){this.pict.TransactionTracking.registerTransaction(tmpTransactionGUID);}pView.registerOnTransactionCompleteCallback(tmpTransactionGUID,()=>{if(Array.isArray(tmpGroupConfig.PostSolvers)){this.pict.providers.DynamicSolver.executeSolvers(pView,tmpGroupConfig.PostSolvers,"EntityBundleTriggerGroup hash ".concat(tmpGroupConfig.TriggerGroupHash," post-trigger"));const tmpMarshalScope=tmpGroupConfig.MarshalOnComplete;if(tmpMarshalScope===true){this.pict.views.PictFormMetacontroller.marshalToView();}else if(tmpMarshalScope){this.pict.views.PictFormMetacontroller.marshalSectionToView(tmpMarshalScope.Section);this.pict.views.PictFormMetacontroller.marshalInputToView(tmpMarshalScope.Input);}}});}// Trigger the autofill global event
 this.pict.views.PictFormMetacontroller.triggerGlobalInputEvent("TriggerGroup:".concat(tmpInput.PictForm.EntityBundleTriggerGroup,":BundleLoad:").concat(pInput.Hash||pInput.DataAddress,":").concat(this.pict.getUUID()),pTransactionGUID);if(tmpTransactionGUID&&tmpTransactionGUID!==pTransactionGUID){pView.finalizeTransaction(tmpTransactionGUID);}}if(tmpInput.PictForm.EntityBundleTriggerMetacontrollerSolve&&this.pict.views.PictFormMetacontroller){// Trigger the solve global event
 this.pict.views.PictFormMetacontroller.solve();}if(tmpInput.PictForm.EntityBundleTriggerMetacontrollerRender&&this.pict.views.PictFormMetacontroller){// Trigger the render
 this.pict.views.PictFormMetacontroller.render();}fNext();});return new Promise((pResolve,pReject)=>{// Now fire the "autofilldata" event for the groups.
@@ -5324,7 +5397,13 @@ tmpProvider._writeHiddenInputValue(tmpRawHTMLID,pContent);let tmpLatest=tmpProvi
 // its default base64 inline; we *don't* want that when text-only,
 // so we eat the file by calling back with an error.
 fImgCallback('Image uploads are disabled for this field.');return true;}let tmpUploaderName=tmpRichTextOpts.ImageUploader;if(tmpUploaderName&&tmpProvider.pict&&tmpProvider.pict.PictApplication&&typeof tmpProvider.pict.PictApplication[tmpUploaderName]==='function'){try{return tmpProvider.pict.PictApplication[tmpUploaderName](pFile,pInput,fImgCallback);}catch(pErr){if(tmpProvider.log){tmpProvider.log.warn('[Pict-Input-RichText] ImageUploader threw',{error:pErr.message,inputHash:pInput.Hash});}fImgCallback(pErr.message);return true;}}// No uploader configured + AllowImages=true → default base64 inline.
-return false;}}this.pict.addView(tmpViewHash,tmpEditorOpts,RichTextFormEditor);let tmpEditorView=this.pict.views[tmpViewHash];if(!tmpEditorView){let tmpErr=new Error('Failed to instantiate RichText editor view '+tmpViewHash);if(this.log)this.log.error('[Pict-Input-RichText] addView returned nothing',{viewHash:tmpViewHash});if(typeof fCallback==='function')fCallback(tmpErr);return;}// Surface mode on the outer slot for the optional toggle-chip pseudo.
+return false;}/**
+			 * Push CodeMirror extensions before the editor mounts. We enable
+			 * line wrapping by default so long markdown paragraphs flow to
+			 * the next visual line instead of horizontally scrolling — the
+			 * almost-always-correct default for prose. Opt out via
+			 * `PictForm.RichText.WordWrap: false` in the descriptor.
+			 */customConfigureExtensions(pExtensions,pSegmentIndex){let tmpWantWrap=tmpRichTextOpts.WordWrap!==false;if(tmpWantWrap){let tmpCM=this._codeMirrorModules;if(tmpCM&&tmpCM.EditorView&&tmpCM.EditorView.lineWrapping){pExtensions.push(tmpCM.EditorView.lineWrapping);}}return pExtensions;}}this.pict.addView(tmpViewHash,tmpEditorOpts,RichTextFormEditor);let tmpEditorView=this.pict.views[tmpViewHash];if(!tmpEditorView){let tmpErr=new Error('Failed to instantiate RichText editor view '+tmpViewHash);if(this.log)this.log.error('[Pict-Input-RichText] addView returned nothing',{viewHash:tmpViewHash});if(typeof fCallback==='function')fCallback(tmpErr);return;}// Surface mode on the outer slot for the optional toggle-chip pseudo.
 if(typeof document!=='undefined'){let tmpOuter=document.querySelector(tmpSlotID);if(tmpOuter&&tmpOuter.classList){tmpOuter.classList.remove('mode-view');tmpOuter.classList.add('mode-edit','pict-section-form-richtext-edit');}}tmpInst.mode='edit';tmpInst.slotID=tmpSlotID;tmpInst.lastValue=tmpContent;tmpInst.viewInstance=tmpEditorView;tmpInst.viewHash=tmpViewHash;this._instances[pInput.Hash]=tmpInst;// Render the editor. The view's render() resolves TargetElementAddress
 // against ContentAssignment and paints into the slot.
 try{let tmpResult=tmpEditorView.render();// Some renders are async (Promise-returning) and some are sync.
@@ -6009,7 +6088,11 @@ this.pict.TemplateProvider.addTemplate(pGroup.SectionTabularRowVirtualTemplateHa
 // pict's built-in icon registry (so they theme + scale like every other glyph).
 if(this.pict&&this.pict.providers&&this.pict.providers.Icon&&typeof this.pict.providers.Icon.registerSet==='function'){this.pict.providers.Icon.registerSet({Outline:{Sort:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20V5"/><path d="M5.5 8.5L9 5L12.5 8.5"/><path d="M15 4V19"/><path d="M11.5 15.5L15 19L18.5 15.5"/></svg>',SortAscending:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5"/><path d="M6 11L12 5L18 11"/></svg>',SortDescending:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4V19"/><path d="M6 13L12 19L18 13"/></svg>'}});}// CSS for the clickable sort control. Inactive glyphs are faded; the
 // actively-sorted column's glyph is full opacity.
-if(this.pict&&this.pict.CSSMap&&typeof this.pict.CSSMap.addCSS==='function'){this.pict.CSSMap.addCSS('Pict-Layout-Tabular-Sort-CSS','.pict-tabular-sort-control { cursor: pointer; display: inline-flex; vertical-align: middle; margin-left: 0.3em; opacity: 0.4; }'+' .pict-tabular-sort-control:hover { opacity: 0.75; }'+' .pict-tabular-sort-control.pict-tabular-sort-asc, .pict-tabular-sort-control.pict-tabular-sort-desc { opacity: 1; }',500);}}/**
+if(this.pict&&this.pict.CSSMap&&typeof this.pict.CSSMap.addCSS==='function'){this.pict.CSSMap.addCSS('Pict-Layout-Tabular-Sort-CSS','.pict-tabular-sort-control { cursor: pointer; display: inline-flex; vertical-align: middle; margin-left: 0.3em; opacity: 0.4; }'+' .pict-tabular-sort-control:hover { opacity: 0.75; }'+' .pict-tabular-sort-control.pict-tabular-sort-asc, .pict-tabular-sort-control.pict-tabular-sort-desc { opacity: 1; }',500);// CSS for the optional ColumnChooser feature: a right-aligned trigger button
+// above the table and a fixed-position popover of checkbox rows. Fixed +
+// JS-positioned (like the recordset's column chooser) so no ancestor
+// overflow can clip it; the transparent backdrop catches outside clicks.
+this.pict.CSSMap.addCSS('Pict-Layout-Tabular-ColumnChooser-CSS',/*css*/"\n\t.pict-tabular-colchooser-bar { display: flex; justify-content: flex-end; margin: 0 0 0.35rem; }\n\t.pict-tabular-colchooser-trigger { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; font: inherit; font-size: 0.88rem;\n\t\tpadding: 0.3rem 0.65rem; border: 1px solid var(--theme-color-border-default, #d7dce3); border-radius: 7px;\n\t\tbackground: var(--theme-color-background-panel, #fff); color: var(--theme-color-text-secondary, #45505f); }\n\t.pict-tabular-colchooser-trigger:hover { background: var(--theme-color-background-tertiary, #eceef2); color: var(--theme-color-text-primary, #1f2733); }\n\t.pict-tabular-colchooser-count { font-size: 0.8em; color: var(--theme-color-text-muted, #6b7686); }\n\t.pict-tabular-colchooser-pop { position: fixed; z-index: 30; min-width: 220px; max-width: 320px; display: none; }\n\t.pict-tabular-colchooser-pop.open { display: block; }\n\t.pict-tabular-colchooser-backdrop { position: fixed; inset: 0; z-index: 0; }\n\t.pict-tabular-colchooser-panel { position: relative; z-index: 1; display: flex; flex-direction: column; max-height: min(70vh, 420px);\n\t\tbackground: var(--theme-color-background-panel, #fff); border: 1px solid var(--theme-color-border-default, #d7dce3);\n\t\tborder-radius: 10px; box-shadow: 0 10px 28px rgba(17, 24, 39, 0.14); overflow: hidden; }\n\t.pict-tabular-colchooser-list { flex: 1 1 auto; overflow-y: auto; padding: 0.25rem 0; }\n\t.pict-tabular-colchooser-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer;\n\t\tpadding: 0.32rem 0.8rem; color: var(--theme-color-text-primary, #1f2733); }\n\t.pict-tabular-colchooser-row:hover { background: var(--theme-color-background-tertiary, #eceef2); }\n\t.pict-tabular-colchooser-row input { flex: 0 0 auto; margin: 0; cursor: pointer; }\n\t.pict-tabular-colchooser-footer { flex: 0 0 auto; display: flex; justify-content: flex-end; padding: 0.45rem 0.7rem; border-top: 1px solid var(--theme-color-border-light, #e8ebf0); }\n\t.pict-tabular-colchooser-reset { font: inherit; font-size: 0.84rem; cursor: pointer; border: none; background: transparent; color: var(--theme-color-text-muted, #6b7686); padding: 0.15rem 0.3rem; border-radius: 5px; }\n\t.pict-tabular-colchooser-reset:hover { color: var(--theme-color-text-primary, #1f2733); background: var(--theme-color-background-tertiary, #eceef2); }\n",500);}}/**
 	 * Builds one prime-header `<th>` with an injected, clickable sort control
 	 * `<span>` carrying the sort SVG glyph. Used when the group has
 	 * `ColumnSorting: true`. The glyph reflects the current sort state of the
@@ -6067,14 +6150,23 @@ tmpView.rebuildCustomTemplate();tmpView.render();if(this.pict.views.PictFormMeta
 	 * @param {Object} pView
 	 * @param {Object} pGroup
 	 * @returns {Array<Array<{Label: string, ColumnSpan: number, CSSClass: string}>>}
-	 */_buildExpandedHeadersConfig(pView,pGroup){let tmpExpanded=[];// Render user-provided Headers config first (at the top of the table).
-if(Array.isArray(pGroup.Headers)){for(let r=0;r<pGroup.Headers.length;r++){let tmpRowConfig=pGroup.Headers[r];if(!Array.isArray(tmpRowConfig)){continue;}let tmpNormalizedRow=[];for(let c=0;c<tmpRowConfig.length;c++){let tmpCell=tmpRowConfig[c];if(!tmpCell||typeof tmpCell!=='object'){continue;}tmpNormalizedRow.push({Label:typeof tmpCell.Label==='string'?tmpCell.Label:'',ColumnSpan:Number(tmpCell.ColumnSpan)>0?Number(tmpCell.ColumnSpan):1,CSSClass:typeof tmpCell.CSSClass==='string'?tmpCell.CSSClass:''});}tmpExpanded.push(tmpNormalizedRow);}}// Then synthesize a clustered super-header row from any DynamicColumns generator
+	 */_buildExpandedHeadersConfig(pView,pGroup){let tmpExpanded=[];// When the column chooser has hidden columns, each user-provided header
+// cell's ColumnSpan shrinks by the hidden columns it covers (cells reduced
+// to zero drop out), so the stacked headers stay aligned with the columns
+// that actually render. The spans partition the configured (non-
+// TabularHidden) data columns in manifest order — same contract the
+// span-total warning in generateGroupLayoutTemplate enforces.
+let tmpChooserHiddenSet=this._getTabularColumnChooserHiddenSet(pView,pGroup);let tmpConfiguredColumnVisibility=[];if(tmpChooserHiddenSet&&pGroup.supportingManifest&&Array.isArray(pGroup.supportingManifest.elementAddresses)){for(let k=0;k<pGroup.supportingManifest.elementAddresses.length;k++){let tmpDescriptor=pGroup.supportingManifest.elementDescriptors[pGroup.supportingManifest.elementAddresses[k]];if(!tmpDescriptor||tmpDescriptor.PictForm&&tmpDescriptor.PictForm.TabularHidden){continue;}tmpConfiguredColumnVisibility.push(!tmpChooserHiddenSet.has(String(pGroup.supportingManifest.elementAddresses[k])));}}// Render user-provided Headers config first (at the top of the table).
+if(Array.isArray(pGroup.Headers)){for(let r=0;r<pGroup.Headers.length;r++){let tmpRowConfig=pGroup.Headers[r];if(!Array.isArray(tmpRowConfig)){continue;}let tmpNormalizedRow=[];// Walks the configured-column visibility list as spans consume columns.
+let tmpColumnCursor=0;for(let c=0;c<tmpRowConfig.length;c++){let tmpCell=tmpRowConfig[c];if(!tmpCell||typeof tmpCell!=='object'){continue;}let tmpColumnSpan=Number(tmpCell.ColumnSpan)>0?Number(tmpCell.ColumnSpan):1;if(tmpChooserHiddenSet){let tmpVisibleSpan=0;for(let s=0;s<tmpColumnSpan;s++){// Columns past the configured set keep their span (the
+// misalignment warning will already have fired for that).
+if(tmpColumnCursor>=tmpConfiguredColumnVisibility.length||tmpConfiguredColumnVisibility[tmpColumnCursor]){tmpVisibleSpan++;}tmpColumnCursor++;}if(tmpVisibleSpan===0){continue;}tmpColumnSpan=tmpVisibleSpan;}tmpNormalizedRow.push({Label:typeof tmpCell.Label==='string'?tmpCell.Label:'',ColumnSpan:tmpColumnSpan,CSSClass:typeof tmpCell.CSSClass==='string'?tmpCell.CSSClass:''});}tmpExpanded.push(tmpNormalizedRow);}}// Then synthesize a clustered super-header row from any DynamicColumns generator
 // that declared a HeaderGroupTemplate. This row sits JUST ABOVE the default
 // column-name row so the visual cluster lines up with the columns it groups.
 // Walk the supportingManifest in order and group adjacent descriptors that
 // share both _DynamicColumnGeneratorIndex and _DynamicColumnHeaderGroup; static
 // descriptors get blank "spacer" cells.
-let tmpHasHeaderGroups=false;if(Array.isArray(pGroup.DynamicColumns)){for(let g=0;g<pGroup.DynamicColumns.length;g++){if(pGroup.DynamicColumns[g]&&pGroup.DynamicColumns[g].HeaderGroupTemplate){tmpHasHeaderGroups=true;break;}}}if(tmpHasHeaderGroups&&pGroup.supportingManifest){let tmpSynthRow=[];let tmpCurrentRun=null;let tmpAddresses=pGroup.supportingManifest.elementAddresses;for(let k=0;k<tmpAddresses.length;k++){let tmpDescriptor=pGroup.supportingManifest.elementDescriptors[tmpAddresses[k]];if(!tmpDescriptor){continue;}if(tmpDescriptor.PictForm&&tmpDescriptor.PictForm.TabularHidden){continue;}let tmpIsDynamic=typeof tmpDescriptor._DynamicColumnGeneratorIndex==='number';let tmpGroupLabel=tmpIsDynamic&&typeof tmpDescriptor._DynamicColumnHeaderGroup==='string'?tmpDescriptor._DynamicColumnHeaderGroup:'';let tmpRunKey=tmpIsDynamic?"D".concat(tmpDescriptor._DynamicColumnGeneratorIndex,"|").concat(tmpGroupLabel):"S|".concat(k);if(tmpCurrentRun&&tmpCurrentRun.RunKey===tmpRunKey){tmpCurrentRun.Cell.ColumnSpan+=1;}else{tmpCurrentRun={RunKey:tmpRunKey,Cell:{Label:tmpIsDynamic?tmpGroupLabel:'',ColumnSpan:1,CSSClass:tmpIsDynamic?'pict-tabular-dynamic-header-group':'pict-tabular-static-header-spacer'}};tmpSynthRow.push(tmpCurrentRun.Cell);}}tmpExpanded.push(tmpSynthRow);}return tmpExpanded;}/**
+let tmpHasHeaderGroups=false;if(Array.isArray(pGroup.DynamicColumns)){for(let g=0;g<pGroup.DynamicColumns.length;g++){if(pGroup.DynamicColumns[g]&&pGroup.DynamicColumns[g].HeaderGroupTemplate){tmpHasHeaderGroups=true;break;}}}if(tmpHasHeaderGroups&&pGroup.supportingManifest){let tmpSynthRow=[];let tmpCurrentRun=null;let tmpAddresses=pGroup.supportingManifest.elementAddresses;for(let k=0;k<tmpAddresses.length;k++){let tmpDescriptor=pGroup.supportingManifest.elementDescriptors[tmpAddresses[k]];if(!tmpDescriptor){continue;}if(tmpDescriptor.PictForm&&tmpDescriptor.PictForm.TabularHidden){continue;}if(tmpChooserHiddenSet&&tmpChooserHiddenSet.has(String(tmpAddresses[k]))){continue;}let tmpIsDynamic=typeof tmpDescriptor._DynamicColumnGeneratorIndex==='number';let tmpGroupLabel=tmpIsDynamic&&typeof tmpDescriptor._DynamicColumnHeaderGroup==='string'?tmpDescriptor._DynamicColumnHeaderGroup:'';let tmpRunKey=tmpIsDynamic?"D".concat(tmpDescriptor._DynamicColumnGeneratorIndex,"|").concat(tmpGroupLabel):"S|".concat(k);if(tmpCurrentRun&&tmpCurrentRun.RunKey===tmpRunKey){tmpCurrentRun.Cell.ColumnSpan+=1;}else{tmpCurrentRun={RunKey:tmpRunKey,Cell:{Label:tmpIsDynamic?tmpGroupLabel:'',ColumnSpan:1,CSSClass:tmpIsDynamic?'pict-tabular-dynamic-header-group':'pict-tabular-static-header-spacer'}};tmpSynthRow.push(tmpCurrentRun.Cell);}}tmpExpanded.push(tmpSynthRow);}return tmpExpanded;}/**
 	 * Compute per-row label metadata for a tabular group with RowLabels config.
 	 *
 	 * Walks the current RecordSetAddress array. For each row, resolves the
@@ -6181,6 +6273,163 @@ if(Array.isArray(tmpGroup.RowLabelMetadata)&&!isNaN(tmpRowKeyNum)&&tmpRowKeyNum>
 	 * @param {Object} pView
 	 * @param {Object} pGroup
 	 */_reapplyTabularSelectionHighlights(pView,pGroup){let tmpBehaviors=this.pict.providers.DynamicFormSolverBehaviors;if(!tmpBehaviors||!pView.sectionDefinition){return;}let tmpSectionHash=pView.sectionDefinition.Hash;if(pGroup._RowSelectionConfig&&pGroup._RowSelectionConfig.HighlightClass){let tmpRows=this._getTabularSelectionArray(pView,pGroup._RowSelectionConfig);for(let i=0;i<tmpRows.length;i++){tmpBehaviors.highlightTabularRow(tmpSectionHash,pGroup.Hash,i,tmpRows[i]?1:0,pGroup._RowSelectionConfig.HighlightClass);}}if(pGroup._ColumnSelectionConfig&&pGroup._ColumnSelectionConfig.HighlightClass){let tmpColumns=this._getTabularSelectionArray(pView,pGroup._ColumnSelectionConfig);for(let i=0;i<tmpColumns.length;i++){tmpBehaviors.highlightTabularColumn(tmpSectionHash,pGroup.Hash,i,tmpColumns[i]?1:0,pGroup._ColumnSelectionConfig.HighlightClass);}}}/**
+	 * Normalize a Group.ColumnChooser config value.
+	 *
+	 * Accepts `true` (use all defaults) or an object
+	 * `{ Enabled, DataAddress, ButtonLabel, DefaultHiddenColumns }`. Returns null
+	 * when the chooser is not enabled (the feature is strictly opt-in).
+	 *
+	 * - `DataAddress` — address (relative to the form's marshal destination) where
+	 *   the array of hidden column hashes is stored, so it persists with the form data.
+	 * - `ButtonLabel` — text for the trigger button above the table.
+	 * - `DefaultHiddenColumns` — column hashes hidden until the user changes them
+	 *   (merged with any descriptor-level `PictForm.TabularDefaultHidden` flags).
+	 *
+	 * @param {boolean|Object} pConfigValue
+	 * @param {string} pDefaultDataAddress
+	 * @returns {{DataAddress: string, ButtonLabel: string, DefaultHiddenColumns: Array<string>}|null}
+	 */_normalizeColumnChooserConfig(pConfigValue,pDefaultDataAddress){if(pConfigValue!==true&&(typeof pConfigValue!=='object'||pConfigValue===null)){return null;}let tmpConfig=typeof pConfigValue==='object'?pConfigValue:{};if(tmpConfig.Enabled===false){return null;}return{DataAddress:typeof tmpConfig.DataAddress==='string'&&tmpConfig.DataAddress.length>0?tmpConfig.DataAddress:pDefaultDataAddress,ButtonLabel:typeof tmpConfig.ButtonLabel==='string'&&tmpConfig.ButtonLabel.length>0?tmpConfig.ButtonLabel:'Columns',DefaultHiddenColumns:Array.isArray(tmpConfig.DefaultHiddenColumns)?tmpConfig.DefaultHiddenColumns.map(pHash=>String(pHash)):[]};}/**
+	 * Lazily normalize (and cache on the group) the ColumnChooser config. The
+	 * template bake re-normalizes each pass; this accessor covers code paths
+	 * (marshal hooks, inline handlers) that may run against a group whose
+	 * template hasn't been baked yet.
+	 *
+	 * @param {Object} pGroup
+	 * @returns {{DataAddress: string, ButtonLabel: string, DefaultHiddenColumns: Array<string>}|null}
+	 */_ensureTabularColumnChooserConfig(pGroup){if(pGroup._ColumnChooserConfig===undefined){pGroup._ColumnChooserConfig=this._normalizeColumnChooserConfig(pGroup.ColumnChooser,"".concat(pGroup.Hash,"_HiddenColumns"));}return pGroup._ColumnChooserConfig;}/**
+	 * The absolute address (within the form's marshal destination) of the
+	 * chooser's hidden-column-hash array.
+	 *
+	 * @param {Object} pView
+	 * @param {{DataAddress: string}} pChooserConfig
+	 * @returns {string}
+	 */_getTabularHiddenColumnsAddress(pView,pChooserConfig){return"".concat(pView.getMarshalDestinationAddress(),".").concat(pChooserConfig.DataAddress);}/**
+	 * The set of column hashes hidden BY DEFAULT for a group: the chooser
+	 * config's DefaultHiddenColumns plus every descriptor flagged
+	 * `PictForm.TabularDefaultHidden`. These apply only until the user changes
+	 * column visibility (which writes an explicit array into the form data).
+	 *
+	 * @param {Object} pGroup
+	 * @returns {Array<string>}
+	 */_getTabularColumnChooserDefaultHidden(pGroup){let tmpConfig=pGroup._ColumnChooserConfig;if(!tmpConfig){return[];}let tmpDefaultHidden={};for(let i=0;i<tmpConfig.DefaultHiddenColumns.length;i++){tmpDefaultHidden[tmpConfig.DefaultHiddenColumns[i]]=true;}if(pGroup.supportingManifest&&Array.isArray(pGroup.supportingManifest.elementAddresses)){for(let k=0;k<pGroup.supportingManifest.elementAddresses.length;k++){let tmpHash=pGroup.supportingManifest.elementAddresses[k];let tmpDescriptor=pGroup.supportingManifest.elementDescriptors[tmpHash];if(tmpDescriptor&&tmpDescriptor.PictForm&&!tmpDescriptor.PictForm.TabularHidden&&tmpDescriptor.PictForm.TabularDefaultHidden===true){tmpDefaultHidden[String(tmpHash)]=true;}}}return Object.keys(tmpDefaultHidden);}/**
+	 * The EFFECTIVE set of chooser-hidden column hashes for a group: the array
+	 * stored in the form data when the user has made choices, otherwise the
+	 * configured defaults. Returns null when the chooser is not enabled, so
+	 * callers can use a single falsy check to keep the legacy code path intact.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @returns {Set<string>|null}
+	 */_getTabularColumnChooserHiddenSet(pView,pGroup){let tmpConfig=this._ensureTabularColumnChooserConfig(pGroup);if(!tmpConfig){return null;}let tmpStored=this.pict.resolveStateFromAddress(this._getTabularHiddenColumnsAddress(pView,tmpConfig));let tmpHiddenList=Array.isArray(tmpStored)?tmpStored:this._getTabularColumnChooserDefaultHidden(pGroup);let tmpHiddenSet=new Set();for(let i=0;i<tmpHiddenList.length;i++){tmpHiddenSet.add(String(tmpHiddenList[i]));}return tmpHiddenSet;}/**
+	 * A canonical string for the group's effective hidden-column set, used to
+	 * detect (on marshal) that loaded form data carries different column
+	 * visibility than the table template was baked with.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @returns {string}
+	 */_getTabularColumnChooserStateKey(pView,pGroup){let tmpHiddenSet=this._getTabularColumnChooserHiddenSet(pView,pGroup);if(!tmpHiddenSet){return'';}return Array.from(tmpHiddenSet).sort().join('|');}/**
+	 * The columns the chooser can manage, in manifest order. Statically hidden
+	 * descriptors (`PictForm.TabularHidden`) are never choosable and never
+	 * listed. Each entry carries the descriptor's manifest index so inline
+	 * handlers can address it without string-escaping concerns.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @returns {Array<{Key: string, Name: string, ColumnIndex: number, Visible: boolean}>}
+	 */_getTabularChoosableColumns(pView,pGroup){let tmpColumns=[];if(!pGroup.supportingManifest||!Array.isArray(pGroup.supportingManifest.elementAddresses)){return tmpColumns;}let tmpHiddenSet=this._getTabularColumnChooserHiddenSet(pView,pGroup);for(let k=0;k<pGroup.supportingManifest.elementAddresses.length;k++){let tmpHash=String(pGroup.supportingManifest.elementAddresses[k]);let tmpDescriptor=pGroup.supportingManifest.elementDescriptors[tmpHash];if(!tmpDescriptor||tmpDescriptor.PictForm&&tmpDescriptor.PictForm.TabularHidden){continue;}tmpColumns.push({Key:tmpHash,Name:tmpDescriptor.Name!=null&&String(tmpDescriptor.Name).length>0?String(tmpDescriptor.Name):tmpHash,ColumnIndex:k,Visible:!(tmpHiddenSet&&tmpHiddenSet.has(tmpHash))});}return tmpColumns;}/**
+	 * DOM element id for one of the chooser's baked elements (TRIGGER / POPOVER),
+	 * namespaced by form and group so multiple tabular groups can each carry
+	 * their own chooser.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @param {string} pElement
+	 * @returns {string}
+	 */_getTabularColumnChooserElementId(pView,pGroup,pElement){return"PICTFORM-COLCHOOSER-".concat(pElement,"-").concat(pView.formID,"-").concat(pGroup.Hash);}/**
+	 * Builds the chooser bar baked above the table: a right-aligned trigger
+	 * button (with a "n hidden" hint when columns are hidden) plus the empty
+	 * popover container the open action renders into.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @returns {string}
+	 */_buildTabularColumnChooserBarHTML(pView,pGroup){let tmpColumns=this._getTabularChoosableColumns(pView,pGroup);let tmpHiddenCount=tmpColumns.filter(pColumn=>!pColumn.Visible).length;let tmpGlyph=typeof this.pict.icon==='function'?this.pict.icon('Settings'):'';let tmpCountHint=tmpHiddenCount>0?" <span class=\"pict-tabular-colchooser-count\">(".concat(tmpHiddenCount," hidden)</span>"):'';return"<div class=\"pict-tabular-colchooser-bar\">"+"<button type=\"button\" class=\"pict-tabular-colchooser-trigger\" id=\"".concat(this._getTabularColumnChooserElementId(pView,pGroup,'TRIGGER'),"\" ")+"title=\"Choose which columns to show\" "+"onclick=\"_Pict.providers['Pict-Layout-Tabular'].toggleTabularColumnChooser('".concat(pView.Hash,"', ").concat(pGroup.GroupIndex,")\">")+"".concat(tmpGlyph," ").concat(this._escapeHTML(pGroup._ColumnChooserConfig.ButtonLabel)).concat(tmpCountHint,"</button>")+"<div class=\"pict-tabular-colchooser-pop\" id=\"".concat(this._getTabularColumnChooserElementId(pView,pGroup,'POPOVER'),"\"></div>")+"</div>";}/**
+	 * Renders the chooser popover's content (backdrop + panel of checkbox rows +
+	 * reset footer) into its baked container. Runs on open and after each toggle
+	 * (the table re-render replaces the popover element, so its content must be
+	 * repainted to keep the menu open across toggles).
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 */_renderTabularColumnChooserPopover(pView,pGroup){let tmpColumns=this._getTabularChoosableColumns(pView,pGroup);let tmpRowsHTML='';for(let i=0;i<tmpColumns.length;i++){let tmpColumn=tmpColumns[i];tmpRowsHTML+="<label class=\"pict-tabular-colchooser-row\">"+"<input type=\"checkbox\"".concat(tmpColumn.Visible?' checked="checked"':''," ")+"onchange=\"_Pict.providers['Pict-Layout-Tabular'].toggleTabularColumnVisibility('".concat(pView.Hash,"', ").concat(pGroup.GroupIndex,", ").concat(tmpColumn.ColumnIndex,", this.checked)\">")+"<span>".concat(this._escapeHTML(tmpColumn.Name),"</span>")+"</label>";}let tmpPopoverHTML="<div class=\"pict-tabular-colchooser-backdrop\" onclick=\"_Pict.providers['Pict-Layout-Tabular'].closeTabularColumnChooser('".concat(pView.Hash,"', ").concat(pGroup.GroupIndex,")\"></div>")+"<div class=\"pict-tabular-colchooser-panel\">"+"<div class=\"pict-tabular-colchooser-list\">".concat(tmpRowsHTML,"</div>")+"<div class=\"pict-tabular-colchooser-footer\">"+"<button type=\"button\" class=\"pict-tabular-colchooser-reset\" onclick=\"_Pict.providers['Pict-Layout-Tabular'].resetTabularColumnVisibility('".concat(pView.Hash,"', ").concat(pGroup.GroupIndex,")\">Reset to defaults</button>")+"</div>"+"</div>";this.pict.ContentAssignment.assignContent("#".concat(this._getTabularColumnChooserElementId(pView,pGroup,'POPOVER')),tmpPopoverHTML);}/**
+	 * Reflect the chooser popover's open/closed state on its container element,
+	 * positioning it against the trigger when opening.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @param {boolean} pOpen
+	 */_paintTabularColumnChooserOpenState(pView,pGroup,pOpen){let tmpPopoverElements=this.pict.ContentAssignment.getElement("#".concat(this._getTabularColumnChooserElementId(pView,pGroup,'POPOVER')));if(!tmpPopoverElements.length){return;}tmpPopoverElements[0].classList.toggle('open',!!pOpen);if(pOpen){this._positionTabularColumnChooserPopover(pView,pGroup,tmpPopoverElements[0]);}}/**
+	 * Position the (fixed) chooser popover against its trigger button, flipping
+	 * above when the room below is genuinely cramped — same approach as the
+	 * recordset's column chooser, so no ancestor overflow can clip it.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @param {HTMLElement} pPopover
+	 */_positionTabularColumnChooserPopover(pView,pGroup,pPopover){let tmpTriggerElements=this.pict.ContentAssignment.getElement("#".concat(this._getTabularColumnChooserElementId(pView,pGroup,'TRIGGER')));if(!tmpTriggerElements.length||typeof window==='undefined'){return;}let tmpPanel=pPopover.querySelector('.pict-tabular-colchooser-panel');let tmpRect=tmpTriggerElements[0].getBoundingClientRect();let tmpGap=6;let tmpMargin=8;let tmpViewportHeight=window.innerHeight;let tmpViewportWidth=window.innerWidth;let tmpWidth=pPopover.offsetWidth||240;// Right-align the popover to the (right-aligned) trigger, clamped into the viewport.
+pPopover.style.left="".concat(Math.round(Math.max(tmpMargin,Math.min(tmpRect.right-tmpWidth,tmpViewportWidth-tmpWidth-tmpMargin))),"px");pPopover.style.right='auto';let tmpSpaceBelow=tmpViewportHeight-tmpRect.bottom-tmpGap-tmpMargin;let tmpSpaceAbove=tmpRect.top-tmpGap-tmpMargin;if(tmpSpaceBelow>=220||tmpSpaceBelow>=tmpSpaceAbove){pPopover.style.top="".concat(Math.round(tmpRect.bottom+tmpGap),"px");pPopover.style.bottom='auto';if(tmpPanel){tmpPanel.style.maxHeight="".concat(Math.max(160,Math.min(tmpSpaceBelow,420)),"px");}}else{pPopover.style.top='auto';pPopover.style.bottom="".concat(Math.round(tmpViewportHeight-tmpRect.top+tmpGap),"px");if(tmpPanel){tmpPanel.style.maxHeight="".concat(Math.max(160,Math.min(tmpSpaceAbove,420)),"px");}}}/**
+	 * Rebuild + re-render a tabular view and re-marshal the form data into it.
+	 * Same tail as sortTabularColumn: the rebuild re-bakes the table template
+	 * (column set, headers, chooser bar), the render repaints, the marshal
+	 * pushes current values back into the freshly built inputs.
+	 *
+	 * @param {Object} pView
+	 */_rebuildTabularGroupView(pView){pView.rebuildCustomTemplate();pView.render();if(this.pict.views.PictFormMetacontroller){this.pict.views.PictFormMetacontroller.marshalFormSections();}else{pView.marshalToView();}}/**
+	 * Inline-handler entry point: opens/closes a group's column chooser popover
+	 * (the trigger button's handler). Open/closed is derived from the popover's
+	 * DOM class, not an instance flag — a re-render replaces the popover element
+	 * (visually closed), so a flag would go stale and demand a double-click.
+	 *
+	 * @param {string} pViewHash
+	 * @param {number|string} pGroupIndex
+	 * @returns {boolean}
+	 */toggleTabularColumnChooser(pViewHash,pGroupIndex){let tmpView=this.pict.views[pViewHash];if(!tmpView||!tmpView.sectionDefinition||!Array.isArray(tmpView.sectionDefinition.Groups)){return false;}let tmpGroup=tmpView.sectionDefinition.Groups[Number(pGroupIndex)];if(!tmpGroup||!this._ensureTabularColumnChooserConfig(tmpGroup)){return false;}let tmpPopoverElements=this.pict.ContentAssignment.getElement("#".concat(this._getTabularColumnChooserElementId(tmpView,tmpGroup,'POPOVER')));if(tmpPopoverElements.length&&tmpPopoverElements[0].classList.contains('open')){this._paintTabularColumnChooserOpenState(tmpView,tmpGroup,false);return true;}this._renderTabularColumnChooserPopover(tmpView,tmpGroup);this._paintTabularColumnChooserOpenState(tmpView,tmpGroup,true);return true;}/**
+	 * Inline-handler entry point: closes a group's column chooser popover (the
+	 * backdrop's handler).
+	 *
+	 * @param {string} pViewHash
+	 * @param {number|string} pGroupIndex
+	 * @returns {boolean}
+	 */closeTabularColumnChooser(pViewHash,pGroupIndex){let tmpView=this.pict.views[pViewHash];if(!tmpView||!tmpView.sectionDefinition||!Array.isArray(tmpView.sectionDefinition.Groups)){return false;}let tmpGroup=tmpView.sectionDefinition.Groups[Number(pGroupIndex)];if(!tmpGroup){return false;}this._paintTabularColumnChooserOpenState(tmpView,tmpGroup,false);return true;}/**
+	 * Inline-handler entry point: shows/hides one column (a chooser checkbox's
+	 * handler). Writes the updated hidden-hash array into the form data (so it
+	 * persists with a save), rebuilds the table template without the column,
+	 * re-renders, re-marshals, then re-opens the popover the re-render closed.
+	 *
+	 * Hiding never touches the underlying record data — the column's values
+	 * stay in the record set and reappear when the column is shown again.
+	 *
+	 * Refuses to hide the last visible column (the checkbox snaps back).
+	 *
+	 * @param {string} pViewHash
+	 * @param {number|string} pGroupIndex
+	 * @param {number|string} pColumnIndex - The column's manifest index (stable within a bake).
+	 * @param {boolean} pVisible - true to show the column, false to hide it.
+	 * @returns {boolean}
+	 */toggleTabularColumnVisibility(pViewHash,pGroupIndex,pColumnIndex,pVisible){let tmpView=this.pict.views[pViewHash];if(!tmpView||!tmpView.sectionDefinition||!Array.isArray(tmpView.sectionDefinition.Groups)){return false;}let tmpGroup=tmpView.sectionDefinition.Groups[Number(pGroupIndex)];if(!tmpGroup){return false;}let tmpConfig=this._ensureTabularColumnChooserConfig(tmpGroup);if(!tmpConfig){return false;}let tmpColumns=this._getTabularChoosableColumns(tmpView,tmpGroup);let tmpColumn=tmpColumns.find(pCandidate=>pCandidate.ColumnIndex===Number(pColumnIndex));if(!tmpColumn){return false;}let tmpHiddenSet=this._getTabularColumnChooserHiddenSet(tmpView,tmpGroup);if(pVisible){tmpHiddenSet.delete(tmpColumn.Key);}else{let tmpVisibleCount=tmpColumns.filter(pCandidate=>pCandidate.Visible).length;if(tmpVisibleCount<=1&&tmpColumn.Visible){this.log.warn("PICT Form Tabular column chooser on group [".concat(tmpGroup.Hash,"] refused to hide the last visible column [").concat(tmpColumn.Key,"]."));// Repaint the popover so the refused checkbox snaps back to checked.
+this._renderTabularColumnChooserPopover(tmpView,tmpGroup);this._paintTabularColumnChooserOpenState(tmpView,tmpGroup,true);return false;}tmpHiddenSet.add(tmpColumn.Key);}this.pict.setStateValueAtAddress(this._getTabularHiddenColumnsAddress(tmpView,tmpConfig),null,Array.from(tmpHiddenSet));this._rebuildTabularGroupView(tmpView);// The re-render replaced the popover element (closed); keep the menu open
+// so the user can toggle several columns in one visit.
+this._renderTabularColumnChooserPopover(tmpView,tmpGroup);this._paintTabularColumnChooserOpenState(tmpView,tmpGroup,true);return true;}/**
+	 * Inline-handler entry point: resets a group's column visibility to its
+	 * configured defaults (the reset footer button's handler). Writes the
+	 * default hidden set into the form data explicitly — the user interacted,
+	 * so the state should serialize deterministically with a save.
+	 *
+	 * @param {string} pViewHash
+	 * @param {number|string} pGroupIndex
+	 * @returns {boolean}
+	 */resetTabularColumnVisibility(pViewHash,pGroupIndex){let tmpView=this.pict.views[pViewHash];if(!tmpView||!tmpView.sectionDefinition||!Array.isArray(tmpView.sectionDefinition.Groups)){return false;}let tmpGroup=tmpView.sectionDefinition.Groups[Number(pGroupIndex)];if(!tmpGroup){return false;}let tmpConfig=this._ensureTabularColumnChooserConfig(tmpGroup);if(!tmpConfig){return false;}this.pict.setStateValueAtAddress(this._getTabularHiddenColumnsAddress(tmpView,tmpConfig),null,this._getTabularColumnChooserDefaultHidden(tmpGroup));this._rebuildTabularGroupView(tmpView);this._renderTabularColumnChooserPopover(tmpView,tmpGroup);this._paintTabularColumnChooserOpenState(tmpView,tmpGroup,true);return true;}/**
 	 * Generate a group layout template for a single-record dynamically generated group view.
 	 *
 	 * This is the standard name / field entry form that you're used to filling out for addresses
@@ -6193,7 +6442,12 @@ if(Array.isArray(tmpGroup.RowLabelMetadata)&&!isNaN(tmpRowKeyNum)&&tmpRowKeyNum>
 // In this case we are going to load the descriptors from the supportingManifests
 if(!pGroup.supportingManifest){this.log.error("PICT Form [".concat(pView.UUID,"]::[").concat(pView.Hash,"] error generating tabular metatemplate: missing group manifest ").concat(pGroup.RecordManifest," from supportingManifests."));return'';}let tmpMetatemplateGenerator=this.pict.providers.MetatemplateGenerator;let tmpTemplate='';let tmpTemplateSetRecordRowTemplate='';// Read new optional configuration.
 let tmpEditingControlsPosition=typeof pGroup.EditingControlsPosition==='string'?pGroup.EditingControlsPosition:'right';let tmpRowLabels=Array.isArray(pGroup.RowLabels)?pGroup.RowLabels:[];let tmpSuppressDefaultColumnHeaderRow=pGroup.SuppressDefaultColumnHeaderRow===true;// ColumnSorting (off by default): injects a clickable sort-glyph span into every prime header cell.
-let tmpColumnSortingEnabled=pGroup.ColumnSorting===true;if(tmpColumnSortingEnabled&&!pGroup._SortState){pGroup._SortState={ColumnIndex:-1,Direction:'none'};}let tmpExpandedHeaders=this._buildExpandedHeadersConfig(pView,pGroup);// Stash the structures referenced by the templates below.
+let tmpColumnSortingEnabled=pGroup.ColumnSorting===true;if(tmpColumnSortingEnabled&&!pGroup._SortState){pGroup._SortState={ColumnIndex:-1,Direction:'none'};}// ColumnChooser (off by default): a menu of checkboxes above the table that
+// shows/hides columns, with the hidden set stored in the form data. Normalized
+// BEFORE the headers expand so chooser-hidden columns adjust header spans.
+pGroup._ColumnChooserConfig=this._normalizeColumnChooserConfig(pGroup.ColumnChooser,"".concat(pGroup.Hash,"_HiddenColumns"));let tmpChooserHiddenSet=this._getTabularColumnChooserHiddenSet(pView,pGroup);// Remember what visibility this bake used, so a marshal carrying different
+// (e.g. freshly loaded) state knows to trigger a rebuild.
+pGroup._ColumnChooserBakedStateKey=tmpChooserHiddenSet?Array.from(tmpChooserHiddenSet).sort().join('|'):'';let tmpExpandedHeaders=this._buildExpandedHeadersConfig(pView,pGroup);// Stash the structures referenced by the templates below.
 pGroup.ExpandedHeaders=tmpExpandedHeaders;pGroup.RowLabelHeaderCells=tmpRowLabels.map(pLabel=>({Name:pLabel.Name||'',CSSClass:typeof pLabel.CSSClass==='string'?pLabel.CSSClass:''}));// Selectable rows / columns. When enabled, a checkbox column / header row is
 // rendered and the boolean selection state is stored in the form data so it
 // persists with a save. Solvers can read that state; selection optionally
@@ -6203,19 +6457,24 @@ let tmpLeadingColumnCount=(tmpRowSelectionEnabled?1:0)+tmpRowLabels.length+(tmpE
 // extra-postfix slots by registering empty view-specific overrides. This keeps the
 // existing template machinery intact for backwards compatibility -- consumers that
 // don't opt in to the new behavior see identical output.
-if(tmpEditingControlsPosition==='left'||tmpEditingControlsPosition==='hidden'){this.pict.TemplateProvider.addTemplate(pView.getViewSpecificTemplateHash('-TabularTemplate-Row-ExtraPostfix'),'');this.pict.TemplateProvider.addTemplate(pView.getViewSpecificTemplateHash('-TabularTemplate-RowHeader-ExtraPostfix'),'');}tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-Group-Prefix","getGroup(\"".concat(pGroup.GroupIndex,"\")"));// Header section
+if(tmpEditingControlsPosition==='left'||tmpEditingControlsPosition==='hidden'){this.pict.TemplateProvider.addTemplate(pView.getViewSpecificTemplateHash('-TabularTemplate-Row-ExtraPostfix'),'');this.pict.TemplateProvider.addTemplate(pView.getViewSpecificTemplateHash('-TabularTemplate-RowHeader-ExtraPostfix'),'');}// The chooser bar sits ABOVE the group's table container (a div can't live
+// inside <table> without the browser foster-parenting it out anyway).
+if(pGroup._ColumnChooserConfig){tmpTemplate+=this._buildTabularColumnChooserBarHTML(pView,pGroup);}tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-Group-Prefix","getGroup(\"".concat(pGroup.GroupIndex,"\")"));// Header section
 tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-RowHeader-Prefix","getGroup(\"".concat(pGroup.GroupIndex,"\")"));// Emit additional header rows (above the default column-name row).
 // Each row gets its own <tr>; leading non-data columns get blank <th>s
 // prepended (and a trailing one for right-side editing controls) for alignment.
 for(let r=0;r<tmpExpandedHeaders.length;r++){let tmpHeaderRow=tmpExpandedHeaders[r];tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-ExtraHeaderRow-Prefix","getGroup(\"".concat(pGroup.GroupIndex,"\")"));for(let l=0;l<tmpLeadingColumnCount;l++){tmpTemplate+="<th class=\"pict-row-label-spacer\"></th>";}for(let c=0;c<tmpHeaderRow.length;c++){let tmpCellAddress="getGroup(\"".concat(pGroup.GroupIndex,"\").ExpandedHeaders.").concat(r,".").concat(c);tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-ExtraHeaderCell",tmpCellAddress);}if(tmpEditingRight){tmpTemplate+="<th class=\"pict-row-label-spacer\"></th>";}tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-ExtraHeaderRow-Postfix","getGroup(\"".concat(pGroup.GroupIndex,"\")"));}// Column-selection header row -- a <tr> of checkboxes, one per visible data
 // column, plus leading/trailing spacers to line up with the data columns.
-if(tmpColumnSelectionEnabled){let tmpColumnSelectionState=this._getTabularSelectionArray(pView,pGroup._ColumnSelectionConfig);let tmpColumnSelectRow="<tr class=\"pict-tabular-column-select-row\">";for(let l=0;l<tmpLeadingColumnCount;l++){tmpColumnSelectRow+="<th class=\"pict-row-label-spacer\"></th>";}for(let k=0;k<pGroup.supportingManifest.elementAddresses.length;k++){let tmpColumnDescriptor=pGroup.supportingManifest.elementDescriptors[pGroup.supportingManifest.elementAddresses[k]];if(!tmpColumnDescriptor||tmpColumnDescriptor.PictForm&&tmpColumnDescriptor.PictForm.TabularHidden){continue;}let tmpColumnCheckedAttr=tmpColumnSelectionState[k]?' checked="checked"':'';tmpColumnSelectRow+="<th class=\"pict-tabular-column-select\">"+"<input type=\"checkbox\"".concat(tmpColumnCheckedAttr," onchange=\"_Pict.providers['Pict-Layout-Tabular'].toggleTabularColumnSelection('").concat(pView.Hash,"', ").concat(pGroup.GroupIndex,", ").concat(k,", this.checked)\">")+"</th>";}if(tmpEditingRight){tmpColumnSelectRow+="<th class=\"pict-row-label-spacer\"></th>";}tmpColumnSelectRow+="</tr>";tmpTemplate+=tmpColumnSelectRow;}// Existing ExtraPrefix slot (preserved for host overrides)
+if(tmpColumnSelectionEnabled){let tmpColumnSelectionState=this._getTabularSelectionArray(pView,pGroup._ColumnSelectionConfig);let tmpColumnSelectRow="<tr class=\"pict-tabular-column-select-row\">";for(let l=0;l<tmpLeadingColumnCount;l++){tmpColumnSelectRow+="<th class=\"pict-row-label-spacer\"></th>";}for(let k=0;k<pGroup.supportingManifest.elementAddresses.length;k++){let tmpColumnDescriptor=pGroup.supportingManifest.elementDescriptors[pGroup.supportingManifest.elementAddresses[k]];if(!tmpColumnDescriptor||tmpColumnDescriptor.PictForm&&tmpColumnDescriptor.PictForm.TabularHidden){continue;}if(tmpChooserHiddenSet&&tmpChooserHiddenSet.has(String(pGroup.supportingManifest.elementAddresses[k]))){continue;}let tmpColumnCheckedAttr=tmpColumnSelectionState[k]?' checked="checked"':'';tmpColumnSelectRow+="<th class=\"pict-tabular-column-select\">"+"<input type=\"checkbox\"".concat(tmpColumnCheckedAttr," onchange=\"_Pict.providers['Pict-Layout-Tabular'].toggleTabularColumnSelection('").concat(pView.Hash,"', ").concat(pGroup.GroupIndex,", ").concat(k,", this.checked)\">")+"</th>";}if(tmpEditingRight){tmpColumnSelectRow+="<th class=\"pict-row-label-spacer\"></th>";}tmpColumnSelectRow+="</tr>";tmpTemplate+=tmpColumnSelectRow;}// Existing ExtraPrefix slot (preserved for host overrides)
 tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-RowHeader-ExtraPrefix","getGroup(\"".concat(pGroup.GroupIndex,"\")"));// Row-selection header cell.
 if(tmpRowSelectionEnabled){tmpTemplate+="<th class=\"pict-row-label-header pict-tabular-row-select-header\">".concat(this._escapeHTML(pGroup._RowSelectionConfig.HeaderLabel),"</th>");}// Row label header cells in the default header row.
 for(let l=0;l<tmpRowLabels.length;l++){let tmpLabelHeaderAddress="getGroup(\"".concat(pGroup.GroupIndex,"\").RowLabelHeaderCells.").concat(l);tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-RowLabel-HeaderCell",tmpLabelHeaderAddress);}// Header cell matching the left-side editing controls column, if configured.
 if(tmpEditingLeft){tmpTemplate+="<th class=\"pict-row-label-header pict-tabular-editing-controls-header\"></th>";}// Per-descriptor header cells + the per-descriptor row body template.
 let tmpDataColumnCount=0;for(let k=0;k<pGroup.supportingManifest.elementAddresses.length;k++){let tmpSupportingManifestHash=pGroup.supportingManifest.elementAddresses[k];let tmpInput=pGroup.supportingManifest.elementDescriptors[tmpSupportingManifestHash];// Update the InputIndex to match the current render config
-if(!('PictForm'in tmpInput)){tmpInput.PictForm={};}if(tmpInput.PictForm.TabularHidden){continue;}tmpInput.PictForm.InputIndex=k;tmpInput.PictForm.GroupIndex=pGroup.GroupIndex;tmpInput.PictForm.RowIndex=0;if(!tmpSuppressDefaultColumnHeaderRow){if(tmpColumnSortingEnabled){tmpTemplate+=this._buildSortableHeaderCell(pView,pGroup,tmpInput,k);}else{tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-HeaderCell","getTabularRecordInput(\"".concat(pGroup.GroupIndex,"\",\"").concat(k,"\")"));}}tmpTemplateSetRecordRowTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-Cell-Prefix","getTabularRecordInput(\"".concat(pGroup.GroupIndex,"\",\"").concat(k,"\")"));let tmpInputType='PictForm'in tmpInput&&tmpInput.PictForm.InputType?tmpInput.PictForm.InputType:'Default';tmpTemplateSetRecordRowTemplate+=tmpMetatemplateGenerator.getTabularInputMetatemplateTemplateReference(pView,tmpInput.DataType,tmpInputType,"getTabularRecordInput(\"".concat(pGroup.GroupIndex,"\",\"").concat(k,"\")"),pGroup.GroupIndex,k);tmpTemplateSetRecordRowTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-Cell-Postfix","getTabularRecordInput(\"".concat(pGroup.GroupIndex,"\",\"").concat(k,"\")"));tmpDataColumnCount++;}tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-RowHeader-ExtraPostfix","getGroup(\"".concat(pGroup.GroupIndex,"\")"));tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-RowHeader-Postfix","getGroup(\"".concat(pGroup.GroupIndex,"\")"));// Warn on header alignment mismatches (data-column count must equal each extra-header
+if(!('PictForm'in tmpInput)){tmpInput.PictForm={};}if(tmpInput.PictForm.TabularHidden){continue;}// Chooser-hidden columns are skipped at bake time (neither header nor row
+// cells render) but their record data is never touched — showing the
+// column again restores it intact, same invariant as DynamicColumns.
+if(tmpChooserHiddenSet&&tmpChooserHiddenSet.has(String(tmpSupportingManifestHash))){continue;}tmpInput.PictForm.InputIndex=k;tmpInput.PictForm.GroupIndex=pGroup.GroupIndex;tmpInput.PictForm.RowIndex=0;if(!tmpSuppressDefaultColumnHeaderRow){if(tmpColumnSortingEnabled){tmpTemplate+=this._buildSortableHeaderCell(pView,pGroup,tmpInput,k);}else{tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-HeaderCell","getTabularRecordInput(\"".concat(pGroup.GroupIndex,"\",\"").concat(k,"\")"));}}tmpTemplateSetRecordRowTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-Cell-Prefix","getTabularRecordInput(\"".concat(pGroup.GroupIndex,"\",\"").concat(k,"\")"));let tmpInputType='PictForm'in tmpInput&&tmpInput.PictForm.InputType?tmpInput.PictForm.InputType:'Default';tmpTemplateSetRecordRowTemplate+=tmpMetatemplateGenerator.getTabularInputMetatemplateTemplateReference(pView,tmpInput.DataType,tmpInputType,"getTabularRecordInput(\"".concat(pGroup.GroupIndex,"\",\"").concat(k,"\")"),pGroup.GroupIndex,k);tmpTemplateSetRecordRowTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-Cell-Postfix","getTabularRecordInput(\"".concat(pGroup.GroupIndex,"\",\"").concat(k,"\")"));tmpDataColumnCount++;}tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-RowHeader-ExtraPostfix","getGroup(\"".concat(pGroup.GroupIndex,"\")"));tmpTemplate+=tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView,"-TabularTemplate-RowHeader-Postfix","getGroup(\"".concat(pGroup.GroupIndex,"\")"));// Warn on header alignment mismatches (data-column count must equal each extra-header
 // row's total ColumnSpan).
 for(let r=0;r<tmpExpandedHeaders.length;r++){let tmpSpanTotal=0;for(let c=0;c<tmpExpandedHeaders[r].length;c++){tmpSpanTotal+=tmpExpandedHeaders[r][c].ColumnSpan||1;}if(tmpSpanTotal!==tmpDataColumnCount){this.log.warn("PICT Form [".concat(pView.UUID,"]::[").concat(pView.Hash,"] tabular group [").concat(pGroup.Hash,"] header row ").concat(r," total ColumnSpan (").concat(tmpSpanTotal,") does not match data column count (").concat(tmpDataColumnCount,"). Header will visually misalign."));}}// Compute initial row label metadata; recomputed on every marshal in onDataMarshalToForm.
 this._computeRowLabelMetadata(pView,pGroup);// This is the template by which the tabular template includes the rows.
@@ -6254,7 +6513,12 @@ this.pict.TemplateProvider.addTemplate(pGroup.SectionTabularRowVirtualTemplateHa
 	 * @returns {boolean}
 	 */onDataMarshalToForm(pView,pGroup){if(!pGroup){return true;}// Avoid recursion when this hook itself triggers a render -> marshal cycle.
 if(pGroup._RebuildInProgress){return true;}let tmpHasDynamicColumns=Array.isArray(pGroup.DynamicColumns)&&pGroup.DynamicColumns.length>0;if(tmpHasDynamicColumns&&this.fable.ManifestFactory&&typeof this.fable.ManifestFactory._resolveDynamicColumns==='function'){let tmpResult=this.fable.ManifestFactory._resolveDynamicColumns(pView,pGroup);if(tmpResult&&tmpResult.changed){pGroup._RebuildInProgress=true;try{pView.rebuildCustomTemplate();pView.render();}finally{pGroup._RebuildInProgress=false;}// The re-render rebuilt the table DOM -- restore selection highlights.
-this._reapplyTabularSelectionHighlights(pView,pGroup);return true;}}this._computeRowLabelMetadata(pView,pGroup);// Keep selection highlights in sync with the (possibly reloaded) selection data.
+this._reapplyTabularSelectionHighlights(pView,pGroup);return true;}}// When the chooser's effective hidden-column set differs from the one the
+// current table template was baked with (e.g. the host just loaded saved
+// form data carrying a <GroupHash>_HiddenColumns array), rebuild so the
+// table reflects the loaded visibility. Steady state is a no-op — the
+// bake stamped _ColumnChooserBakedStateKey from the same form data.
+if(this._ensureTabularColumnChooserConfig(pGroup)){let tmpCurrentStateKey=this._getTabularColumnChooserStateKey(pView,pGroup);if(tmpCurrentStateKey!==pGroup._ColumnChooserBakedStateKey){pGroup._RebuildInProgress=true;try{pView.rebuildCustomTemplate();pView.render();}finally{pGroup._RebuildInProgress=false;}this._reapplyTabularSelectionHighlights(pView,pGroup);return true;}}this._computeRowLabelMetadata(pView,pGroup);// Keep selection highlights in sync with the (possibly reloaded) selection data.
 this._reapplyTabularSelectionHighlights(pView,pGroup);return true;}}module.exports=TabularLayout;},{"../Pict-Provider-DynamicLayout.js":46}],84:[function(require,module,exports){const libPictSectionGroupLayout=require('../Pict-Provider-DynamicLayout.js');const libPictSectionTuiGridLayout=require('./Pict-Layout-TuiGrid/Pict-Section-TuiGrid.js');class TuiGridLayout extends libPictSectionGroupLayout{/**
 	 * @param {import('pict')} pFable - The Fable instance.
 	 * @param {any} [pOptions={}] - The options for the TuiGrid layout.
@@ -7622,6 +7886,23 @@ this.pict.ContentAssignment.appendContent("#Pict-".concat(this.UUID,"-FormContai
 tmpSectionDefinition.Name=tmpSectionDefinition.Hash;}if(!('Description'in tmpSectionDefinition)){// If there isn't a description, use the name
 tmpSectionDefinition.Description="PICT Section [".concat(tmpSectionDefinition.Name,"].");}if(!('Groups'in tmpSectionDefinition)){// If there isn't a groups array, create an empty one
 tmpSectionDefinition.Groups=[];}return tmpSectionDefinition;}catch(pError){this.log.error("getSectionDefinition() failed to parse the section object with error: ".concat(pError.message||pError));return false;}}getSectionViewFromHash(pSectionHash){let tmpSectionHash=typeof pSectionHash==='string'?pSectionHash:false;if(!tmpSectionHash){this.log.error('getSectionViewFromHash() called without a valid section hash.');return false;}let tmpViewHash="PictSectionForm-".concat(tmpSectionHash);if(tmpViewHash in this.fable.views){return this.fable.views[tmpViewHash];}this.log.error("getSectionViewFromHash() could not find a view for section hash [".concat(tmpSectionHash,"]."));return false;}/**
+	 * Marshal one or more section views' data to the DOM.
+	 *
+	 * For values written outside the normal solve -> marshal cycle (e.g. a trigger group's `PostSolvers`
+	 * running in an EntityBundleRequest transaction-complete callback). The global equivalent is
+	 * `marshalToView()`; this is the section-scoped, cheaper option.
+	 *
+	 * @param {string|string[]} pSectionHashes - a section hash, or an array of section hashes
+	 * @returns {void}
+	 */marshalSectionToView(pSectionHashes){const tmpSectionHashes=(Array.isArray(pSectionHashes)?pSectionHashes:[pSectionHashes]).filter(pHash=>typeof pHash==='string'&&pHash.length>0);for(const tmpSectionHash of tmpSectionHashes){const tmpSectionView=this.getSectionViewFromHash(tmpSectionHash);if(tmpSectionView){tmpSectionView.marshalToView();}}}/**
+	 * Marshal one or more inputs' data to the DOM, wherever they live (finds the owning section view).
+	 *
+	 * The single-input equivalent of {@link marshalSectionToView}; use it when only specific fields
+	 * changed (e.g. a trigger group that computed one read-only attribute).
+	 *
+	 * @param {string|string[]} pInputHashes - an input hash, or an array of input hashes
+	 * @returns {void}
+	 */marshalInputToView(pInputHashes){const tmpInputHashes=(Array.isArray(pInputHashes)?pInputHashes:[pInputHashes]).filter(pHash=>typeof pHash==='string'&&pHash.length>0);if(tmpInputHashes.length<1){return;}const tmpSectionViews=this.filterViews();for(const tmpInputHash of tmpInputHashes){for(let i=0;i<tmpSectionViews.length;i++){const tmpSectionView=tmpSectionViews[i];if(tmpSectionView===this||typeof tmpSectionView.getInputFromHash!=='function'){continue;}const tmpInput=tmpSectionView.getInputFromHash(tmpInputHash);if(tmpInput){tmpSectionView.manualMarshalDataToViewByInput(tmpInput);break;}}}}/**
 	 * Clears out the manifest description set on the meta controller.
 	 */clearManifestDescription(){this.manifestDescription=null;}/**
 	 * Bootstraps Pict DynamicForm views from a Manyfest description JSON object.

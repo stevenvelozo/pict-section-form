@@ -25,7 +25,12 @@ module.exports.default_configuration.pict_configuration = (
 							"Layout": "Tabular",
 
 							"RecordSetAddress": "FruitData.FruityVice",
-							"RecordManifest": "FruitEditor"
+							"RecordManifest": "FruitEditor",
+
+							// Opt-in column chooser: a "Columns" menu of checkboxes above
+							// the table. The hidden set persists in the form data at
+							// FruitGrid_HiddenColumns, so it survives a save/reload.
+							"ColumnChooser": true
 						}
 					]
 				},

@@ -29,3 +29,12 @@ class FruityGrid extends libPictSectionForm.PictFormApplication
 ```
 
 > Data thanks to [https://www.fruityvice.com/]
+
+## Column chooser
+
+The `FruitGrid` group sets `"ColumnChooser": true`, which puts a **Columns**
+button above the table. It opens a menu of checkboxes — one per column — to
+hide and show columns. The hidden set is stored in the form data at
+`FruitGrid_HiddenColumns` (an array of column hashes), so saving and reloading
+the form data restores the user's column choices. Hiding a column never
+touches the row data; showing it again brings the values back intact.

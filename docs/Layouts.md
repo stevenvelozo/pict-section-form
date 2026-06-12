@@ -330,6 +330,66 @@ works for both static and dynamic columns (dynamic columns sort by their
 `InformaryDataAddress` value). Values that parse as numbers sort numerically;
 others sort lexically.
 
+### Column Chooser
+
+`ColumnChooser` (off by default - the feature is strictly **opt-in**) puts a
+right-aligned **Columns** button above the table. Clicking it opens a menu of
+checkboxes, one per column; unchecking a column hides it, checking it brings
+it back. When columns are hidden the button reads `Columns (n hidden)` so the
+user always knows part of the table is tucked away.
+
+The hidden set is **stored in the form data** as an array of column hashes
+(default address `<GroupHash>_HiddenColumns`), so - exactly like
+`RowSelection` state - it round-trips with save / load: reload the saved form
+data and the table comes back with the same columns hidden. When a host loads
+form data carrying a different hidden set than the table was rendered with,
+the layout detects the difference on marshal and rebuilds automatically.
+
+Set it to `true` for defaults, or to an object:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `Enabled` | boolean | Set `false` to disable (same as omitting) |
+| `DataAddress` | string | Where the hidden-column-hash array is stored (default `<GroupHash>_HiddenColumns`) |
+| `ButtonLabel` | string | Trigger button text (default `"Columns"`) |
+| `DefaultHiddenColumns` | array | Column hashes hidden until the user changes visibility |
+
+```json
+{
+  "Layout": "Tabular",
+  "RecordSetAddress": "Assignments",
+  "ColumnChooser": true
+}
+```
+
+A column can also start hidden via its descriptor: set
+`PictForm.TabularDefaultHidden: true` and the column renders hidden until the
+user shows it through the menu. Defaults (both forms) apply only while the
+user has made **no** choice - they never write to the form data on their own.
+The first checkbox the user toggles persists the full hidden set explicitly,
+and the menu's **Reset to defaults** button writes the configured default set
+back.
+
+Behavioral guarantees:
+
+- **Hiding never touches record data.** A hidden column's values stay in the
+  record set (same non-destructive invariant as `DynamicColumns`) and reappear
+  when the column is shown again.
+- **The last visible column cannot be hidden** - the checkbox snaps back.
+- **Stacked headers stay aligned.** User-supplied `Headers` rows shrink their
+  `ColumnSpan` past hidden columns (cells covering only hidden columns drop
+  out), and `HeaderGroupTemplate` super-headers re-cluster over the visible
+  columns.
+- **Dynamic columns are choosable too** and persist by their generated hash,
+  so a hidden dynamic column stays hidden across data reloads that regenerate
+  it.
+- **Statically hidden columns** (`PictForm.TabularHidden`) never appear in the
+  menu - they are configuration, not user preference.
+
+The chooser composes with `ColumnSorting`, `RowSelection` / `ColumnSelection`,
+`Headers`, `RowLabels`, and `DynamicColumns`; the gradebook example
+application exercises all of them together.
+
 ## RecordSet Layout
 
 Similar to tabular but renders each record as a full form section rather

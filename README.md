@@ -291,7 +291,7 @@ Live, runnable example applications - click to open one in your browser:
 | Example | Description |
 |---------|-------------|
 | [Simple Table](https://fable-retold.github.io/pict-section-form/examples/simple_table/) | Tabular layout, reference manifests, and dot-notation access into nested data |
-| [Gradebook](https://fable-retold.github.io/pict-section-form/examples/gradebook/) | Stacked headers, row labels, dynamic columns, row/column selection, and sorting |
+| [Gradebook](https://fable-retold.github.io/pict-section-form/examples/gradebook/) | Stacked headers, row labels, dynamic columns, row/column selection, sorting, and the persistent column chooser |
 | [Scope Mathematics](https://fable-retold.github.io/pict-section-form/examples/scope_mathematics/) | Solvers that reach across sections and the global form scope |
 | [Change Tracking](https://fable-retold.github.io/pict-section-form/examples/change_tracking/) | A change-detecting solver state machine with bidirectional recompute |
 | [NDT Field Test](https://fable-retold.github.io/pict-section-form/examples/ndt_field_test/) | Offline persistence, pick lists, pass/fail row solvers, and charts |

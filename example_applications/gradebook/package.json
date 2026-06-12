@@ -1,7 +1,7 @@
 {
 	"name": "gradebook_application",
 	"version": "1.0.0",
-	"description": "Gradebook example exercising stacked headers, row labels, and dynamic columns.",
+	"description": "Gradebook example exercising stacked headers, row labels, dynamic columns, and the column chooser.",
 	"main": "Gradebook-Application.js",
 	"scripts": {
 		"start": "node Gradebook-Application.js",
@@ -27,7 +27,7 @@
 		"ExampleApplication": {
 			"Stage": true,
 			"Title": "Gradebook",
-			"Summary": "An advanced tabular recordset with stacked headers, row labels, dynamic columns, row/column selection, and column sorting — built purely from manifest configuration.",
+			"Summary": "An advanced tabular recordset with stacked headers, row labels, dynamic columns, row/column selection, column sorting, and a persistent column chooser — built purely from manifest configuration.",
 			"Complexity": "Intermediate"
 		}
 	}

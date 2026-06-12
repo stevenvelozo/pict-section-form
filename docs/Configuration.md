@@ -101,6 +101,7 @@ See [Layouts](Layouts.md) for full details and examples.
 | `RowSelection` | boolean/object | Add row checkboxes; selection persists in form data |
 | `ColumnSelection` | boolean/object | Add column checkboxes; selection persists in form data |
 | `ColumnSorting` | boolean | Add clickable sort controls to the prime header cells (default off) |
+| `ColumnChooser` | boolean/object | Opt-in "Columns" menu to hide/show columns; the hidden set persists in form data |
 
 ### Layout Types
 

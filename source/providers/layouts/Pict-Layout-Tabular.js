@@ -38,6 +38,34 @@ class TabularLayout extends libPictSectionGroupLayout
 				+ ' .pict-tabular-sort-control:hover { opacity: 0.75; }'
 				+ ' .pict-tabular-sort-control.pict-tabular-sort-asc, .pict-tabular-sort-control.pict-tabular-sort-desc { opacity: 1; }',
 				500);
+
+			// CSS for the optional ColumnChooser feature: a right-aligned trigger button
+			// above the table and a fixed-position popover of checkbox rows. Fixed +
+			// JS-positioned (like the recordset's column chooser) so no ancestor
+			// overflow can clip it; the transparent backdrop catches outside clicks.
+			this.pict.CSSMap.addCSS('Pict-Layout-Tabular-ColumnChooser-CSS', /*css*/`
+	.pict-tabular-colchooser-bar { display: flex; justify-content: flex-end; margin: 0 0 0.35rem; }
+	.pict-tabular-colchooser-trigger { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; font: inherit; font-size: 0.88rem;
+		padding: 0.3rem 0.65rem; border: 1px solid var(--theme-color-border-default, #d7dce3); border-radius: 7px;
+		background: var(--theme-color-background-panel, #fff); color: var(--theme-color-text-secondary, #45505f); }
+	.pict-tabular-colchooser-trigger:hover { background: var(--theme-color-background-tertiary, #eceef2); color: var(--theme-color-text-primary, #1f2733); }
+	.pict-tabular-colchooser-count { font-size: 0.8em; color: var(--theme-color-text-muted, #6b7686); }
+	.pict-tabular-colchooser-pop { position: fixed; z-index: 30; min-width: 220px; max-width: 320px; display: none; }
+	.pict-tabular-colchooser-pop.open { display: block; }
+	.pict-tabular-colchooser-backdrop { position: fixed; inset: 0; z-index: 0; }
+	.pict-tabular-colchooser-panel { position: relative; z-index: 1; display: flex; flex-direction: column; max-height: min(70vh, 420px);
+		background: var(--theme-color-background-panel, #fff); border: 1px solid var(--theme-color-border-default, #d7dce3);
+		border-radius: 10px; box-shadow: 0 10px 28px rgba(17, 24, 39, 0.14); overflow: hidden; }
+	.pict-tabular-colchooser-list { flex: 1 1 auto; overflow-y: auto; padding: 0.25rem 0; }
+	.pict-tabular-colchooser-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer;
+		padding: 0.32rem 0.8rem; color: var(--theme-color-text-primary, #1f2733); }
+	.pict-tabular-colchooser-row:hover { background: var(--theme-color-background-tertiary, #eceef2); }
+	.pict-tabular-colchooser-row input { flex: 0 0 auto; margin: 0; cursor: pointer; }
+	.pict-tabular-colchooser-footer { flex: 0 0 auto; display: flex; justify-content: flex-end; padding: 0.45rem 0.7rem; border-top: 1px solid var(--theme-color-border-light, #e8ebf0); }
+	.pict-tabular-colchooser-reset { font: inherit; font-size: 0.84rem; cursor: pointer; border: none; background: transparent; color: var(--theme-color-text-muted, #6b7686); padding: 0.15rem 0.3rem; border-radius: 5px; }
+	.pict-tabular-colchooser-reset:hover { color: var(--theme-color-text-primary, #1f2733); background: var(--theme-color-background-tertiary, #eceef2); }
+`,
+				500);
 		}
 	}
 
@@ -253,6 +281,27 @@ class TabularLayout extends libPictSectionGroupLayout
 	{
 		let tmpExpanded = [];
 
+		// When the column chooser has hidden columns, each user-provided header
+		// cell's ColumnSpan shrinks by the hidden columns it covers (cells reduced
+		// to zero drop out), so the stacked headers stay aligned with the columns
+		// that actually render. The spans partition the configured (non-
+		// TabularHidden) data columns in manifest order — same contract the
+		// span-total warning in generateGroupLayoutTemplate enforces.
+		let tmpChooserHiddenSet = this._getTabularColumnChooserHiddenSet(pView, pGroup);
+		let tmpConfiguredColumnVisibility = [];
+		if (tmpChooserHiddenSet && pGroup.supportingManifest && Array.isArray(pGroup.supportingManifest.elementAddresses))
+		{
+			for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
+			{
+				let tmpDescriptor = pGroup.supportingManifest.elementDescriptors[pGroup.supportingManifest.elementAddresses[k]];
+				if (!tmpDescriptor || (tmpDescriptor.PictForm && tmpDescriptor.PictForm.TabularHidden))
+				{
+					continue;
+				}
+				tmpConfiguredColumnVisibility.push(!tmpChooserHiddenSet.has(String(pGroup.supportingManifest.elementAddresses[k])));
+			}
+		}
+
 		// Render user-provided Headers config first (at the top of the table).
 		if (Array.isArray(pGroup.Headers))
 		{
@@ -264,6 +313,8 @@ class TabularLayout extends libPictSectionGroupLayout
 					continue;
 				}
 				let tmpNormalizedRow = [];
+				// Walks the configured-column visibility list as spans consume columns.
+				let tmpColumnCursor = 0;
 				for (let c = 0; c < tmpRowConfig.length; c++)
 				{
 					let tmpCell = tmpRowConfig[c];
@@ -271,9 +322,29 @@ class TabularLayout extends libPictSectionGroupLayout
 					{
 						continue;
 					}
+					let tmpColumnSpan = (Number(tmpCell.ColumnSpan) > 0) ? Number(tmpCell.ColumnSpan) : 1;
+					if (tmpChooserHiddenSet)
+					{
+						let tmpVisibleSpan = 0;
+						for (let s = 0; s < tmpColumnSpan; s++)
+						{
+							// Columns past the configured set keep their span (the
+							// misalignment warning will already have fired for that).
+							if ((tmpColumnCursor >= tmpConfiguredColumnVisibility.length) || tmpConfiguredColumnVisibility[tmpColumnCursor])
+							{
+								tmpVisibleSpan++;
+							}
+							tmpColumnCursor++;
+						}
+						if (tmpVisibleSpan === 0)
+						{
+							continue;
+						}
+						tmpColumnSpan = tmpVisibleSpan;
+					}
 					tmpNormalizedRow.push({
 						Label: (typeof tmpCell.Label === 'string') ? tmpCell.Label : '',
-						ColumnSpan: (Number(tmpCell.ColumnSpan) > 0) ? Number(tmpCell.ColumnSpan) : 1,
+						ColumnSpan: tmpColumnSpan,
 						CSSClass: (typeof tmpCell.CSSClass === 'string') ? tmpCell.CSSClass : ''
 					});
 				}
@@ -312,6 +383,10 @@ class TabularLayout extends libPictSectionGroupLayout
 					continue;
 				}
 				if (tmpDescriptor.PictForm && tmpDescriptor.PictForm.TabularHidden)
+				{
+					continue;
+				}
+				if (tmpChooserHiddenSet && tmpChooserHiddenSet.has(String(tmpAddresses[k])))
 				{
 					continue;
 				}
@@ -732,6 +807,518 @@ class TabularLayout extends libPictSectionGroupLayout
 	}
 
 	/**
+	 * Normalize a Group.ColumnChooser config value.
+	 *
+	 * Accepts `true` (use all defaults) or an object
+	 * `{ Enabled, DataAddress, ButtonLabel, DefaultHiddenColumns }`. Returns null
+	 * when the chooser is not enabled (the feature is strictly opt-in).
+	 *
+	 * - `DataAddress` — address (relative to the form's marshal destination) where
+	 *   the array of hidden column hashes is stored, so it persists with the form data.
+	 * - `ButtonLabel` — text for the trigger button above the table.
+	 * - `DefaultHiddenColumns` — column hashes hidden until the user changes them
+	 *   (merged with any descriptor-level `PictForm.TabularDefaultHidden` flags).
+	 *
+	 * @param {boolean|Object} pConfigValue
+	 * @param {string} pDefaultDataAddress
+	 * @returns {{DataAddress: string, ButtonLabel: string, DefaultHiddenColumns: Array<string>}|null}
+	 */
+	_normalizeColumnChooserConfig(pConfigValue, pDefaultDataAddress)
+	{
+		if (pConfigValue !== true && (typeof pConfigValue !== 'object' || pConfigValue === null))
+		{
+			return null;
+		}
+		let tmpConfig = (typeof pConfigValue === 'object') ? pConfigValue : {};
+		if (tmpConfig.Enabled === false)
+		{
+			return null;
+		}
+		return {
+			DataAddress: (typeof tmpConfig.DataAddress === 'string' && tmpConfig.DataAddress.length > 0)
+				? tmpConfig.DataAddress
+				: pDefaultDataAddress,
+			ButtonLabel: (typeof tmpConfig.ButtonLabel === 'string' && tmpConfig.ButtonLabel.length > 0)
+				? tmpConfig.ButtonLabel
+				: 'Columns',
+			DefaultHiddenColumns: Array.isArray(tmpConfig.DefaultHiddenColumns)
+				? tmpConfig.DefaultHiddenColumns.map((pHash) => String(pHash))
+				: []
+		};
+	}
+
+	/**
+	 * Lazily normalize (and cache on the group) the ColumnChooser config. The
+	 * template bake re-normalizes each pass; this accessor covers code paths
+	 * (marshal hooks, inline handlers) that may run against a group whose
+	 * template hasn't been baked yet.
+	 *
+	 * @param {Object} pGroup
+	 * @returns {{DataAddress: string, ButtonLabel: string, DefaultHiddenColumns: Array<string>}|null}
+	 */
+	_ensureTabularColumnChooserConfig(pGroup)
+	{
+		if (pGroup._ColumnChooserConfig === undefined)
+		{
+			pGroup._ColumnChooserConfig = this._normalizeColumnChooserConfig(pGroup.ColumnChooser, `${pGroup.Hash}_HiddenColumns`);
+		}
+		return pGroup._ColumnChooserConfig;
+	}
+
+	/**
+	 * The absolute address (within the form's marshal destination) of the
+	 * chooser's hidden-column-hash array.
+	 *
+	 * @param {Object} pView
+	 * @param {{DataAddress: string}} pChooserConfig
+	 * @returns {string}
+	 */
+	_getTabularHiddenColumnsAddress(pView, pChooserConfig)
+	{
+		return `${pView.getMarshalDestinationAddress()}.${pChooserConfig.DataAddress}`;
+	}
+
+	/**
+	 * The set of column hashes hidden BY DEFAULT for a group: the chooser
+	 * config's DefaultHiddenColumns plus every descriptor flagged
+	 * `PictForm.TabularDefaultHidden`. These apply only until the user changes
+	 * column visibility (which writes an explicit array into the form data).
+	 *
+	 * @param {Object} pGroup
+	 * @returns {Array<string>}
+	 */
+	_getTabularColumnChooserDefaultHidden(pGroup)
+	{
+		let tmpConfig = pGroup._ColumnChooserConfig;
+		if (!tmpConfig)
+		{
+			return [];
+		}
+		let tmpDefaultHidden = {};
+		for (let i = 0; i < tmpConfig.DefaultHiddenColumns.length; i++)
+		{
+			tmpDefaultHidden[tmpConfig.DefaultHiddenColumns[i]] = true;
+		}
+		if (pGroup.supportingManifest && Array.isArray(pGroup.supportingManifest.elementAddresses))
+		{
+			for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
+			{
+				let tmpHash = pGroup.supportingManifest.elementAddresses[k];
+				let tmpDescriptor = pGroup.supportingManifest.elementDescriptors[tmpHash];
+				if (tmpDescriptor && tmpDescriptor.PictForm
+					&& !tmpDescriptor.PictForm.TabularHidden
+					&& tmpDescriptor.PictForm.TabularDefaultHidden === true)
+				{
+					tmpDefaultHidden[String(tmpHash)] = true;
+				}
+			}
+		}
+		return Object.keys(tmpDefaultHidden);
+	}
+
+	/**
+	 * The EFFECTIVE set of chooser-hidden column hashes for a group: the array
+	 * stored in the form data when the user has made choices, otherwise the
+	 * configured defaults. Returns null when the chooser is not enabled, so
+	 * callers can use a single falsy check to keep the legacy code path intact.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @returns {Set<string>|null}
+	 */
+	_getTabularColumnChooserHiddenSet(pView, pGroup)
+	{
+		let tmpConfig = this._ensureTabularColumnChooserConfig(pGroup);
+		if (!tmpConfig)
+		{
+			return null;
+		}
+		let tmpStored = this.pict.resolveStateFromAddress(this._getTabularHiddenColumnsAddress(pView, tmpConfig));
+		let tmpHiddenList = Array.isArray(tmpStored)
+			? tmpStored
+			: this._getTabularColumnChooserDefaultHidden(pGroup);
+		let tmpHiddenSet = new Set();
+		for (let i = 0; i < tmpHiddenList.length; i++)
+		{
+			tmpHiddenSet.add(String(tmpHiddenList[i]));
+		}
+		return tmpHiddenSet;
+	}
+
+	/**
+	 * A canonical string for the group's effective hidden-column set, used to
+	 * detect (on marshal) that loaded form data carries different column
+	 * visibility than the table template was baked with.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @returns {string}
+	 */
+	_getTabularColumnChooserStateKey(pView, pGroup)
+	{
+		let tmpHiddenSet = this._getTabularColumnChooserHiddenSet(pView, pGroup);
+		if (!tmpHiddenSet)
+		{
+			return '';
+		}
+		return Array.from(tmpHiddenSet).sort().join('|');
+	}
+
+	/**
+	 * The columns the chooser can manage, in manifest order. Statically hidden
+	 * descriptors (`PictForm.TabularHidden`) are never choosable and never
+	 * listed. Each entry carries the descriptor's manifest index so inline
+	 * handlers can address it without string-escaping concerns.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @returns {Array<{Key: string, Name: string, ColumnIndex: number, Visible: boolean}>}
+	 */
+	_getTabularChoosableColumns(pView, pGroup)
+	{
+		let tmpColumns = [];
+		if (!pGroup.supportingManifest || !Array.isArray(pGroup.supportingManifest.elementAddresses))
+		{
+			return tmpColumns;
+		}
+		let tmpHiddenSet = this._getTabularColumnChooserHiddenSet(pView, pGroup);
+		for (let k = 0; k < pGroup.supportingManifest.elementAddresses.length; k++)
+		{
+			let tmpHash = String(pGroup.supportingManifest.elementAddresses[k]);
+			let tmpDescriptor = pGroup.supportingManifest.elementDescriptors[tmpHash];
+			if (!tmpDescriptor || (tmpDescriptor.PictForm && tmpDescriptor.PictForm.TabularHidden))
+			{
+				continue;
+			}
+			tmpColumns.push(
+				{
+					Key: tmpHash,
+					Name: (tmpDescriptor.Name != null && String(tmpDescriptor.Name).length > 0) ? String(tmpDescriptor.Name) : tmpHash,
+					ColumnIndex: k,
+					Visible: !(tmpHiddenSet && tmpHiddenSet.has(tmpHash))
+				});
+		}
+		return tmpColumns;
+	}
+
+	/**
+	 * DOM element id for one of the chooser's baked elements (TRIGGER / POPOVER),
+	 * namespaced by form and group so multiple tabular groups can each carry
+	 * their own chooser.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @param {string} pElement
+	 * @returns {string}
+	 */
+	_getTabularColumnChooserElementId(pView, pGroup, pElement)
+	{
+		return `PICTFORM-COLCHOOSER-${pElement}-${pView.formID}-${pGroup.Hash}`;
+	}
+
+	/**
+	 * Builds the chooser bar baked above the table: a right-aligned trigger
+	 * button (with a "n hidden" hint when columns are hidden) plus the empty
+	 * popover container the open action renders into.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @returns {string}
+	 */
+	_buildTabularColumnChooserBarHTML(pView, pGroup)
+	{
+		let tmpColumns = this._getTabularChoosableColumns(pView, pGroup);
+		let tmpHiddenCount = tmpColumns.filter((pColumn) => !pColumn.Visible).length;
+		let tmpGlyph = (typeof this.pict.icon === 'function') ? this.pict.icon('Settings') : '';
+		let tmpCountHint = (tmpHiddenCount > 0)
+			? ` <span class="pict-tabular-colchooser-count">(${tmpHiddenCount} hidden)</span>`
+			: '';
+		return `<div class="pict-tabular-colchooser-bar">`
+			+ `<button type="button" class="pict-tabular-colchooser-trigger" id="${this._getTabularColumnChooserElementId(pView, pGroup, 'TRIGGER')}" `
+			+ `title="Choose which columns to show" `
+			+ `onclick="_Pict.providers['Pict-Layout-Tabular'].toggleTabularColumnChooser('${pView.Hash}', ${pGroup.GroupIndex})">`
+			+ `${tmpGlyph} ${this._escapeHTML(pGroup._ColumnChooserConfig.ButtonLabel)}${tmpCountHint}</button>`
+			+ `<div class="pict-tabular-colchooser-pop" id="${this._getTabularColumnChooserElementId(pView, pGroup, 'POPOVER')}"></div>`
+			+ `</div>`;
+	}
+
+	/**
+	 * Renders the chooser popover's content (backdrop + panel of checkbox rows +
+	 * reset footer) into its baked container. Runs on open and after each toggle
+	 * (the table re-render replaces the popover element, so its content must be
+	 * repainted to keep the menu open across toggles).
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 */
+	_renderTabularColumnChooserPopover(pView, pGroup)
+	{
+		let tmpColumns = this._getTabularChoosableColumns(pView, pGroup);
+		let tmpRowsHTML = '';
+		for (let i = 0; i < tmpColumns.length; i++)
+		{
+			let tmpColumn = tmpColumns[i];
+			tmpRowsHTML += `<label class="pict-tabular-colchooser-row">`
+				+ `<input type="checkbox"${tmpColumn.Visible ? ' checked="checked"' : ''} `
+				+ `onchange="_Pict.providers['Pict-Layout-Tabular'].toggleTabularColumnVisibility('${pView.Hash}', ${pGroup.GroupIndex}, ${tmpColumn.ColumnIndex}, this.checked)">`
+				+ `<span>${this._escapeHTML(tmpColumn.Name)}</span>`
+				+ `</label>`;
+		}
+		let tmpPopoverHTML = `<div class="pict-tabular-colchooser-backdrop" onclick="_Pict.providers['Pict-Layout-Tabular'].closeTabularColumnChooser('${pView.Hash}', ${pGroup.GroupIndex})"></div>`
+			+ `<div class="pict-tabular-colchooser-panel">`
+			+ `<div class="pict-tabular-colchooser-list">${tmpRowsHTML}</div>`
+			+ `<div class="pict-tabular-colchooser-footer">`
+			+ `<button type="button" class="pict-tabular-colchooser-reset" onclick="_Pict.providers['Pict-Layout-Tabular'].resetTabularColumnVisibility('${pView.Hash}', ${pGroup.GroupIndex})">Reset to defaults</button>`
+			+ `</div>`
+			+ `</div>`;
+		this.pict.ContentAssignment.assignContent(`#${this._getTabularColumnChooserElementId(pView, pGroup, 'POPOVER')}`, tmpPopoverHTML);
+	}
+
+	/**
+	 * Reflect the chooser popover's open/closed state on its container element,
+	 * positioning it against the trigger when opening.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @param {boolean} pOpen
+	 */
+	_paintTabularColumnChooserOpenState(pView, pGroup, pOpen)
+	{
+		let tmpPopoverElements = this.pict.ContentAssignment.getElement(`#${this._getTabularColumnChooserElementId(pView, pGroup, 'POPOVER')}`);
+		if (!tmpPopoverElements.length)
+		{
+			return;
+		}
+		tmpPopoverElements[0].classList.toggle('open', !!pOpen);
+		if (pOpen)
+		{
+			this._positionTabularColumnChooserPopover(pView, pGroup, tmpPopoverElements[0]);
+		}
+	}
+
+	/**
+	 * Position the (fixed) chooser popover against its trigger button, flipping
+	 * above when the room below is genuinely cramped — same approach as the
+	 * recordset's column chooser, so no ancestor overflow can clip it.
+	 *
+	 * @param {Object} pView
+	 * @param {Object} pGroup
+	 * @param {HTMLElement} pPopover
+	 */
+	_positionTabularColumnChooserPopover(pView, pGroup, pPopover)
+	{
+		let tmpTriggerElements = this.pict.ContentAssignment.getElement(`#${this._getTabularColumnChooserElementId(pView, pGroup, 'TRIGGER')}`);
+		if (!tmpTriggerElements.length || (typeof window === 'undefined'))
+		{
+			return;
+		}
+		let tmpPanel = pPopover.querySelector('.pict-tabular-colchooser-panel');
+		let tmpRect = tmpTriggerElements[0].getBoundingClientRect();
+		let tmpGap = 6;
+		let tmpMargin = 8;
+		let tmpViewportHeight = window.innerHeight;
+		let tmpViewportWidth = window.innerWidth;
+		let tmpWidth = pPopover.offsetWidth || 240;
+		// Right-align the popover to the (right-aligned) trigger, clamped into the viewport.
+		pPopover.style.left = `${Math.round(Math.max(tmpMargin, Math.min(tmpRect.right - tmpWidth, tmpViewportWidth - tmpWidth - tmpMargin)))}px`;
+		pPopover.style.right = 'auto';
+		let tmpSpaceBelow = tmpViewportHeight - tmpRect.bottom - tmpGap - tmpMargin;
+		let tmpSpaceAbove = tmpRect.top - tmpGap - tmpMargin;
+		if (tmpSpaceBelow >= 220 || tmpSpaceBelow >= tmpSpaceAbove)
+		{
+			pPopover.style.top = `${Math.round(tmpRect.bottom + tmpGap)}px`;
+			pPopover.style.bottom = 'auto';
+			if (tmpPanel) { tmpPanel.style.maxHeight = `${Math.max(160, Math.min(tmpSpaceBelow, 420))}px`; }
+		}
+		else
+		{
+			pPopover.style.top = 'auto';
+			pPopover.style.bottom = `${Math.round(tmpViewportHeight - tmpRect.top + tmpGap)}px`;
+			if (tmpPanel) { tmpPanel.style.maxHeight = `${Math.max(160, Math.min(tmpSpaceAbove, 420))}px`; }
+		}
+	}
+
+	/**
+	 * Rebuild + re-render a tabular view and re-marshal the form data into it.
+	 * Same tail as sortTabularColumn: the rebuild re-bakes the table template
+	 * (column set, headers, chooser bar), the render repaints, the marshal
+	 * pushes current values back into the freshly built inputs.
+	 *
+	 * @param {Object} pView
+	 */
+	_rebuildTabularGroupView(pView)
+	{
+		pView.rebuildCustomTemplate();
+		pView.render();
+		if (this.pict.views.PictFormMetacontroller)
+		{
+			this.pict.views.PictFormMetacontroller.marshalFormSections();
+		}
+		else
+		{
+			pView.marshalToView();
+		}
+	}
+
+	/**
+	 * Inline-handler entry point: opens/closes a group's column chooser popover
+	 * (the trigger button's handler). Open/closed is derived from the popover's
+	 * DOM class, not an instance flag — a re-render replaces the popover element
+	 * (visually closed), so a flag would go stale and demand a double-click.
+	 *
+	 * @param {string} pViewHash
+	 * @param {number|string} pGroupIndex
+	 * @returns {boolean}
+	 */
+	toggleTabularColumnChooser(pViewHash, pGroupIndex)
+	{
+		let tmpView = this.pict.views[pViewHash];
+		if (!tmpView || !tmpView.sectionDefinition || !Array.isArray(tmpView.sectionDefinition.Groups))
+		{
+			return false;
+		}
+		let tmpGroup = tmpView.sectionDefinition.Groups[Number(pGroupIndex)];
+		if (!tmpGroup || !this._ensureTabularColumnChooserConfig(tmpGroup))
+		{
+			return false;
+		}
+		let tmpPopoverElements = this.pict.ContentAssignment.getElement(`#${this._getTabularColumnChooserElementId(tmpView, tmpGroup, 'POPOVER')}`);
+		if (tmpPopoverElements.length && tmpPopoverElements[0].classList.contains('open'))
+		{
+			this._paintTabularColumnChooserOpenState(tmpView, tmpGroup, false);
+			return true;
+		}
+		this._renderTabularColumnChooserPopover(tmpView, tmpGroup);
+		this._paintTabularColumnChooserOpenState(tmpView, tmpGroup, true);
+		return true;
+	}
+
+	/**
+	 * Inline-handler entry point: closes a group's column chooser popover (the
+	 * backdrop's handler).
+	 *
+	 * @param {string} pViewHash
+	 * @param {number|string} pGroupIndex
+	 * @returns {boolean}
+	 */
+	closeTabularColumnChooser(pViewHash, pGroupIndex)
+	{
+		let tmpView = this.pict.views[pViewHash];
+		if (!tmpView || !tmpView.sectionDefinition || !Array.isArray(tmpView.sectionDefinition.Groups))
+		{
+			return false;
+		}
+		let tmpGroup = tmpView.sectionDefinition.Groups[Number(pGroupIndex)];
+		if (!tmpGroup)
+		{
+			return false;
+		}
+		this._paintTabularColumnChooserOpenState(tmpView, tmpGroup, false);
+		return true;
+	}
+
+	/**
+	 * Inline-handler entry point: shows/hides one column (a chooser checkbox's
+	 * handler). Writes the updated hidden-hash array into the form data (so it
+	 * persists with a save), rebuilds the table template without the column,
+	 * re-renders, re-marshals, then re-opens the popover the re-render closed.
+	 *
+	 * Hiding never touches the underlying record data — the column's values
+	 * stay in the record set and reappear when the column is shown again.
+	 *
+	 * Refuses to hide the last visible column (the checkbox snaps back).
+	 *
+	 * @param {string} pViewHash
+	 * @param {number|string} pGroupIndex
+	 * @param {number|string} pColumnIndex - The column's manifest index (stable within a bake).
+	 * @param {boolean} pVisible - true to show the column, false to hide it.
+	 * @returns {boolean}
+	 */
+	toggleTabularColumnVisibility(pViewHash, pGroupIndex, pColumnIndex, pVisible)
+	{
+		let tmpView = this.pict.views[pViewHash];
+		if (!tmpView || !tmpView.sectionDefinition || !Array.isArray(tmpView.sectionDefinition.Groups))
+		{
+			return false;
+		}
+		let tmpGroup = tmpView.sectionDefinition.Groups[Number(pGroupIndex)];
+		if (!tmpGroup)
+		{
+			return false;
+		}
+		let tmpConfig = this._ensureTabularColumnChooserConfig(tmpGroup);
+		if (!tmpConfig)
+		{
+			return false;
+		}
+		let tmpColumns = this._getTabularChoosableColumns(tmpView, tmpGroup);
+		let tmpColumn = tmpColumns.find((pCandidate) => pCandidate.ColumnIndex === Number(pColumnIndex));
+		if (!tmpColumn)
+		{
+			return false;
+		}
+		let tmpHiddenSet = this._getTabularColumnChooserHiddenSet(tmpView, tmpGroup);
+		if (pVisible)
+		{
+			tmpHiddenSet.delete(tmpColumn.Key);
+		}
+		else
+		{
+			let tmpVisibleCount = tmpColumns.filter((pCandidate) => pCandidate.Visible).length;
+			if (tmpVisibleCount <= 1 && tmpColumn.Visible)
+			{
+				this.log.warn(`PICT Form Tabular column chooser on group [${tmpGroup.Hash}] refused to hide the last visible column [${tmpColumn.Key}].`);
+				// Repaint the popover so the refused checkbox snaps back to checked.
+				this._renderTabularColumnChooserPopover(tmpView, tmpGroup);
+				this._paintTabularColumnChooserOpenState(tmpView, tmpGroup, true);
+				return false;
+			}
+			tmpHiddenSet.add(tmpColumn.Key);
+		}
+		this.pict.setStateValueAtAddress(this._getTabularHiddenColumnsAddress(tmpView, tmpConfig), null, Array.from(tmpHiddenSet));
+		this._rebuildTabularGroupView(tmpView);
+		// The re-render replaced the popover element (closed); keep the menu open
+		// so the user can toggle several columns in one visit.
+		this._renderTabularColumnChooserPopover(tmpView, tmpGroup);
+		this._paintTabularColumnChooserOpenState(tmpView, tmpGroup, true);
+		return true;
+	}
+
+	/**
+	 * Inline-handler entry point: resets a group's column visibility to its
+	 * configured defaults (the reset footer button's handler). Writes the
+	 * default hidden set into the form data explicitly — the user interacted,
+	 * so the state should serialize deterministically with a save.
+	 *
+	 * @param {string} pViewHash
+	 * @param {number|string} pGroupIndex
+	 * @returns {boolean}
+	 */
+	resetTabularColumnVisibility(pViewHash, pGroupIndex)
+	{
+		let tmpView = this.pict.views[pViewHash];
+		if (!tmpView || !tmpView.sectionDefinition || !Array.isArray(tmpView.sectionDefinition.Groups))
+		{
+			return false;
+		}
+		let tmpGroup = tmpView.sectionDefinition.Groups[Number(pGroupIndex)];
+		if (!tmpGroup)
+		{
+			return false;
+		}
+		let tmpConfig = this._ensureTabularColumnChooserConfig(tmpGroup);
+		if (!tmpConfig)
+		{
+			return false;
+		}
+		this.pict.setStateValueAtAddress(this._getTabularHiddenColumnsAddress(tmpView, tmpConfig), null, this._getTabularColumnChooserDefaultHidden(tmpGroup));
+		this._rebuildTabularGroupView(tmpView);
+		this._renderTabularColumnChooserPopover(tmpView, tmpGroup);
+		this._paintTabularColumnChooserOpenState(tmpView, tmpGroup, true);
+		return true;
+	}
+
+	/**
 	 * Generate a group layout template for a single-record dynamically generated group view.
 	 *
 	 * This is the standard name / field entry form that you're used to filling out for addresses
@@ -765,6 +1352,14 @@ class TabularLayout extends libPictSectionGroupLayout
 		{
 			pGroup._SortState = { ColumnIndex: -1, Direction: 'none' };
 		}
+		// ColumnChooser (off by default): a menu of checkboxes above the table that
+		// shows/hides columns, with the hidden set stored in the form data. Normalized
+		// BEFORE the headers expand so chooser-hidden columns adjust header spans.
+		pGroup._ColumnChooserConfig = this._normalizeColumnChooserConfig(pGroup.ColumnChooser, `${pGroup.Hash}_HiddenColumns`);
+		let tmpChooserHiddenSet = this._getTabularColumnChooserHiddenSet(pView, pGroup);
+		// Remember what visibility this bake used, so a marshal carrying different
+		// (e.g. freshly loaded) state knows to trigger a rebuild.
+		pGroup._ColumnChooserBakedStateKey = tmpChooserHiddenSet ? Array.from(tmpChooserHiddenSet).sort().join('|') : '';
 		let tmpExpandedHeaders = this._buildExpandedHeadersConfig(pView, pGroup);
 
 		// Stash the structures referenced by the templates below.
@@ -796,6 +1391,13 @@ class TabularLayout extends libPictSectionGroupLayout
 		{
 			this.pict.TemplateProvider.addTemplate(pView.getViewSpecificTemplateHash('-TabularTemplate-Row-ExtraPostfix'), '');
 			this.pict.TemplateProvider.addTemplate(pView.getViewSpecificTemplateHash('-TabularTemplate-RowHeader-ExtraPostfix'), '');
+		}
+
+		// The chooser bar sits ABOVE the group's table container (a div can't live
+		// inside <table> without the browser foster-parenting it out anyway).
+		if (pGroup._ColumnChooserConfig)
+		{
+			tmpTemplate += this._buildTabularColumnChooserBarHTML(pView, pGroup);
 		}
 
 		tmpTemplate += tmpMetatemplateGenerator.getMetatemplateTemplateReference(pView, `-TabularTemplate-Group-Prefix`, `getGroup("${pGroup.GroupIndex}")`);
@@ -840,6 +1442,10 @@ class TabularLayout extends libPictSectionGroupLayout
 			{
 				let tmpColumnDescriptor = pGroup.supportingManifest.elementDescriptors[pGroup.supportingManifest.elementAddresses[k]];
 				if (!tmpColumnDescriptor || (tmpColumnDescriptor.PictForm && tmpColumnDescriptor.PictForm.TabularHidden))
+				{
+					continue;
+				}
+				if (tmpChooserHiddenSet && tmpChooserHiddenSet.has(String(pGroup.supportingManifest.elementAddresses[k])))
 				{
 					continue;
 				}
@@ -890,6 +1496,13 @@ class TabularLayout extends libPictSectionGroupLayout
 				tmpInput.PictForm = {};
 			}
 			if (tmpInput.PictForm.TabularHidden)
+			{
+				continue;
+			}
+			// Chooser-hidden columns are skipped at bake time (neither header nor row
+			// cells render) but their record data is never touched — showing the
+			// column again restores it intact, same invariant as DynamicColumns.
+			if (tmpChooserHiddenSet && tmpChooserHiddenSet.has(String(tmpSupportingManifestHash)))
 			{
 				continue;
 			}
@@ -1038,6 +1651,31 @@ class TabularLayout extends libPictSectionGroupLayout
 					pGroup._RebuildInProgress = false;
 				}
 				// The re-render rebuilt the table DOM -- restore selection highlights.
+				this._reapplyTabularSelectionHighlights(pView, pGroup);
+				return true;
+			}
+		}
+
+		// When the chooser's effective hidden-column set differs from the one the
+		// current table template was baked with (e.g. the host just loaded saved
+		// form data carrying a <GroupHash>_HiddenColumns array), rebuild so the
+		// table reflects the loaded visibility. Steady state is a no-op — the
+		// bake stamped _ColumnChooserBakedStateKey from the same form data.
+		if (this._ensureTabularColumnChooserConfig(pGroup))
+		{
+			let tmpCurrentStateKey = this._getTabularColumnChooserStateKey(pView, pGroup);
+			if (tmpCurrentStateKey !== pGroup._ColumnChooserBakedStateKey)
+			{
+				pGroup._RebuildInProgress = true;
+				try
+				{
+					pView.rebuildCustomTemplate();
+					pView.render();
+				}
+				finally
+				{
+					pGroup._RebuildInProgress = false;
+				}
 				this._reapplyTabularSelectionHighlights(pView, pGroup);
 				return true;
 			}

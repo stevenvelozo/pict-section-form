@@ -295,6 +295,11 @@ module.exports.default_configuration.pict_configuration = {
 							],
 						RecordSetAddress: "FruitData.FruityVice",
 						RecordManifest: "FruitEditor",
+
+						// Opt-in column chooser (the wide fruit grid is the table that
+						// earns one). Hidden columns persist in the form data at
+						// FruitGrid_HiddenColumns and never lose their cell data.
+						ColumnChooser: true,
 					},
 				],
 			},

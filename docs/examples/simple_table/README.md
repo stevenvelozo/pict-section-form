@@ -25,6 +25,7 @@ case study: the same `Tabular` layout, stripped to its essentials.
 | Reference manifests | `FruitEditor` defines the table's columns |
 | Dot-notation data addresses | The Calories column reads `nutritions.calories` |
 | Per-field types & defaults | Each column declares a `DataType` and optional `Default` |
+| Column chooser | `ColumnChooser: true` adds the **Columns** menu; hidden columns persist in the form data at `FruitGrid_HiddenColumns` |
 
 ## Key files
 
