@@ -1,10 +1,13 @@
 /*
-	Gradebook example application — exercises the three new pict-section-form
-	tabular features purely via manifest configuration:
+	Gradebook example application — exercises the pict-section-form tabular
+	features purely via manifest configuration:
 
 	  1. Stacked / clustered headers via Group.Headers
 	  2. Row-label columns (template / row-number / pre-slotted) via Group.RowLabels
 	  3. Dynamic columns derived from another array via Group.DynamicColumns
+	  4. The column chooser via Group.ColumnChooser — a "Columns" menu of
+	     checkboxes above the table; the hidden set lives in the form data
+	     (<GroupHash>_HiddenColumns) so it survives a save/reload.
 
 	The host code itself does nothing interesting — it just wires a TabSectionSelector
 	for navigation, then defines four tabular sections. All the new behavior comes
@@ -69,6 +72,8 @@ module.exports.default_configuration.pict_configuration = (
 
 				/*
 				 * Tab 2 — Assignment catalog. Tabular group clustered by Topic.
+				 * Carries a column chooser; the Weight column is hidden by default
+				 * (TabularDefaultHidden on its descriptor) until shown via the menu.
 				 */
 				{
 					"Hash": "Assignments",
@@ -82,6 +87,7 @@ module.exports.default_configuration.pict_configuration = (
 							"RecordSetAddress": "Assignments",
 							"RecordManifest": "AssignmentEditor",
 							"ColumnSorting": true,
+							"ColumnChooser": true,
 							"Headers":
 							[
 								[
@@ -107,8 +113,14 @@ module.exports.default_configuration.pict_configuration = (
 				 *     row clustering consecutive same-topic columns.
 				 *   - RowSelection / ColumnSelection: check a row and/or a column to
 				 *     highlight every cell across and down. The checked state is stored
-				 *     in the form data (Grades_Gradebook_RowSelection / ...ColumnSelection)
+				 *     in the form data (GradebookGrid_RowSelection / ...ColumnSelection)
 				 *     so it persists with a save.
+				 *   - ColumnChooser: the "Columns" menu above the table shows/hides
+				 *     the per-assignment columns. The hidden set is stored in the form
+				 *     data (GradebookGrid_HiddenColumns) so it also persists with a
+				 *     save — and a hidden assignment's grades are never deleted, just
+				 *     not rendered. The "Assignments" banner span and the topic
+				 *     super-headers shrink to match the visible columns.
 				 */
 				{
 					"Hash": "Gradebook",
@@ -123,6 +135,7 @@ module.exports.default_configuration.pict_configuration = (
 							"RecordManifest": "GradeRowEditor",
 							"RowSelection": true,
 							"ColumnSelection": true,
+							"ColumnChooser": true,
 							"Headers":
 							[
 								[
@@ -359,7 +372,9 @@ module.exports.default_configuration.pict_configuration = (
 							"Hash": "Weight",
 							"DataType": "Number",
 							"Default": 1.0,
-							"PictForm": { "Section": "Assignments", "Group": "AssignmentList" }
+							// Hidden until shown via the column chooser menu (the
+							// chooser's "(1 hidden)" hint points the user at it).
+							"PictForm": { "Section": "Assignments", "Group": "AssignmentList", "TabularDefaultHidden": true }
 						}
 					}
 				},

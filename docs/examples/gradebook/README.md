@@ -24,6 +24,7 @@ with the exact configuration the app uses.
 | Non-destructive columns | Removing an assignment hides its column but keeps the entered grades |
 | Selectable rows & columns | Grade Book - check a row and/or column to highlight it |
 | Column sorting | Students and Assignments - click a header to sort |
+| Column chooser | Assignments and Grade Book - the **Columns** menu hides/shows columns; choices persist in the form data |
 | Tabular styling solvers | Performance - each student row is tinted by their average |
 | Tab navigation | `TabSectionSelector` switches between the five tabs |
 | Seeded example data | `GradebookData.json` loaded as `DefaultAppData` |
@@ -302,6 +303,46 @@ background. See [Solvers](../../Solvers.md) for the full reference.
 
 ---
 
+## Feature 8 - Column chooser
+
+The Assignments and Grade Book tabs opt into the column chooser:
+
+```js
+{
+    "Hash": "GradebookGrid",
+    "Layout": "Tabular",
+    "RecordSetAddress": "Grades",
+    "RecordManifest": "GradeRowEditor",
+    "ColumnChooser": true
+}
+```
+
+`ColumnChooser: true` (strictly opt-in - tables without it are untouched) puts
+a right-aligned **Columns** button above the table. It opens a menu of
+checkboxes, one per column; uncheck to hide, check to show. While columns are
+hidden the button reads `Columns (n hidden)`.
+
+The hidden set is stored **in the form data** - an array of column hashes at
+`<GroupHash>_HiddenColumns` (here `GradebookGrid_HiddenColumns`) - so it
+round-trips with a save exactly like the selection state does: reload the
+saved data and the same columns come back hidden. Hiding is non-destructive;
+a hidden assignment's grades survive untouched and reappear when the column
+is shown again.
+
+Two details worth noticing in this app:
+
+- **Defaults without data pollution.** On the Assignments tab the `Weight`
+  descriptor sets `PictForm.TabularDefaultHidden: true`, so the column starts
+  hidden - but nothing is written to the form data until the user actually
+  changes visibility. (A group-level `DefaultHiddenColumns: [...]` array does
+  the same per group, and the menu's **Reset to defaults** button returns to
+  this state.)
+- **Everything stays aligned.** On the Grade Book tab the hidden columns are
+  *dynamic* (one per assignment): the "Assignments" banner's `ColumnSpan` and
+  the auto topic super-headers shrink to span only the visible columns.
+
+---
+
 ## Seeded example data
 
 Like the other example applications, the gradebook ships its data inline.
@@ -332,7 +373,8 @@ npm run build
 2. **Intersections are first-class.** `DynamicColumns` turns "students × assignments"
    into a real editable grid without hand-written columns.
 3. **Non-destructive always.** Hiding a column never discards the data behind it.
-4. **State that persists.** Row/column selection rides along in the form data.
+4. **State that persists.** Row/column selection and the column chooser's
+   hidden set ride along in the form data.
 5. **One pattern, many grids.** The same `DynamicColumns` generator shape drives
    the Grade Book, the Performance breakdown, and the Commentary grid.
 

@@ -1133,4 +1133,297 @@ suite('PictSectionForm Tabular Features', () =>
 			}, fDone);
 		});
 	});
+
+	suite('Tabular column chooser (ColumnChooser)', () =>
+	{
+		test('ColumnChooser is off by default - no config, no chooser markup in the baked template', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Students',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Students',
+				RecordManifest: 'StudentEditor'
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+				Expect(tmpGroup._ColumnChooserConfig).to.equal(null, 'no chooser config when not opted in');
+				let tmpTemplate = tmpLayout.generateGroupLayoutTemplate(tmpView, tmpGroup);
+				Expect(tmpTemplate).to.not.contain('pict-tabular-colchooser', 'no chooser markup baked');
+			}, fDone);
+		});
+
+		test('ColumnChooser:true normalizes config and bakes the trigger bar above the table', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Students',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Students',
+				RecordManifest: 'StudentEditor',
+				ColumnChooser: true
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+				Expect(tmpGroup._ColumnChooserConfig).to.be.an('object', 'chooser config normalized');
+				Expect(tmpGroup._ColumnChooserConfig.DataAddress).to.equal('Students_HiddenColumns', 'default data address');
+				Expect(tmpGroup._ColumnChooserConfig.ButtonLabel).to.equal('Columns', 'default button label');
+				let tmpTemplate = tmpLayout.generateGroupLayoutTemplate(tmpView, tmpGroup);
+				Expect(tmpTemplate).to.contain('pict-tabular-colchooser-trigger', 'trigger button baked');
+				Expect(tmpTemplate).to.contain('toggleTabularColumnChooser', 'open handler wired');
+				Expect(tmpTemplate.indexOf('pict-tabular-colchooser-bar')).to.be.lessThan(tmpTemplate.indexOf('TabularTemplate'), 'bar baked above the table container');
+			}, fDone);
+		});
+
+		test('_getTabularChoosableColumns lists static columns with visibility, skipping TabularHidden', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Students',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Students',
+				RecordManifest: 'StudentEditor',
+				ColumnChooser: true
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+				let tmpColumns = tmpLayout._getTabularChoosableColumns(tmpView, tmpGroup);
+				Expect(tmpColumns).to.be.an('array').with.length(2, 'both static columns choosable');
+				Expect(tmpColumns[0].Key).to.equal('Section');
+				Expect(tmpColumns[0].Name).to.equal('Section');
+				Expect(tmpColumns[0].Visible).to.equal(true, 'nothing hidden initially');
+				Expect(tmpColumns[1].ColumnIndex).to.equal(1, 'manifest index carried');
+			}, fDone);
+		});
+
+		test('toggleTabularColumnVisibility hides a column: form data written, template re-baked without it, record data untouched', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Students',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Students',
+				RecordManifest: 'StudentEditor',
+				ColumnChooser: true
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+
+				// StudentName is manifest index 1; cell/header references address it as ("0","1").
+				let tmpNameIndex = tmpGroup.supportingManifest.elementAddresses.indexOf('StudentName');
+				Expect(tmpNameIndex).to.equal(1);
+				Expect(tmpLayout.generateGroupLayoutTemplate(tmpView, tmpGroup)).to.contain(`getTabularRecordInput("0","1")`, 'column baked before hiding');
+
+				tmpLayout.toggleTabularColumnVisibility('PictSectionForm-Class', 0, tmpNameIndex, false);
+				Expect(_Pict.AppData.Students_HiddenColumns).to.deep.equal(['StudentName'], 'hidden hash persisted in the form data');
+				Expect(tmpLayout.generateGroupLayoutTemplate(tmpView, tmpGroup)).to.not.contain(`getTabularRecordInput("0","1")`, 'hidden column not baked');
+				Expect(_Pict.AppData.Students[0].StudentName).to.equal('Alice', 'hiding never touches record data');
+
+				tmpLayout.toggleTabularColumnVisibility('PictSectionForm-Class', 0, tmpNameIndex, true);
+				Expect(_Pict.AppData.Students_HiddenColumns).to.deep.equal([], 'showing removes the hash');
+				Expect(tmpLayout.generateGroupLayoutTemplate(tmpView, tmpGroup)).to.contain(`getTabularRecordInput("0","1")`, 'column baked again');
+			}, fDone);
+		});
+
+		test('The last visible column cannot be hidden', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Students',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Students',
+				RecordManifest: 'StudentEditor',
+				ColumnChooser: true
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+				Expect(tmpLayout.toggleTabularColumnVisibility('PictSectionForm-Class', 0, 0, false)).to.equal(true, 'first column hides fine');
+				Expect(tmpLayout.toggleTabularColumnVisibility('PictSectionForm-Class', 0, 1, false)).to.equal(false, 'last visible column refused');
+				Expect(_Pict.AppData.Students_HiddenColumns).to.deep.equal(['Section'], 'refused hide not persisted');
+			}, fDone);
+		});
+
+		test('TabularDefaultHidden starts a column hidden WITHOUT writing form data; showing it writes explicit state', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Students',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Students',
+				RecordManifest: 'StudentEditor',
+				ColumnChooser: true
+			});
+			// Flag StudentName as hidden-by-default in the reference manifest.
+			App.default_configuration.pict_configuration.DefaultFormManifest.ReferenceManifests.StudentEditor.Descriptors.StudentName.PictForm.TabularDefaultHidden = true;
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+
+				Expect(_Pict.AppData.Students_HiddenColumns).to.equal(undefined, 'defaults do not pollute the form data');
+				let tmpColumns = tmpLayout._getTabularChoosableColumns(tmpView, tmpGroup);
+				Expect(tmpColumns[1].Visible).to.equal(false, 'StudentName hidden by default');
+				Expect(tmpLayout.generateGroupLayoutTemplate(tmpView, tmpGroup)).to.not.contain(`getTabularRecordInput("0","1")`, 'default-hidden column not baked');
+				Expect(tmpLayout._buildTabularColumnChooserBarHTML(tmpView, tmpGroup)).to.contain('(1 hidden)', 'trigger hints at hidden columns');
+
+				tmpLayout.toggleTabularColumnVisibility('PictSectionForm-Class', 0, 1, true);
+				Expect(_Pict.AppData.Students_HiddenColumns).to.deep.equal([], 'user interaction writes explicit (empty) hidden state');
+				Expect(tmpLayout._getTabularChoosableColumns(tmpView, tmpGroup)[1].Visible).to.equal(true, 'column shown');
+			}, fDone);
+		});
+
+		test('Group-level DefaultHiddenColumns + reset restores the configured defaults', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Students',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Students',
+				RecordManifest: 'StudentEditor',
+				ColumnChooser: { DefaultHiddenColumns: ['Section'] }
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+
+				Expect(tmpLayout._getTabularChoosableColumns(tmpView, tmpGroup)[0].Visible).to.equal(false, 'Section hidden by config default');
+
+				// User shows Section and hides StudentName, then resets.
+				tmpLayout.toggleTabularColumnVisibility('PictSectionForm-Class', 0, 0, true);
+				tmpLayout.toggleTabularColumnVisibility('PictSectionForm-Class', 0, 1, false);
+				Expect(_Pict.AppData.Students_HiddenColumns).to.deep.equal(['StudentName']);
+
+				tmpLayout.resetTabularColumnVisibility('PictSectionForm-Class', 0);
+				Expect(_Pict.AppData.Students_HiddenColumns).to.deep.equal(['Section'], 'reset writes the configured default set');
+				Expect(tmpLayout._getTabularChoosableColumns(tmpView, tmpGroup)[0].Visible).to.equal(false, 'Section hidden again');
+			}, fDone);
+		});
+
+		test('Custom chooser DataAddress is honored', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Students',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Students',
+				RecordManifest: 'StudentEditor',
+				ColumnChooser: { DataAddress: 'MyColumnPrefs', ButtonLabel: 'Pick Columns' }
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+				tmpLayout.toggleTabularColumnVisibility('PictSectionForm-Class', 0, 0, false);
+				Expect(_Pict.AppData.MyColumnPrefs).to.deep.equal(['Section'], 'hidden set stored at the custom address');
+				Expect(tmpLayout._buildTabularColumnChooserBarHTML(tmpView, tmpGroup)).to.contain('Pick Columns', 'custom button label baked');
+			}, fDone);
+		});
+
+		test('Loaded form data with a different hidden set triggers a rebuild on marshal (reload restoration)', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Students',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Students',
+				RecordManifest: 'StudentEditor',
+				ColumnChooser: true
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+
+				Expect(tmpGroup._ColumnChooserBakedStateKey).to.equal('', 'baked with nothing hidden');
+
+				// Simulate the host loading saved form data that carries hidden-column state.
+				_Pict.AppData.Students_HiddenColumns = ['StudentName'];
+				tmpLayout.onDataMarshalToForm(tmpView, tmpGroup);
+
+				Expect(tmpGroup._ColumnChooserBakedStateKey).to.equal('StudentName', 'marshal detected the difference and re-baked');
+				Expect(tmpLayout.generateGroupLayoutTemplate(tmpView, tmpGroup)).to.not.contain(`getTabularRecordInput("0","1")`, 'loaded hidden state applied to the table');
+
+				// Steady state: marshalling again with unchanged data must not flag a rebuild.
+				let tmpBakedKeyBefore = tmpGroup._ColumnChooserBakedStateKey;
+				tmpLayout.onDataMarshalToForm(tmpView, tmpGroup);
+				Expect(tmpGroup._ColumnChooserBakedStateKey).to.equal(tmpBakedKeyBefore, 'no rebuild churn in steady state');
+			}, fDone);
+		});
+
+		test('Stacked header ColumnSpans shrink to cover only visible columns', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Students',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Students',
+				RecordManifest: 'StudentEditor',
+				ColumnChooser: true,
+				Headers:
+				[
+					[ { Label: 'Roster', ColumnSpan: 2 } ]
+				]
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+				Expect(tmpGroup.ExpandedHeaders[0][0].ColumnSpan).to.equal(2, 'full span with everything visible');
+
+				tmpLayout.toggleTabularColumnVisibility('PictSectionForm-Class', 0, 1, false);
+				Expect(tmpGroup.ExpandedHeaders[0][0].ColumnSpan).to.equal(1, 'span shrinks past the hidden column');
+
+				tmpLayout.toggleTabularColumnVisibility('PictSectionForm-Class', 0, 1, true);
+				Expect(tmpGroup.ExpandedHeaders[0][0].ColumnSpan).to.equal(2, 'span restored when the column returns');
+			}, fDone);
+		});
+
+		test('Dynamic columns are choosable and persist by their generated hash', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Grades',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Grades',
+				RecordManifest: 'GradeRowEditor',
+				ColumnChooser: true,
+				DynamicColumns:
+				[
+					{
+						SourceAddress: 'Assignments',
+						HashTemplate: 'Grade_{~D:Record.IDAssignment~}',
+						NameTemplate: '{~D:Record.Title~}',
+						InformaryDataAddressTemplate: 'Grades.{~D:Record.IDAssignment~}',
+						DataType: 'Number',
+						PictForm: { InputType: 'Number' }
+					}
+				]
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				let tmpLayout = _Pict.providers['Pict-Layout-Tabular'];
+
+				// Resolve the dynamic columns (the marshal cycle does this in a live app).
+				tmpLayout.onDataMarshalToForm(tmpView, tmpGroup);
+				let tmpColumns = tmpLayout._getTabularChoosableColumns(tmpView, tmpGroup);
+				let tmpDynamicColumn = tmpColumns.find((pColumn) => pColumn.Key === 'Grade_2');
+				Expect(tmpDynamicColumn).to.be.an('object', 'generated column is choosable');
+				Expect(tmpDynamicColumn.Name).to.equal('Photosynthesis', 'display name from NameTemplate');
+
+				tmpLayout.toggleTabularColumnVisibility('PictSectionForm-Class', 0, tmpDynamicColumn.ColumnIndex, false);
+				Expect(_Pict.AppData.Grades_HiddenColumns).to.deep.equal(['Grade_2'], 'dynamic column persisted by generated hash');
+				Expect(_Pict.AppData.Grades[0].Grades['2']).to.equal(88, 'hidden dynamic column data untouched');
+			}, fDone);
+		});
+	});
 });
