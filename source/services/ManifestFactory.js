@@ -137,7 +137,10 @@ class ManifestFactory extends libFableServiceProviderBase
 				if (!tmpRow)
 				{
 					tmpRow = { Hash: tmpRowHash, Name: tmpRowHash, Inputs: [] };
-					tmpRow.RowNumber = typeof (tmpDescriptor.PictForm.Row) == 'number' ? tmpDescriptor.PictForm.Row : 0;
+					if (typeof (tmpDescriptor.PictForm.Row) == 'number')
+					{
+						tmpRow.RowNumber = tmpDescriptor.PictForm.Row
+					}
 					tmpGroup.Rows.push(tmpRow);
 					tmpRow.Inputs.push(tmpDescriptor);
 				}
