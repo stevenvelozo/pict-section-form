@@ -355,8 +355,12 @@ class DynamicTabularData extends libPictProvider
 				}
 				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
 				tmpDestinationObject.splice(tmpRowIndex + 1, 0, tmpElementToBeMoved[0]);
-				this.pict.providers.DynamicSolver.solveViews();
+				// Render BEFORE solving so the solve's DOM side effects (e.g. SetGroupVisibility
+				// hiding a validation message) act on the freshly rebuilt DOM and survive. A
+				// solve-then-render order discards them, because render() rebuilds the group DOM
+				// without the solver-applied class. Matches the add/delete handlers' order.
 				pView.render();
+				this.pict.providers.DynamicSolver.solveViews();
 				//pView.marshalToView();
 				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
 				this.pict.views.PictFormMetacontroller.marshalFormSections();
@@ -395,8 +399,12 @@ class DynamicTabularData extends libPictProvider
 				}
 				let tmpElementToBeMoved = tmpDestinationObject.splice(tmpRowIndex, 1);
 				tmpDestinationObject.splice(tmpRowIndex - 1, 0, tmpElementToBeMoved[0]);
-				this.pict.providers.DynamicSolver.solveViews();
+				// Render BEFORE solving so the solve's DOM side effects (e.g. SetGroupVisibility
+				// hiding a validation message) act on the freshly rebuilt DOM and survive. A
+				// solve-then-render order discards them, because render() rebuilds the group DOM
+				// without the solver-applied class. Matches the add/delete handlers' order.
 				pView.render();
+				this.pict.providers.DynamicSolver.solveViews();
 				//pView.marshalToView();
 				// We've re-rendered but we don't know what needs to be marshaled based on the solve that ran above so marshal everything
 				this.pict.views.PictFormMetacontroller.marshalFormSections();
