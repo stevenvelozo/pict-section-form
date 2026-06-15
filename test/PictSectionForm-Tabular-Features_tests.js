@@ -569,6 +569,96 @@ suite('PictSectionForm Tabular Features', () =>
 			}, fDone);
 		});
 
+		test('Moving a source row reorders dependent position-keyed cells (data follows the column)', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Grades',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Grades',
+				RecordManifest: 'GradeRowEditor',
+				DynamicColumns:
+				[
+					{
+						SourceAddress: 'Assignments',
+						KeyBy: 'Position',
+						HashTemplate: 'PassingCol_{~D:Record.__Index~}',
+						NameTemplate: '{~D:Record.Title~}',
+						InformaryDataAddressTemplate: 'PassingCol_{~D:Record.__Index~}',
+						DataType: 'String',
+						PictForm: { InputType: 'Text' }
+					}
+				]
+			},
+			{
+				// Each dependent row carries user-entered positional cells (one per source column).
+				Grades:
+				[
+					{ Section: 'A', StudentName: 'Alice', PassingCol_0: 'a0', PassingCol_1: 'a1', PassingCol_2: 'a2' },
+					{ Section: 'A', StudentName: 'Bob',   PassingCol_0: 'b0', PassingCol_1: 'b1', PassingCol_2: 'b2' }
+				]
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				// Source order is [Addition(0), Photosynthesis(1), Reading 1(2)]. Move row 0 -> 2,
+				// the way moveDynamicTableRowDown twice / setDynamicTableRowIndex(0,2) would, then
+				// apply the SAME permutation to every dependent row's positional cells.
+				_Pict.providers.DynamicTabularData._moveDependentPositionalColumns('Assignments', 0, 2, 3);
+
+				let tmpRow0 = _Pict.AppData.Grades[0];
+				let tmpRow1 = _Pict.AppData.Grades[1];
+				// [a0,a1,a2] with source 0->2 becomes [a1,a2,a0] -- the value under each column
+				// moved with its source position, so data stays attached to its column.
+				Expect(tmpRow0.PassingCol_0).to.equal('a1', 'row 0 col 0 took the value from old position 1');
+				Expect(tmpRow0.PassingCol_1).to.equal('a2', 'row 0 col 1 took the value from old position 2');
+				Expect(tmpRow0.PassingCol_2).to.equal('a0', 'row 0 col 2 took the moved value from old position 0');
+				Expect(tmpRow1.PassingCol_0).to.equal('b1', 'row 1 permuted identically');
+				Expect(tmpRow1.PassingCol_1).to.equal('b2', 'row 1 permuted identically');
+				Expect(tmpRow1.PassingCol_2).to.equal('b0', 'row 1 permuted identically');
+			}, fDone);
+		});
+
+		test('Reordering a source row re-labels dependent columns in the render phase (no blank-out on move)', (fDone) =>
+		{
+			let App = makeApplication({
+				Hash: 'Grades',
+				Layout: 'Tabular',
+				RecordSetAddress: 'Grades',
+				RecordManifest: 'GradeRowEditor',
+				DynamicColumns:
+				[
+					{
+						SourceAddress: 'Assignments',
+						KeyBy: 'Position',
+						HashTemplate: 'PassingCol_{~D:Record.__Index~}',
+						NameTemplate: '{~D:Record.Title~}',
+						InformaryDataAddressTemplate: 'PassingCol_{~D:Record.__Index~}',
+						DataType: 'String',
+						PictForm: { InputType: 'Text' }
+					}
+				]
+			});
+			bootstrap(App, (_Pict) =>
+			{
+				let tmpView = _Pict.views['PictSectionForm-Class'];
+				let tmpGroup = tmpView.sectionDefinition.Groups[0];
+				Expect(tmpGroup.supportingManifest.elementDescriptors['PassingCol_0'].Name).to.equal('Addition', 'col 0 header before move');
+				Expect(tmpGroup.supportingManifest.elementDescriptors['PassingCol_2'].Name).to.equal('Reading 1', 'col 2 header before move');
+
+				// Reorder the source the way the move handler splices it (move index 0 -> 2), then
+				// run the render-phase rebuild the move handler now performs BEFORE marshaling.
+				let tmpMoved = _Pict.AppData.Assignments.splice(0, 1);
+				_Pict.AppData.Assignments.splice(2, 0, tmpMoved[0]);
+				_Pict.providers.DynamicTabularData._rebuildDependentDynamicColumnViews('Assignments');
+
+				// Column hashes are position-keyed (stable), but their labels must re-resolve to the
+				// NEW source order here in the render phase -- not mid-marshal, which would blank the
+				// freshly filled cells until the next edit.
+				Expect(tmpGroup.supportingManifest.elementDescriptors['PassingCol_0'].Name).to.equal('Photosynthesis', 'col 0 re-labeled to new position 0');
+				Expect(tmpGroup.supportingManifest.elementDescriptors['PassingCol_1'].Name).to.equal('Reading 1', 'col 1 re-labeled to new position 1');
+				Expect(tmpGroup.supportingManifest.elementDescriptors['PassingCol_2'].Name).to.equal('Addition', 'col 2 re-labeled to the moved row');
+			}, fDone);
+		});
+
 		test('Renaming a source row reports namesChanged and refreshes the column header in place', (fDone) =>
 		{
 			let App = makeApplication({
