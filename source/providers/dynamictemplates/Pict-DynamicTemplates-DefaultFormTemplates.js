@@ -326,6 +326,16 @@ Glug glug glug Oo... -->
 					<div {~D:Record.Macro.ControlAttr~} id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-diagram"></div>
 `
 		},
+		{
+			"HashPostfix": "-Template-Input-InputType-ObjectEditor",
+			"DefaultInputExtensions": ["Pict-Input-ObjectEditor"],
+			"Template": /*HTML*/`
+					<!-- InputType ObjectEditor {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<div {~D:Record.Macro.ControlAttr~} id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-objecteditor"></div>
+`
+		},
 		/*
 		 * END Input Templates (default)
 		 */
@@ -554,6 +564,19 @@ Glug glug glug Oo... -->
 					<label class="pict-form-label">{~D:Record.Name~}</label>
 					<span>{~D:Record.PictForm.ExtraDescription~}</span>
 					<div {~D:Record.Macro.ControlAttr~} id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-diagram"></div>
+				</div>
+`
+		},
+		{
+			"HashPostfix": "-VerticalTemplate-Input-InputType-ObjectEditor",
+			"DefaultInputExtensions": ["Pict-Input-ObjectEditor"],
+			"Template": /*HTML*/`
+					<!-- InputType ObjectEditor {~D:Record.Hash~} {~D:Record.DataType~} -->
+				<div class="pict-form-vertical-input">
+					<input type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<label class="pict-form-label">{~D:Record.Name~}</label>
+					<span>{~D:Record.PictForm.ExtraDescription~}</span>
+					<div {~D:Record.Macro.ControlAttr~} id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-objecteditor"></div>
 				</div>
 `
 		},

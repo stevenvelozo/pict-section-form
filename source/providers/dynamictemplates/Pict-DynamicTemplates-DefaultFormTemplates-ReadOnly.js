@@ -188,6 +188,16 @@ Glug glug glug Oo... -->
 					<span>{~D:Record.Name~}:</span> <input disabled {~D:Record.Macro.ControlAttr~} id="DATETIME-INPUT-FOR-{~D:Record.Macro.RawHTMLID~}" onchange="{~D:Record.Macro.DataRequestFunction~}" type="datetime-local" value="" />
 `
 		},
+		{
+			"HashPostfix": "-Template-Input-InputType-ObjectEditor",
+			"DefaultInputExtensions": ["Pict-Input-ObjectEditor"],
+			"Template": /*HTML*/`
+					<!-- InputType ObjectEditor {~D:Record.Hash~} {~D:Record.DataType~} -->
+					<input disabled type="hidden" {~D:Record.Macro.InputFullProperties~} {~D:Record.Macro.InputChangeHandler~} value="">
+					<span>{~D:Record.Name~}:</span>
+					<div {~D:Record.Macro.ControlAttr~} id="DISPLAY-FOR-{~D:Record.Macro.RawHTMLID~}" class="pict-section-form-objecteditor pict-section-form-objecteditor-readonly"></div>
+`
+		},
 		/*
 		 * END Input Templates (default)
 		 */
