@@ -289,7 +289,10 @@ class PictInputObjectEditor extends libPictSectionInputExtension
 					{
 						RenderableHash:     'ObjectEditor-Container',
 						TemplateHash:       'ObjectEditor-Container-Template',
-						DestinationAddress: tmpSlotID,
+						// pict-view resolves a renderable's destination from ContentDestinationAddress
+						// (see Pict-View.buildRenderOptions). A bare DestinationAddress is ignored, so the
+						// container template never painted into the slot and the tree had nowhere to mount.
+						ContentDestinationAddress: tmpSlotID,
 						RenderMethod:       'replace'
 					}
 				]
@@ -329,7 +332,10 @@ class PictInputObjectEditor extends libPictSectionInputExtension
 
 		try
 		{
-			let tmpResult = tmpView.render();
+			// Render the container into the CURRENT slot explicitly. The host slot's RawHTMLID is
+			// regenerated on every form re-render, so a re-used view instance would otherwise paint into
+			// its original (now-removed) slot; passing the destination here re-points it every mount.
+			let tmpResult = tmpView.render('ObjectEditor-Container', tmpSlotID);
 			if (tmpResult && typeof tmpResult.then === 'function')
 			{
 				tmpResult.then(
